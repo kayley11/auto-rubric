@@ -16,6 +16,8 @@ concurrency:
 
 jobs:
   build:
+    # Publishing the official website is restricted to the upstream repository.
+    if: github.repository == 'delip/autorubric'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +52,7 @@ jobs:
           path: site
 
   deploy:
+    if: github.repository == 'delip/autorubric'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -1,180 +1,78 @@
+# auto rubric
 
-<p align="center">
-  <a href="https://badge.fury.io/py/autorubric">
-    <img src="https://badge.fury.io/py/autorubric.svg" alt="PyPI version" />
-  </a>
-  <a href="https://pypi.python.org/pypi/autorubric">
-    <img src="https://img.shields.io/pypi/pyversions/autorubric.svg" alt="Python versions" />
-  </a>
-  <a href="https://autorubric.org">
-    <img src="https://img.shields.io/badge/site-autorubric.org-blue.svg" alt="Website" />
-  </a>
-  <a href="https://arxiv.org/abs/2603.00077">
-    <img src="https://img.shields.io/badge/arXiv-2603.00077-<COLOR>.svg" alt="arXiv" />
-  </a>
-</p>
+An English command-line deployment of [AutoRubric](https://github.com/delip/autorubric), a Python library for evaluating text against weighted criteria with an LLM judge.
 
-# AutoRubric
+This repository builds on **AutoRubric v1.5.3** and provides a ready-to-configure runner for the **KCL OpenAI-compatible API**. The default model is `arc:nexus`. Commands, samples, and requested grading explanations are in English.
 
-A Python library for evaluating text outputs against weighted criteria using LLM-as-a-judge.
+## Quick start
 
-```bibtex
-  @misc{rao2026autorubric,
-        title={Autorubric: A Unified Framework for Rubric-Based LLM Evaluation},
-        author={Delip Rao and Chris Callison-Burch},
-        year={2026},
-        eprint={2603.00077},
-        archivePrefix={arXiv},
-        primaryClass={cs.CL},
-        url={https://arxiv.org/abs/2603.00077},
-  }
-```
-
----
-
-
-## Installation
+The setup scripts support macOS and Linux, or Windows through WSL. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first. Setup creates a Python 3.12 virtual environment and installs the locked dependencies; uv can download Python if needed.
 
 ```bash
-pip install autorubric
+git clone https://github.com/kayley11/auto-rubric.git
+cd auto-rubric
+./setup.sh
 ```
 
-## Quick Example
+Open the generated `.env` file in your editor and set your own API key:
 
-```python
-import asyncio
-from autorubric import Rubric, LLMConfig
-from autorubric.graders import CriterionGrader
-
-async def main():
-    grader = CriterionGrader(llm_config=LLMConfig(model="openai/gpt-5.1-mini"))
-
-    rubric = Rubric.from_dict([
-        {"weight": 10.0, "requirement": "States NMC cell-level energy density in the 250-300 Wh/kg range"},
-        {"weight": 8.0, "requirement": "Identifies LFP thermal runaway threshold (~270°C) as higher than NMC (~210°C)"},
-        {"weight": 6.0, "requirement": "States LFP cycle life advantage (2000-5000 cycles vs 1000-2000 for NMC)"},
-        {"weight": -15.0, "requirement": "Incorrectly claims LFP has higher gravimetric energy density than NMC"}
-    ])
-
-    result = await rubric.grade(
-        to_grade="""NMC cathodes (LiNixMnyCozO2) achieve 250-280 Wh/kg at the cell level,
-        while LFP (LiFePO4) typically reaches 150-205 Wh/kg. However, LFP offers superior
-        thermal stability with decomposition onset at ~270°C compared to ~210°C for NMC,
-        and delivers 2000-5000 charge cycles versus 1000-2000 for NMC.""",
-        grader=grader,
-        query="Compare NMC and LFP cathode materials for EV battery applications.",
-    )
-
-    # result.score is `float | None` (None if the grade failed); guard before formatting.
-    print(f"Score: {result.score:.2f}" if result.score is not None else "Score: n/a (grade failed)")
-    for criterion in result.report:
-        print(f"  [{criterion.final_verdict}] {criterion.criterion.requirement}")
-
-asyncio.run(main())
+```dotenv
+OPENAI_API_KEY=your-api-key-here
+OPENAI_BASE_URL=https://ai.create.kcl.ac.uk/api/v1
+AUTORUBRIC_MODEL=openai/arc:nexus
 ```
 
-## Documentation
-
-Full documentation, API reference, and a cookbook with several dozen recipes are available at **[autorubric.org](https://autorubric.org/)**.
-
-| Resource      | Link                                                                  |
-| ------------- | --------------------------------------------------------------------- |
-| Project site  | [autorubric.org](https://autorubric.org)                              |
-| API reference | [autorubric.org/docs/api](https://autorubric.org/docs/api/)           |
-| Cookbook      | [autorubric.org/docs/cookbook](https://autorubric.org/docs/cookbook/) |
-
-## Using AutoRubric in Claude Code, Codex, Gemini CLI, and other coding agents
-
-AutoRubric's documentation is indexed by [Context7](https://context7.com/websites/autorubric), so you can give your coding agent live access to the current API reference and cookbook. With it connected, the agent writes correct, idiomatic AutoRubric code — right imports, the async grading API, weighted criteria, ensemble and multi-choice config — instead of guessing from stale memory.
-
-### 1. Connect the Context7 MCP server
-
-Get a free API key at [context7.com/dashboard](https://context7.com/dashboard), then add the server to your agent (swap in your key):
-
-**Claude Code**
+The base URL ends with `/api/v1`; do not append `/chat/completions`. No API key is included in the repository. Existing `.env` settings are preserved when setup runs again.
 
 ```bash
-claude mcp add --scope user --header "CONTEXT7_API_KEY: YOUR_API_KEY" \
-  --transport http context7 https://mcp.context7.com/mcp
+./run.sh check   # Check configuration without calling the model
+./run.sh smoke   # Run an offline check with fixed mock responses
+./run.sh grade   # Evaluate the included sample through the configured API
 ```
 
-**Codex CLI**
+`smoke` works without an API key. `grade` requires a working key and sends the rubric and submission to the configured provider. JSON reports are written to `local/results/`, which is ignored by Git.
+
+The sample checks whether an answer correctly identifies Paris as France's capital and Europe as its continent, without incorrectly naming London. Its expected verdicts are `MET`, `MET`, and `UNMET`, with a normalized score of `1.0`.
+
+## Grade your own text
 
 ```bash
-codex mcp add context7 -- npx -y @upstash/context7-mcp --api-key YOUR_API_KEY
+./run.sh grade \
+  --rubric /absolute/path/rubric.yaml \
+  --input /absolute/path/answer.txt \
+  --query-file /absolute/path/question.txt \
+  --output /absolute/path/result.json
 ```
 
-**Gemini CLI** — add to `~/.gemini/settings.json`:
+Rubrics support AutoRubric YAML or JSON. Text files use UTF-8, and `--query-file` is optional. Reports contain criterion verdicts, explanations, the score, and available usage statistics. Incomplete evaluations return a nonzero exit code.
 
-```json
-{
-  "mcpServers": {
-    "context7": {
-      "httpUrl": "https://mcp.context7.com/mcp",
-      "headers": { "CONTEXT7_API_KEY": "YOUR_API_KEY" }
-    }
-  }
-}
+## Project files
+
+| Path | Purpose |
+| --- | --- |
+| `setup.sh` | Install dependencies and create a local configuration template |
+| `run.sh` | Run configuration checks, offline verification, or live grading |
+| `local/run.py` | English grading runner |
+| `local/.env.example` | KCL connection settings with a blank API key |
+| `local/rubric.yaml` | Sample weighted rubric |
+| `local/query.txt`, `local/answer.txt` | Sample question and answer |
+| `src/autorubric/` | Upstream AutoRubric library |
+| `tests/` | Upstream test suite |
+| `README_DEPLOYMENT.md` | Configuration, model selection, and verification details |
+| `README_UPSTREAM.md` | Original upstream README |
+
+Local credentials, virtual environments, caches, and generated grading reports are excluded from Git. Upstream website and PyPI publishing workflows run only in the original upstream repository.
+
+## Development checks
+
+```bash
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+LITELLM_LOCAL_MODEL_COST_MAP=True uv run --locked pytest -q
 ```
 
-**Other clients** (Cursor, VS Code, Windsurf, Zed, …): run `npx ctx7 setup`, or see the [full client list](https://context7.com/docs/resources/all-clients). The underlying package is `@upstash/context7-mcp`.
+## Attribution and license
 
-### 2. Point the agent at AutoRubric
+Based on [delip/autorubric](https://github.com/delip/autorubric), version `v1.5.3`, revision `2bb17cdaeb075813045c34926fd47aaa19451b04`. Upstream authorship, commit history, and the [MIT license](LICENSE) are retained.
 
-Reference the library in your prompt so Context7 loads the right docs — AutoRubric's library ID is `/websites/autorubric`:
-
-> Write an AutoRubric grader that scores answers against weighted criteria with an ensemble of two judges. use context7, library /websites/autorubric
-
-Context7 exposes a `resolve-library-id` tool (to find the library) and a docs-query tool (to fetch version-specific docs and examples); your agent invokes these automatically.
-
-### Make it the default — drop this into your `CLAUDE.md` / `AGENTS.md`
-
-To get high-quality AutoRubric code on every task (not just when you remember to ask), add a block like this to your agent's instruction file — `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex, Gemini CLI, and most other agents:
-
-```markdown
-## Writing AutoRubric code
-
-When writing or editing code that uses AutoRubric:
-
-- Load the current docs via Context7 (library `/websites/autorubric`) first — rely on
-  the real API, not prior memory or guesswork.
-- The grading APIs are async: `await` `Rubric.grade`, `Grader.grade`, and `EvalRunner`,
-  and treat `result.score` as `float | None` (guard before formatting).
-- Use the feature that fits the task: weighted (±) criteria, `CriterionGrader`, ensemble
-  judging with aggregation strategies, multi-choice (ordinal/nominal) criteria, batch
-  `EvalRunner` with checkpointing, agreement metrics and bootstrap CIs, YAML configs, or
-  meta-rubric improvement.
-- Verify exact signatures and types against the API reference
-  (https://autorubric.org/docs/api/) and reuse patterns from the cookbook
-  (https://autorubric.org/docs/cookbook/).
-- Ensure provider keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, …) are set; AutoRubric
-  reaches 100+ providers via LiteLLM.
-```
-
-## Features
-
-| Feature                    | Description                                                              |
-| -------------------------- | ------------------------------------------------------------------------ |
-| Weighted criteria          | Positive and negative weights with explicit requirements                 |
-| Per-criterion explanations | Every verdict includes the judge's reasoning                             |
-| 100+ LLM providers         | OpenAI, Anthropic, Google, Azure, Groq, Ollama, and more via LiteLLM     |
-| Ensemble judging           | Combine multiple LLM judges with configurable aggregation strategies     |
-| Few-shot calibration       | Provide labeled examples to improve grading consistency                  |
-| Multi-choice criteria      | Ordinal and nominal scales beyond binary met/unmet verdicts              |
-| Batch evaluation           | High-throughput `EvalRunner` with checkpointing and resumption           |
-| Metrics & validation       | Agreement metrics, bootstrap confidence intervals, distribution analysis |
-| Length penalty             | Configurable penalty for overly long responses                           |
-| Thinking/reasoning support | Budget-controlled extended thinking for supported models                 |
-| Response caching           | Disk-based caching to avoid redundant LLM calls                          |
-| Dataset support            | Structured datasets with per-item rubrics, prompts, and ground truth     |
-| YAML configuration         | Define rubrics, LLM configs, and datasets in YAML                        |
-| Meta-rubric evaluation     | Evaluate and automatically improve rubric quality                        |
-
-## License
-
-MIT License - see LICENSE file for details.
-
-## Acknowledgments
-
-This research was developed with funding from the Defense Advanced Research Projects Agency’s (DARPA) SciFy program (Agreement No. HR00112520300). The views expressed
-are those of the author and do not reflect the official policy or position of the Department of Defense or the U.S. Government.
+See the [upstream README](README_UPSTREAM.md) for the library's original documentation and research citation, or the [deployment guide](README_DEPLOYMENT.md) for this repository's local workflow.
