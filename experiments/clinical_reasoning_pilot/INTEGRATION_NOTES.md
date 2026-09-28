@@ -51,14 +51,14 @@ The preparation scripts and full clinical records were not copied into the modul
 
 ## Verification
 
-The pre-publication verification below used macOS and Python 3.12.7 with Ruff 0.14.1.
+The local verification below used macOS and Python 3.12.7 with Ruff 0.14.1.
 Results for GitHub-hosted jobs and other OS/Python combinations are recorded in the
 repository's [Actions history](https://github.com/kayley11/auto-rubric/actions).
 
 | Check | Result |
 | --- | --- |
 | Repository Ruff lint and format checks | Passed; all nine module Python files are included |
-| Root pytest, including automatic module discovery | 873 passed, including six public module checks |
+| Root pytest, including automatic module discovery | 874 passed, including seven public module checks |
 | Complete-record regression, using the formatted code in a temporary copy of the retained workspace | Seven existing checks passed |
 | Saved-operation replay within that regression | 133 operations reused with network disabled and no evidence writes |
 | Regenerated full reports within that regression | The 93 score rows, reasons and aggregate values were unchanged apart from report timestamps |
@@ -71,6 +71,14 @@ The full-record checks ran against temporary copies; the original experiment and
 its exported bundle retain their recorded code snapshots and data. Root pytest
 also reported warnings from existing statistical edge-case tests; none were failures.
 The credential check covered current text files, not all historical commits or binaries.
+
+The first hosted run exposed a Windows test-fixture issue: blocking every socket
+connection also blocked the local TCP socketpair used to start the asyncio event
+loop. The fixture now permits IPv4/IPv6 loopback connections while rejecting
+external connections. A regression check exercises the Windows socketpair path
+on Unix as well, and confirms that a non-loopback connection is still rejected.
+The failure was reproduced locally before the fix. Experimental code, prompts,
+saved answers and scores were unchanged.
 
 These checks establish that integration preserved the recorded outputs and key
 software behavior. Clinical reference review, independent human ratings and the

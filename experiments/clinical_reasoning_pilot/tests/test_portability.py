@@ -67,10 +67,18 @@ def engine(tmp_path, monkeypatch):
     monkeypatch.setenv("OPENAI_BASE_URL", "https://offline.invalid/v1")
     monkeypatch.setenv("LITELLM_LOCAL_MODEL_COST_MAP", "True")
 
-    def no_network(*args, **kwargs):
+    original_connect = socket.socket.connect
+
+    def no_external_network(connection, address):
+        # Windows asyncio uses a loopback TCP socketpair to wake its event loop.
+        if connection.family in (socket.AF_INET, socket.AF_INET6) and address[0] in (
+            "127.0.0.1",
+            "::1",
+        ):
+            return original_connect(connection, address)
         raise AssertionError("Public fixture tests must not connect to a provider")
 
-    monkeypatch.setattr(socket.socket, "connect", no_network)
+    monkeypatch.setattr(socket.socket, "connect", no_external_network)
     names = ("pilot_paths", "pilot", "extension", "extension_http")
     for name in names:
         monkeypatch.delitem(sys.modules, name, raising=False)
@@ -157,6 +165,23 @@ def test_numeric_audit_rejects_a_future_observation(engine):
     result = audit(unit, "NUMERIC_SUMMARY: " + json.dumps(future))
     assert result["status"] == "failed"
     assert not result["checks"]["no_unavailable_observation_ids"]
+
+
+def test_offline_guard_allows_event_loop_wakeup_but_blocks_provider_connections(
+    engine, monkeypatch
+):
+    # Exercise the TCP socketpair used on Windows, even when running on Unix.
+    monkeypatch.setattr(socket, "socketpair", socket._fallback_socketpair)
+
+    async def local_work():
+        return "ready"
+
+    with asyncio.Runner() as runner:
+        assert runner.run(local_work()) == "ready"
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
+        with pytest.raises(AssertionError, match="must not connect to a provider"):
+            connection.connect(("192.0.2.1", 443))
 
 
 def test_public_scores_and_accounting_reconcile():
