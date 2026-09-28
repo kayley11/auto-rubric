@@ -4,6 +4,8 @@ An English command-line deployment of [AutoRubric](https://github.com/delip/auto
 
 This repository builds on **AutoRubric v1.5.3** and provides a ready-to-configure runner for the **KCL OpenAI-compatible API**. The default model is `arc:nexus`. Commands, samples, and requested grading explanations are in English.
 
+The [clinical reasoning pilot](experiments/clinical_reasoning_pilot/README.md) adds findings from 16 answers and 93 selected item ratings, numeric result exports, and the experiment runner. Its public tests use authored software fixtures; the original clinical inputs and full rubric are kept separately. Start with the [experimental findings](experiments/clinical_reasoning_pilot/FINDINGS.md).
+
 ## Quick start
 
 The setup scripts support macOS and Linux, or Windows through WSL. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first. Setup creates a Python 3.12 virtual environment and installs the locked dependencies; uv can download Python if needed.
