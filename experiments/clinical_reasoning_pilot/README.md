@@ -5,7 +5,8 @@ checks the resulting scores, explanations and failure records. The extension
 completed **16 answers across seven parent case clusters and 93 selected item
 ratings**. Independent clinical ratings remain pending.
 
-Start with [findings and remaining questions](FINDINGS.md). The useful result is an
+Start with the [latest evaluator findings](judge_checks/ANALYSIS.md), then
+[clinical findings and remaining questions](FINDINGS.md). The useful result is an
 inspectable account of where automatic scoring works technically and where its
 interpretation needs review.
 
@@ -14,6 +15,7 @@ interpretation needs review.
 | Material | Location and scope |
 | --- | --- |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
+| New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
 | Item scores | [score_table.json](results/score_table.json): 93 baseline rows from `extension_v2_1_http`; free-text reasons omitted |
 | Counts and resource use | [extension_summary.json](results/extension_summary.json): unchanged aggregate export, with generation, failed scoring, diagnostics and recovery separated |
 | Existing runner | `portable.py` and the seven supporting scripts; complete clinical reruns require the original data workspace |
@@ -68,3 +70,24 @@ Missing inputs produce an error; public fixtures are never substituted for study
 For new live scoring, use `portable.py new-condition --help` and `portable.py run --help`.
 Keep a new condition separate from the completed one and supply credentials through
 `--env-file` or the selected workspace's `.env`; [.env.example](.env.example) has no key.
+
+## Run the new record checks
+
+These fictional tasks require no book, clinical answers or original rubric anchors.
+They assess record/task support using a separate binary criterion through AutoRubric.
+They do not establish clinical rubric accuracy. From the repository root:
+
+```sh
+uv run --locked python experiments/clinical_reasoning_pilot/judge_checks/run.py prepare --run-dir /tmp/autorubric-judge-checks
+uv run --locked python experiments/clinical_reasoning_pilot/judge_checks/run.py run --run-dir /tmp/autorubric-judge-checks --env-file .env
+uv run --locked python experiments/clinical_reasoning_pilot/judge_checks/run.py report --run-dir /tmp/autorubric-judge-checks
+```
+
+Use a fresh directory for each new condition. The standalone preparation plans
+48 ratings on KCL `arc:apex`; supply the existing KCL URL and key locally. Add
+`--clinical-workspace /path/to/full-pilot` to preparation to include the 48 retained
+clinical repeat ratings used in this study. That private workspace is required only
+for clinical repeats. Successful operations resume without another call; failed
+attempts remain saved. Reporting writes local detailed results and updates the
+numeric summary and results page in this repository copy. Use a separate clone if
+you want to retain the published summary while rerunning.

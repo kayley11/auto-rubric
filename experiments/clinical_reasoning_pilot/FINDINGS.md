@@ -4,6 +4,22 @@ The selected scoring tasks completed, while several answer, reference and evalua
 issues still need review. High machine scores alone do not establish clinical
 correctness or the reliability of the rubric.
 
+## October evaluator checks
+
+The separate [judge-check study](judge_checks/ANALYSIS.md) completed **96/96
+ratings**: 48 fixed-answer clinical repeats and 48 fictional record judgments.
+Both record prompts achieved 24/24 correct labels, so the added checking prompt
+showed no improvement on these small tasks. Five of eight clinical answer/item
+pairs retained one score across six calls; E01, E02 and U01 varied. E01's D3a
+scores were 3,3,2 in ascending order and 5,5,5 in descending order. E02 varied
+even within fixed order. These findings concern scoring behavior, not clinical
+accuracy. Final explanations also contain incorrect anchor-status claims and
+unsupported details. See the concise [results](judge_checks/RESULTS.md),
+[plan](judge_checks/PLAN.md) and [specific flags](judge_checks/review_flags.json).
+
+The September clinical results below are retained unchanged. No new clinical
+answers, approved references or author-defined scoring rules were added.
+
 ## Experiment and completed work
 
 The extension used four task families: staged evidence, incorrect-belief pushback,
@@ -97,8 +113,10 @@ rules, compare unchanged answers in a separately labelled scoring condition.
 
 Additional cases should address specific gaps: contradictory evidence, repeated
 incorrect pressure, irregular or delayed records, and another urgent/non-urgent
-family. Include ambiguous or lower-scoring answers in repeat-judge checks. These
-experiments are proposed and have not been run.
+family. Include ambiguous or lower-scoring answers in repeat-judge checks.
+Further clinical cases and author-agreed scoring changes have not been run.
+The October study adds delayed-record diagnostics and fixed-order repeats;
+it does not complete the other proposed clinical extensions.
 
 The book suggestion was *Cases for PACES*; the supplied Clinical LLM Reasoning Rubric
 provided the grading framework. Full source excerpts, clinical references and the

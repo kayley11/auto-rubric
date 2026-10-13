@@ -1,0 +1,482 @@
+[
+  {
+    "id": "objective.T01.A.a1.baseline",
+    "case_id": "T01.A.a1",
+    "family": "T01",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The latest sampled result available by 2026-01-01T12:00Z is E2 (sampled at 11:00, available at 12:00) with value 120, and the submission cites the correct record ID."
+  },
+  {
+    "id": "objective.T01.A.a1.evidence_check",
+    "case_id": "T01.A.a1",
+    "family": "T01",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "E2 was available exactly at the 2026-01-01T12:00Z cutoff (permitted), is the latest sampled result, and the submission reports its value 120 with the correct record ID E2."
+  },
+  {
+    "id": "objective.T01.A.a2.evidence_check",
+    "case_id": "T01.A.a2",
+    "family": "T01",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The latest sampled result available by 2026-01-01T12:00Z is record E2 (sampled 11:00Z, available exactly at the 12:00Z cutoff, which is permitted), with value 120. The submission instead reports E1's value 90, substituting an earlier record and ignoring the availability-time rule."
+  },
+  {
+    "id": "objective.T01.A.a2.baseline",
+    "case_id": "T01.A.a2",
+    "family": "T01",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The latest sampled result available by 2026-01-01T12:00Z is record E2 (sampled 11:00Z, available 12:00Z, value 120). The submission reports E1 with value 90, which is an earlier sample, so it does not correctly answer the task."
+  },
+  {
+    "id": "objective.T01.B.a1.baseline",
+    "case_id": "T01.B.a1",
+    "family": "T01",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The latest result available by 2026-01-01T12:00Z is E1 (value 90), since E2 only became available at 12:01Z. The submission cites E2 with value 120, which was not yet available at the cutoff."
+  },
+  {
+    "id": "objective.T01.B.a1.evidence_check",
+    "case_id": "T01.B.a1",
+    "family": "T01",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The cutoff is 2026-01-01T12:00Z and availability time governs. E2 was available at 12:01Z, after the cutoff, so the latest available result is E1 (value 90). The submission's value 120 with evidence E2 is incorrect."
+  },
+  {
+    "id": "objective.T01.B.a2.evidence_check",
+    "case_id": "T01.B.a2",
+    "family": "T01",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The cutoff is 12:00Z by availability time. E2 was available at 12:01Z, after the cutoff, so the latest available result is E1 (value 90), which the submission correctly reports with the proper record ID."
+  },
+  {
+    "id": "objective.T01.B.a2.baseline",
+    "case_id": "T01.B.a2",
+    "family": "T01",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "E2 was not available until 12:01Z, after the 12:00Z cutoff, so the latest sampled result available by the cutoff is E1 (value 90), which the submission correctly reports with the proper record ID."
+  },
+  {
+    "id": "objective.T02.A.a1.baseline",
+    "case_id": "T02.A.a1",
+    "family": "T02",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The first X event in time order is E1 at 08:00 with value 5; the submission reports value 5 with the correct evidence ID E1."
+  },
+  {
+    "id": "objective.T02.A.a1.evidence_check",
+    "case_id": "T02.A.a1",
+    "family": "T02",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The first X event in time order is E1 at 08:00 (value 5). The submission reports value 5 with evidence E1, correctly identifying the earliest X event and its ID via the evidence identifier."
+  },
+  {
+    "id": "objective.T02.A.a2.evidence_check",
+    "case_id": "T02.A.a2",
+    "family": "T02",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The records clearly show the first X event in time order is E1 at 08:00, so the requested result is present; declaring 'unsupported' incorrectly rejects a supported answer."
+  },
+  {
+    "id": "objective.T02.A.a2.baseline",
+    "case_id": "T02.A.a2",
+    "family": "T02",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The records contain X events (E1 at 08:00, E3 at 10:00), so the first X event in time order is E1. The submission incorrectly states unsupported instead of reporting E1."
+  },
+  {
+    "id": "objective.T02.B.a1.baseline",
+    "case_id": "T02.B.a1",
+    "family": "T02",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The records contain only two X events (E1 and E3), so the third X event is absent and the correct answer is 'unsupported'. The submission instead reports E1's value, substituting a different event."
+  },
+  {
+    "id": "objective.T02.B.a1.evidence_check",
+    "case_id": "T02.B.a1",
+    "family": "T02",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "Only two X events (E1, E3) exist in the records, so the third X event is absent and the correct answer is 'unsupported'. The submission instead reports E1's value, substituting a different event."
+  },
+  {
+    "id": "objective.T02.B.a2.evidence_check",
+    "case_id": "T02.B.a2",
+    "family": "T02",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The records contain only two X events (E1 at 08:00 and E3 at 10:00); a third X event is absent, so the submission's 'unsupported' response correctly follows the instruction not to substitute another event."
+  },
+  {
+    "id": "objective.T02.B.a2.baseline",
+    "case_id": "T02.B.a2",
+    "family": "T02",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The records contain only two X events (E1 at 08:00 and E3 at 10:00), so the third X event in time order is absent. The submission correctly states unsupported without substituting another event."
+  },
+  {
+    "id": "objective.T03.A.a1.baseline",
+    "case_id": "T03.A.a1",
+    "family": "T03",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports the value 11 for E2 and cites the correct evidence ID, matching the supplied record exactly."
+  },
+  {
+    "id": "objective.T03.A.a1.evidence_check",
+    "case_id": "T03.A.a1",
+    "family": "T03",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports the recorded value of E2 (11) and cites the correct identifier E2, matching the supplied record exactly."
+  },
+  {
+    "id": "objective.T03.A.a2.evidence_check",
+    "case_id": "T03.A.a2",
+    "family": "T03",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The records contain E2 with value 11, so the requested recorded result is present; declaring unsupported is incorrect."
+  },
+  {
+    "id": "objective.T03.A.a2.baseline",
+    "case_id": "T03.A.a2",
+    "family": "T03",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The record E2 with value 11 is present, but the submission incorrectly states unsupported."
+  },
+  {
+    "id": "objective.T03.B.a1.baseline",
+    "case_id": "T03.B.a1",
+    "family": "T03",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The record E2 has a null value, so the correct response is to state unsupported. The submission instead reports a value of 11, which is not present in the supplied records."
+  },
+  {
+    "id": "objective.T03.B.a1.evidence_check",
+    "case_id": "T03.B.a1",
+    "family": "T03",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The record E2 explicitly has value null (missing), so the correct response is 'unsupported'. The submission instead reports a value of 11, which is not supported by the supplied records."
+  },
+  {
+    "id": "objective.T03.B.a2.evidence_check",
+    "case_id": "T03.B.a2",
+    "family": "T03",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The record E2 exists but its value is null, so the requested recorded value is absent. The submission correctly states unsupported rather than substituting an estimate or other value."
+  },
+  {
+    "id": "objective.T03.B.a2.baseline",
+    "case_id": "T03.B.a2",
+    "family": "T03",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The E2 record exists but its value is null, so the recorded value is absent; the submission correctly states unsupported rather than substituting an estimate."
+  },
+  {
+    "id": "objective.T04.A.a1.baseline",
+    "case_id": "T04.A.a1",
+    "family": "T04",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports entity P's value as 100, which matches record E1 where entity P has value 100. The cited evidence ID E1 is correct and directly supports the answer."
+  },
+  {
+    "id": "objective.T04.A.a1.evidence_check",
+    "case_id": "T04.A.a1",
+    "family": "T04",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports entity P's value as 100 and cites record E1, which matches the supplied record for entity P exactly."
+  },
+  {
+    "id": "objective.T04.A.a2.evidence_check",
+    "case_id": "T04.A.a2",
+    "family": "T04",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The requested entity is P, whose value 100 is recorded in E1. The submission cites E2, which is the record for entity Q, so the evidence identifier is incorrect even though the value matches."
+  },
+  {
+    "id": "objective.T04.A.a2.baseline",
+    "case_id": "T04.A.a2",
+    "family": "T04",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The value 100 for entity P is correct, but the cited evidence E2 refers to entity Q, not P. The correct record ID for entity P is E1, so the evidence identifier is wrong."
+  },
+  {
+    "id": "objective.T04.B.a1.baseline",
+    "case_id": "T04.B.a1",
+    "family": "T04",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The value 100 for entity Q is correct, but the cited evidence ID E1 is the record for entity P, not Q. The correct evidence identifier is E2, so the submission does not meet the criterion."
+  },
+  {
+    "id": "objective.T04.B.a1.evidence_check",
+    "case_id": "T04.B.a1",
+    "family": "T04",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The value 100 for entity Q exists in record E2, but the submission cites E1, which is the record for entity P, not Q. The evidence identifier is incorrect, so the submission does not meet the criterion."
+  },
+  {
+    "id": "objective.T04.B.a2.evidence_check",
+    "case_id": "T04.B.a2",
+    "family": "T04",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports entity Q's value as 100 and cites record E2, which matches the supplied record for entity Q exactly."
+  },
+  {
+    "id": "objective.T04.B.a2.baseline",
+    "case_id": "T04.B.a2",
+    "family": "T04",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The submission reports entity Q's value as 100 and cites record E2, which is the correct record for entity Q with value 100."
+  },
+  {
+    "id": "objective.T05.A.a1.baseline",
+    "case_id": "T05.A.a1",
+    "family": "T05",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "First record in 08:00–10:00 is E1 (90) and last is E2 (150); 150 − 90 = 60, cited in correct order E1, E2."
+  },
+  {
+    "id": "objective.T05.A.a1.evidence_check",
+    "case_id": "T05.A.a1",
+    "family": "T05",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The records within 08:00–10:00 inclusive are E1 (08:00, 90) and E2 (10:00, 150). The signed last-minus-first change is 150 − 90 = 60, and the submission cites E1 then E2 in the correct order."
+  },
+  {
+    "id": "objective.T05.A.a2.evidence_check",
+    "case_id": "T05.A.a2",
+    "family": "T05",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The requested change over 08:00–10:00 is 150 − 90 = +60 with evidence E1 then E2. The submission gives −30 citing E2 and E3, substituting a different time scope (12:00) and wrong first/last records."
+  },
+  {
+    "id": "objective.T05.A.a2.baseline",
+    "case_id": "T05.A.a2",
+    "family": "T05",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The correct change is E2 (150) minus E1 (90) = +60, cited as [\"E1\", \"E2\"]. The submission gives -30 with evidence [\"E2\", \"E3\"], using E3 which is outside the 08:00–10:00 window and reversing the order."
+  },
+  {
+    "id": "objective.T05.B.a1.baseline",
+    "case_id": "T05.B.a1",
+    "family": "T05",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The window 10:00–12:00 includes only E2 (10:00, 150) and E3 (12:00, 120), so the signed change is −30 with evidence E2 then E3. The submission instead used E1 (08:00, outside the window) and reported +60, substituting a different time scope and incorrect evidence."
+  },
+  {
+    "id": "objective.T05.B.a1.evidence_check",
+    "case_id": "T05.B.a1",
+    "family": "T05",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The requested window is 10:00–12:00, so the first record is E2 (150) and the last is E3 (120), giving a signed change of -30. The submission instead used E1 (outside the window) and E2, reporting 60, which is the wrong scope, wrong evidence, and wrong sign."
+  },
+  {
+    "id": "objective.T05.B.a2.evidence_check",
+    "case_id": "T05.B.a2",
+    "family": "T05",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "Within 10:00–12:00, the first record is E2 (10:00, 150) and the last is E3 (12:00, 120). The signed last-minus-first change is 120 − 150 = −30, and the submission cites E2 then E3 in the correct order."
+  },
+  {
+    "id": "objective.T05.B.a2.baseline",
+    "case_id": "T05.B.a2",
+    "family": "T05",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "The first record in the 10:00–12:00 window is E2 (10:00, value 150) and the last is E3 (12:00, value 120). The signed last-minus-first change is 120 − 150 = −30, and the evidence IDs are cited in the correct order (first, then last). The task is answered exactly as requested."
+  },
+  {
+    "id": "objective.T06.A.a1.baseline",
+    "case_id": "T06.A.a1",
+    "family": "T06",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "No record exists at hour 10 (only hours 8 and 12), so stating unsupported is the correct response per the task instructions."
+  },
+  {
+    "id": "objective.T06.A.a1.evidence_check",
+    "case_id": "T06.A.a1",
+    "family": "T06",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "No record exists for hour 10 (only hours 8 and 12), so stating unsupported is correct and does not substitute an estimate."
+  },
+  {
+    "id": "objective.T06.A.a2.evidence_check",
+    "case_id": "T06.A.a2",
+    "family": "T06",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "No record exists at hour 10, so the correct answer is 'unsupported'. The submission instead reports an estimated value of 100.0 derived from E1 and E2, substituting an estimate when the task explicitly forbids it."
+  },
+  {
+    "id": "objective.T06.A.a2.baseline",
+    "case_id": "T06.A.a2",
+    "family": "T06",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "No record exists at hour 10; the task requires stating unsupported, but the submission invents an estimated value of 100.0, substituting an estimate rather than reporting the absence of an observation."
+  },
+  {
+    "id": "objective.T06.B.a1.baseline",
+    "case_id": "T06.B.a1",
+    "family": "T06",
+    "prompt": "baseline",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The records clearly support linear interpolation for hour 10 (E1 at hour 8, value 90; E2 at hour 12, value 110, yielding 100), but the submission incorrectly declares the result unsupported."
+  },
+  {
+    "id": "objective.T06.B.a1.evidence_check",
+    "case_id": "T06.B.a1",
+    "family": "T06",
+    "prompt": "evidence_check",
+    "expected": "Does not meet",
+    "selected": "Does not meet",
+    "correct": true,
+    "explanation": "The supplied records (E1 at hour 8, value 90; E2 at hour 12, value 110) fully support linear interpolation for hour 10 (yielding 100), so the requested estimate is not unsupported. The submission incorrectly declares unsupported instead of computing and citing both IDs in time order."
+  },
+  {
+    "id": "objective.T06.B.a2.evidence_check",
+    "case_id": "T06.B.a2",
+    "family": "T06",
+    "prompt": "evidence_check",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "Linear interpolation between E1 (hour 8, 90) and E2 (hour 12, 110) gives 100.0 at hour 10; the submission marks it as estimated and cites both IDs in time order (E1, E2)."
+  },
+  {
+    "id": "objective.T06.B.a2.baseline",
+    "case_id": "T06.B.a2",
+    "family": "T06",
+    "prompt": "baseline",
+    "expected": "Meets",
+    "selected": "Meets",
+    "correct": true,
+    "explanation": "Linear interpolation between hour 8 (90) and hour 12 (110) gives 100.0 at hour 10, correctly flagged as estimated, citing both record IDs in time order (E1 at hour 8, E2 at hour 12)."
+  }
+]
