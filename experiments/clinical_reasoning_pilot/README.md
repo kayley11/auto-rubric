@@ -15,6 +15,7 @@ October checks and retain the original clinical answers.
 | Material | Location and scope |
 | --- | --- |
 | Review documents | [review/](review/): experiment explanation, focused clinical/rubric decisions with completed checks separated, 21 complete clinical answers and all baseline/repeat/record judgments |
+| Complete final outputs | [SCORE_OUTPUT.md](review/SCORE_OUTPUT.md), shown as plain text: 21 clinical answers, all 285 accepted scoring judgments and 21 assertion audits, including the latest prompt comparison. [TXT copy](review/SCORE_OUTPUT.txt) contains the same output text. |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
 | New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
 | Q18–Q21 follow-up | [Completed checks](review/REVIEW_MATERIALS.md#q18-q21-checks): four numerical outputs, two dialogue pairs, 21 length checks, 221 raw-reply reconciliations and 12 new prompt judgments |
