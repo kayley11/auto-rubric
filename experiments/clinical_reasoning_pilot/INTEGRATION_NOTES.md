@@ -1,5 +1,11 @@
 # Public module: scope and verification
 
+October addition: the three [review documents](review/) are now included at the
+user's request. They contain condensed case facts, authored tasks, saved clinical
+answers, provisional references, rubric descriptions and selected judge excerpts.
+Full books/PDFs, credentials and raw provider records remain excluded. The
+selection and verification tables below describe the September integration.
+
 Prepared 2026-09-28. The three repository-integration issues are addressed locally.
 The experiment remains the focus: its [findings](FINDINGS.md), 93 selected item
 scores, limitations and next questions are the main entry points. This work made

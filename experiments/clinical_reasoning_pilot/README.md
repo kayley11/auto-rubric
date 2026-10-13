@@ -5,15 +5,16 @@ checks the resulting scores, explanations and failure records. The extension
 completed **16 answers across seven parent case clusters and 93 selected item
 ratings**. Independent clinical ratings remain pending.
 
-Start with the [latest evaluator findings](judge_checks/ANALYSIS.md), then
-[clinical findings and remaining questions](FINDINGS.md). The useful result is an
-inspectable account of where automatic scoring works technically and where its
-interpretation needs review.
+Start with the [experiment design and results](review/DECISIONS.md),
+[clinical/scoring decisions](review/INDEPENDENT_REVIEW.md) and
+[case materials](review/REVIEW_MATERIALS.md). The three review files include the
+October checks and retain the original clinical answers.
 
 ## What is available
 
 | Material | Location and scope |
 | --- | --- |
+| Review documents | [review/](review/): design/results, clinical decisions and complete saved answers with case context and provisional references |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
 | New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
 | Item scores | [score_table.json](results/score_table.json): 93 baseline rows from `extension_v2_1_http`; free-text reasons omitted |
@@ -22,12 +23,11 @@ interpretation needs review.
 | Public checks | [tests/test_portability.py](tests/test_portability.py): authored software fixtures and checks of the numeric exports |
 | Repository integration | [INTEGRATION_NOTES.md](INTEGRATION_NOTES.md): what was included, the three fixes and verification results |
 
-The book passages, original rubric anchor wording, case/reference files, complete
-model answers, free-text grading reasons and raw provider responses are retained
-locally. The two preparation scripts embed research materials and are also omitted.
-This public subset supports inspecting the reported numbers and testing the runner's
-key behaviors. Assessing an individual clinical score requires the retained answer,
-reference and rubric.
+The review documents contain condensed book-based facts, authored tasks, all 21
+clinical model answers, provisional references, rubric descriptions and selected
+final judge excerpts. The entire book, original PDF, credentials, raw provider
+responses and structured clinical execution workspace are not included. The two
+preparation scripts remain omitted. Clinical references and grades are unconfirmed.
 
 ## Run the public checks
 
