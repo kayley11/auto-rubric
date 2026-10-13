@@ -17,6 +17,7 @@ October checks and retain the original clinical answers.
 | Review documents | [review/](review/): four-stage explanation, 23 self-contained questions, 21 complete clinical answers, all 161 baseline grades/explanations and latest repeat/record judgments |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
 | New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
+| Q18–Q21 follow-up | [Completed checks](review/REVIEW_MATERIALS.md#q18-q21-checks): four numerical outputs, two dialogue pairs, 21 length checks, 221 raw-reply reconciliations and 12 new prompt judgments |
 | Item scores | [score_table.json](results/score_table.json): 93 baseline rows from `extension_v2_1_http`; free-text reasons omitted |
 | Counts and resource use | [extension_summary.json](results/extension_summary.json): unchanged aggregate export, with generation, failed scoring, diagnostics and recovery separated |
 | Existing runner | `portable.py` and the seven supporting scripts; complete clinical reruns require the original data workspace |

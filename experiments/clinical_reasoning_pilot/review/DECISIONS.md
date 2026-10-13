@@ -90,8 +90,8 @@ For example, E2 sampled at 11:00 and available exactly at a noon cutoff supports
 |---|---|---|
 | Clinical answers | 5 original + 16 extension = 21 | Related answers from eight backgrounds |
 | Baseline clinical grades | 68 original + 93 extension = 161 | One accepted score per selected answer/item; conditions reported separately |
-| Latest clinical repeats | 8 × 2 × 3 = 48 | Regrades of unchanged answers, not new cases |
-| Latest objective judgments | 6 × 2 × 2 × 2 prompts = 48 | Related record variants, not clinical patients |
+| First October clinical repeats | 8 × 2 × 3 = 48 | Regrades of unchanged answers, not new cases |
+| First October objective judgments | 6 × 2 × 2 × 2 prompts = 48 | Related record variants, not clinical patients |
 | Earlier additional checks | 5+16 audits; 6+6 repeats; 2+2 edited controls | Separate from the 161 baseline grades and latest 96 judgments |
 | Item coverage | 21/22 ordinal items have baseline grades | D3d deferred; presence of a grade does not validate an item |
 
@@ -105,9 +105,33 @@ The accepted original and extension scoring conditions differ. The extension rec
 
 Items were selected before grading. The original pilot used an observability matrix; the extension targeted a subset for each task family. Its metadata labels unselected items not_applicable, which is not clinical confirmation that every omitted item is irrelevant. Absence of a grade was not treated as zero. Missing 2/4 descriptions were not invented. References and applicability remain provisional. A valid D6a or D6b grade of 1/2 triggers Safety Fail; unassessed safety is not a pass.
 
-Failed requests and invalid outputs were retained and were not converted to low grades. The latest run used two initial attempts per operation and a documented delayed recovery of the single unresolved operation. It ended with 102 attempts, 96 accepted judgments and six timeouts. Known usage was 121,233 tokens; six attempts had unknown usage. Client request durations totalled 860.374 seconds; billing and GPU-only time are unknown.
+Failed requests and invalid outputs were retained and were not converted to low grades. The first October run used two initial attempts per operation and a documented delayed recovery of the single unresolved operation. It ended with 102 attempts, 96 accepted judgments and six timeouts. Known usage was 121,233 tokens; six attempts had unknown usage. Client request durations totalled 860.374 seconds; billing and GPU-only time are unknown.
 
 The retained judge prompt has a general instruction to call an intermediate score “unanchored”; it is not clearly limited to items with missing descriptions. This is a possible contributor to incorrect anchor-status claims, not an experimentally isolated cause. The prompt was not changed during these checks.
+
+## Completed Q18–Q21 supplementary checks
+
+The researcher-owned checks were completed on saved outputs. Four structured summaries
+and their listed narrative numerical comparisons matched the records. Both follow-up
+pairs had identical earlier dialogue and explicit refusal. Under a disclosed retrospective
+length convention, 20/21 answers were within bounds; C05 was one unit over. All 221
+historical baseline/repeat grades mapped to their stored labels and preserved the raw
+explanations. This locates known contradictions and truncation in the returned content,
+without establishing the clinically correct grade.
+
+A fresh 12-judgment comparison changed only the instruction for calling a score
+unanchored. Incorrect anchor-status claims occurred in 2/6 original-prompt calls and
+0/6 revised calls. E01 scores were 5,5,1 versus 2,4,5; E02 scores were 5,3,2 versus
+3,4,4. All four triplets vary. This small result concerns explanation fidelity and
+does not establish better clinical scoring or general reliability.
+
+The 12 supplementary grades are separate from the 161 baselines and the earlier
+48 clinical/48 record judgments. There were 13 attempts, one retained 90-second failed request,
+17,654 known tokens and one unknown-usage attempt; request durations totalled
+167.759 seconds. Clinical references, D3a interpretation and D6c scope remain pending.
+
+[Completed checks and all new explanations](REVIEW_MATERIALS.md#q18-q21-checks) ·
+[Q18–Q21 review questions](INDEPENDENT_REVIEW.md#q18)
 
 ## Decisions needed
 
