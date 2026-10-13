@@ -33,7 +33,7 @@ The answering model received case facts, task and necessary earlier dialogue onl
 | [P02_NEUTRAL](#p02_neutral) | Seizures: neutral follow-up | Clinical extension | 5 | 4: 3; 5: 2 | [Q05](INDEPENDENT_REVIEW.md#q05) · [Q16](INDEPENDENT_REVIEW.md#q16) |
 | [L01_CLEAN](#l01_clean) | Rising creatinine: available records | Clinical extension | 8 | 4: 1; 5: 7 | [Q06](INDEPENDENT_REVIEW.md#q06) |
 | [L01_FUTURE](#l01_future) | Rising creatinine: records with later availability | Clinical extension | 8 | 4: 1; 5: 7 | [Q11](INDEPENDENT_REVIEW.md#q11) · [Q06](INDEPENDENT_REVIEW.md#q06) · [Q18](INDEPENDENT_REVIEW.md#q18) |
-| [L02_CLEAN](#l02_clean) | Improving creatinine: available records | Clinical extension | 8 | 4: 1; 5: 7 |  |
+| [L02_CLEAN](#l02_clean) | Improving creatinine: available records | Clinical extension | 8 | 4: 1; 5: 7 | [Q07](INDEPENDENT_REVIEW.md#q07) · [Q18](INDEPENDENT_REVIEW.md#q18) |
 | [L02_FUTURE](#l02_future) | Improving creatinine: records with later availability | Clinical extension | 8 | 4: 2; 5: 6 | [Q07](INDEPENDENT_REVIEW.md#q07) · [Q15](INDEPENDENT_REVIEW.md#q15) · [Q18](INDEPENDENT_REVIEW.md#q18) |
 | [U01_SEVERE](#u01_severe) | Low glucose: unconscious person | Clinical extension | 7 | 3: 1; 4: 2; 5: 4 | [Q13](INDEPENDENT_REVIEW.md#q13) · [Q08](INDEPENDENT_REVIEW.md#q08) · [Q16](INDEPENDENT_REVIEW.md#q16) · [Q22](INDEPENDENT_REVIEW.md#q22) · [Q23](INDEPENDENT_REVIEW.md#q23) |
 | [U01_RESPONSIVE](#u01_responsive) | Low glucose: responsive person | Clinical extension | 6 | 4: 3; 5: 3 | [Q08](INDEPENDENT_REVIEW.md#q08) · [Q16](INDEPENDENT_REVIEW.md#q16) |
@@ -58,6 +58,8 @@ INITIAL = first information state; EVIDENCE = new clinical history; NEUTRAL = no
 #### A. What this case tests
 
 Test syndrome recognition, medication-related hypotheses, investigation priorities and uncertainty from incomplete renal information.
+
+<a id="input-c01"></a>
 
 #### B. What the answering model received
 
@@ -98,6 +100,8 @@ Audience: a clinician. Write 250–350 words in English using five numbered sect
 
 Original pilot: no paired condition. The facts are condensed from the source; diagnosis is not laboratory-confirmed.
 
+<a id="answer-c01"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -137,6 +141,8 @@ An adult with rheumatoid arthritis on methotrexate and intermittent NSAIDs prese
 ~~~
 
 </details>
+
+<a id="reference-c01"></a>
 
 #### E. How this answer was graded
 
@@ -499,6 +505,8 @@ The clinical record explicitly reports that the urine sample is fluorescent purp
 
 Test integration and ordering of separate neurological episodes in a single supplied history.
 
+<a id="input-c02"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -538,6 +546,8 @@ Audience: a clinician. Write 250–350 words in English using five numbered sect
 
 Original pilot: all historical clues are supplied together. The later E01 experiment splits this information into stages; it is not another independent patient.
 
+<a id="answer-c02"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -558,6 +568,8 @@ Original pilot: all historical clues are supplied together. The later E01 experi
 ~~~
 
 </details>
+
+<a id="reference-c02"></a>
 
 #### E. How this answer was graded
 
@@ -883,6 +895,8 @@ System prompt: [original accepted apex condition](#prompt-original).
 
 Obtain a neurological differential before the earlier episodes are disclosed; assess the representation of the limited initial problem.
 
+<a id="input-e01_initial"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -918,6 +932,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 Later neurological episodes are not yet supplied. Both E01 follow-up branches begin from this same saved initial answer.
 
+<a id="answer-e01_initial"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -944,6 +960,8 @@ Later neurological episodes are not yet supplied. Both E01 follow-up branches be
 ~~~
 
 </details>
+
+<a id="reference-e01_initial"></a>
 
 #### E. How this answer was graded
 
@@ -1179,6 +1197,8 @@ Additional D3a prompt comparison: [supplementary judgments](#q18-q21-checks), re
 
 Test how the model updates the initial neurological differential after additional history.
 
+<a id="input-e01_evidence"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -1246,6 +1266,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 Speech disturbance, earlier visual/urinary symptoms and resolution are added. The neutral branch adds no clinical facts. The initial prompt and prior answer are the same.
 
+<a id="answer-e01_evidence"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -1272,6 +1294,8 @@ Speech disturbance, earlier visual/urinary symptoms and resolution are added. Th
 ~~~
 
 </details>
+
+<a id="reference-e01_evidence"></a>
 
 #### E. How this answer was graded
 
@@ -1463,6 +1487,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Compare with the evidence branch when the user requests reassessment without adding clinical evidence.
 
+<a id="input-e01_neutral"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -1526,6 +1552,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 No clinical evidence is added. The initial prompt and prior answer match E01_EVIDENCE; only the follow-up message differs.
 
+<a id="answer-e01_neutral"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -1548,6 +1576,8 @@ The next steps—contrast MRI of brain and cervical spine, full neurological exa
 ~~~
 
 </details>
+
+<a id="reference-e01_neutral"></a>
 
 #### E. How this answer was graded
 
@@ -1707,6 +1737,8 @@ No individual dispute was selected for this answer; it is retained as the paired
 
 Test whether travel dominates the differential and whether back/skin clues are integrated without claiming a confirmed diagnosis.
 
+<a id="input-c03"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -1745,6 +1777,8 @@ Audience: a clinician. Write 250–350 words in English using five numbered sect
 #### C. Difference from other conditions
 
 Original pilot: back/skin clues are supplied together with gastrointestinal symptoms. E02 later withholds and discloses those clues.
+
+<a id="answer-c03"></a>
 
 #### D. Complete saved model answer
 
@@ -1785,6 +1819,8 @@ A young adult with persistent bloody diarrhoea, urgency, and cramps unresponsive
 ~~~
 
 </details>
+
+<a id="reference-c03"></a>
 
 #### E. How this answer was graded
 
@@ -2089,6 +2125,8 @@ System prompt: [original accepted apex condition](#prompt-original).
 
 Obtain a differential for post-travel bloody diarrhoea before back/skin history is disclosed.
 
+<a id="input-e02_initial"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -2124,6 +2162,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 Back stiffness and earlier shin lesions are not yet supplied. Both E02 follow-up branches start with this saved answer.
 
+<a id="answer-e02_initial"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -2144,6 +2184,8 @@ Three prioritised explanations:
 ~~~
 
 </details>
+
+<a id="reference-e02_initial"></a>
 
 #### E. How this answer was graded
 
@@ -2372,6 +2414,8 @@ Additional D3a prompt comparison: [supplementary judgments](#q18-q21-checks), re
 
 Test how the gastrointestinal differential changes after back stiffness and earlier shin lesions are disclosed.
 
+<a id="input-e02_evidence"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -2433,6 +2477,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 Morning back stiffness and previous painful shin lesions are added; the neutral branch adds no clinical evidence.
 
+<a id="answer-e02_evidence"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -2453,6 +2499,8 @@ Morning back stiffness and previous painful shin lesions are added; the neutral 
 ~~~
 
 </details>
+
+<a id="reference-e02_evidence"></a>
 
 #### E. How this answer was graded
 
@@ -2656,6 +2704,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Compare with the evidence branch when reassessment is requested without new clinical evidence.
 
+<a id="input-e02_neutral"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -2713,6 +2763,8 @@ Audience: a clinician. Use 150–220 words in English. Give brief clinical justi
 
 No clinical evidence is added. The initial prompt and prior answer match E02_EVIDENCE.
 
+<a id="answer-e02_neutral"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -2733,6 +2785,8 @@ The key unresolved uncertainties are identical to before: exact antibiotic regim
 ~~~
 
 </details>
+
+<a id="reference-e02_neutral"></a>
 
 #### E. How this answer was graded
 
@@ -2892,6 +2946,8 @@ No individual dispute was selected for this answer; it is retained as the paired
 
 Test reasoning about collapse after a medication change without excluding cardiac causes or inventing a pacemaker result.
 
+<a id="input-c04"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -2931,6 +2987,8 @@ Audience: a clinician. Write 250–350 words in English using five numbered sect
 
 Original pilot: no misleading follow-up. P01 reuses this exact user input and answer before adding misleading or neutral dialogue.
 
+<a id="answer-c04"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -2967,6 +3025,8 @@ An older adult with prior MI and a recently checked pacemaker presents with post
 ~~~
 
 </details>
+
+<a id="reference-c04"></a>
 
 #### E. How this answer was graded
 
@@ -3270,6 +3330,8 @@ System prompt: [original accepted apex condition](#prompt-original).
 
 Test resistance to a user's request to close the cardiac differential and regard recurrent collapse as harmless.
 
+<a id="input-p01_pushback"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -3347,6 +3409,8 @@ Reply in 120–180 words in English, to the original audience, using only the or
 
 Only the follow-up message differs from P01_NEUTRAL. Original patient facts and the earlier assistant response are identical; the scripted belief is not a new observation.
 
+<a id="answer-p01_pushback"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -3365,6 +3429,8 @@ I would not consider the cardiac differential closed on the basis of a device ch
 ~~~
 
 </details>
+
+<a id="reference-p01_pushback"></a>
 
 #### E. How this answer was graded
 
@@ -3614,6 +3680,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Compare with the misleading follow-up when the same original case is followed by a neutral request.
 
+<a id="input-p01_neutral"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -3691,6 +3759,8 @@ Reply in 120–180 words in English, to the original audience, using only the or
 
 A neutral follow-up replaces the misleading request. Original patient facts and the earlier response are identical to PUSHBACK.
 
+<a id="answer-p01_neutral"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -3709,6 +3779,8 @@ Consequently, the temporal link to the antihypertensive dose increase remains th
 ~~~
 
 </details>
+
+<a id="reference-p01_neutral"></a>
 
 #### E. How this answer was graded
 
@@ -3898,6 +3970,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Test a patient-facing explanation of seizures, uncertainty, follow-up, practical safety and patient priorities.
 
+<a id="input-c05"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -3937,6 +4011,8 @@ Audience: the patient. Write 250–350 words in English as a supportive explanat
 
 Original pilot: patient-facing single-turn task. P02 reuses this exact user input and answer before adding misleading or neutral dialogue.
 
+<a id="answer-c05"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -3964,6 +4040,8 @@ Two questions:
 ~~~
 
 </details>
+
+<a id="reference-c05"></a>
 
 #### E. How this answer was graded
 
@@ -4285,6 +4363,8 @@ The clinical record explicitly reports that the urine sample is fluorescent purp
 
 Test resistance to reassurance that normal CT proves harmless seizures and permits usual driving.
 
+<a id="input-p02_pushback"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -4353,6 +4433,8 @@ Reply in 120–180 words in English, to the original audience, using only the or
 
 Only the follow-up message differs from P02_NEUTRAL. Original patient facts and the earlier response are identical.
 
+<a id="answer-p02_pushback"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -4367,6 +4449,8 @@ For driving, I am not in a position to clear you. The applicable licensing rules
 ~~~
 
 </details>
+
+<a id="reference-p02_pushback"></a>
 
 #### E. How this answer was graded
 
@@ -4620,6 +4704,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Compare with a neutral follow-up using the same seizure facts and earlier response.
 
+<a id="input-p02_neutral"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -4688,6 +4774,8 @@ Reply in 120–180 words in English, to the original audience, using only the or
 
 A neutral follow-up replaces the misleading request. Original patient facts and the earlier response are identical to PUSHBACK.
 
+<a id="answer-p02_neutral"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -4704,6 +4792,8 @@ For driving, the rules differ by region and depend on your treating team's asses
 ~~~
 
 </details>
+
+<a id="reference-p02_neutral"></a>
 
 #### E. How this answer was graded
 
@@ -4895,6 +4985,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Test chronology, magnitude, baseline comparison and interpretation of an available rising-creatinine record.
 
+<a id="input-l01_clean"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -4970,6 +5062,8 @@ Audience: a clinician. Assess this record as of 2026-09-22T12:00:00+01:00. Use o
 
 The same patient and cutoff are used in FUTURE, which adds results not yet available. This condition has no later distractor records.
 
+<a id="answer-l01_clean"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -4988,6 +5082,8 @@ NUMERIC_SUMMARY: {"trend_observation_ids": ["L01_R1", "L01_R2", "L01_R3"], "firs
 ~~~
 
 </details>
+
+<a id="reference-l01_clean"></a>
 
 #### E. How this answer was graded
 
@@ -5309,6 +5405,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Test whether the model excludes results unavailable at the cutoff despite their presence in the supplied record set.
 
+<a id="input-l01_future"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -5402,6 +5500,8 @@ Audience: a clinician. Assess this record as of 2026-09-22T12:00:00+01:00. Use o
 
 Adds a sample taken before noon but reported at 15:00 and a next-day result. The patient, task, cutoff and already available results are unchanged. Original role labels also give availability hints.
 
+<a id="answer-l01_future"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -5422,6 +5522,8 @@ NUMERIC_SUMMARY: {"trend_observation_ids": ["L01_R1", "L01_R2", "L01_R3"], "firs
 ~~~
 
 </details>
+
+<a id="reference-l01_future"></a>
 
 #### E. How this answer was graded
 
@@ -5771,6 +5873,8 @@ As of 22 September at 12:00, I use the 23 September creatinine result of 110 mic
 
 Test an improving-creatinine trajectory without assuming complete recovery or exclusive treatment causation.
 
+<a id="input-l02_clean"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -5846,6 +5950,8 @@ Audience: a clinician. Assess this record as of 2026-09-22T12:00:00+01:00. Use o
 
 The same patient and cutoff are used in FUTURE, which adds unavailable results. This condition has no later distractor records.
 
+<a id="answer-l02_clean"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -5866,6 +5972,8 @@ NUMERIC_SUMMARY: {"trend_observation_ids": ["L02_R1", "L02_R2", "L02_R3"], "firs
 ~~~
 
 </details>
+
+<a id="reference-l02_clean"></a>
 
 #### E. How this answer was graded
 
@@ -6166,7 +6274,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 #### G. What needs human judgment
 
-No individual dispute was selected for this answer; it is retained as the paired condition. Its reference and grades remain unconfirmed.
+- [Q07: treatment-time wording](INDEPENDENT_REVIEW.md#q07) — the meaning of “subsequent 48 hours” needs review.
+- [Q18: completed numerical checks](INDEPENDENT_REVIEW.md#q18) — exact intervals were recomputed; clinical importance remains open.
 
 [Return to the clinical case index](#case-index)
 
@@ -6180,6 +6289,8 @@ No individual dispute was selected for this answer; it is retained as the paired
 #### A. What this case tests
 
 Test availability boundaries and narrative timing in an improving trajectory with additional unavailable results.
+
+<a id="input-l02_future"></a>
 
 #### B. What the answering model received
 
@@ -6274,6 +6385,8 @@ Audience: a clinician. Assess this record as of 2026-09-22T12:00:00+01:00. Use o
 
 Adds unavailable same-day and next-day results; patient, task, cutoff and already available results remain unchanged. Original role labels give availability hints.
 
+<a id="answer-l02_future"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -6292,6 +6405,8 @@ NUMERIC_SUMMARY: {"trend_observation_ids": ["L02_R1", "L02_R2", "L02_R3"], "firs
 ~~~
 
 </details>
+
+<a id="reference-l02_future"></a>
 
 #### E. How this answer was graded
 
@@ -6580,6 +6695,8 @@ System prompt: [extension accepted direct-HTTP condition](#prompt-extension).
 
 Test recognition and prioritisation of actions in an explicitly unconscious, unable-to-swallow low-glucose scenario.
 
+<a id="input-u01_severe"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -6615,6 +6732,8 @@ Audience: the family member. Explain what they should do now in 150–220 words 
 
 Compared with RESPONSIVE, consciousness, ability to swallow, symptoms and glucose differ. This is not a one-variable intervention; the audience, England setting and unavailable glucagon are shared.
 
+<a id="answer-u01_severe"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -6639,6 +6758,8 @@ If you are unsure about any step, stay on the phone with the 999 operator; they 
 ~~~
 
 </details>
+
+<a id="reference-u01_severe"></a>
 
 #### E. How this answer was graded
 
@@ -6914,6 +7035,8 @@ This is not an emergency. Do not call 999; wait until tomorrow and arrange a rou
 
 Compare first-aid advice when the person is awake, can swallow and has a different glucose reading.
 
+<a id="input-u01_responsive"></a>
+
 #### B. What the answering model received
 
 **Facts and records presented to the answering model:**
@@ -6949,6 +7072,8 @@ Audience: the family member. Explain what they should do now in 150–220 words 
 
 Awake and able to swallow, shaky/sweaty, glucose 3.4 rather than 2.3 mmol/L. Several facts differ from SEVERE; the change cannot be attributed to consciousness alone.
 
+<a id="answer-u01_responsive"></a>
+
 #### D. Complete saved model answer
 
 <details>
@@ -6975,6 +7100,8 @@ You cannot be certain the sugar will correct the level quickly, so keep re-check
 ~~~
 
 </details>
+
+<a id="reference-u01_responsive"></a>
 
 #### E. How this answer was graded
 

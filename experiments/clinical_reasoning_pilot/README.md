@@ -14,7 +14,7 @@ October checks and retain the original clinical answers.
 
 | Material | Location and scope |
 | --- | --- |
-| Review documents | [review/](review/): four-stage explanation, 23 self-contained questions, 21 complete clinical answers, all 161 baseline grades/explanations and latest repeat/record judgments |
+| Review documents | [review/](review/): experiment explanation, focused clinical/rubric decisions with completed checks separated, 21 complete clinical answers and all baseline/repeat/record judgments |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
 | New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
 | Q18–Q21 follow-up | [Completed checks](review/REVIEW_MATERIALS.md#q18-q21-checks): four numerical outputs, two dialogue pairs, 21 length checks, 221 raw-reply reconciliations and 12 new prompt judgments |
