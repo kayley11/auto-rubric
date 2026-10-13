@@ -2,7 +2,8 @@
 
 October addition: the three [review documents](review/) are now included at the
 user's request. They contain condensed case facts, authored tasks, saved clinical
-answers, provisional references, rubric descriptions and selected judge excerpts.
+answers, provisional references, rubric descriptions and final judge explanations,
+including all 161 accepted clinical baseline records and latest diagnostic checks.
 Full books/PDFs, credentials and raw provider records remain excluded. The
 selection and verification tables below describe the September integration.
 

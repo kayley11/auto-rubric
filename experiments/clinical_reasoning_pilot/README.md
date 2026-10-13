@@ -14,7 +14,7 @@ October checks and retain the original clinical answers.
 
 | Material | Location and scope |
 | --- | --- |
-| Review documents | [review/](review/): design/results, clinical decisions and complete saved answers with case context and provisional references |
+| Review documents | [review/](review/): four-stage explanation, 23 self-contained questions, 21 complete clinical answers, all 161 baseline grades/explanations and latest repeat/record judgments |
 | Experimental findings | [FINDINGS.md](FINDINGS.md): method, observations, limitations and next experiments |
 | New evaluator checks | [judge_checks/ANALYSIS.md](judge_checks/ANALYSIS.md): 96 completed ratings, score variability, explanation problems and next decisions |
 | Item scores | [score_table.json](results/score_table.json): 93 baseline rows from `extension_v2_1_http`; free-text reasons omitted |
@@ -24,8 +24,8 @@ October checks and retain the original clinical answers.
 | Repository integration | [INTEGRATION_NOTES.md](INTEGRATION_NOTES.md): what was included, the three fixes and verification results |
 
 The review documents contain condensed book-based facts, authored tasks, all 21
-clinical model answers, provisional references, rubric descriptions and selected
-final judge excerpts. The entire book, original PDF, credentials, raw provider
+clinical model answers, provisional references, rubric descriptions and complete
+final grading explanations. The entire book, original PDF, credentials, raw provider
 responses and structured clinical execution workspace are not included. The two
 preparation scripts remain omitted. Clinical references and grades are unconfirmed.
 
