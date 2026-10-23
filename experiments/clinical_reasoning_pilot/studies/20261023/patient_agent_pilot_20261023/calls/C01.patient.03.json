@@ -1,0 +1,57 @@
+{
+  "id": "C01.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:56:19.463262+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"What medications are you currently taking for your rheumatoid arthritis, and have you ever had your blood pressure checked or any blood or urine tests done recently?\", \"permitted_statements\": [{\"id\": \"C01_F02\", \"text\": \"I take methotrexate and use NSAIDs intermittently.\"}, {\"id\": \"C01_F05\", \"text\": \"The furosemide I started recently has not helped.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-99b35f69e82fcab2",
+        "model": "arc:lite",
+        "created": 1792756579,
+        "usage": {
+          "prompt_tokens": 219,
+          "total_tokens": 402,
+          "completion_tokens": 183,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 161
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C01_F02\",\"C01_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.8,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C01_F02",
+      "C01_F05"
+    ]
+  }
+}

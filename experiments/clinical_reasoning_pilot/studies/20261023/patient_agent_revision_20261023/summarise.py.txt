@@ -1,0 +1,263 @@
+"""Verify saved outputs and export the two rounds, without making model calls."""
+from pathlib import Path
+from difflib import SequenceMatcher
+import csv
+import hashlib
+import json
+import re
+import run
+
+ROOT = Path(__file__).resolve().parent
+OLD = ROOT.parent / 'patient_agent_pilot_20261023'
+
+
+def read(p):
+    return json.loads(p.read_text())
+
+
+def write(p, obj):
+    p.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + '\n')
+
+
+def rows(path):
+    with path.open(newline='') as f:
+        return list(csv.DictReader(f))
+
+
+def csv_write(path, data):
+    if data:
+        with path.open('w', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=list(data[0]))
+            w.writeheader()
+            w.writerows(data)
+
+
+def resources(calls):
+    attempts = [a for c in calls for a in c['attempts']]
+    usage = [a.get('response', {}).get('usage') for a in attempts]
+    known = [u for u in usage if isinstance(u, dict)]
+    return dict(operations=len(calls), attempts=len(attempts),
+                failures=sum(a.get('status') != 'success' for a in attempts),
+                attempts_without_usage=len(attempts) - len(known),
+                total_tokens=sum(u.get('total_tokens', 0) for u in known),
+                request_seconds=round(sum(a.get('elapsed_seconds', 0) for a in attempts), 2))
+
+
+def stage(opid):
+    if opid.endswith('.static.final'):
+        return 'static_generation'
+    if '.doctor.' in opid:
+        return 'interview_clinician'
+    if '.patient.' in opid:
+        return 'patient_sentence_order'
+    if opid.endswith('.interactive.final'):
+        return 'interactive_final'
+    if '.dialogue.' in opid:
+        return 'dialogue_grading'
+    return 'final_answer_grading'
+
+
+def normal(s):
+    return ' '.join(re.findall(r'[a-z0-9]+', s.lower()))
+
+
+def near_repeats(turns, only_without_new_information=False):
+    pairs = []
+    for i, t in enumerate(turns):
+        if only_without_new_information and set(t['released_fact_ids']) - set(t['visible_fact_ids_before_question']):
+            continue
+        for p in turns[:i]:
+            if set(t['topics']) == set(p['topics']) and SequenceMatcher(None, normal(t['question']), normal(p['question'])).ratio() >= .86:
+                pairs.append([p['number'], t['number']])
+                break
+    return pairs
+
+
+def grade_label(g):
+    return str(g['score']) if g.get('score') is not None else g['status']
+
+
+def main():
+    p = read(ROOT / 'protocol.json')
+    protocol_hash = run.sha(ROOT / 'protocol.json')
+    assert protocol_hash == (ROOT / 'protocol.sha256').read_text().strip()
+    cases = p['cases']
+    outputs = {c['case_id']: read(ROOT / 'outputs' / (c['case_id'] + '.json')) for c in cases}
+    assert all(o['status'] == 'complete' for o in outputs.values()), 'Finish the planned calls before exporting.'
+    oldoutputs = {cid: read(OLD / 'outputs' / (cid + '.json')) for cid in outputs}
+    oldmetrics = {r['case']: r for r in rows(OLD / 'COMPARISON.csv')}
+    oldcoverage = {r['fact_id']: r for r in rows(OLD / 'FACT_COVERAGE.csv')}
+    calls = [read(f) for f in sorted((ROOT / 'calls').glob('*.json'))]
+    callmap = {s['id']: s for s in calls}
+    oldcalls = [read(f) for f in sorted((OLD / 'calls').glob('*.json'))]
+    checks, coverage, grades, comparison, raw_sections, usage_rows = [], [], [], [], [], []
+    case_details = {}
+
+    def check(label, condition):
+        assert condition, label
+        checks.append({'check': label, 'passed': True})
+
+    for relative, entry in read(ROOT / 'PREVIOUS_FILES.json').items():
+        check('old file unchanged: ' + relative, run.sha(OLD / relative) == entry['sha256'])
+
+    for c in cases:
+        cid = c['case_id']
+        o, old = outputs[cid], oldoutputs[cid]
+        facts = {f['id']: f for f in c['facts']}
+        check(cid + ': frozen protocol hash', o['protocol_sha256'] == protocol_hash)
+        check(cid + ': matching basic information retained in static material', c['common_information'] in c['full_visible_snapshot'])
+        visible = set(c['opening_fact_ids'])
+        for t in o['turns']:
+            check(cid + f': turn {t["number"]} visible-before IDs', t['visible_fact_ids_before_question'] == sorted(visible))
+            check(cid + f': turn {t["number"]} no repeated fact release', not (visible & set(t['released_fact_ids'])))
+            permitted = {fid: facts[fid] for fid in t['permitted_patient_fact_ids']}
+            check(cid + f': turn {t["number"]} fixed patient wording', t['patient_reply'] == ' '.join(permitted[fid]['patient_text'] for fid in t['patient_used_fact_ids']))
+            check(cid + f': turn {t["number"]} patient IDs exactly permitted', set(t['patient_used_fact_ids']) == set(permitted))
+            records = t['fixed_records']
+            record_topics = {f['topic'] for f in records if f['topic'] in run.RECORD_TOPICS}
+            check(cid + f': turn {t["number"]} at most two requested report groups', len({f['release_group'] for f in records if f['topic'] in run.RECORD_TOPICS}) <= 2)
+            for topic in record_topics:
+                check(cid + f': turn {t["number"]} one report in {topic}', len({f['release_group'] for f in records if f['topic'] == topic}) <= 1)
+                check(cid + f': turn {t["number"]} {topic} actually requested', (topic in t['topics'] or bool(re.search(run.EXPLICIT_RECORD_TERMS.get(topic,r'(?!)'), t['question'], re.I))) and bool(re.search(run.RECORD_TERMS[topic], t['question'], re.I)))
+            check(cid + f': turn {t["number"]} records retain frozen contexts', all(f == facts[f['id']] and bool(f['context']) for f in records))
+            check(cid + f': turn {t["number"]} release IDs exactly match reply/records', set(t['released_fact_ids']) == set(t['patient_used_fact_ids']) | {f['id'] for f in records})
+            visible.update(t['released_fact_ids'])
+            doctor_id = cid + f'.doctor.{t["number"]:02d}'
+            for a in callmap[doctor_id]['attempts']:
+                text = a['request']['messages'][1]['content']
+                check(doctor_id + ': shared basics in actual request', text.startswith(c['common_information'] + '\nPatient opening:\n' + c['opening']))
+                check(doctor_id + ': full inventory not given as initial input', c['full_visible_snapshot'] not in text)
+        check(cid + ': final released IDs', visible == set(o['released_fact_ids']))
+        got, missing = [], []
+        for g in c['coverage_groups']:
+            complete = set(g['member_ids']) <= visible
+            (got if complete else missing).append(g['parent_fact_id'])
+            oldrow = oldcoverage[g['parent_fact_id']]
+            first = 0 if set(g['member_ids']) <= set(c['opening_fact_ids']) else next((t['number'] for t in o['turns'] if set(g['member_ids']) <= set(t['visible_fact_ids_before_question']) | set(t['released_fact_ids'])), '')
+            coverage.append(dict(case=cid, parent_fact_id=g['parent_fact_id'], original_group=g['source_text'],
+                                 round1_complete=oldrow['complete_group_supplied'], round2_complete=complete,
+                                 round2_first_complete_turn=first, revised_member_ids=';'.join(g['member_ids'])))
+        for round_name, state in [('round1', old), ('round2', o)]:
+            for arm in ['static', 'interactive', 'dialogue']:
+                for item, g in state[arm + '_grades'].items():
+                    grades.append(dict(round=round_name, case=cid, condition=arm, criterion=item,
+                                       name=run.CRITERIA[item]['name'], score=g.get('score'), status=g['status'], reason=g['reason'], unanchored=g['unanchored']))
+        for arm in ['static', 'interactive']:
+            check(cid + ': ' + arm + ' grade completeness', set(o[arm + '_grades']) == set(c['final_criteria']))
+            check(cid + ': ' + arm + ' reproducible word count', o[arm + '_word_count'] == run.word_count_info(o[arm + '_answer'], c['final_task']))
+            op = callmap[cid + '.' + arm + '.final']
+            actual = '\n'.join(m['content'] for m in op['attempts'][-1]['request']['messages'])
+            check(cid + ': ' + arm + ' common basics in actual final request', c['common_information'] in actual)
+        check(cid + ': dialogue grade completeness', set(o['dialogue_grades']) == set(c['dialogue_criteria']))
+        for arm in ['static', 'interactive', 'dialogue']:
+            for item, g in o[arm + '_grades'].items():
+                op = callmap[cid + '.' + arm + '.' + item]
+                check(op['id'] + ': parsed result preserved', op['result'] == g)
+                choice = json.loads(op['attempts'][-1]['response']['choices'][0]['message']['content'])
+                label = str(g['score']) if g.get('score') is not None else 'Cannot assess'
+                check(op['id'] + ': raw score position and label', choice['selected_label'] == label and choice['selected_option'] == ['1', '2', '3', '4', '5', 'Cannot assess'].index(label) + 1)
+        repaired = [v for q in o.get('question_proposals', []) for v in q['proposals'] if 'blocked_reason' in v]
+        changed = sum(o['static_grades'][i]['score'] != o['interactive_grades'][i]['score'] for i in c['final_criteria'])
+        item_changes = {i: [o['static_grades'][i]['score'], o['interactive_grades'][i]['score']] for i in c['final_criteria'] if o['static_grades'][i]['score'] != o['interactive_grades'][i]['score']}
+        detail = dict(case=cid, title=c['title'], round1_targets=int(oldmetrics[cid]['complete_targets_obtained']),
+                      round2_targets=len(got), targets=len(c['coverage_groups']), missing_ids=missing,
+                      missing_source_groups=[g['source_text'] for g in c['coverage_groups'] if g['parent_fact_id'] in missing],
+                      round1_turns=len(old['turns']), round2_turns=len(o['turns']),
+                      round1_near_repeat_pairs=near_repeats(old['turns']), round2_near_repeat_pairs=near_repeats(o['turns']),
+                      round1_no_information_repeat_pairs=near_repeats(old['turns'], True),
+                      round2_no_information_repeat_pairs=near_repeats(o['turns'], True),
+                      blocked_proposals=len(repaired), stop_reason=o.get('stop_reason', 'model_finish' if o.get('stopped_early') else 'six_question_budget'),
+                      round2_changed_final_item_labels=changed, round2_final_item_changes=item_changes,
+                      round1_d1=[old['static_grades']['D1']['score'], old['interactive_grades']['D1']['score']],
+                      round2_d1=[o['static_grades']['D1']['score'], o['interactive_grades']['D1']['score']],
+                      round1_dialogue={i: old['dialogue_grades'][i]['score'] for i in c['dialogue_criteria']},
+                      round2_dialogue={i: o['dialogue_grades'][i]['score'] for i in c['dialogue_criteria']},
+                      round2_words={arm: o[arm + '_word_count'] for arm in ['static', 'interactive']})
+        case_details[cid] = detail
+        comparison.append({k: json.dumps(v) if isinstance(v, (list, dict)) else v for k, v in detail.items()})
+        raw = [cid + ' — ' + c['title'], '', 'ROUND 2 — COMPLETE VISIBLE OUTPUTS', '',
+               'COMMON INFORMATION — IDENTICAL IN BOTH CONDITIONS', c['common_information'], '',
+               'STATIC INPUT — ALL SELECTED FACTS WITH THEIR CONTEXT', c['full_visible_snapshot'], '',
+               'INTERACTIVE OPENING', c['opening'], '', 'FINAL TASK — SAME IN BOTH CONDITIONS', c['final_task'],
+               '', 'WORD-COUNT INSTRUCTION', run.WORD_COUNT_RULE, '', 'STATIC FINAL ANSWER — UNCHANGED', o['static_answer'],
+               '', 'INTERVIEW — ACTUAL QUESTIONS AND RELEASED INFORMATION']
+        for t in o['turns']:
+            raw.extend(['', 'TURN ' + str(t['number']), run.turn_text(t, include_checkpoint=True),
+                        'Released fixed fact IDs: ' + ', '.join(t['released_fact_ids'])])
+        raw.extend(['', 'ALL QUESTION PROPOSALS — INCLUDING BLOCKED REPETITIONS', json.dumps(o.get('question_proposals', []), ensure_ascii=False, indent=2),
+                    '', 'INTERACTIVE FINAL ANSWER — UNCHANGED', o['interactive_answer'], '',
+                    'PROVISIONAL CLINICAL REFERENCE — AWAITING JOSH\'S CONFIRMATION', c['reference']])
+        for arm in ['static', 'interactive', 'dialogue']:
+            raw.extend(['', arm.upper() + ' ITEM SCORES AND COMPLETE JUDGE EXPLANATIONS'])
+            for item, g in o[arm + '_grades'].items():
+                raw.extend(['', item + ' — ' + run.CRITERIA[item]['name'] + ': ' + grade_label(g), g['reason']])
+        raw.extend(['', 'WORD COUNTS', json.dumps(detail['round2_words'], indent=2), '',
+                    'EXACT VISIBLE PROVIDER RETURNS — ALL SAVED ATTEMPTS'])
+        for op in calls:
+            if not op['id'].startswith(cid + '.'):
+                continue
+            for n, a in enumerate(op['attempts'], 1):
+                raw.extend(['', op['id'] + ' — attempt ' + str(n) + ' — ' + a['status'],
+                            'HTTP: ' + str(a.get('http_status', 'not recorded')),
+                            'Elapsed seconds: ' + str(a.get('elapsed_seconds', 'not recorded'))])
+                if a.get('error'):
+                    raw.append('Error: ' + a['error'])
+                for ch in a.get('response', {}).get('choices', []):
+                    raw.extend(['Finish reason: ' + str(ch.get('finish_reason')), ch.get('message', {}).get('content') or '(no visible content)'])
+                raw.append('Usage: ' + json.dumps(a.get('response', {}).get('usage'), ensure_ascii=False))
+        raw_text = '\n'.join(raw) + '\n'
+        if run.SETTINGS.api_key:
+            check(cid + ': no credential in plain-text export', run.SETTINGS.api_key not in raw_text)
+        (ROOT / 'case_outputs').mkdir(exist_ok=True)
+        (ROOT / 'case_outputs' / (cid + '.txt')).write_text(raw_text)
+        raw_sections.append(raw_text)
+
+    for name, allcalls in [('round1', oldcalls), ('round2', calls)]:
+        for kind in ['static_generation', 'interview_clinician', 'patient_sentence_order', 'interactive_final', 'final_answer_grading', 'dialogue_grading']:
+            usage_rows.append({'round': name, 'stage': kind, **resources([c for c in allcalls if stage(c['id']) == kind])})
+    failures = [{'operation': c['id'], 'attempt': n, 'error': a.get('error'), 'http_status': a.get('http_status'),
+                 'finish_reason': (a.get('response', {}).get('choices') or [{}])[0].get('finish_reason')}
+                for c in calls for n, a in enumerate(c['attempts'], 1) if a['status'] != 'success']
+    old_changes = sum(oldoutputs[c['case_id']]['static_grades'][i]['score'] != oldoutputs[c['case_id']]['interactive_grades'][i]['score'] for c in cases for i in c['final_criteria'])
+    development_resources = {}
+    for folder in ['preflight_network_failure', 'development_record_context_check', 'preflight_common_context', 'preflight_explicit_report_matching']:
+        directory = ROOT / folder / 'calls'
+        development_resources[folder] = resources([read(f) for f in directory.glob('*.json')])
+    incomplete = [{'case': g['case'], 'condition': g['condition'], 'criterion': g['criterion'], 'reason': g['reason']}
+                  for g in grades if g['round'] == 'round2' and g['reason'] and g['reason'].rstrip()[-1] not in '.!?\"\')']
+    summary = dict(cases=case_details,
+                   round1_total_targets=sum(int(oldmetrics[c['case_id']]['complete_targets_obtained']) for c in cases),
+                   round2_total_targets=sum(d['round2_targets'] for d in case_details.values()), targets=54,
+                   round1_question_turns=sum(len(s['turns']) for s in oldoutputs.values()),
+                   round2_question_turns=sum(len(s['turns']) for s in outputs.values()),
+                   round1_near_repeat_questions=sum(len(near_repeats(s['turns'])) for s in oldoutputs.values()),
+                   round2_near_repeat_questions=sum(len(near_repeats(s['turns'])) for s in outputs.values()),
+                   round1_no_information_repeat_questions=sum(len(near_repeats(s['turns'], True)) for s in oldoutputs.values()),
+                   round2_no_information_repeat_questions=sum(len(near_repeats(s['turns'], True)) for s in outputs.values()),
+                   blocked_proposals=sum(d['blocked_proposals'] for d in case_details.values()),
+                   round1_changed_final_item_labels=old_changes,
+                   round2_changed_final_item_labels=sum(d['round2_changed_final_item_labels'] for d in case_details.values()),
+                   final_item_pairs=54, final_answer_ratings=108, dialogue_ratings=24,
+                   round1_resources=resources(oldcalls), round2_resources=resources(calls),
+                   resource_stages=usage_rows, failures=failures, possibly_unfinished_reasons=incomplete,
+                   development_resources=development_resources,
+                   round2_all_final_answers_within_word_range=all(s[a + '_word_count']['within_range'] for s in outputs.values() for a in ['static', 'interactive']),
+                   old_files_unchanged=len(read(ROOT / 'PREVIOUS_FILES.json')),
+                   clinical_references='unchanged; draft, awaiting Josh',
+                   clinical_interpretation='See COMPARISON.md; released information is not a clinician-approved history checklist.')
+    csv_write(ROOT / 'COMPARISON.csv', comparison)
+    csv_write(ROOT / 'FACT_COVERAGE.csv', coverage)
+    csv_write(ROOT / 'ITEM_SCORES.csv', grades)
+    csv_write(ROOT / 'TOKEN_USE.csv', usage_rows)
+    write(ROOT / 'ANALYSIS.json', summary)
+    write(ROOT / 'CHECKS.json', {'checks': checks, 'passed': len(checks), 'failures_saved': failures})
+    (ROOT / 'RAW_OUTPUT.txt').write_text('REVISED PATIENT-INTERVIEW COMPARISON — FULL VISIBLE OUTPUTS\n\n' +
+        'Eight cases. Raw request/response records are also saved in calls/. The earlier round is preserved separately.\n' +
+        'References are provisional. Scores are machine outputs. No hidden reasoning fields or credentials are exported.\n\n' +
+        ('\n\n' + '=' * 78 + '\n\n').join(raw_sections))
+    print(json.dumps({k: v for k, v in summary.items() if k not in ['cases', 'resource_stages', 'failures', 'possibly_unfinished_reasons']}, indent=2))
+    print(len(checks), 'saved-output checks passed.')
+
+
+if __name__ == '__main__':
+    main()

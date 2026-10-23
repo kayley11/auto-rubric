@@ -1,0 +1,57 @@
+{
+  "id": "N04_INITIAL.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:15:47.096446+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Could you tell me what was diagnosed and what treatment or procedure was carried out during your previous admission that ended on 11 March?\", \"permitted_statements\": [{\"id\": \"N04_INITIAL_F01\", \"text\": \"I initially had five days of low-grade fever and severe headache.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-abe7d67d18ba0a30",
+        "model": "arc:lite",
+        "created": 1792761347,
+        "usage": {
+          "prompt_tokens": 188,
+          "total_tokens": 328,
+          "completion_tokens": 140,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 124
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N04_INITIAL_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.93,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N04_INITIAL_F01"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "N02.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:29:37.088460+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"You mentioned you don't remember the night-time events. Has anyone else observed what happens during the night, and if so, what do they see or report?\", \"permitted_statements\": [{\"id\": \"N02_F05\", \"text\": \"I have lost about 5 kg and have less energy and more difficulty concentrating.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-8a08da5f40eb8394",
+        "model": "arc:lite",
+        "created": 1792765777,
+        "usage": {
+          "prompt_tokens": 195,
+          "total_tokens": 348,
+          "completion_tokens": 153,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 138
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.8,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F05"
+    ]
+  }
+}

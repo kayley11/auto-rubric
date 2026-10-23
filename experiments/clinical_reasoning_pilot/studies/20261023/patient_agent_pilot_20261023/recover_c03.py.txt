@@ -1,0 +1,52 @@
+"""Resume the one dialogue item that exhausted its initial transport attempts."""
+from pathlib import Path
+import hashlib
+import json
+import run
+
+ROOT = Path(__file__).resolve().parent
+CANONICAL = "C03.dialogue.D5c"
+RECOVERY = CANONICAL + ".transport_recovery"
+
+
+def main():
+    previous = run.read(ROOT / "calls" / (CANONICAL + ".json"))
+    assert previous["status"] == "error" and len(previous["attempts"]) == 2
+    assert all("timed out" in a.get("error", "") for a in previous["attempts"])
+    notice_path = ROOT / "transport_recovery.json"
+    if not notice_path.exists():
+        run.save(notice_path, {
+            "planned_at": run.now(),
+            "mapping": {CANONICAL: RECOVERY},
+            "reason": "Two transport timeouts left no accepted score. Resume after the other cases, retaining both failures. No successful grade is replaced.",
+            "additional_attempts_maximum": 2,
+            "timeout_seconds": 180,
+            "comparison_rule": "Same actual request payload, model, criterion, answer, reference and options. Only the HTTP waiting limit is extended from 90 to 180 seconds for this recovery item.",
+            "protocol_sha256": run.sha(ROOT / "protocol.json"),
+            "recovery_runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        })
+    original = run.operation
+
+    def resume(opid, payload=None, validator=None, grade=None):
+        if opid != CANONICAL:
+            return original(opid, payload, validator, grade)
+        old_timeout = run.SETTINGS.timeout
+        run.SETTINGS.timeout = 180
+        try:
+            return original(RECOVERY, payload, validator, grade)
+        finally:
+            run.SETTINGS.timeout = old_timeout
+
+    run.operation = resume
+    run.grade_case(next(c for c in run.PROTOCOL["cases"] if c["case_id"] == "C03"))
+    new = run.read(ROOT / "calls" / (RECOVERY + ".json"))
+    identical = all(a["request"] == previous["attempts"][-1]["request"] for a in new["attempts"])
+    assert identical, "The recovery payload differs from the initial payload."
+    notice = run.read(notice_path)
+    notice.update(completed_at=run.now(), request_payload_identical=identical,
+                  saved_recovery_attempts=len(new["attempts"]), status=new["status"])
+    run.save(notice_path, notice)
+
+
+if __name__ == "__main__":
+    main()

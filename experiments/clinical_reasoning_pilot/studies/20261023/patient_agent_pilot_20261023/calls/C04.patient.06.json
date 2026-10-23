@@ -1,0 +1,56 @@
+{
+  "id": "C04.patient.06",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:59:21.064896+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Are you still taking that blood pressure medicine now, and do you have any recent test results from after your heart attack, such as an ECG, echocardiogram, or blood tests?\", \"permitted_statements\": [{\"id\": \"C04_F02\", \"text\": \"This happened after my blood pressure medicine dose was increased.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9c3df6e0939edf59",
+        "model": "arc:lite",
+        "created": 1792756761,
+        "usage": {
+          "prompt_tokens": 197,
+          "total_tokens": 330,
+          "completion_tokens": 133,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 118
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C04_F02\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.83,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C04_F02"
+    ]
+  }
+}

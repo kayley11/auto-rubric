@@ -1,0 +1,88 @@
+{
+  "id": "N04_INITIAL.doctor.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:18:28.655666+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:apex",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 36-year-old woman.\nConsultation context: The current consultation is the readmission beginning 14 March 2026. The earlier admission ended on 11 March 2026. No later recurrence or additional admission is being simulated.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nMy severe headache has returned and is worse when I am upright.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you tell me more about this headache — when it started this time, how it has changed since your recent admission, and any other symptoms that came with it?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"Recurrent severe, orthostatic headache shortly after discharge from a recent admission; cause not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: The headache and sensitivity to light persisted, and I returned to emergency care. I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"What was found during your recent admission before discharge on 11 March — what tests or examinations were done and what were you told about the cause of your headache?\", \"topics\": [\"tests\", \"medical_history\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"Readmitted with persistent orthostatic headache, photophobia, tremor and dizziness, days after discharge for a similar episode; prior workup details unknown.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I initially had five days of low-grade fever and severe headache.\nFixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: She improved and was discharged after 12 days on 11 March 2026.\nFixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: Examination recorded marked meningeal signs\nController: Matched examination to its requested admission; retained the original context label.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"During that first admission, was a lumbar puncture done, and can you share the cerebrospinal fluid results?\", \"topics\": [\"csf\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"First admission featured five days of fever and severe headache with marked meningeal signs; now readmitted with orthostatic headache, photophobia, tremor and dizziness. CSF findings unknown.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.\nController: Matched csf to its requested admission; retained the original context label. One report per investigation type and at most two reports per turn are returned; another report can be requested next turn.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-873278dc67d38ae5",
+        "model": "arc:apex",
+        "created": 1792768708,
+        "usage": {
+          "prompt_tokens": 1559,
+          "total_tokens": 1751,
+          "completion_tokens": 192,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 35
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "{\"action\": \"ask\", \"question\": \"Were any infection tests done on that CSF or blood during the first admission — such as PCR, cultures or serology — and what did they show?\", \"topics\": [\"microbiology\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"First admission: fever, severe headache, marked meningeal signs, and CSF lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) with elevated protein (83.3 mg/dL), suggesting aseptic/lymphocytic meningitis. Now readmitted with orthostatic headache, photophobia, tremor and dizziness; infectious cause not yet identified.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 4.55,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Were any infection tests done on that CSF or blood during the first admission — such as PCR, cultures or serology — and what did they show?",
+    "topics": [
+      "microbiology"
+    ],
+    "record_period": "previous",
+    "assessment": {
+      "summary": "First admission: fever, severe headache, marked meningeal signs, and CSF lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) with elevated protein (83.3 mg/dL), suggesting aseptic/lymphocytic meningitis. Now readmitted with orthostatic headache, photophobia, tremor and dizziness; infectious cause not yet identified.",
+      "certainty": "uncertain"
+    }
+  }
+}

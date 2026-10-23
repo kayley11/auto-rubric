@@ -1,0 +1,59 @@
+{
+  "id": "N05.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:33:59.932768+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"How long have you had the diarrhoea, and is it watery, bloody, or greasy? Have you noticed any weight loss or abdominal pain?\", \"permitted_statements\": [{\"id\": \"N05_F01\", \"text\": \"I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness.\"}, {\"id\": \"N05_F03\", \"text\": \"The diarrhoea persisted.\"}, {\"id\": \"N05_F04\", \"text\": \"Over the preceding six months, I developed breathlessness with activity, fatigue and a 10 kg weight loss.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-8cbd26c014796636",
+        "model": "arc:lite",
+        "created": 1792766040,
+        "usage": {
+          "prompt_tokens": 270,
+          "total_tokens": 742,
+          "completion_tokens": 472,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 443
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N05_F01\",\"N05_F03\",\"N05_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.7,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N05_F01",
+      "N05_F03",
+      "N05_F04"
+    ]
+  }
+}

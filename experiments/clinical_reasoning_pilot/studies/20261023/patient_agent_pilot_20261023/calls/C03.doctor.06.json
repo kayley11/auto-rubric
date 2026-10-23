@@ -1,0 +1,100 @@
+{
+  "id": "C03.doctor.06",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:58:01.168017+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nI have persistent diarrhoea and there is blood in my stool.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long have you had the diarrhoea and blood in your stool, and is the blood bright red or dark in colour?\", \"topics\": [\"timecourse\", \"presenting_symptoms\"], \"assessment\": {\"summary\": \"Persistent diarrhoea with visible blood in stool; aetiology not yet established. Differential includes inflammatory bowel disease, infectious colitis, colorectal neoplasm, or other causes of lower GI bleeding. No further details available yet.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have persistent diarrhoea. There is blood, urgency and cramping. My back is stiff in the mornings.\nFixed clinical record: No weight loss or fever is reported.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long has this been going on, and have you had similar episodes before?\", \"topics\": [\"timecourse\", \"previous_episodes\"], \"assessment\": {\"summary\": \"Persistent diarrhoea with blood, urgency, cramping, and morning back stiffness. No weight loss or fever reported. The combination of lower GI symptoms with inflammatory back pain raises the possibility of an inflammatory bowel condition with associated axial arthropathy, but this is not yet confirmed and other causes remain possible.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: Previously, I had painful lesions on my shins.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long have you had the diarrhoea and blood, and have you had any tests done such as blood work, stool samples, or a colonoscopy?\", \"topics\": [\"timecourse\", \"tests\"], \"assessment\": {\"summary\": \"Persistent diarrhoea with blood, urgency, cramping, morning back stiffness, and painful shin lesions (consistent with erythema nodosum). No weight loss or fever reported. The pattern of lower GI symptoms with extra-intestinal features (axial arthropathy, erythema nodosum) is suggestive of an inflammatory bowel disease, but this remains unconfirmed without investigation results or further history.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No further patient-reported information is supplied for this question; this is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Do you have any other medical conditions, and are you currently taking any regular medications?\", \"topics\": [\"medical_history\", \"medications\"], \"assessment\": {\"summary\": \"Persistent bloody diarrhoea with urgency and cramping, morning back stiffness, and prior painful shin lesions (erythema nodosum). No weight loss or fever. The constellation of lower GI symptoms with extra-intestinal features (axial arthropathy, erythema nodosum) is suggestive of inflammatory bowel disease, but remains unconfirmed. No test results or duration yet available.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: Antibiotics have helped little.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Does your back stiffness improve with movement or exercise, or does it tend to get worse with activity?\", \"topics\": [\"presenting_symptoms\"], \"assessment\": {\"summary\": \"Persistent bloody diarrhoea with urgency and cramping, morning back stiffness, prior erythema nodosum, and poor response to antibiotics. No weight loss or fever. The pattern of lower GI symptoms with extra-intestinal features (axial arthropathy, erythema nodosum) and lack of antibiotic response is suggestive of inflammatory bowel disease with associated axial arthropathy, but remains unconfirmed. Clarifying whether the back pain improves with activity would help distinguish inflammatory from mechanical back pain.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: My back is stiff in the mornings. I have persistent diarrhoea. There is blood, urgency and cramping.\nFixed clinical record: No weight loss or fever is reported.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-97ccb9eda29974d9",
+        "model": "arc:lite",
+        "created": 1792756681,
+        "usage": {
+          "prompt_tokens": 1361,
+          "total_tokens": 2298,
+          "completion_tokens": 937,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 771
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"finish\", \"question\": \"\", \"topics\": [], \"assessment\": {\"summary\": \"Persistent bloody diarrhoea with urgency and cramping, morning back stiffness, prior erythema nodosum, poor response to antibiotics, and no weight loss or fever. The combination of lower GI symptoms with extra-intestinal features (axial arthropathy, erythema nodosum) is suggestive of inflammatory bowel disease (ulcerative colitis or Crohn's disease) with associated axial arthropathy. This remains a working hypothesis; confirmation requires investigation (e.g., faecal calprotectin, colonoscopy with biopsy, HLA-B27, inflammatory markers). The absence of fever and weight loss is reassuring but does not exclude the diagnosis.\", \"certainty\": \"working\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.95,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "finish",
+    "question": "",
+    "topics": [],
+    "assessment": {
+      "summary": "Persistent bloody diarrhoea with urgency and cramping, morning back stiffness, prior erythema nodosum, poor response to antibiotics, and no weight loss or fever. The combination of lower GI symptoms with extra-intestinal features (axial arthropathy, erythema nodosum) is suggestive of inflammatory bowel disease (ulcerative colitis or Crohn's disease) with associated axial arthropathy. This remains a working hypothesis; confirmation requires investigation (e.g., faecal calprotectin, colonoscopy with biopsy, HLA-B27, inflammatory markers). The absence of fever and weight loss is reassuring but does not exclude the diagnosis.",
+      "certainty": "working"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "N02.patient.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:16:13.907879+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any existing medical conditions, or have you had any head injuries, strokes, or other neurological problems in the past? And are you currently taking any medications?\", \"permitted_statements\": [{\"id\": \"N02_F07\", \"text\": \"I have no history of diabetes.\"}, {\"id\": \"N02_F08\", \"text\": \"I take irbesartan for high blood pressure.\"}, {\"id\": \"N02_F09\", \"text\": \"I was diagnosed with moderate obstructive sleep apnoea one month ago, and it has not been treated.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-ad316226a80c4c10",
+        "model": "arc:lite",
+        "created": 1792768574,
+        "usage": {
+          "prompt_tokens": 253,
+          "total_tokens": 618,
+          "completion_tokens": 365,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 336
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F07\",\"N02_F09\",\"N02_F08\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.32,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F07",
+      "N02_F09",
+      "N02_F08"
+    ]
+  }
+}

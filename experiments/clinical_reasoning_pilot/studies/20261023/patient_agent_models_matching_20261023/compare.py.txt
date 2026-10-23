@@ -1,0 +1,142 @@
+"""Export before/after differences without changing either round's model outputs."""
+from pathlib import Path
+from collections import Counter
+import csv
+import json
+import argparse
+
+ROOT = Path(__file__).resolve().parent
+OLD = ROOT.parent / 'patient_agent_models_20261023'
+
+
+def read(p):
+    return json.loads(p.read_text())
+
+
+def csv_write(path, rows):
+    with path.open('w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer.writeheader(); writer.writerows(rows)
+
+
+def resource_summary(paths):
+    attempts = [a for path in paths for a in read(path)['attempts']]
+    usages = [a.get('response', {}).get('usage') for a in attempts]
+    known = [u for u in usages if isinstance(u, dict)]
+    return {'operations': len(paths), 'attempts': len(attempts),
+            'failed_attempts': sum(a['status'] != 'success' for a in attempts),
+            'attempts_without_usage': len(attempts) - len(known),
+            'total_tokens': sum(u.get('total_tokens', 0) for u in known),
+            'request_seconds': round(sum(a.get('elapsed_seconds', 0) for a in attempts), 2)}
+
+
+def main(followup_path=None, n04_dates_path=None):
+    before, after = read(OLD/'ANALYSIS.json'), read(ROOT/'ANALYSIS.json')
+    p = read(ROOT/'protocol.json')
+    followup = Path(followup_path).resolve() if followup_path else None
+    n04_dates = Path(n04_dates_path).resolve() if n04_dates_path else None
+    assert not n04_dates or followup, 'The N04 date follow-up builds on the C03/N04 follow-up.'
+    final_conditions = after['conditions'].copy()
+    sources = {r['case']: ROOT for r in final_conditions}
+    followup_cases = set()
+    extra_rounds = []
+    technical_interviews = 0
+    for directory, expected_cases in [(followup, {'C03', 'N04_INITIAL'}), (n04_dates, {'N04_INITIAL'})]:
+        if directory is None:
+            continue
+        extra_rounds.append(directory)
+        repaired = read(directory/'ANALYSIS.json')
+        expected_count = len(expected_cases) * len(p['answer_models'])
+        assert repaired['completed_conditions'] == expected_count and repaired['item_ratings'] == expected_count * 2
+        technical_interviews += expected_count
+        replacement = {(r['case'], r['answer_model']): r for r in repaired['conditions']}
+        assert {cid for cid, _ in replacement} == expected_cases
+        followup_cases.update(expected_cases)
+        final_conditions = [replacement.get((r['case'], r['answer_model']), r) for r in final_conditions]
+        for cid in expected_cases:
+            sources[cid] = directory
+    old = {(r['case'],r['answer_model']):r for r in before['conditions']}
+    info, scores = [], []
+    raw = ['PATIENT INTERVIEWS — BEFORE AND AFTER MATCHING FIXES',
+           'Both rounds use the same eight cases, models, clinician/patient prompts, final tasks, six-turn cap and grading method.',
+           'The following preserved before/after sections contain complete visible outputs. This is not a new merged clinical answer.']
+    if followup:
+        raw.append('C03 and N04 were repeated for all three models after additional observed matching repairs. N04 was repeated once more after recognising the 11 March discharge date. All intermediate technical outputs are retained and labelled; the final comparison uses the latest technical revision for each case, not a score-based choice.')
+    case_text = {}
+    for r in final_conditions:
+        b = old[r['case'],r['answer_model']]
+        info.append({'case':r['case'],'model':r['answer_model'],
+                     'after_source_run': sources[r['case']].name,
+                     'matching_changed':r['case'] in ['C02','C03','N04_INITIAL','N05'],
+                     'groups_before':b['groups_obtained'],'groups_after':r['groups_obtained'],
+                     'groups_available':r['groups_available'],'turns_before':b['turns'],'turns_after':r['turns'],
+                     'not_obtained_before':json.dumps(b['missing_groups'],ensure_ascii=False),
+                     'not_obtained_after':json.dumps(r['missing_groups'],ensure_ascii=False),
+                     'words_before':b['word_count']['words'],'words_after':r['word_count']['words'],
+                     'word_range_before':b['word_count']['within_range'],'word_range_after':r['word_count']['within_range']})
+        for item in ['D5c','D3a']:
+            prefix=r['answer_model'].replace(':','-')+'/outputs/'+r['case']+'.json'
+            bg=read(OLD/prefix)['grades'][item];ag=read(sources[r['case']]/prefix)['grades'][item]
+            scores.append({'case':r['case'],'model':r['answer_model'],'criterion':item,
+                           'after_source_run': sources[r['case']].name,
+                           'score_before':bg['score'],'score_after':ag['score'],
+                           'status_before':bg['status'],'status_after':ag['status'],
+                           'unanchored_before':bg['unanchored'],'unanchored_after':ag['unanchored'],
+                           'reason_before':bg['reason'],'reason_after':ag['reason']})
+    for c in p['cases']:
+        cid=c['case_id'];dest=ROOT/'case_outputs'/(cid+'.txt')
+        # summarise.py must run immediately before compare.py, giving fresh after-only text.
+        after_text=dest.read_bytes().decode('utf-8')
+        assert not after_text.startswith('BEFORE MATCHING FIXES'), 'Re-run summarise.py before rebuilding comparison.'
+        combined='BEFORE MATCHING FIXES — PRESERVED ORIGINAL ROUND\n\n'+(OLD/'case_outputs'/(cid+'.txt')).read_bytes().decode('utf-8')
+        round_texts = [(ROOT, after_text)]
+        for directory in extra_rounds:
+            path = directory/'case_outputs'/(cid+'.txt')
+            if path.exists():
+                round_texts.append((directory, path.read_bytes().decode('utf-8')))
+        for directory, intermediate in round_texts:
+            if directory != sources[cid]:
+                combined+='\n\nINTERMEDIATE MATCHING ROUND — SUPERSEDED AFTER A TECHNICAL MATCHING REPAIR; NOT USED IN FINAL COMPARISON\nSOURCE: '+directory.name+'\n\n'+intermediate
+            else:
+                after_text=intermediate
+        combined+='\n\nAFTER MATCHING FIXES — FINAL COMPARISON ROUND\nSOURCE: '+sources[cid].name+'\n\n'+after_text
+        dest.write_bytes(combined.encode('utf-8'));case_text[cid]=combined;raw.append(combined)
+    (ROOT/'RAW_OUTPUT.txt').write_bytes(('\n\n'.join(raw)+'\n').encode('utf-8'))
+    csv_write(ROOT/'BEFORE_AFTER_INFORMATION.csv',info)
+    csv_write(ROOT/'BEFORE_AFTER_SCORES.csv',scores)
+    totals={}
+    for model in p['answer_models']:
+        rs=[r for r in info if r['model']==model]
+        totals[model]={'groups_before':sum(r['groups_before'] for r in rs),'groups_after':sum(r['groups_after'] for r in rs),
+                       'turns_before':sum(r['turns_before'] for r in rs),'turns_after':sum(r['turns_after'] for r in rs)}
+    final_resources, all_new_resources = {}, {}
+    for model in p['answer_models']:
+        slug=model.replace(':','-')
+        base_paths=sorted((ROOT/slug/'calls').glob('*.json'))
+        extra_paths=[path for directory in extra_rounds for path in sorted((directory/slug/'calls').glob('*.json'))]
+        final_paths=[path for path in base_paths+extra_paths if path.parents[2] == sources[path.name.split('.', 1)[0]]]
+        final_resources[model]=resource_summary(final_paths)
+        all_new_resources[model]=resource_summary(base_paths+extra_paths)
+    result={'models':p['answer_models'],'totals':totals,'information':info,
+            'final_conditions':final_conditions,'final_conditions_count':len(final_conditions),'final_item_ratings':len(scores),
+            'additional_technical_interviews':technical_interviews,
+            'followup_runs':[str(directory) for directory in extra_rounds],
+            'grade_changes':[r for r in scores if r['score_before']!=r['score_after'] or r['status_before']!=r['status_after']],
+            'new_grade_distribution':dict(Counter(str(r['score_after']) for r in scores)),
+            'changed_coverage_in_unchanged_cases':sum(r['groups_before']!=r['groups_after'] for r in info if not r['matching_changed']),
+            'before_resources':before['resources'],'after_final_conditions_resources':final_resources,
+            'after_all_new_calls_resources':all_new_resources}
+    (ROOT/'BEFORE_AFTER.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+    print('Information returned (before → after):')
+    for model,v in totals.items(): print(model,v)
+    print('Changed scores:',len(result['grade_changes']))
+    for row in result['grade_changes']:print(row['case'],row['model'],row['criterion'],row['score_before'],'→',row['score_after'])
+    print('Coverage changes in unchanged cases:',result['changed_coverage_in_unchanged_cases'])
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--followup')
+    parser.add_argument('--n04-dates')
+    args=parser.parse_args()
+    main(args.followup, args.n04_dates)

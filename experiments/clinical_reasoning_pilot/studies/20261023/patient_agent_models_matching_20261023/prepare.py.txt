@@ -1,0 +1,40 @@
+"""Freeze cases and scoring unchanged; record the matching revision separately."""
+from pathlib import Path
+from copy import deepcopy
+from datetime import datetime, timezone
+import hashlib
+import json
+import shutil
+
+ROOT = Path(__file__).resolve().parent
+OLD = ROOT.parent / 'patient_agent_models_20261023'
+
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def main():
+    assert not (ROOT / 'protocol.json').exists()
+    old = json.loads((OLD / 'protocol.json').read_text());p = deepcopy(old)
+    manifest = {}
+    for directory in [OLD, ROOT.parent / 'patient_agent_revision_20261023', ROOT.parent / 'patient_agent_pilot_20261023']:
+        for f in directory.rglob('*'):
+            if f.is_file() and '__pycache__' not in f.parts:
+                manifest[str(f.relative_to(ROOT.parent))] = sha(f)
+    (ROOT / 'PREVIOUS_FILES.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    shutil.copy2(OLD / 'protocol.json', ROOT / 'previous_protocol.json')
+    p.update(version='patient-agent-cross-model-matching-v2', prepared_at=datetime.now(timezone.utc).isoformat(),
+             previous_run=OLD.name, previous_protocol_sha256=sha(OLD/'protocol.json'),
+             matching_sha256=sha(ROOT/'matching.py'),
+             matching_revision='Actual personal-history clauses override missing/incorrect history tags; family-only questions do not release personal history; antibiotics are recognised; N04 requests match report type and local admission separately; PCR alone does not request cell counts; N05 TTR-specific requests do not release GLA, and brain/spine MRI requests do not release cardiac MRI.',
+             comparison='Fresh interview-only rerun of all 8 cases and 3 models. Cases, prompts, six-turn cap, final tasks, model roles, grading_data and parameters are unchanged. Matching changes only for C02, C03, N04_INITIAL and N05.')
+    assert p['cases'] == old['cases']
+    assert p['controller_sha256'] == sha(ROOT/'frozen_interview.py')
+    (ROOT/'protocol.json').write_text(json.dumps(p,ensure_ascii=False,indent=2)+'\n')
+    (ROOT/'protocol.sha256').write_text(sha(ROOT/'protocol.json')+'\n')
+    print('Frozen 24 conditions; old files preserved:',len(manifest))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,97 @@
+{
+  "id": "N04_INITIAL.doctor.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:26:30.795499+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 36-year-old woman.\nConsultation context: The current consultation is the readmission beginning 14 March 2026. The earlier admission ended on 11 March 2026. No later recurrence or additional admission is being simulated.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nMy severe headache has returned and is worse when I am upright.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Could you tell me what was diagnosed and what treatment or procedure was carried out during your previous admission that ended on 11 March?\", \"topics\": [\"medical_history\", \"previous_episodes\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman readmitted with recurrent severe orthostatic headache, a pattern suggestive of low CSF pressure; prior admission context needed to understand aetiology and prior management.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: During that admission she received intravenous dexamethasone for nine days.\nController: Matched medications to its requested admission; retained the original context label.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"What was the diagnosis or main reason for your previous admission, and were any imaging scans (CT or MRI) performed during that stay?\", \"topics\": [\"medical_history\", \"ct_imaging\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman readmitted with recurrent severe orthostatic headache. Previous admission (ended 11 March 2026) involved nine days of IV dexamethasone, suggesting a significant underlying condition, but the specific diagnosis and any imaging findings are not yet known.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I initially had five days of low-grade fever and severe headache.\nFixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: head CT showed no abnormality.\nController: Matched ct_imaging to its requested admission; retained the original context label.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Was a lumbar puncture performed during your previous admission, and if so, what was the final diagnosis made at that time?\", \"topics\": [\"csf\", \"medical_history\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman readmitted with recurrent severe orthostatic headache. Previous admission (ended 11 March 2026) featured 5 days of low-grade fever and severe headache, treated with 9 days of IV dexamethasone; head CT was normal. The specific diagnosis and whether CSF was sampled remain unknown. The orthostatic pattern raises concern for low CSF pressure, but the prior fever and steroid course also suggest an inflammatory or infectious aetiology.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.\nController: Matched csf to its requested admission; retained the original context label.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"What was the final diagnosis made during your previous admission, and are you currently experiencing any fever, confusion, or neurological symptoms such as weakness or visual changes?\", \"topics\": [\"medical_history\", \"presenting_symptoms\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"36-year-old woman readmitted 3 days after discharge with recurrent severe orthostatic headache. Previous admission: 5 days low-grade fever, severe headache, normal head CT, CSF showing lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) and elevated protein (83.3 mg/dL), treated with 9 days IV dexamethasone. The CSF profile is consistent with meningitis or encephalitis; the specific aetiology and final diagnosis remain unknown. The current orthostatic headache pattern raises the possibility of a post-LP CSF leak or ongoing/relapsing CNS inflammation.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: The headache and sensitivity to light persisted, and I returned to emergency care. I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-92ed6390d14c0c15",
+        "model": "arc:lite",
+        "created": 1792769191,
+        "usage": {
+          "prompt_tokens": 1987,
+          "total_tokens": 3478,
+          "completion_tokens": 1491,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1264
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Was a specific diagnosis made during your previous admission (for example, a type of meningitis or encephalitis), and was the headache already positional—worse when upright—before the lumbar puncture was performed?\", \"topics\": [\"medical_history\", \"timecourse\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman with prior lymphocytic meningitis/encephalitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL; normal head CT) treated with 9 days IV dexamethasone. Now readmitted 3 days post-discharge with severe orthostatic headache, photophobia, arm tremor, and dizziness. The orthostatic pattern strongly suggests a post-LP CSF leak; the tremor and dizziness may relate to ongoing CNS inflammation or steroid effects. Final aetiological diagnosis from the prior admission is still unknown.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 4.7,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Was a specific diagnosis made during your previous admission (for example, a type of meningitis or encephalitis), and was the headache already positional—worse when upright—before the lumbar puncture was performed?",
+    "topics": [
+      "medical_history",
+      "timecourse"
+    ],
+    "record_period": "previous",
+    "assessment": {
+      "summary": "36-year-old woman with prior lymphocytic meningitis/encephalitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL; normal head CT) treated with 9 days IV dexamethasone. Now readmitted 3 days post-discharge with severe orthostatic headache, photophobia, arm tremor, and dizziness. The orthostatic pattern strongly suggests a post-LP CSF leak; the tremor and dizziness may relate to ongoing CNS inflammation or steroid effects. Final aetiological diagnosis from the prior admission is still unknown.",
+      "certainty": "uncertain"
+    }
+  }
+}

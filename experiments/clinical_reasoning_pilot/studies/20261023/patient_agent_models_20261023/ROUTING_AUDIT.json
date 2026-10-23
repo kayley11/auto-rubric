@@ -1,0 +1,147 @@
+[
+  {
+    "case": "C02",
+    "answer_model": "arc:chat",
+    "turn": 2,
+    "actual_question": "How long ago did the unsteadiness first begin, and have you had any similar episodes before? Are you experiencing any other symptoms such as blurred or double vision, numbness, tingling, weakness, or bladder problems?",
+    "actual_topics": [
+      "timecourse",
+      "presenting_symptoms"
+    ],
+    "actual_released": [],
+    "offline_counterfactual_topics": [
+      "previous_episodes",
+      "presenting_symptoms"
+    ],
+    "offline_counterfactual_release": [
+      "C02_F02",
+      "C02_F03",
+      "C02_F04"
+    ],
+    "interpretation": "The actual question includes prior similar episodes, but its route labels omit previous_episodes. Information not returned must not be described simply as unasked. This offline check changes no actual dialogue or score."
+  },
+  {
+    "case": "C03",
+    "answer_model": "arc:chat",
+    "turn": 2,
+    "actual_question": "How long have you had the bloody diarrhoea and the morning back stiffness, and is there any family history of inflammatory bowel disease, arthritis, or psoriasis?",
+    "actual_topics": [
+      "timecourse",
+      "previous_episodes"
+    ],
+    "actual_released": [
+      "C03_F06"
+    ],
+    "offline_counterfactual_topics": [
+      "timecourse",
+      "medical_history"
+    ],
+    "offline_counterfactual_release": [],
+    "interpretation": "The question asks about symptom duration and family history, but previous_episodes routing releases the patient's prior shin lesions. This is possible over-release relative to the literal question; do not credit it as an explicit skin-history request."
+  },
+  {
+    "case": "C03",
+    "answer_model": "arc:apex",
+    "turn": 6,
+    "actual_question": "Is there any family history of bowel disease or arthritis, and have you recently travelled or taken antibiotics?",
+    "actual_topics": [
+      "exposures",
+      "medical_history"
+    ],
+    "actual_released": [
+      "C03_F02"
+    ],
+    "offline_counterfactual_topics": [
+      "exposures",
+      "medications"
+    ],
+    "offline_counterfactual_release": [
+      "C03_F02",
+      "C03_F04"
+    ],
+    "interpretation": "The question asks about recent antibiotics, but the tags omit medications and the literal-medication matcher does not include antibiotics. Travel is returned but antibiotic response is not. Distinguish an antibiotic-exposure question from an explicit treatment-response question."
+  },
+  {
+    "case": "N04_INITIAL",
+    "answer_model": "arc:lite",
+    "turn": 4,
+    "actual_question": "Were any specific infections identified during your first admission — for example, a CSF PCR for herpes simplex virus, enterovirus, or other pathogens? And on this readmission, have you had a neurological examination — could you describe any findings such as neck stiffness, focal weakness, or abnormal reflexes?",
+    "actual_topics": [
+      "microbiology",
+      "examination"
+    ],
+    "actual_record_period": "any",
+    "actual_released": [
+      "N04_INITIAL_F05",
+      "N04_INITIAL_F03a"
+    ],
+    "record_contexts": [
+      "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+      "First admission, before discharge on 11 March 2026; exact investigation times are not supplied."
+    ],
+    "interpretation": "One question requests first-admission infection tests and a readmission examination. The single record_period applies initial scope to both categories, so the first-admission meningeal examination is returned instead of the requested readmission examination. Context labels are retained, but per-report episode selection is not sufficiently expressive.",
+    "actual_dialogue_unchanged": true
+  },
+  {
+    "case": "N04_INITIAL",
+    "answer_model": "arc:chat",
+    "turn": 6,
+    "actual_question": "Were any microbiology investigations performed — such as CSF PCR for viruses, bacterial cultures, or serology — and what were the results?",
+    "actual_topics": [
+      "microbiology"
+    ],
+    "actual_record_period": "current",
+    "actual_released": [
+      "N04_INITIAL_F05",
+      "N04_INITIAL_F07"
+    ],
+    "record_contexts": [
+      "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+      "First admission, before discharge on 11 March 2026; exact investigation times are not supplied. Repeat lumbar-puncture record during the first admission, not the readmission."
+    ],
+    "interpretation": "The question requests microbiology including CSF PCR, not a CSF cell-count report. Literal CSF matching also releases the first-admission repeat CSF count (130 cells/µL) in addition to infection tests. The two-report limit holds, but report-type over-release remains possible.",
+    "actual_dialogue_unchanged": true
+  },
+  {
+    "case": "N05",
+    "answer_model": "arc:lite",
+    "turn": 6,
+    "actual_question": "Has any genetic testing been done to look for a TTR (transthyretin) gene mutation? If so, could I review those results?",
+    "actual_topics": [
+      "enzyme_genetics"
+    ],
+    "actual_released": [
+      "N05_F11"
+    ],
+    "interpretation": "The question specifically requests TTR genetic testing. The shared enzyme_genetics route returns the available alpha-galactosidase/GLA record, not a TTR result. Later TTR outcomes stay hidden, but test-specific matching is too broad. Do not describe this as explicitly requesting the GLA result.",
+    "actual_dialogue_unchanged": true
+  },
+  {
+    "case": "N05",
+    "answer_model": "arc:chat",
+    "turn": 6,
+    "actual_question": "Have you had genetic testing for transthyretin (TTR) gene mutations to determine whether this is hereditary or wild-type amyloidosis?",
+    "actual_topics": [
+      "enzyme_genetics"
+    ],
+    "actual_released": [
+      "N05_F11"
+    ],
+    "interpretation": "The question specifically requests TTR genetic testing. The shared enzyme_genetics route returns the available alpha-galactosidase/GLA record, not a TTR result. Later TTR outcomes stay hidden, but test-specific matching is too broad. Do not describe this as explicitly requesting the GLA result.",
+    "actual_dialogue_unchanged": true
+  },
+  {
+    "case": "N05",
+    "answer_model": "arc:apex",
+    "turn": 6,
+    "actual_question": "Has genetic testing for hereditary transthyretin amyloidosis (TTR gene) been done, and if so, what was the result?",
+    "actual_topics": [
+      "enzyme_genetics"
+    ],
+    "actual_released": [
+      "N05_F11"
+    ],
+    "interpretation": "The question specifically requests TTR genetic testing. The shared enzyme_genetics route returns the available alpha-galactosidase/GLA record, not a TTR result. Later TTR outcomes stay hidden, but test-specific matching is too broad. Do not describe this as explicitly requesting the GLA result.",
+    "actual_dialogue_unchanged": true
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "id": "C03.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:21:20.938281+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Have you had similar episodes of diarrhoea or joint stiffness in the past, and is there any family history of inflammatory bowel disease, arthritis, or eye inflammation?\", \"permitted_statements\": [{\"id\": \"C03_F06\", \"text\": \"Previously, I had painful lesions on my shins.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a15c428ae5023f1f",
+        "model": "arc:lite",
+        "created": 1792761681,
+        "usage": {
+          "prompt_tokens": 191,
+          "total_tokens": 327,
+          "completion_tokens": 136,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 121
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F06\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.16,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F06"
+    ]
+  }
+}

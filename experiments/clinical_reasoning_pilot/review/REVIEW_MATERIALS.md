@@ -4346,7 +4346,7 @@ The clinical record explicitly reports that the urine sample is fluorescent purp
 - [Q12: Required content and completeness levels](INDEPENDENT_REVIEW.md#q12) — Clinical reference + rubric rule.
 - [Q14: What counts as seeking missing information?](INDEPENDENT_REVIEW.md#q14) — Rubric interpretation + audience fit.
 - [Q17: Unsupported claims, inference and duplicate counts](INDEPENDENT_REVIEW.md#q17) — Clinical claim classification + counting protocol.
-- [Q20: Word counting and tolerance](INDEPENDENT_REVIEW.md#q20) — Technical/protocol decision; clinical advice optional.
+- [Q20: Word-count check](INDEPENDENT_REVIEW.md#q20) — Counting and zero extra tolerance are agreed; only an optional reassessment of the saved D7c grade remains.
 - [Q21: Defective output: what is technical and what needs clinical review?](INDEPENDENT_REVIEW.md#q21) — Verified technical defect; clinical reassessment optional.
 - [Q22: Should results be combined into an overall score?](INDEPENDENT_REVIEW.md#q22) — Rubric/reporting rule.
 
@@ -8889,6 +8889,11 @@ First October accounting: 102 attempts; 96 accepted judgments; 121,233 known tok
 | U01_RESPONSIVE | 150–220 | 208 | 205 | Yes | 5 |
 
 **Result.** 20/21 fall inside their requested bounds under this convention. C05 has 353 original units and 351 after removing the two list numbers; its upper bound is 350. Its judge estimated about 330 and returned D7c=5. The answer and grade are retained.
+
+**Rule adopted for future runs.** Use this counting method with zero extra tolerance.
+The UI calculates the count, and D7c receives that result instead of an estimated
+length. Counting and tolerance no longer require a reviewer decision; a change to
+the historical grade would still require applying the original rubric to that answer.
 
 **Josh review.** No clinical expertise is required to count. If D7c is used in a validated clinical profile, ask how a small boundary violation affects its grade. Otherwise retain the supplementary length flag with the rule disclosed; this is a low-priority author question.
 

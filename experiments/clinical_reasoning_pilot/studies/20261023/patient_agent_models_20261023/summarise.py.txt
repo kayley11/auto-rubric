@@ -1,0 +1,175 @@
+"""Check and export the completed comparison; makes no model requests."""
+from pathlib import Path
+from collections import Counter
+import csv
+import hashlib
+import json
+import run
+
+ROOT = Path(__file__).resolve().parent
+P = json.loads((ROOT / 'protocol.json').read_text())
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+
+
+def csv_write(path, rows):
+    if rows:
+        with path.open('w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
+
+
+def resources(calls):
+    attempts = [a for c in calls for a in c['attempts']]
+    usages = [a.get('response', {}).get('usage') for a in attempts]
+    known = [u for u in usages if isinstance(u, dict)]
+    return {'operations': len(calls), 'attempts': len(attempts),
+            'failed_attempts': sum(a['status'] != 'success' for a in attempts),
+            'attempts_without_usage': len(attempts) - len(known),
+            'total_tokens': sum(u.get('total_tokens', 0) for u in known),
+            'request_seconds': round(sum(a.get('elapsed_seconds', 0) for a in attempts), 2)}
+
+
+def main():
+    checks, scores, coverage, summaries, usages = [], [], [], [], []
+    raw_cases, per_model = [], {}
+
+    def check(label, passed):
+        assert passed, label
+        checks.append({'check': label, 'passed': True})
+
+    check('Protocol unchanged', run.legacy.sha(ROOT / 'protocol.json') == (ROOT / 'protocol.sha256').read_text().strip())
+    check('Controller unchanged', run.legacy.sha(ROOT / 'frozen_interview.py') == P['controller_sha256'])
+    check('Cases unchanged', P['cases'] == read(ROOT / 'previous_protocol.json')['cases'])
+    for rel, digest in read(ROOT / 'PREVIOUS_FILES.json').items():
+        check('Previous file unchanged: ' + rel, run.legacy.sha(ROOT.parent / rel) == digest)
+    for model in P['answer_models']:
+        directory = ROOT / run.slug(model)
+        calls = [read(f) for f in sorted((directory / 'calls').glob('*.json'))]
+        per_model[model] = resources(calls)
+        usages.append({'answer_model': model, **per_model[model]})
+
+    for c in P['cases']:
+        cid = c['case_id']
+        raw = [cid + ' — ' + c['title'], '',
+               'COMMON INFORMATION — SAME FOR ALL THREE MODELS', c['common_information'],
+               '', 'PATIENT OPENING — SAME FOR ALL THREE MODELS', c['opening'],
+               '', 'FINAL TASK — UNCHANGED', c['final_task'],
+               '', 'EXAMINER-ONLY INVENTORY — NOT SHOWN TO THE INTERVIEWER', c['full_visible_snapshot'],
+               '', 'PROVISIONAL CLINICAL REFERENCE — AWAITING JOSH; NOT USED AS HIDDEN REQUIREMENTS IN D3a', c['reference']]
+        facts = {f['id']: f for f in c['facts']}
+        for model in P['answer_models']:
+            directory = ROOT / run.slug(model)
+            state = read(directory / 'outputs' / (cid + '.json'))
+            check(model + ' ' + cid + ' complete', state['status'] == 'complete')
+            check(model + ' ' + cid + ' same protocol', state['protocol_sha256'] == run.legacy.sha(ROOT / 'protocol.json'))
+            check(model + ' ' + cid + ' six-turn limit', len(state['turns']) <= 6)
+            visible = set(c['opening_fact_ids'])
+            for t in state['turns']:
+                check(model + ' ' + cid + ' visible before ' + str(t['number']), set(t['visible_fact_ids_before_question']) == visible)
+                patient, records, notes = run.legacy.select_facts(c, t['doctor_output'], visible)
+                check(model + ' ' + cid + ' fixed release rule ' + str(t['number']),
+                      {f['id'] for f in patient + records} == set(t['released_fact_ids']))
+                check(model + ' ' + cid + ' fixed wording ' + str(t['number']),
+                      t['patient_reply'] == ' '.join(facts[fid]['patient_text'] for fid in t['patient_used_fact_ids']))
+                check(model + ' ' + cid + ' complete allowed patient facts ' + str(t['number']),
+                      set(t['patient_used_fact_ids']) == {f['id'] for f in patient})
+                check(model + ' ' + cid + ' exact reports ' + str(t['number']), t['fixed_records'] == records)
+                check(model + ' ' + cid + ' no repeated release ' + str(t['number']), not (visible & set(t['released_fact_ids'])))
+                check(model + ' ' + cid + ' report limit ' + str(t['number']),
+                      len({f['release_group'] for f in records if f['topic'] in run.legacy.RECORD_TOPICS}) <= 2)
+                visible.update(t['released_fact_ids'])
+            check(model + ' ' + cid + ' final visible IDs', visible == set(state['released_fact_ids']))
+            check(model + ' ' + cid + ' word count', state['word_count'] == run.legacy.word_count_info(state['final_answer'], c['final_task']))
+            got, missing = [], []
+            for g in c['coverage_groups']:
+                complete = set(g['member_ids']) <= visible
+                (got if complete else missing).append(g['source_text'])
+                coverage.append({'case': cid, 'answer_model': model, 'group_id': g['parent_fact_id'],
+                                 'group_text': g['source_text'], 'fully_obtained': complete,
+                                 'member_ids': ';'.join(g['member_ids']),
+                                 'supplied_member_ids': ';'.join(x for x in g['member_ids'] if x in visible)})
+            for item in ['D5c', 'D3a']:
+                g = state['grades'][item]
+                scores.append({'case': cid, 'answer_model': model, 'criterion': item,
+                               'score': g['score'], 'status': g['status'],
+                               'intermediate_without_original_descriptor': g['unanchored'], 'reason': g['reason']})
+            calls = [read(f) for f in sorted((directory / 'calls').glob(cid + '.*.json'))]
+            for operation in calls:
+                for index, a in enumerate(operation['attempts']):
+                    payload = a.get('request', {})
+                    opid = operation['id']
+                    expected = P['patient_model'] if '.patient.' in opid else P['judge_model'] if opid.endswith(('.D5c', '.D3a')) else model
+                    check(model + ' ' + opid + ' role ' + str(index), payload.get('model') == expected)
+                    messages = '\n'.join(m['content'] for m in payload.get('messages', []))
+                    if '.doctor.' in opid:
+                        check(model + ' ' + opid + ' matching opening', c['common_information'] + '\nPatient opening:\n' + c['opening'] in messages)
+                        check(model + ' ' + opid + ' no full inventory', c['full_visible_snapshot'] not in messages)
+                    if opid.endswith('.D3a'):
+                        check(model + ' ' + opid + ' no hidden clinical reference', c['reference'] not in messages)
+                        check(model + ' ' + opid + ' original rubric', all(v in messages for v in run.legacy.CRITERIA['D3a']['anchors'].values()))
+                    if opid.endswith('.D5c'):
+                        check(model + ' ' + opid + ' full examiner inventory', c['full_visible_snapshot'] in messages)
+                    if opid.endswith('.interactive.final'):
+                        check(model + ' ' + opid + ' same final task', c['final_task'] in messages)
+                    if a['status'] == 'success' and opid.endswith(('.D5c', '.D3a')):
+                        choice = json.loads(a['response']['choices'][0]['message']['content'])
+                        g = state['grades'][opid.rsplit('.', 1)[1]]
+                        label = str(g['score']) if g['score'] is not None else 'Cannot assess'
+                        check(model + ' ' + opid + ' original score/option',
+                              choice['selected_label'] == label and choice['selected_option'] == P['parameters']['score_order'].index(label) + 1)
+            blocked = sum('blocked_reason' in proposal for turn in state.get('question_proposals', []) for proposal in turn['proposals'])
+            summaries.append({'case': cid, 'answer_model': model, 'groups_obtained': len(got),
+                              'groups_available': len(c['coverage_groups']), 'missing_groups': missing,
+                              'turns': len(state['turns']), 'blocked_repetitions': blocked,
+                              'D5c': state['grades']['D5c']['score'], 'D3a': state['grades']['D3a']['score'],
+                              'D5c_status': state['grades']['D5c']['status'], 'D3a_status': state['grades']['D3a']['status'],
+                              'word_count': state['word_count'],
+                              'checkpoints': [t['doctor_output']['assessment'] for t in state['turns']]})
+            raw.extend(['', '=' * 72, 'MODEL: ' + model, 'PROVIDER-REPORTED BACKEND: ' + P['model_backends'][model],
+                        'PATIENT MODEL: ' + P['patient_model'], 'JUDGE: ' + P['judge_model'], '', 'ACTUAL INTERVIEW'])
+            for t in state['turns']:
+                raw.extend(['', 'TURN ' + str(t['number']), run.legacy.turn_text(t, include_checkpoint=True),
+                            'Released fact IDs: ' + ', '.join(t['released_fact_ids'])])
+            raw.extend(['', 'ALL PROPOSALS / REPETITION FEEDBACK', json.dumps(state.get('question_proposals', []), ensure_ascii=False, indent=2),
+                        '', 'FINAL ANSWER — UNCHANGED', state['final_answer'], '', 'INFORMATION NOT FULLY OBTAINED', '\n'.join(missing) or 'None.',
+                        '', 'WORD COUNT', json.dumps(state['word_count'])])
+            for item in ['D5c', 'D3a']:
+                g = state['grades'][item]
+                raw.extend(['', item + ': ' + str(g['score'] if g['score'] is not None else g['status']), g['reason']])
+            raw.extend(['', 'EXACT VISIBLE RETURNS — INCLUDING UNSUCCESSFUL ATTEMPTS'])
+            for operation in calls:
+                for index, a in enumerate(operation['attempts'], 1):
+                    raw.extend(['', operation['id'] + ' ATTEMPT ' + str(index), 'STATUS: ' + a['status']])
+                    if a.get('error'):
+                        raw.append('ERROR: ' + a['error'])
+                    for ch in a.get('response', {}).get('choices', []):
+                        raw.extend(['FINISH REASON: ' + str(ch.get('finish_reason')), ch.get('message', {}).get('content') or '(no visible content)'])
+                    raw.append('USAGE: ' + json.dumps(a.get('response', {}).get('usage')))
+        text = '\n'.join(raw) + '\n'
+        check(cid + ' export excludes credential', not run.legacy.SETTINGS.api_key or run.legacy.SETTINGS.api_key not in text)
+        (ROOT / 'case_outputs').mkdir(exist_ok=True)
+        (ROOT / 'case_outputs' / (cid + '.txt')).write_text(text)
+        raw_cases.append(text)
+    csv_write(ROOT / 'ITEM_SCORES.csv', scores)
+    csv_write(ROOT / 'FACT_COVERAGE.csv', coverage)
+    csv_write(ROOT / 'TOKEN_USE.csv', usages)
+    csv_write(ROOT / 'COMPARISON.csv', [{**r, 'missing_groups': json.dumps(r['missing_groups'], ensure_ascii=False),
+                                        'word_count': json.dumps(r['word_count']), 'checkpoints': json.dumps(r['checkpoints'], ensure_ascii=False)} for r in summaries])
+    write(ROOT / 'ANALYSIS.json', {'conditions': summaries, 'resources': per_model,
+                                   'completed_conditions': len(summaries), 'item_ratings': len(scores),
+                                   'old_files_unchanged': True})
+    write(ROOT / 'CHECKS.json', {'checks_passed': len(checks), 'checks': checks})
+    (ROOT / 'RAW_OUTPUT.txt').write_text('THREE-MODEL PATIENT INTERVIEWS — COMPLETE VISIBLE OUTPUTS\n\n' + '\n\n'.join(raw_cases))
+    print('Exported', len(summaries), 'conditions,', len(scores), 'item grades;', len(checks), 'checks passed.')
+
+
+if __name__ == '__main__':
+    main()

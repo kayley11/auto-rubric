@@ -1,0 +1,90 @@
+"""Verify the actual historical failures and nearby negative controls offline."""
+from pathlib import Path
+import ast
+import json
+import run
+
+ROOT = Path(__file__).resolve().parent
+OLD = ROOT.parent / 'patient_agent_models_20261023'
+cases = {c['case_id']: c for c in run.PROTOCOL['cases']}
+checks = []
+
+
+def check(label, condition, **details):
+    assert condition, label
+    checks.append({'check': label, 'passed': True, **details})
+
+
+def query(cid, text, topics, expected, period='any', released=None):
+    d = {'action': 'ask', 'question': text, 'topics': topics, 'record_period': period}
+    pf, rf, notes = run.legacy.select_facts(cases[cid], d, set(released or []))
+    actual = [f['id'] for f in pf + rf]
+    check(cid + ': ' + text, set(actual) == set(expected), actual=actual, notes=notes)
+
+
+def main():
+    audits = json.loads((OLD/'ROUTING_AUDIT.json').read_text())
+    expectations = [
+        ['C02_F02', 'C02_F03', 'C02_F04'], [], ['C03_F02', 'C03_F04'],
+        ['N04_INITIAL_F05', 'N04_INITIAL_F11'], ['N04_INITIAL_F05'], [], [], []]
+    for audit, expected in zip(audits, expectations):
+        state = json.loads((OLD/run.slug(audit['answer_model'])/'outputs'/(audit['case']+'.json')).read_text())
+        turn = state['turns'][audit['turn']-1]
+        query(audit['case'], turn['question'], turn['topics'], expected,
+              turn['doctor_output'].get('record_period', 'any'), turn['visible_fact_ids_before_question'])
+    query('C02', 'Have you ever had other neurological symptoms that came and went?', ['presenting_symptoms'],
+          ['C02_F02','C02_F03','C02_F04'])
+    query('C02', 'Does anyone in your family have similar episodes?', ['previous_episodes'], [])
+    query('C02', 'Do you currently have blurred vision or urinary symptoms?', ['previous_episodes'], [])
+    query('C03', 'Is there a family history of bowel disease?', ['previous_episodes'], [])
+    query('C03', 'Has your father ever had painful skin lesions?', ['previous_episodes'], [])
+    query('C03', 'Have you had similar episodes of diarrhoea before?', ['previous_episodes'], [])
+    query('C03', 'Have you ever had painful lumps or lesions on your shins?', ['presenting_symptoms'],
+          ['C03_F06'])
+    query('C03', 'Have you travelled abroad recently or taken antibiotics?', ['medical_history'], ['C03_F02','C03_F04'])
+    query('C03', 'How long has the diarrhoea been going on, and has the blood been mixed with the stool, on the surface, or in the toilet water?', ['presenting_symptoms','timecourse'], ['C03_F03'], released=cases['C03']['opening_fact_ids'])
+    query('C03', 'Have you had any other symptoms with the diarrhoea, such as fever or weight loss?', ['presenting_symptoms'], ['C03_F03','C03_F05','C03_F07'], released=cases['C03']['opening_fact_ids'])
+    query('C03', 'How long have you had the bloody diarrhoea and the morning back stiffness?', ['presenting_symptoms','timecourse'], ['C03_F03','C03_F05'], released=cases['C03']['opening_fact_ids'])
+    query('N04_INITIAL', 'What were the CSF PCR and culture results during the first admission?', ['csf'], ['N04_INITIAL_F05'])
+    query('N04_INITIAL', 'What were the CSF cell count and protein on readmission?', ['csf'], ['N04_INITIAL_F14'])
+    query('N04_INITIAL', 'What were the repeat CSF cell count and protein during the first admission?', ['csf'], ['N04_INITIAL_F07'])
+    query('N04_INITIAL', 'What were the first admission examination and readmission brain MRI findings?', ['examination','mri_imaging'],
+          ['N04_INITIAL_F03a','N04_INITIAL_F12'])
+    query('N04_INITIAL', 'Do you have a CSF analysis report?', ['csf'], [])
+    query('N04_INITIAL', 'What symptoms led to your first admission?', ['presenting_symptoms'], ['N04_INITIAL_F01'])
+    query('N04_INITIAL', 'What is your past medical history?', ['medical_history'], ['N04_INITIAL_F02'])
+    query('N04_INITIAL', 'Do you have an existing spinal MRI report from this admission?', ['mri_imaging'], ['N04_INITIAL_F13'])
+    query('N04_INITIAL', 'Was the headache also worse when upright during that first admission, and what medications are you currently taking?', ['previous_episodes', 'medications'], ['N04_INITIAL_F01'])
+    query('N04_INITIAL', 'What medication are you currently taking?', ['medications'], [])
+    query('N04_INITIAL', 'What did your current neurological examination show?', ['examination'], ['N04_INITIAL_F11'])
+    query('N04_INITIAL', 'What treatment was given during the first admission, and what are you taking at present?', ['medications'], ['N04_INITIAL_F06'])
+    query('N04_INITIAL', 'What did the first admission CT show, and what are the current CSF cell count and protein?', ['ct_imaging','csf'], ['N04_INITIAL_F03b','N04_INITIAL_F14'])
+    query('N04_INITIAL', 'What were the initial admission CSF results?', ['csf'], ['N04_INITIAL_F04'])
+    query('N05', 'What did TTR genetic testing show?', ['enzyme_genetics'], [])
+    query('N05', 'What did GLA sequencing and alpha-galactosidase testing show?', ['enzyme_genetics'], ['N05_F11'])
+    query('N05', 'Have any genetic or enzyme investigations been done?', ['enzyme_genetics'], ['N05_F11'])
+    query('N05', 'Do you have a brain MRI report?', ['mri_imaging'], [])
+    query('N05', 'Do you have a cardiac MRI report?', ['mri_imaging'], ['N05_F09'])
+    query('C02', 'When did it start and has it changed?', ['timecourse'], ['C02_F05'])
+    # Matching and grading for the other four cases must be exactly unchanged.
+    for cid in ['C01','C04','C05','N02']:
+        for model in run.PROTOCOL['answer_models']:
+            old = json.loads((OLD/run.slug(model)/'outputs'/(cid+'.json')).read_text())
+            for t in old['turns']:
+                before = set(t['visible_fact_ids_before_question'])
+                check(cid + model + ' unchanged historical turn ' + str(t['number']),
+                      run.legacy.select_facts(cases[cid],t['doctor_output'],before) == run.ORIGINAL_SELECTOR(cases[cid],t['doctor_output'],before))
+    # The scoring code and clinician/patient prompts are held byte-for-byte constant.
+    def functions(path):
+        tree = ast.parse(path.read_text())
+        return {n.name: ast.dump(n,include_attributes=False) for n in tree.body if isinstance(n,ast.FunctionDef)}
+    oldfun, newfun = functions(OLD/'run.py'), functions(ROOT/'run.py')
+    for name in ['grading_data','final_data','one','configure']:
+        check('Unchanged runner function: '+name,oldfun[name]==newfun[name])
+    check('Frozen clinician/patient prompts unchanged', (ROOT/'frozen_interview.py').read_bytes()==(OLD/'frozen_interview.py').read_bytes())
+    (ROOT/'MATCHING_CHECKS.json').write_text(json.dumps({'checks_passed':len(checks),'checks':checks},ensure_ascii=False,indent=2)+'\n')
+    print('Offline matching checks passed:',len(checks))
+
+
+if __name__=='__main__':
+    main()

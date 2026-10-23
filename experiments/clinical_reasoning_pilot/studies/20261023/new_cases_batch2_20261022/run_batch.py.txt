@@ -1,0 +1,213 @@
+"""Generate and score N04–N06 through the existing local UI, resuming saved runs."""
+
+import argparse
+import hashlib
+import json
+import time
+from datetime import datetime, timezone
+from importlib.metadata import version
+from pathlib import Path
+
+import httpx
+from dotenv import dotenv_values
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1] / "auto rubric"
+APP = REPO / "arena"
+OUT = ROOT / "runs/ui_batch2_20261022"
+ORDER = ("N04_INITIAL", "N04_EVIDENCE", "N04_NEUTRAL", "N05", "N06")
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def digest(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def save(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_suffix(".tmp")
+    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+    temp.replace(path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--url", default="http://127.0.0.1:8765")
+    args = parser.parse_args()
+    OUT.mkdir(parents=True, exist_ok=True)
+    index_path = OUT / "batch_index.json"
+    index = json.loads(index_path.read_text()) if index_path.exists() else {
+        "started_at": now(), "reference_status": "draft", "review_status": "awaiting_Josh",
+        "cases": {}, "events": [],
+    }
+    prepared = json.loads((OUT / "prepared_inputs.json").read_text())
+    refs = {c["case_id"]: c for c in prepared["references_file"]["cases"]}
+    planned = {c["case_id"]: c for c in prepared["cases_file"]["cases"]}
+
+    with httpx.Client(base_url=args.url, timeout=15, follow_redirects=False) as client:
+        def api(path, body=None):
+            response = client.get(path) if body is None else client.post(path, json=body)
+            response.raise_for_status()
+            return response.json()
+
+        config = api("/api/config")
+        assert not config["active_run"], "Another job is active; do not queue model calls."
+        library = {c["case_id"]: c for c in config["cases"]}
+        for cid in ORDER:
+            for field in ("facts", "task", "criteria"):
+                assert library[cid][field] == planned[cid][field], (cid, field)
+            assert library[cid]["reference"] == refs[cid]["reference"]
+            assert library[cid]["reference_status"] == "draft"
+        assert hashlib.sha256((APP / "rubric.json").read_bytes()).hexdigest() == hashlib.sha256(
+            (ROOT / "evidence/rubric_snapshot.json").read_bytes()).hexdigest()
+
+        environment = OUT / "run_environment.json"
+        if not environment.exists():
+            save(environment, {
+                "recorded_at": now(), "url": args.url, "settings": config["settings"],
+                "autorubric_version": version("autorubric"),
+                "app_sha256": {n: hashlib.sha256((APP / n).read_bytes()).hexdigest()
+                               for n in ("engine.py", "server.py", "rubric.json", "case-library.json")},
+                "reference_status": "draft", "review_status": "awaiting_Josh",
+                "method": "Five generated answer conditions for three patients; 37 selected item judgements. Sequential calls, no answer edits. N04 branches share one exact saved initial input and answer; only their new information differs. Earlier conversation is supplied as labelled text within the user message, using the existing UI history field.",
+                "capture_scope": "Exact request payloads and full visible answer/judge messages, parsed AutoRubric results, response IDs/model/finish reasons, available usage, timings and errors. Credentials and hidden deliberation are not stored.",
+                "retry_policy": "Up to three saved attempts per failed generation/item; preserve completed answers and accepted item grades.",
+            })
+
+        def model_snapshot(label):
+            cfg = dotenv_values(REPO / ".env")
+            try:
+                res = httpx.get(config["settings"]["base_url"] + "/models", timeout=20,
+                    headers={"Authorization": "Bearer " + cfg.get("OPENAI_API_KEY", "")})
+                fields = ("id", "created", "name", "description", "backend_model", "backend_model_size", "backend_model_quant", "mode", "features")
+                record = {"checked_at": now(), "http_status": res.status_code}
+                if res.status_code == 200:
+                    record["models"] = [{k: m[k] for k in fields if k in m}
+                        for m in res.json().get("data", []) if m.get("id") in ("arc:lite", "arc:apex")]
+                save(OUT / f"provider_models_{label}.json", record)
+            except httpx.HTTPError as exc:
+                save(OUT / f"provider_models_{label}.json", {"checked_at": now(), "error_type": type(exc).__name__})
+
+        if not (OUT / "provider_models_before.json").exists():
+            model_snapshot("before")
+
+        def export(cid, rid):
+            for ext in ("json", "txt", "csv"):
+                res = client.get(f"/api/runs/{rid}/{ext}")
+                res.raise_for_status()
+                (OUT / f"{cid}.{ext}").write_bytes(res.content)
+
+        def wait(cid, rid):
+            previous = None
+            while True:
+                run = api(f"/api/runs/{rid}")
+                state = (run["status"], run.get("current_item"))
+                if state != previous:
+                    print(now(), cid, *state, flush=True)
+                    previous = state
+                if run["status"] not in ("generating", "scoring"):
+                    export(cid, rid)
+                    return run
+                time.sleep(3)
+
+        def finish(cid, rid, phase):
+            while True:
+                run = wait(cid, rid)
+                if run["status"] == "complete" or (phase == "generate" and run["input"]["answer"]):
+                    return run
+                if phase == "grade" and run["status"] == "answer_ready":
+                    api(f"/api/runs/{rid}/evaluate", {**run["input"], "action": "evaluate"})
+                    continue
+                failed = ([run.get("generation_attempts", [])] if not run["input"]["answer"]
+                    else [g.get("attempts", []) for g in run["grades"].values() if g["status"] == "error"])
+                count = max((len(a) for a in failed), default=0)
+                if count >= 3:
+                    print(cid, "retained incomplete after three attempts", flush=True)
+                    return run
+                delay = min(15 * max(count, 1), 45)
+                index["events"].append({"at": now(), "case_id": cid, "phase": phase,
+                    "previous_status": run["status"], "delay_seconds": delay})
+                save(index_path, index)
+                time.sleep(delay)
+                api(f"/api/runs/{rid}/retry", {})
+
+        def bind_initial(initial):
+            assert initial["input"]["answer"] == initial["generated_answer"]
+            d = initial["input"]
+            question = f"Case facts:\n{d['facts']}\n\nTask:\n{d['task']}"
+            successful = next(a for a in reversed(initial["generation_attempts"])
+                              if a.get("response", {}).get("choices"))
+            assert successful["request"]["messages"][1]["content"] == question
+            history = f"User:\n{question}\n\nAssistant:\n{d['answer']}"
+            libfile = APP / "case-library.json"
+            contents = json.loads(libfile.read_text())
+            for row in contents["cases"]:
+                if row["case_id"] in ("N04_EVIDENCE", "N04_NEUTRAL"):
+                    row["history"] = history
+                    row["reused_initial_run_id"] = initial["id"]
+                    row["history_binding"] = "Fixed shared initial conversation from the saved N04_INITIAL run; no other follow-up is included."
+                    library[row["case_id"]] = row
+            save(libfile, contents)
+            save(OUT / "shared_initial_context.json", {
+                "initial_run_id": initial["id"], "initial_answer_sha256": digest(d["answer"]),
+                "initial_user_message_sha256": digest(question), "history_sha256": digest(history),
+                "history": history, "answer_generated_once": len([a for a in initial["generation_attempts"]
+                    if a.get("response", {}).get("choices") and not a.get("error")]) == 1,
+                "branches": ["N04_EVIDENCE", "N04_NEUTRAL"],
+                "layout": "User and Assistant turns labelled as text in the existing Earlier conversation field; not native multi-turn role replay.",
+            })
+
+        # Generate once per condition before judging. Neither branch sees any judge output.
+        for cid in ORDER:
+            if cid.startswith("N04_") and cid != "N04_INITIAL" and not (OUT / "shared_initial_context.json").exists():
+                raise RuntimeError("N04 initial generation failed; do not create unbound follow-ups.")
+            if cid not in index["cases"]:
+                run = api("/api/runs", {**library[cid], "action": "generate"})
+                index["cases"][cid] = {"run_id": run["id"], "title": library[cid]["title"]}
+                save(index_path, index)
+            rid = index["cases"][cid]["run_id"]
+            run = finish(cid, rid, "generate")
+            if cid == "N04_INITIAL" and run["input"]["answer"]:
+                bind_initial(run)
+            index["cases"][cid].update(status=run["status"], answer_saved=bool(run["input"]["answer"]))
+            save(index_path, index)
+
+        for cid in ORDER:
+            rid = index["cases"][cid]["run_id"]
+            current = api(f"/api/runs/{rid}")
+            if not current["input"]["answer"]:
+                continue
+            run = finish(cid, rid, "grade")
+            assert run["input"]["reference_status"] == "draft"
+            assert run["input"]["criteria"] == planned[cid]["criteria"]
+            index["cases"][cid].update(status=run["status"], updated_at=now(),
+                graded=sum(g["status"] in ("scored", "cannot_assess") for g in run["grades"].values()),
+                total=len(run["input"]["criteria"]))
+            save(index_path, index)
+
+        a = api(f"/api/runs/{index['cases']['N04_EVIDENCE']['run_id']}")
+        b = api(f"/api/runs/{index['cases']['N04_NEUTRAL']['run_id']}")
+        shared = json.loads((OUT / "shared_initial_context.json").read_text())
+        assert a["input"]["history"] == b["input"]["history"] == shared["history"]
+        assert a["input"]["task"] == b["input"]["task"]
+        for run in (a, b):
+            successful = next(x for x in reversed(run["generation_attempts"]) if not x.get("error"))
+            assert successful["request"]["messages"][1]["content"].endswith(shared["history"])
+            assert run["input"]["reused_initial_run_id"] == shared["initial_run_id"]
+        save(OUT / "branch_verification.json", {"checked_at": now(), "passed": True,
+            "same_initial_run": True, "same_history_bytes": True, "same_followup_task": True,
+            "history_sha256": shared["history_sha256"], "no_cross_branch_context": True,
+            "only_followup_information_changes": True,
+            "evidence_criteria": a["input"]["criteria"], "neutral_criteria": b["input"]["criteria"]})
+        model_snapshot("after")
+        index["finished_at"] = now()
+        index["status"] = "complete" if all(c["status"] == "complete" for c in index["cases"].values()) else "partial"
+        save(index_path, index)
+        print(json.dumps(index, ensure_ascii=False, indent=2), flush=True)
+
+
+if __name__ == "__main__":
+    main()

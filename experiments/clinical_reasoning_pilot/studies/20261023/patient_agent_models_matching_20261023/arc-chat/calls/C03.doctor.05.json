@@ -1,0 +1,96 @@
+{
+  "id": "C03.doctor.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:04:19.255537+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: Young adult; exact age and sex are not supplied.\nConsultation context: Review of the presenting symptoms; do not simulate an additional clinical episode.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI have persistent diarrhoea and there is blood in my stool.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long have you had the diarrhoea and blood in your stool, and have you noticed any other symptoms such as abdominal pain, fever, weight loss, or a sense of urgency when you need to go?\", \"topics\": [\"timecourse\", \"presenting_symptoms\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"Young adult with persistent bloody diarrhoea. Differential includes inflammatory bowel disease, infectious colitis, and other causes of colonic inflammation. Timecourse and associated features will help narrow the differential.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: There is blood, urgency and cramping. My back is stiff in the mornings.\nFixed clinical record [Selected history; exact dates are not supplied.]: No weight loss or fever is reported.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you had similar episodes of bloody diarrhoea or abdominal pain before, and have you had any recent travel, antibiotic use, or contact with anyone who has been unwell?\", \"topics\": [\"previous_episodes\", \"exposures\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent bloody diarrhoea, urgency, and cramping, plus morning back stiffness. The combination of colonic symptoms with axial stiffness raises concern for inflammatory bowel disease with associated axial spondyloarthritis. Infectious colitis remains in the differential. No fever or weight loss reported.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: The diarrhoea followed travel. Antibiotics have helped little.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you had any colonoscopy or stool tests done, and if so, what were the results?\", \"topics\": [\"gastrointestinal_records\", \"microbiology\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent bloody diarrhoea, urgency, cramping, and morning back stiffness. Diarrhoea followed travel but antibiotics helped little. The combination of colonic symptoms with inflammatory-pattern back stiffness is suggestive of inflammatory bowel disease (likely ulcerative colitis) with associated axial spondyloarthritis. Post-infectious trigger is possible but the chronicity and extra-intestinal features favour IBD. Existing endoscopy or stool results would help confirm.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No microbiology report returned: the actual question did not request that report type. No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Does your back stiffness improve with movement or activity, and is there any family history of inflammatory bowel disease, psoriasis, or other autoimmune conditions?\", \"topics\": [\"medical_history\", \"daily_life\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent bloody diarrhoea, urgency, cramping, and morning back stiffness. Diarrhoea followed travel but antibiotics helped little. No fever or weight loss. The combination of colonic symptoms with inflammatory-pattern back stiffness is suggestive of inflammatory bowel disease (likely ulcerative colitis) with associated axial spondyloarthritis. Travel may be a trigger or coincidental. No existing records available to confirm.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-835103185d0430bb",
+        "model": "arc:chat",
+        "created": 1792767859,
+        "usage": {
+          "prompt_tokens": 1853,
+          "total_tokens": 2404,
+          "completion_tokens": 551,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 402
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"What medications have you tried for the diarrhoea or back stiffness, and have any of them helped?\", \"topics\": [\"medications\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent bloody diarrhoea, urgency, cramping, and morning back stiffness. Diarrhoea followed travel but antibiotics helped little. No fever or weight loss. The combination of colonic symptoms with inflammatory-pattern back stiffness is suggestive of inflammatory bowel disease (likely ulcerative colitis) with associated axial spondyloarthritis. Travel may be a trigger or coincidental. No existing records available to confirm.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 4.54,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "What medications have you tried for the diarrhoea or back stiffness, and have any of them helped?",
+    "topics": [
+      "medications"
+    ],
+    "record_period": "any",
+    "assessment": {
+      "summary": "Young adult with persistent bloody diarrhoea, urgency, cramping, and morning back stiffness. Diarrhoea followed travel but antibiotics helped little. No fever or weight loss. The combination of colonic symptoms with inflammatory-pattern back stiffness is suggestive of inflammatory bowel disease (likely ulcerative colitis) with associated axial spondyloarthritis. Travel may be a trigger or coincidental. No existing records available to confirm.",
+      "certainty": "uncertain"
+    }
+  }
+}

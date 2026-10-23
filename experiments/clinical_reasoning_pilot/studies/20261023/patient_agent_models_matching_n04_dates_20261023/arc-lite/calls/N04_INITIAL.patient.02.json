@@ -1,0 +1,57 @@
+{
+  "id": "N04_INITIAL.patient.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:35:41.155130+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"What was the diagnosis or main reason for your previous admission, and were any imaging scans (CT or MRI) performed during that stay?\", \"permitted_statements\": [{\"id\": \"N04_INITIAL_F01\", \"text\": \"I initially had five days of low-grade fever and severe headache.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-97fdb362fe98827d",
+        "model": "arc:lite",
+        "created": 1792769741,
+        "usage": {
+          "prompt_tokens": 188,
+          "total_tokens": 338,
+          "completion_tokens": 150,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 134
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N04_INITIAL_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.88,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N04_INITIAL_F01"
+    ]
+  }
+}

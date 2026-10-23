@@ -1,0 +1,58 @@
+{
+  "id": "C03.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:22:38.249730+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Have you had any other symptoms alongside the diarrhoea, such as abdominal pain, weight loss, fever, or mouth ulcers?\", \"permitted_statements\": [{\"id\": \"C03_F03\", \"text\": \"There is blood, urgency and cramping.\"}, {\"id\": \"C03_F05\", \"text\": \"My back is stiff in the mornings.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9eed3769de1c62c3",
+        "model": "arc:lite",
+        "created": 1792765358,
+        "usage": {
+          "prompt_tokens": 207,
+          "total_tokens": 433,
+          "completion_tokens": 226,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 204
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F03\",\"C03_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.1,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F03",
+      "C03_F05"
+    ]
+  }
+}

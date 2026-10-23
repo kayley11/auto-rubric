@@ -1,0 +1,143 @@
+{
+  "frozen_at": "2026-10-22T14:31:18.863717+00:00",
+  "method_label": "MELD-inspired original-text continuation check; not an exact reproduction",
+  "method_source": "https://arxiv.org/abs/2303.13375v2, section 6.2 and Appendix B, physical PDF pp. 13–14 and 29–30",
+  "models": [
+    "arc:lite",
+    "arc:apex"
+  ],
+  "planned_probes_per_model": 3,
+  "planned_model_case_pairs": 6,
+  "passage_selection": "One task-relevant contiguous case-narrative excerpt per report, selected before generation; no abstract, discussion, figure captions or reference list.",
+  "normalisation": "NFKC Unicode normalisation, then collapse all whitespace to a single space and strip outer whitespace. Preserve case, punctuation, spelling and digits. Do not correct source medical claims.",
+  "split": "Nearest whitespace to the halfway character position; earlier position wins a tie. Separator space belongs to neither half.",
+  "primary_similarity": "1 - unit-cost character Levenshtein_distance(reference_suffix, comparison_output) / max(length(reference_suffix), length(comparison_output)). Similarity is 1 for two empty strings.",
+  "comparison_output": "Normalise the complete visible response, then take its first L characters, where L is the normalised suffix length. Keep a shorter response short. No echo removal, preface removal, sliding window, alignment search, reference-guided output editing or best-of selection.",
+  "secondary_similarity": "Same Levenshtein formula applied to the complete normalised visible response, with no length cap; diagnostic only.",
+  "auxiliary_diagnostic": "Longest contiguous exact whitespace-separated word span, case- and punctuation-sensitive, between the reference suffix and fixed comparison output. Illustrative only; never changes the threshold decision.",
+  "near_exact_threshold": 0.95,
+  "classification": "near_exact_continuation if primary similarity >= 0.95; below_threshold otherwise. Missing/empty visible output after technical retries is unusable, not a negative result. All flags and raw outputs retained.",
+  "denominator": "Three planned source passages per model, including unusable probes in the planned count. Report near-exact/usable/planned counts separately. Do not estimate training contamination prevalence from three cases.",
+  "sampling": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 8192,
+    "reasoning_effort": "low",
+    "timeout_seconds": 180,
+    "stream": false,
+    "seed": null
+  },
+  "length_control": "Prompt requests up to the target suffix word count; a generous API token cap accommodates hosted reasoning budgets. A predeclared fixed character comparison horizon replaces the unavailable exact deployed tokenizer/token-length limit.",
+  "prompt_system_template": "Complete the following case-report text from the exact point where it stops. Return only the most likely original continuation, without repeating the supplied text, adding headings, quoting the prompt, or explaining your approach. This is a text-continuation task. Write up to {target_words} whitespace-separated words.",
+  "prompt_user": "Exact normalised prefix only; no source title, DOI, rubric, clinical reference, earlier answer or conversation history. The suffix stays local for comparison.",
+  "retries": "At most three saved attempts for HTTP/network/empty-response failures, 15 seconds between attempts. Stop at the first non-empty visible completion, including short, prefaced or finish_reason=length outputs; never retry to improve similarity.",
+  "separation": "Direct provider continuation calls in this folder only. Do not invoke AutoRubric, create UI clinical runs, update clinical references, revise prior answers or alter rubric scores.",
+  "probes": [
+    {
+      "case_id": "N01",
+      "source_id": "S02",
+      "file": "S02_sodium_text.txt",
+      "start": "   Curative-intent ifosfamide",
+      "end": "   Antiemetic prophylaxis",
+      "locator": "Case presentation, physical PDF pp. 3 and 5: three consecutive chemotherapy-course paragraphs, from Curative-intent ifosfamide to changed concurrently. Figures/captions/page furniture between the two prose fragments are excluded.",
+      "url": "https://doi.org/10.1007/s00432-026-06637-z",
+      "authors": "Ryotaro Ohkuma and colleagues",
+      "cleaning": "Join PDF line wraps; retain the lexical hyphen in urine-output, join chemo- + therapy-associated, and join the line-wrapped unit µg/day. No other prose, figures or clinical corrections are added.",
+      "source_text_file": "../evidence/S02_sodium_text.txt",
+      "source_text_file_sha256": "e37e3b21f0dd75f33b1c3ebe39c4492aaf9d453798c5edab30a11ca7913f90a4",
+      "extraction_segments": [
+        {
+          "start_offset": 10467,
+          "end_offset_exclusive": 12803
+        },
+        {
+          "start_offset": 14538,
+          "end_offset_exclusive": 15185
+        }
+      ],
+      "source_sha256": "bb944efb4b9753bcf391459667f2149bc1d9118f0cceff5a60cd232c684e7269",
+      "prefix_sha256": "355b0022629675fb95c05b650859d8d6b1317f45cb2211e403f9dec9eabe0a85",
+      "suffix_sha256": "6131fc9b116b48c9b65d4a65e321b630b27a04afcc9495f723676bee6c9ff4bb",
+      "source_chars": 2968,
+      "prefix_chars": 1482,
+      "suffix_chars": 1485,
+      "source_words": 440,
+      "prefix_words": 206,
+      "suffix_words": 234,
+      "split_separator": "one space",
+      "split_index": 1482,
+      "licence": "CC BY 4.0",
+      "prefix_file": "probes/N01.prefix.txt",
+      "suffix_file": "probes/N01.suffix.txt",
+      "source_file": "probes/N01.source.txt"
+    },
+    {
+      "case_id": "N02",
+      "source_id": "S04",
+      "file": "S04_sleep_publisher_text.txt",
+      "start": "A 58-year-old female office worker",
+      "end": "Imaging Studies: MRI",
+      "locator": "Case description: opening history, medical history, Vital signs, Laboratory Findings and Neurophysiological Examination; stop before Imaging Studies.",
+      "url": "https://doi.org/10.3389/fonc.2026.1959029",
+      "authors": "Xin Dai, Lingchun Liu, Xueye Mao, Shan Li, Yixin Su and Qiang Meng",
+      "cleaning": "Use the saved HTML-derived case paragraphs verbatim, with Unicode/whitespace normalisation only. Preserve the source clinical statements, including statements not endorsed as scoring references.",
+      "source_text_file": "../evidence/S04_sleep_publisher_text.txt",
+      "source_text_file_sha256": "7cccd0e465492770dafb1d8c8ffb05ce60e2b293cc14d3969387631c47a8fd46",
+      "extraction_segments": [
+        {
+          "start_offset": 8755,
+          "end_offset_exclusive": 11754
+        }
+      ],
+      "source_sha256": "0a928f8fe6f7ec7492b5fe797183fe4908691d8904accd2bccb4eecd4862926a",
+      "prefix_sha256": "df2ccf1e510448e1edc8ab926e02156a630959ca4f74de7c694ead26bc91aa61",
+      "suffix_sha256": "1d6a1f678e6effacef06ccb40596250ebe539dbd85d39265ffa850e7707d334d",
+      "source_chars": 2998,
+      "prefix_chars": 1501,
+      "suffix_chars": 1496,
+      "source_words": 408,
+      "prefix_words": 220,
+      "suffix_words": 188,
+      "split_separator": "one space",
+      "split_index": 1501,
+      "licence": "CC BY 4.0",
+      "prefix_file": "probes/N02.prefix.txt",
+      "suffix_file": "probes/N02.suffix.txt",
+      "source_file": "probes/N02.source.txt"
+    },
+    {
+      "case_id": "N03",
+      "source_id": "S05",
+      "file": "S05_magnesium_publisher_text.txt",
+      "start": "A 54-year-old male was sent",
+      "end": "\nFIGURE 1",
+      "locator": "Case description, first two paragraphs, ending Non-contrast brain computed tomography was unremarkable.; stop before FIGURE 1.",
+      "url": "https://doi.org/10.3389/ftox.2026.1961156",
+      "authors": "Chien-Chou Chen, Jun-Nan Chen, Tzu-Hsien Yang and Shih-Hua Lin",
+      "cleaning": "Use the saved HTML-derived case paragraphs verbatim, with Unicode/whitespace normalisation only; captions and subsequent treatment are excluded.",
+      "source_text_file": "../evidence/S05_magnesium_publisher_text.txt",
+      "source_text_file_sha256": "b15e3810efa70f34bfcccde76db899c3e4509738571a591c455655c640a654b3",
+      "extraction_segments": [
+        {
+          "start_offset": 8691,
+          "end_offset_exclusive": 10382
+        }
+      ],
+      "source_sha256": "2c90b56dbc25c315146d27642bcbf31f09f20990fd74619e0dc5fe989cab47a7",
+      "prefix_sha256": "e50622a6461732aac7ccbe34cf1fe8e53ad850c3d344800093da939051d73c02",
+      "suffix_sha256": "28694b8d72d89fcbe56845d147daf46baccf7ec914c52e90e7435331bf6231aa",
+      "source_chars": 1691,
+      "prefix_chars": 843,
+      "suffix_chars": 847,
+      "source_words": 250,
+      "prefix_words": 125,
+      "suffix_words": 125,
+      "split_separator": "one space",
+      "split_index": 843,
+      "licence": "CC BY 4.0",
+      "prefix_file": "probes/N03.prefix.txt",
+      "suffix_file": "probes/N03.suffix.txt",
+      "source_file": "probes/N03.source.txt"
+    }
+  ]
+}

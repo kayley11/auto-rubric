@@ -1,0 +1,96 @@
+{
+  "id": "N04_INITIAL.doctor.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:05:45.382794+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 36-year-old woman.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nMy severe headache has returned and is worse when I am upright.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"When did this headache last start, and have you had any recent procedures such as a lumbar puncture, spinal injection, or back surgery in the weeks before it began?\", \"topics\": [\"timecourse\", \"medical_history\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"Severe positional headache (worse upright) in a 36-year-old woman, described as a recurrence. The positional pattern raises concern for intracranial hypotension, but the cause and prior context are not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: She improved and was discharged after 12 days on 11 March 2026.\nFixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: Her past medical history was unremarkable.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"During your first admission in March, what was the diagnosis made and what treatment did you receive before being discharged?\", \"topics\": [\"previous_episodes\", \"medical_history\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman with recurrent severe positional headache (worse upright). Prior admission in March 2026 (12 days) with unremarkable past medical history before that admission. The positional pattern and recurrence raise concern for intracranial hypotension, but the prior diagnosis and treatment are not yet known.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I initially had five days of low-grade fever and severe headache.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"During that first admission, was a lumbar puncture performed, and if so, what were the CSF cell count and protein results?\", \"topics\": [\"csf\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"36-year-old woman with recurrent severe positional headache (worse upright). Initial presentation before first admission (March 2026) was 5 days of low-grade fever and severe headache. The combination of fever, headache, and now a positional recurrence raises concern for a prior CNS infection with possible complication (e.g., post-LP intracranial hypotension or subdural collection), but the prior diagnosis and investigations are not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [First admission, before discharge on 11 March 2026; exact investigation times are not supplied.]: Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.\nController: One existing csf report group returned with its clinical context. A later question can request another existing report.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"With this current headache, do you have any associated symptoms such as neck stiffness, visual changes, hearing disturbance, or nausea? And have you had any CT or MRI scan done for this current episode?\", \"topics\": [\"presenting_symptoms\", \"ct_imaging\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"36-year-old woman with recurrent severe positional headache (worse upright). First admission (March 2026) was for 5 days of low-grade fever and severe headache; CSF showed lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) and elevated protein (83.3 mg/dL), consistent with aseptic/viral meningitis. The current positional pattern strongly suggests intracranial hypotension, likely post-lumbar puncture. Need to assess for associated features and any imaging to exclude complications such as subdural collections.\", \"certainty\": \"working\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness. The headache and sensitivity to light persisted, and I returned to emergency care.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-b62dd8341b9220b2",
+        "model": "arc:lite",
+        "created": 1792760745,
+        "usage": {
+          "prompt_tokens": 1922,
+          "total_tokens": 2714,
+          "completion_tokens": 792,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 626
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"During your readmission on 14 March or since, was an MRI of your brain performed, and if so, what did it show?\", \"topics\": [\"mri_imaging\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"36-year-old woman with initial aseptic meningitis (lymphocytic CSF pleocytosis, elevated protein) treated in March 2026. Readmitted 14 March with positional headache (worse upright), arm tremor, dizziness, and photophobia. The positional pattern is highly suggestive of post-dural puncture intracranial hypotension. Need imaging to confirm and exclude complications such as subdural collections.\", \"certainty\": \"working\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.49,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "During your readmission on 14 March or since, was an MRI of your brain performed, and if so, what did it show?",
+    "topics": [
+      "mri_imaging"
+    ],
+    "record_period": "current",
+    "assessment": {
+      "summary": "36-year-old woman with initial aseptic meningitis (lymphocytic CSF pleocytosis, elevated protein) treated in March 2026. Readmitted 14 March with positional headache (worse upright), arm tremor, dizziness, and photophobia. The positional pattern is highly suggestive of post-dural puncture intracranial hypotension. Need imaging to confirm and exclude complications such as subdural collections.",
+      "certainty": "working"
+    }
+  }
+}

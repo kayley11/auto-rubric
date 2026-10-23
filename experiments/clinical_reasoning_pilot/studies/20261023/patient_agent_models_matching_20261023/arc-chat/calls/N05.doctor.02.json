@@ -1,0 +1,73 @@
+{
+  "id": "N05.doctor.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:19:03.958000+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 52-year-old man.\nConsultation context: Later investigation-review point. The initial examination values are historical; updated vital signs are not supplied for this review.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI have had diarrhoea for a long time and have also become breathless and tired.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long have you had the diarrhoea, and how long have the breathlessness and tiredness been present? Are the diarrhoea episodes watery, or do you notice blood or mucus?\", \"topics\": [\"timecourse\", \"presenting_symptoms\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"52-year-old man with chronic diarrhoea, breathlessness and fatigue. Differential includes malabsorption with secondary anaemia, inflammatory bowel disease, cardiac cause, or endocrine disorder. Need to characterise timecourse and stool features to narrow possibilities.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness. The diarrhoea persisted. Over the preceding six months, I developed breathlessness with activity, fatigue and a 10 kg weight loss.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a055ef46fe4f4b01",
+        "model": "arc:chat",
+        "created": 1792768744,
+        "usage": {
+          "prompt_tokens": 1218,
+          "total_tokens": 1696,
+          "completion_tokens": 478,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 299
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Have you had any blood tests, endoscopy, or imaging done for these symptoms? If so, what were the results?\", \"topics\": [\"tests\", \"medical_history\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"52-year-old man with 1 year of chronic watery diarrhoea, upper abdominal discomfort, distal numbness, and 6 months of progressive breathlessness, fatigue, and 10 kg weight loss. The combination of malabsorptive-type diarrhoea, peripheral neuropathy, and constitutional symptoms suggests a systemic or nutritional deficiency process (e.g. coeliac disease, B12/folate deficiency, Whipple's disease, or other infiltrative/malabsorptive condition). Need to review existing investigations.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.61,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Have you had any blood tests, endoscopy, or imaging done for these symptoms? If so, what were the results?",
+    "topics": [
+      "tests",
+      "medical_history"
+    ],
+    "record_period": "any",
+    "assessment": {
+      "summary": "52-year-old man with 1 year of chronic watery diarrhoea, upper abdominal discomfort, distal numbness, and 6 months of progressive breathlessness, fatigue, and 10 kg weight loss. The combination of malabsorptive-type diarrhoea, peripheral neuropathy, and constitutional symptoms suggests a systemic or nutritional deficiency process (e.g. coeliac disease, B12/folate deficiency, Whipple's disease, or other infiltrative/malabsorptive condition). Need to review existing investigations.",
+      "certainty": "uncertain"
+    }
+  }
+}

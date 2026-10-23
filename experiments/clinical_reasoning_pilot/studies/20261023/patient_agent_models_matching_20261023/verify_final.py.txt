@@ -1,0 +1,145 @@
+"""Verify the final paired export against immutable source calls; no API calls."""
+from pathlib import Path
+import csv
+import hashlib
+import importlib.util
+import json
+import re
+
+ROOT = Path(__file__).resolve().parent
+PILOT = ROOT.parent
+OLD = PILOT / 'patient_agent_models_20261023'
+V3 = PILOT / 'patient_agent_models_matching_followup_20261023'
+V4 = PILOT / 'patient_agent_models_matching_n04_dates_20261023'
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    result = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(result)
+    return result
+
+
+def main():
+    data = read(ROOT / 'BEFORE_AFTER.json')
+    protocol = read(ROOT / 'protocol.json')
+    checks = {}
+    info = {(r['case'], r['model']): r for r in data['information']}
+    grades = list(csv.DictReader((ROOT / 'BEFORE_AFTER_SCORES.csv').open()))
+    assert len(info) == 24 and len(grades) == 48
+    assert len({(r['case'], r['model'], r['criterion']) for r in grades}) == 48
+    checks['unique_final_interviews'] = 24
+    checks['unique_paired_ratings'] = 48
+
+    for directory in [OLD, ROOT, V3, V4]:
+        p = read(directory / 'protocol.json')
+        assert p['cases'] == protocol['cases']
+        for key in ['answer_models', 'patient_model', 'judge_model', 'parameters',
+                    'maximum_question_turns', 'execution_order']:
+            assert p[key] == protocol[key], (directory.name, key)
+        assert digest(directory / 'protocol.json') == (directory / 'protocol.sha256').read_text().strip()
+        assert read(directory / 'rubric_items.json') == read(OLD / 'rubric_items.json')
+        if directory != OLD:
+            assert digest(directory / 'matching.py') == p['matching_sha256']
+    checks['cases_roles_parameters_rubric_and_protocols_verified'] = True
+
+    old_environment = read(OLD / 'environment.json')
+    backends = protocol['model_backends']
+    for directory in [ROOT, V3, V4]:
+        environment = read(directory / 'environment.json')
+        for key in ['engine_sha256', 'controller_sha256', 'autorubric_version']:
+            assert environment[key] == old_environment[key]
+        for label in ['before', 'after']:
+            catalogue = read(directory / ('provider_' + label + '.json'))
+            got = {m['id']: m.get('backend_model') for m in catalogue['models']
+                   if m['id'] in protocol['answer_models']}
+            assert got == backends
+    checks['engine_version_and_reported_backends_unchanged'] = True
+
+    for relative, expected in read(V4 / 'PREVIOUS_FILES.json').items():
+        assert digest(PILOT / relative) == expected, relative
+    checks['preserved_evidence_files_unchanged'] = len(read(V4 / 'PREVIOUS_FILES.json'))
+
+    legacy = module('final_audit_legacy', V4 / 'frozen_interview.py')
+    v2 = module('matching_v2_audit', ROOT / 'matching.py')
+    v4 = module('matching_v4_audit', V4 / 'matching.py')
+    unchanged_turns = 0
+    for c in protocol['cases']:
+        cid = c['case_id']
+        if cid in ['C03', 'N04_INITIAL']:
+            continue
+        for model in protocol['answer_models']:
+            state = read(ROOT / model.replace(':', '-') / 'outputs' / (cid + '.json'))
+            for t in state['turns']:
+                d, visible = t['doctor_output'], set(t['visible_fact_ids_before_question'])
+                if cid == 'C02':
+                    a = v2.corrected_history(c, d, visible, legacy.select_facts)
+                    b = v4.corrected_history(c, d, visible, legacy.select_facts)
+                elif cid == 'N05':
+                    a = v2.corrected_n05(c, d, visible, legacy.select_facts)
+                    b = v4.corrected_n05(c, d, visible, legacy.select_facts)
+                else:
+                    a = b = legacy.select_facts(c, d, visible)
+                assert a == b, (cid, model, t['number'])
+                assert {f['id'] for f in b[0] + b[1]} == set(t['released_fact_ids'])
+                unchanged_turns += 1
+    checks['unaffected_cases_replayed_under_final_rules'] = 6
+    checks['unaffected_case_turns_identical'] = unchanged_turns
+
+    raw = (ROOT / 'RAW_OUTPUT.txt').read_bytes().decode('utf-8')
+    all_answers, visible_returns = 0, 0
+    for directory in [OLD, ROOT, V3, V4]:
+        for path in directory.glob('arc-*/outputs/*.json'):
+            state = read(path)
+            assert state['status'] == 'complete'
+            assert state['final_answer'] in raw
+            all_answers += 1
+        for path in directory.glob('arc-*/calls/*.json'):
+            for attempt in read(path)['attempts']:
+                for choice in attempt.get('response', {}).get('choices', []):
+                    content = choice.get('message', {}).get('content')
+                    if isinstance(content, str) and content:
+                        assert content in raw, path
+                        visible_returns += 1
+    assert all_answers == 57
+    assert not legacy.SETTINGS.api_key or legacy.SETTINGS.api_key not in raw
+    checks['raw_final_answers_preserved_including_intermediate'] = all_answers
+    checks['raw_visible_returns_preserved'] = visible_returns
+    checks['credential_absent_from_export'] = True
+
+    for row in grades:
+        case, model, item = row['case'], row['model'], row['criterion']
+        source = PILOT / row['after_source_run']
+        old = read(OLD / model.replace(':', '-') / 'outputs' / (case + '.json'))['grades'][item]
+        new = read(source / model.replace(':', '-') / 'outputs' / (case + '.json'))['grades'][item]
+        assert row['score_before'] == str(old['score']) and row['reason_before'] == old['reason']
+        assert row['score_after'] == str(new['score']) and row['reason_after'] == new['reason']
+    checks['paired_scores_and_reasons_match_original_returns'] = True
+
+    report = (ROOT / 'COMPARISON.md').read_text()
+    for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', report):
+        if target == 'FINAL_CHECKS.json':
+            continue  # This file is written only after all checks succeed.
+        assert (ROOT / target.split('#')[0]).resolve().exists(), target
+    rows = re.findall(r'^\| \[.*?\]\(case_outputs/([^.)]+)\.txt\) · (\d+) \| (.*?) \| (.*?) \| (.*?) \|$', report, re.M)
+    assert len(rows) == 8
+    for cid, available, *cells in rows:
+        for model, cell in zip(protocol['answer_models'], cells):
+            row = info[cid, model]
+            assert int(available) == row['groups_available']
+            assert cell == str(row['groups_before']) + ' → ' + str(row['groups_after'])
+    checks['report_links_and_all_information_table_cells_verified'] = True
+    (ROOT / 'FINAL_CHECKS.json').write_text(json.dumps(checks, indent=2) + '\n')
+    print(json.dumps(checks, indent=2))
+
+
+if __name__ == '__main__':
+    main()

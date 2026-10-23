@@ -1,0 +1,62 @@
+{
+  "id": "N02.doctor.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:00:58.074240+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nI do not remember the night-time events and feel normal again in the morning.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9b13b2889f5fc905",
+        "model": "arc:lite",
+        "created": 1792756858,
+        "usage": {
+          "prompt_tokens": 467,
+          "total_tokens": 667,
+          "completion_tokens": 200,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 106
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\":\"ask\",\"question\":\"Could you tell me a bit more about what happens at night that you don't remember? For example, has anyone else noticed something, or have you woken up in a different position or with something unusual around you?\",\"topics\":[\"presenting_symptoms\"],\"assessment\":{\"summary\":\"Patient reports amnesia for night-time events with normal morning state; nature of the events is not yet described.\",\"certainty\":\"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.15,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Could you tell me a bit more about what happens at night that you don't remember? For example, has anyone else noticed something, or have you woken up in a different position or with something unusual around you?",
+    "topics": [
+      "presenting_symptoms"
+    ],
+    "assessment": {
+      "summary": "Patient reports amnesia for night-time events with normal morning state; nature of the events is not yet described.",
+      "certainty": "uncertain"
+    }
+  }
+}

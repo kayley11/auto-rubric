@@ -1,0 +1,70 @@
+"""Local checks of the four requested changes; no model calls."""
+import json
+from pathlib import Path
+import run
+
+ROOT = Path(__file__).resolve().parent
+cases = {c['case_id']: c for c in run.PROTOCOL['cases']}
+checks = []
+
+
+def check(name, passed):
+    assert passed, name
+    checks.append({'check': name, 'passed': True})
+
+
+def ask(question, topics, period='any'):
+    return {'action': 'ask', 'question': question, 'topics': topics, 'record_period': period}
+
+
+for c in cases.values():
+    check(c['case_id'] + ': common demographics in static input', c['common_information'] in c['full_visible_snapshot'])
+    check(c['case_id'] + ': all source excerpts trace to the unchanged source snapshot', all(f['source_excerpt'] in c['original_full_visible_snapshot'] for f in c['facts']))
+    check(c['case_id'] + ': original final task and criterion selection retained', c['final_task'] and c['final_criteria'])
+check('eight cases, same 54 original coverage groups', len(cases) == 8 and sum(len(c['coverage_groups']) for c in cases.values()) == 54)
+check('C02 common setup does not reveal the withheld past episodes', not any(w in cases['C02']['common_information'].lower() for w in ['earlier neurological', 'speech', 'blurred', 'urinary', 'hot bath']))
+
+c = cases['N04_INITIAL']
+pat, rec, notes = run.select_facts(c, ask('What tests have been done?', ['tests']), set())
+check('a broad tests request releases no reports', not rec and not pat and bool(notes))
+
+d = ask('What did the initial lumbar puncture CSF show?', ['csf'], 'initial')
+pat, rec, _ = run.select_facts(c, d, set())
+check('first CSF request returns one report, not all admissions', len(rec) == 1 and '183 cells' in rec[0]['text'] and rec[0]['period'] == 'initial')
+released = {f['id'] for f in rec}
+pat, rec2, _ = run.select_facts(c, d, released)
+check('next initial-admission CSF request returns the 130-cell report', len(rec2) == 1 and '130 cells' in rec2[0]['text'])
+pat, rec3, _ = run.select_facts(c, ask('What did the CSF show on readmission?', ['csf'], 'readmission'), released)
+check('readmission scope returns the 178-cell report with the 14 March context', len(rec3) == 1 and '178 cells' in rec3[0]['text'] and '14 March 2026' in rec3[0]['context'])
+pat, rec4, _ = run.select_facts(c, ask('What did the current admission CSF show?', ['csf'], 'current'), set())
+check('current admission maps to readmission, not the first admission', rec4[0]['period'] == 'readmission')
+pat, rec, _ = run.select_facts(c, ask('What did the brain MRI show on readmission?', ['mri_imaging'], 'readmission'), set())
+check('brain MRI question does not return the spinal MRI', len(rec) == 1 and rec[0]['text'] == 'Brain MRI was normal.')
+pat, rec, _ = run.select_facts(c, ask('Do you have existing CSF results or brain imaging (CT or MRI) from your previous admission?', ['csf','mri_imaging']), set())
+check('explicit CT request is honoured when its JSON tag is omitted', len(rec) == 2 and any(f['topic'] == 'ct_imaging' for f in rec) and any(f['topic'] == 'csf' for f in rec))
+pat, rec, _ = run.select_facts(c, ask('Do you have a CT or MRI brain report from this current admission?', ['ct_imaging']), set())
+check('current CT-or-MRI request returns readmission MRI, not the initial CT', len(rec) == 1 and rec[0]['topic'] == 'mri_imaging' and rec[0]['period'] == 'readmission')
+pat, rec, _ = run.select_facts(c, ask('What treatment was given during the previous admission?', ['medical_history','previous_episodes']), set())
+check('explicit treatment request can return the first-admission treatment record', any(f['id'] == 'N04_INITIAL_F06' for f in rec))
+pat, rec, _ = run.select_facts(c, ask('How are you feeling?', ['csf']), set())
+check('an unasked CSF tag cannot release a lumbar-puncture result', not rec)
+
+c = cases['C02']
+d = ask('Can you describe what the unsteadiness feels like?', ['presenting_symptoms'])
+pat, rec, _ = run.select_facts(c, d, set(c['opening_fact_ids']))
+previous = [{'question': d['question'], 'topics': d['topics'], 'new_fact_ids': []}]
+check('an exhausted repeated symptom question is detected', bool(run.repeated_reason(d, previous, pat, rec)))
+different = ask('Have you had earlier episodes of neurological symptoms?', ['previous_episodes'])
+pat, rec, _ = run.select_facts(c, different, set(c['opening_fact_ids']))
+check('a different history question can release the three withheld past-event groups', len(pat) == 3 and not run.repeated_reason(different, previous, pat, rec))
+
+c = cases['C04']
+check('dose-change sentence explicitly refers to collapses', next(f['patient_text'] for f in c['facts'] if f['id'] == 'C04_F02').startswith('The brief collapses began'))
+pat, rec, _ = run.select_facts(c, ask('Have you had any previous medical conditions or procedures?', ['medical_history']), set())
+check('device existence/check occurrence is discoverable from medical history', any(f['id'] == 'C04_F04' for f in rec))
+check('the current N04 consultation is explicitly anchored to readmission', 'current consultation is the readmission beginning 14 March 2026' in cases['N04_INITIAL']['common_information'])
+check('all N04 reports retain their admission context', all('admission' in f['context'] for f in cases['N04_INITIAL']['facts'] if f['channel'] == 'record'))
+check('earlier result files are unchanged', all(run.sha(run.PILOT / 'patient_agent_pilot_20261023' / relative) == m['sha256'] for relative, m in run.read(ROOT / 'PREVIOUS_FILES.json').items()))
+
+(ROOT / 'CONTROLLER_CHECKS.json').write_text(json.dumps(checks, indent=2) + '\n')
+print(len(checks), 'local controller checks passed; no model calls made.')

@@ -1,0 +1,80 @@
+{
+  "id": "N05.doctor.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:19:57.473858+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:apex",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 52-year-old man.\nConsultation context: Later investigation-review point. The initial examination values are historical; updated vital signs are not supplied for this review.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI have had diarrhoea for a long time and have also become breathless and tired.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you tell me more about the diarrhoea — how long you've had it, how many times a day, and whether there's blood, mucus, or greasy stools that are hard to flush?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"52-year-old man with chronic diarrhoea, breathlessness and fatigue; cause not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness. The diarrhoea persisted. Over the preceding six months, I developed breathlessness with activity, fatigue and a 10 kg weight loss.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you had any investigations for this so far — for example, blood tests, stool tests, or an endoscopy (gastroscopy or colonoscopy) with biopsies — and if so, what did they show?\", \"topics\": [\"tests\", \"gastrointestinal_records\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"One year of watery diarrhoea with weight loss, fatigue, exertional breathlessness and distal numbness suggests a chronic malabsorptive or systemic disease; no investigation results yet known.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [Existing investigation-review material; exact investigation/report times are not supplied.]: Previous gastrointestinal assessment identified bile reflux gastritis and a colonic lesion that was removed; histology showed a sessile serrated lesion with dysplasia.\nController: A broad tests request releases no results. Please specify the type of existing examination or investigation. One existing gastrointestinal_records report group returned with its clinical context. A later question can request another existing report.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a24eece9e1e469c6",
+        "model": "arc:apex",
+        "created": 1792768797,
+        "usage": {
+          "prompt_tokens": 1370,
+          "total_tokens": 1504,
+          "completion_tokens": 134,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 6
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "{\"action\": \"ask\", \"question\": \"Do you have existing routine blood test results available — things like full blood count, iron studies, B12, folate, and thyroid or liver function — that I could review?\", \"topics\": [\"routine_laboratory\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Chronic watery diarrhoea with weight loss, fatigue, breathlessness and distal numbness, plus a prior sessile serrated lesion with dysplasia; a malabsorptive or nutritional deficiency process remains possible but unconfirmed.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.99,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Do you have existing routine blood test results available — things like full blood count, iron studies, B12, folate, and thyroid or liver function — that I could review?",
+    "topics": [
+      "routine_laboratory"
+    ],
+    "record_period": "any",
+    "assessment": {
+      "summary": "Chronic watery diarrhoea with weight loss, fatigue, breathlessness and distal numbness, plus a prior sessile serrated lesion with dysplasia; a malabsorptive or nutritional deficiency process remains possible but unconfirmed.",
+      "certainty": "uncertain"
+    }
+  }
+}

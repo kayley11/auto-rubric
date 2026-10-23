@@ -1,0 +1,537 @@
+{
+  "case_id": "N04_INITIAL",
+  "answer_model": "arc:chat",
+  "patient_model": "arc:lite",
+  "judge_model": "arc:apex",
+  "protocol_sha256": "2306125c2545732454ec1671454aa71f5f5f5585d5edfece842d87a082fe926f",
+  "created_at": "2026-10-23T14:32:13.700937+00:00",
+  "reference_status": "draft",
+  "status": "complete",
+  "turns": [
+    {
+      "number": 1,
+      "question": "You were discharged just three days ago — what was the reason for your previous admission, and did you have any procedures such as a lumbar puncture or spinal procedure during that stay?",
+      "topics": [
+        "previous_episodes",
+        "medical_history"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "You were discharged just three days ago — what was the reason for your previous admission, and did you have any procedures such as a lumbar puncture or spinal procedure during that stay?",
+        "topics": [
+          "previous_episodes",
+          "medical_history"
+        ],
+        "record_period": "previous",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days after discharge with a severe positional headache (worse upright). This pattern is characteristic of low CSF pressure headache, often post-procedural. The previous admission is the most critical piece of context to establish.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [],
+      "patient_reply": "I initially had five days of low-grade fever and severe headache.",
+      "permitted_patient_fact_ids": [
+        "N04_INITIAL_F01"
+      ],
+      "patient_used_fact_ids": [
+        "N04_INITIAL_F01"
+      ],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F02",
+          "topic": "medical_history",
+          "channel": "record",
+          "coverage_target": false,
+          "text": "Her past medical history was unremarkable.",
+          "parent_fact_id": "N04_INITIAL_F02",
+          "source_excerpt": "Her past medical history was unremarkable.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F02"
+        },
+        {
+          "id": "N04_INITIAL_F04",
+          "topic": "csf",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.",
+          "parent_fact_id": "N04_INITIAL_F04",
+          "source_excerpt": "Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F04"
+        }
+      ],
+      "unavailable": false,
+      "released_fact_ids": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04"
+      ],
+      "feedback": "One existing csf report group returned with its clinical context. A later question can request another existing report.",
+      "requested_period": "initial",
+      "report_groups": [
+        "N04_INITIAL_F04"
+      ]
+    },
+    {
+      "number": 2,
+      "question": "Is the headache clearly relieved when you lie flat, and do you have any associated symptoms such as nausea, neck stiffness, visual changes, or hearing changes?",
+      "topics": [
+        "presenting_symptoms"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Is the headache clearly relieved when you lie flat, and do you have any associated symptoms such as nausea, neck stiffness, visual changes, or hearing changes?",
+        "topics": [
+          "presenting_symptoms"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days post-discharge with positional headache (worse upright). Previous admission showed lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) with elevated protein (83.3 mg/dL), consistent with aseptic/viral meningitis. The CSF results strongly imply a lumbar puncture was performed. The current positional headache pattern is highly suggestive of a post-LP low-pressure headache, though other causes need consideration.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04"
+      ],
+      "patient_reply": "I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness. The headache and sensitivity to light persisted, and I returned to emergency care.",
+      "permitted_patient_fact_ids": [
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10"
+      ],
+      "patient_used_fact_ids": [
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F09"
+      ],
+      "patient_layout_fallback": false,
+      "fixed_records": [],
+      "unavailable": false,
+      "released_fact_ids": [
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F09"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F09"
+      ],
+      "feedback": "",
+      "requested_period": "any",
+      "report_groups": []
+    },
+    {
+      "number": 3,
+      "question": "During this current admission, were any neurological examination findings recorded — for example, any cranial nerve abnormalities, neck stiffness, or signs of cerebellar dysfunction?",
+      "topics": [
+        "examination"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "During this current admission, were any neurological examination findings recorded — for example, any cranial nerve abnormalities, neck stiffness, or signs of cerebellar dysfunction?",
+        "topics": [
+          "examination"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, and photophobia. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL), implying a lumbar puncture was performed. The positional headache pattern is highly suggestive of post-LP intracranial hypotension, but the tremor and dizziness raise the possibility of cerebellar or brainstem involvement that needs clarification.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F11",
+          "topic": "examination",
+          "channel": "record",
+          "coverage_target": false,
+          "text": "Examination recorded neck stiffness and a positive Kernig sign.",
+          "parent_fact_id": "N04_INITIAL_F11",
+          "source_excerpt": "Examination recorded neck stiffness and a positive Kernig sign.",
+          "context": "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied.",
+          "period": "readmission",
+          "release_group": "N04_INITIAL_F11"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F11"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F11"
+      ],
+      "feedback": "One existing examination report group returned with its clinical context. A later question can request another existing report.",
+      "requested_period": "readmission",
+      "report_groups": [
+        "N04_INITIAL_F11"
+      ]
+    },
+    {
+      "number": 4,
+      "question": "Was an MRI of the brain performed during this current admission, and if so, what did it show?",
+      "topics": [
+        "mri_imaging"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Was an MRI of the brain performed during this current admission, and if so, what did it show?",
+        "topics": [
+          "mri_imaging"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL), implying a lumbar puncture was performed. The meningeal signs suggest ongoing or recurrent meningitis rather than simple post-LP hypotension. The tremor and dizziness raise concern for cerebellar or brainstem involvement. MRI would help differentiate ongoing meningitis, cerebellar pathology, or intracranial hypotension.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F11"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F12",
+          "topic": "mri_imaging",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Brain MRI was normal.",
+          "parent_fact_id": "N04_INITIAL_F12",
+          "source_excerpt": "Brain MRI was normal.",
+          "context": "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied.",
+          "period": "readmission",
+          "release_group": "N04_INITIAL_F12"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F12"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F12"
+      ],
+      "feedback": "One existing mri_imaging report group returned with its clinical context. A later question can request another existing report.",
+      "requested_period": "readmission",
+      "report_groups": [
+        "N04_INITIAL_F12"
+      ]
+    },
+    {
+      "number": 5,
+      "question": "Was a repeat lumbar puncture performed during this current admission, and if so, what were the CSF cell count and protein results?",
+      "topics": [
+        "csf"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Was a repeat lumbar puncture performed during this current admission, and if so, what were the CSF cell count and protein results?",
+        "topics": [
+          "csf"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL). Brain MRI is normal, ruling out structural or cerebellar pathology. The combination of meningeal signs and positional headache after a likely LP raises the question of whether meningitis is ongoing/recurrent versus post-LP intracranial hypotension. A repeat CSF would be the key discriminator.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F11",
+        "N04_INITIAL_F12"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F14",
+          "topic": "csf",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Repeat CSF contained 178 cells/µL, 97.7% lymphocytes, and protein 36.6 mg/dL.",
+          "parent_fact_id": "N04_INITIAL_F14",
+          "source_excerpt": "Repeat CSF contained 178 cells/µL, 97.7% lymphocytes, and protein 36.6 mg/dL.",
+          "context": "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied.",
+          "period": "readmission",
+          "release_group": "N04_INITIAL_F14"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F14"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F14"
+      ],
+      "feedback": "One existing csf report group returned with its clinical context. A later question can request another existing report.",
+      "requested_period": "readmission",
+      "report_groups": [
+        "N04_INITIAL_F14"
+      ]
+    },
+    {
+      "number": 6,
+      "question": "Were any microbiology investigations performed — such as CSF PCR for viruses, bacterial cultures, or serology — and what were the results?",
+      "topics": [
+        "microbiology"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Were any microbiology investigations performed — such as CSF PCR for viruses, bacterial cultures, or serology — and what were the results?",
+        "topics": [
+          "microbiology"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL). Brain MRI is normal. Repeat CSF shows persistent lymphocytic pleocytosis (178 cells/µL, 97.7% lymphocytes) with reduced protein (36.6 mg/dL), confirming ongoing meningeal inflammation. The positional headache pattern suggests a concurrent post-LP low-pressure component. The key remaining question is the aetiology of the persistent lymphocytic meningitis.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F01",
+        "N04_INITIAL_F02",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F11",
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F05",
+          "topic": "microbiology",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "CSF PCR did not identify an infectious cause, and Borrelia serology was negative. No CSF culture result is supplied.",
+          "parent_fact_id": "N04_INITIAL_F05",
+          "source_excerpt": "CSF PCR did not identify an infectious cause, and Borrelia serology was negative. No CSF culture result is supplied.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F05"
+        },
+        {
+          "id": "N04_INITIAL_F07",
+          "topic": "csf",
+          "channel": "record",
+          "coverage_target": false,
+          "text": "Repeat CSF contained 130 cells/µL and protein 46.1 mg/dL.",
+          "parent_fact_id": "N04_INITIAL_F07",
+          "source_excerpt": "Repeat CSF contained 130 cells/µL and protein 46.1 mg/dL.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied. Repeat lumbar-puncture record during the first admission, not the readmission.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F07"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F05",
+        "N04_INITIAL_F07"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F05",
+        "N04_INITIAL_F07"
+      ],
+      "feedback": "One existing microbiology report group returned with its clinical context. A later question can request another existing report. One existing csf report group returned with its clinical context. A later question can request another existing report.",
+      "requested_period": "any",
+      "report_groups": [
+        "N04_INITIAL_F05",
+        "N04_INITIAL_F07"
+      ]
+    }
+  ],
+  "question_proposals": [
+    {
+      "turn": 1,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "You were discharged just three days ago — what was the reason for your previous admission, and did you have any procedures such as a lumbar puncture or spinal procedure during that stay?",
+            "topics": [
+              "previous_episodes",
+              "medical_history"
+            ],
+            "record_period": "previous",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days after discharge with a severe positional headache (worse upright). This pattern is characteristic of low CSF pressure headache, often post-procedural. The previous admission is the most critical piece of context to establish.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Is the headache clearly relieved when you lie flat, and do you have any associated symptoms such as nausea, neck stiffness, visual changes, or hearing changes?",
+            "topics": [
+              "presenting_symptoms"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days post-discharge with positional headache (worse upright). Previous admission showed lymphocytic pleocytosis (183 cells/µL, 97.8% lymphocytes) with elevated protein (83.3 mg/dL), consistent with aseptic/viral meningitis. The CSF results strongly imply a lumbar puncture was performed. The current positional headache pattern is highly suggestive of a post-LP low-pressure headache, though other causes need consideration.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "During this current admission, were any neurological examination findings recorded — for example, any cranial nerve abnormalities, neck stiffness, or signs of cerebellar dysfunction?",
+            "topics": [
+              "examination"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, and photophobia. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL), implying a lumbar puncture was performed. The positional headache pattern is highly suggestive of post-LP intracranial hypotension, but the tremor and dizziness raise the possibility of cerebellar or brainstem involvement that needs clarification.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Was an MRI of the brain performed during this current admission, and if so, what did it show?",
+            "topics": [
+              "mri_imaging"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL), implying a lumbar puncture was performed. The meningeal signs suggest ongoing or recurrent meningitis rather than simple post-LP hypotension. The tremor and dizziness raise concern for cerebellar or brainstem involvement. MRI would help differentiate ongoing meningitis, cerebellar pathology, or intracranial hypotension.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Was a repeat lumbar puncture performed during this current admission, and if so, what were the CSF cell count and protein results?",
+            "topics": [
+              "csf"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL). Brain MRI is normal, ruling out structural or cerebellar pathology. The combination of meningeal signs and positional headache after a likely LP raises the question of whether meningitis is ongoing/recurrent versus post-LP intracranial hypotension. A repeat CSF would be the key discriminator.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Were any microbiology investigations performed — such as CSF PCR for viruses, bacterial cultures, or serology — and what were the results?",
+            "topics": [
+              "microbiology"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days post-discharge with severe positional headache (worse upright), arm tremor, dizziness, photophobia, neck stiffness, and positive Kernig sign. Previous admission showed lymphocytic meningitis (CSF: 183 cells/µL, 97.8% lymphocytes, protein 83.3 mg/dL). Brain MRI is normal. Repeat CSF shows persistent lymphocytic pleocytosis (178 cells/µL, 97.7% lymphocytes) with reduced protein (36.6 mg/dL), confirming ongoing meningeal inflammation. The positional headache pattern suggests a concurrent post-LP low-pressure component. The key remaining question is the aetiology of the persistent lymphocytic meningitis.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "released_fact_ids": [
+    "N04_INITIAL_F01",
+    "N04_INITIAL_F02",
+    "N04_INITIAL_F04",
+    "N04_INITIAL_F05",
+    "N04_INITIAL_F07",
+    "N04_INITIAL_F09",
+    "N04_INITIAL_F10",
+    "N04_INITIAL_F11",
+    "N04_INITIAL_F12",
+    "N04_INITIAL_F14"
+  ],
+  "question_turns": 6,
+  "interview_complete": true,
+  "final_answer": "A 36-year-old woman presents with recurrent positional headache, meningeal signs, and persistent lymphocytic pleocytosis three days after discharge for presumed aseptic meningitis.\n\nPost-lumbar puncture intracranial hypotension: The positional nature (worse upright) and recent LPs strongly support this. However, it does not explain the persistent pleocytosis (178 cells/µL) or Kernig sign. Useful next information: review MRI specifically for pachymeningeal enhancement or subdural collections, which may be missed if \"normal\" was reported without dedicated assessment.\n\nPersistent or relapsing aseptic meningitis: The pleocytosis improved (183→130) then rose again (178), suggesting incomplete resolution or relapse. Protein is trending down (83.3→36.6), which is reassuring but does not exclude ongoing inflammation. Limitation: CSF culture results are not supplied, and PCR panels do not cover all pathogens. Useful next information: obtain CSF culture, consider fungal and mycobacterial studies, and confirm whether antibiotics preceded the initial LP.\n\nPartially treated or atypical infection: Initial fever with lymphocytic predominance could reflect partially treated bacterial meningitis or an atypical organism. The negative PCR and Borrelia serology reduce but do not exclude this. Useful next information: antibiotic history, CSF glucose, and extended microbiology.\n\nReassessment needed: Confirm antibiotic exposure before first LP, review MRI for intracranial hypotension features, and obtain pending culture results before deciding management.",
+  "word_count": {
+    "words": 203,
+    "minimum": 160,
+    "maximum": 230,
+    "within_range": true,
+    "extra_tolerance": 0,
+    "json_excluded": false
+  },
+  "grades": {
+    "D5c": {
+      "status": "scored",
+      "score": 5,
+      "reason": "The clinician specifically requests the most diagnostically useful missing information at each step — prior admission details and lumbar puncture history, positional relief pattern, current neurological examination findings, brain MRI, repeat CSF results, and microbiology — and the recorded reasoning explicitly explains how each would discriminate between the leading alternatives (recurrent/ongoing lymphocytic meningitis vs post-LP intracranial hypotension, cerebellar/brainstem involvement). This matches the Score 5 anchor of requesting the most diagnostically useful missing information and explaining how it clarifies the differential.",
+      "unanchored": false
+    },
+    "D3a": {
+      "status": "scored",
+      "score": 5,
+      "reason": "The opening one-sentence summary accurately captures the key facts supplied: a 36-year-old woman with recurrent positional (orthostatic) headache, meningeal signs (neck stiffness, Kernig), and persistent lymphocytic pleocytosis shortly after discharge following presumed aseptic meningitis. It correctly integrates the readmission timing, the positional feature, and the CSF findings, and it frames the diagnostic pivot — distinguishing post-LP intracranial hypotension from relapsing aseptic meningitis or atypical infection — which directly guides the subsequent hypothesis generation. It is both accurate and concise, meeting the score 5 anchor.",
+      "unanchored": false
+    }
+  },
+  "completed_at": "2026-10-23T14:33:17.287342+00:00"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "C02.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:00:53.957653+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Have you had similar episodes of unsteadiness or other neurological symptoms before — for example, periods of blurred or double vision, numbness or tingling in your limbs, or weakness that came on and then improved? If so, roughly how long did those episodes last?\", \"permitted_statements\": [{\"id\": \"C02_F02\", \"text\": \"About a year ago, I had trouble with my speech.\"}, {\"id\": \"C02_F03\", \"text\": \"Some months ago, I had painful blurred vision in one eye and urinary symptoms.\"}, {\"id\": \"C02_F04\", \"text\": \"Those earlier symptoms resolved.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9cfa656b73a77132",
+        "model": "arc:lite",
+        "created": 1792760454,
+        "usage": {
+          "prompt_tokens": 266,
+          "total_tokens": 511,
+          "completion_tokens": 245,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 216
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C02_F02\",\"C02_F03\",\"C02_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.14,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C02_F02",
+      "C02_F03",
+      "C02_F04"
+    ]
+  }
+}

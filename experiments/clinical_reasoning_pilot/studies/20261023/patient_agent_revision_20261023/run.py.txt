@@ -1,0 +1,332 @@
+"""Run the frozen patient-interview comparison, serially and resumably."""
+from pathlib import Path
+from datetime import datetime,timezone
+from importlib.metadata import version
+import argparse,hashlib,json,sys,time,re
+from difflib import SequenceMatcher
+import httpx
+
+ROOT=Path(__file__).resolve().parent
+PILOT=ROOT.parent
+REPO=PILOT.parent/'auto rubric'
+sys.path.insert(0,str(REPO/'arena'))
+from engine import Provider,Settings,CRITERIA,WORD_COUNT_RULE,generation_messages,redact,run_sync,word_count_info
+
+DOCTOR_SYSTEM='''You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.
+Return only JSON: {"action":"ask" or "finish", "question":"one natural-language question, at most two related topics", "topics":[one or two topic IDs], "record_period":"any, initial, previous, readmission, or current", "assessment":{"summary":"brief supported working assessment", "certainty":"uncertain", "working", or "confirmed"}}.
+The standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.
+Do not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.
+For existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.
+Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.'''
+PATIENT_SYSTEM='''Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {"utterance_order":["exact supplied fact IDs"]}. The controller, not you, will render the fixed first-person sentences.'''
+
+
+
+def now():return datetime.now(timezone.utc).isoformat()
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,obj):
+ p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_suffix('.tmp')
+ tmp.write_text(json.dumps(redact(obj,SETTINGS.api_key),ensure_ascii=False,indent=2)+'\n');tmp.replace(p)
+def parse_obj(text):
+ s=text.strip()
+ if s.startswith('```'):s=s.split('\n',1)[1].rsplit('```',1)[0].strip()
+ return json.loads(s)
+
+def doctor_valid(o):
+ assert o.get('action') in ['ask','finish'],'Invalid doctor action'
+ a=o.get('assessment',{});assert a.get('certainty') in ['uncertain','working','confirmed'],'Invalid certainty label'
+ assert isinstance(a.get('summary'),str),'Missing public assessment'
+ if o['action']=='ask':
+  assert isinstance(o.get('question'),str) and o['question'].strip(),'Empty question'
+  assert 1<=len(o.get('topics',[]))<=2 and all(t in PROTOCOL['topics'] for t in o['topics']),'Invalid routing topics'
+ return o
+
+def patient_valid(o,allowed):
+ order=o.get('utterance_order')
+ assert isinstance(order,list) and len(order)==len(allowed) and set(order)==set(allowed),'Invalid patient layout IDs'
+ return o
+
+
+def operation(opid,payload=None,validator=None,grade=None):
+ path=ROOT/'calls'/(opid+'.json')
+ state=read(path) if path.exists() else {'id':opid,'attempts':[],'status':'planned'}
+ if state['status']=='complete':return state['result']
+ for _ in range(len(state['attempts']),3):
+  cap={'started_at':now()};print(now(),opid,'attempt',len(state['attempts'])+1,flush=True)
+  SETTINGS.timeout=90 if not state['attempts'] else 180
+  cap['timeout_seconds']=SETTINGS.timeout
+  try:
+   if grade:
+    result=run_sync(PROVIDER.grade(grade[0],grade[1],cap))
+   else:
+    raw=run_sync(PROVIDER.completion(payload,cap));text=raw['choices'][0]['message']['content']
+    result=validator(parse_obj(text)) if validator else {'text':text.strip()}
+   cap['status']='success';state.update(status='complete',result=result)
+  except Exception as exc:
+   cap.update(status='error',error=redact(str(exc),SETTINGS.api_key));state.update(status='error',error=cap['error'])
+  state['attempts'].append(cap);save(path,state)
+  if state['status']=='complete':return state['result']
+  if len(state['attempts'])<3:time.sleep(8)
+ raise RuntimeError(opid+': '+state.get('error','operation failed'))
+
+def chat_payload(messages,limit=2048):
+ return {'model':SETTINGS.answer_model,'messages':messages,'temperature':0,'reasoning_effort':'low','max_tokens':limit}
+
+def turn_text(turn, include_checkpoint=False):
+ parts=[f"Clinician: {turn['question']}"]
+ if include_checkpoint:
+  a=turn['doctor_output']['assessment']
+  parts.append('Recorded clinician checkpoint BEFORE the patient reply (not patient-facing): '+a['summary']+' [certainty: '+a['certainty']+']')
+ if turn.get('patient_reply'):parts.append('Patient: '+turn['patient_reply'])
+ elif not turn['fixed_records']:parts.append('Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.')
+ for fact in turn['fixed_records']:
+  label='Fixed collateral record' if fact['channel']=='collateral' else 'Fixed clinical record'
+  parts.append(label+' ['+fact['context']+']: '+fact['text'])
+ if turn.get('feedback'):parts.append('Controller: '+turn['feedback'])
+ return '\n'.join(parts)
+
+RECORD_TOPICS=set(['examination','vital_signs','routine_laboratory','glucose','microbiology','csf','ct_imaging','mri_imaging','echocardiography','eeg','monoclonal_testing','enzyme_genetics','nuclear_imaging','gastrointestinal_records','device_check'])
+RECORD_TERMS={
+ 'examination':r'exam|neurolog|physical|signs|assessment',
+ 'vital_signs':r'vital|blood pressure|pulse|heart rate|observations',
+ 'routine_laboratory':r'blood|lab|biochem|metabolic|renal|creatinine|troponin|bnp',
+ 'glucose':r'glucose|sugar|hypoglyc', 'microbiology':r'infect|culture|pcr|serolog|borrelia',
+ 'csf':r'csf|cerebrospinal|lumbar|puncture|spinal fluid',
+ 'ct_imaging':r'\bct\b|scan|imaging|computed', 'mri_imaging':r'\bmri\b|scan|imaging|magnetic',
+ 'echocardiography':r'echo|ultrasound|heart imaging|cardiac imaging',
+ 'eeg':r'eeg|electroenceph|brain wave',
+ 'monoclonal_testing':r'monoclonal|immunofix|light.chain|protein|paraprotein',
+ 'enzyme_genetics':r'enzyme|genetic|galactosidase|gla|lyso',
+ 'nuclear_imaging':r'pyp|scintig|nuclear|tracer|pyrophosphate',
+ 'gastrointestinal_records':r'endoscop|colonoscop|histolog|biops|gastrointestinal|stomach|bowel',
+ 'device_check':r'pacemaker|device|interrogat',
+}
+EXPLICIT_RECORD_TERMS={
+ 'ct_imaging':r'\bct\b|computed tomograph', 'mri_imaging':r'\bmri\b|magnetic resonance',
+ 'csf':r'\bcsf\b|cerebrospinal|lumbar puncture|spinal tap',
+ 'eeg':r'\beeg\b|electroenceph', 'glucose':r'glucose|blood sugar',
+ 'vital_signs':r'blood pressure|vital signs|pulse readings|heart rate',
+ 'echocardiography':r'echocardiogra|echocardiogram|\becho\b',
+ 'microbiology':r'culture|\bpcr\b|serolog',
+ 'monoclonal_testing':r'monoclonal|immunofix|free.light.chain|paraprotein',
+ 'enzyme_genetics':r'enzyme|genetic|galactosidase|\bgla\b|lyso',
+ 'nuclear_imaging':r'\bpyp\b|scintig|nuclear medicine|pyrophosphate',
+ 'gastrointestinal_records':r'colonoscop|endoscop|histolog',
+ 'device_check':r'pacemaker|device check|interrogation',
+}
+
+def scope_period(d):
+ q=d['question']
+ # An explicit admission in the question is authoritative even if the JSON tag says any.
+ earlier=bool(re.search(r'(previous|first|initial|earlier) admission',q,re.I))
+ later=bool(re.search(r'readmission|14 march|(current|this|latest) admission',q,re.I))
+ if earlier and not later:return 'initial'
+ if later and not earlier:return 'readmission'
+ p=d.get('record_period','any')
+ if p not in ['any','initial','previous','readmission','current']:return 'any'
+ # The explicit natural-language question, not an invisible tag, must request the scope.
+ words={'initial':r'initial|first|earlier|original','previous':r'previous|earlier|night|overnight|past',
+        'readmission':r'readmi|return|second admission|14 march','current':r'current|now|today|latest|daytime|updated|recent'}
+ return p if p=='any' or re.search(words[p],d['question'],re.I) else 'any'
+
+def select_facts(c,d,released):
+ """Select new fixed facts only; bound each report category and retain context."""
+ topics=list(dict.fromkeys(d['topics']))
+ # Tags assist routing; a tag omission must not hide a report explicitly asked for.
+ for topic,pattern in EXPLICIT_RECORD_TERMS.items():
+  if re.search(pattern,d['question'],re.I) and topic not in topics:topics.append(topic)
+ if re.search(r'medicines|medication|treatment|drug|dose',d['question'],re.I) and 'medications' not in topics:
+  topics.append('medications')
+ patient=[f for f in c['facts'] if f['channel']=='patient' and f['topic'] in topics and f['id'] not in released]
+ record=[];groups=[];notes=[];period=scope_period(d)
+ for topic in topics:
+  if topic=='tests':
+   notes.append('A broad tests request releases no results. Please specify the type of existing examination or investigation.')
+   continue
+  candidates=[f for f in c['facts'] if f['channel']!='patient' and (f['topic']==topic or topic in f.get('also_topics',[])) and f['id'] not in released]
+  if topic in RECORD_TOPICS:
+   if not re.search(RECORD_TERMS[topic],d['question'],re.I):
+    notes.append('No '+topic+' report returned: the actual question did not request that report type.')
+    continue
+   if period!='any':
+    effective=period
+    if c['case_id']=='N04_INITIAL' and period in ['current','previous']:
+     effective='readmission' if period=='current' else 'initial'
+    if c['case_id']=='N05' and period=='previous':effective='initial'
+    candidates=[f for f in candidates if f['period'] in [effective,'any']]
+   # Region-specific requests must not receive another region's MRI report.
+   if topic=='mri_imaging':
+    if re.search(r'brain|head',d['question'],re.I) and not re.search(r'spin|back',d['question'],re.I):
+     candidates=[f for f in candidates if 'spinal MRI' not in f['text']]
+    if re.search(r'spin|back',d['question'],re.I) and not re.search(r'brain|head|cardiac|heart',d['question'],re.I):
+     candidates=[f for f in candidates if 'Brain MRI' not in f['text'] and 'Cardiac MRI' not in f['text']]
+   if candidates and len(groups)<PROTOCOL['maximum_reports_per_turn']:
+    group=candidates[0]['release_group'];chosen=[f for f in c['facts'] if f['release_group']==group and f['id'] not in released]
+    record.extend(chosen);groups.append(group)
+    notes.append('One existing '+topic+' report group returned with its clinical context. A later question can request another existing report.')
+  else:
+   # A history question may elicit fixed collateral/history excerpts, not unrelated investigations.
+   record.extend(candidates)
+ return patient,record,notes
+
+def repeated_reason(d,turns,patient,records):
+ if d['action']!='ask':return ''
+ new={f['id'] for f in patient+records}
+ if new:return ''
+ norm=lambda s:' '.join(re.findall(r'[a-z0-9]+',s.lower()))
+ for t in turns:
+  if set(t['topics'])==set(d['topics']) and SequenceMatcher(None,norm(t['question']),norm(d['question'])).ratio()>=0.86:
+   return 'This repeats an earlier question without any additional recorded information to return.'
+ if sum(set(t['topics'])==set(d['topics']) and not t['new_fact_ids'] for t in turns)>=2:
+  return 'Two earlier questions in this same scope returned no new recorded information.'
+ return ''
+
+def interview(c,state):
+ turns=state.setdefault('turns',[]);released=set(c['opening_fact_ids']);facts={f['id']:f for f in c['facts']}
+ for t in turns:released.update(t['released_fact_ids'])
+ for number in range(len(turns)+1,PROTOCOL['maximum_question_turns']+1):
+  history=[{'role':'system','content':DOCTOR_SYSTEM+'\nStandard topic IDs:\n'+json.dumps(PROTOCOL['topics'])},
+   {'role':'user','content':c['common_information']+'\nPatient opening:\n'+c['opening']+'\nYou may ask up to six questions. No other patient facts have yet been supplied.'}]
+  for t in turns:
+   history.extend([{'role':'assistant','content':json.dumps(t['doctor_output'],ensure_ascii=False)},
+    {'role':'user','content':turn_text(t).split('\n',1)[1]+'\nContinue only from the information actually obtained.'}])
+  d=operation(c['case_id']+f'.doctor.{number:02d}',chat_payload(history),doctor_valid)
+  proposals=[{'kind':'initial','output':d}]
+  if d['action']=='finish':
+   state.setdefault('question_proposals',[]).append({'turn':number,'proposals':proposals})
+   state['closing_assessment']=d['assessment'];state['stopped_early']=True;break
+  patient_facts,records,notes=select_facts(c,d,released)
+  repeat=repeated_reason(d,turns,patient_facts,records)
+  if repeat:
+   proposals[0]['blocked_reason']=repeat
+   repair_history=history+[{'role':'assistant','content':json.dumps(d,ensure_ascii=False)},
+    {'role':'user','content':'Controller feedback: '+repeat+' Do not send the same question to the patient again. Ask a different useful question based only on the information already obtained, or finish with the limitation recorded. No new patient facts are being supplied by this feedback.'}]
+   d=operation(c['case_id']+f'.doctor.{number:02d}.repair',chat_payload(repair_history),doctor_valid)
+   proposals.append({'kind':'one_allowed_repair','output':d})
+   if d['action']=='ask':
+    patient_facts,records,notes=select_facts(c,d,released)
+    repeat=repeated_reason(d,turns,patient_facts,records)
+   else:repeat=''
+   if d['action']=='finish' or repeat:
+    if repeat:proposals[-1]['blocked_reason']=repeat
+    state.setdefault('question_proposals',[]).append({'turn':number,'proposals':proposals})
+    state['closing_assessment']=d['assessment'];state['stopped_early']=True
+    state['stop_reason']='repetition_limit' if repeat else 'model_finish_after_repeat_feedback'
+    break
+  state.setdefault('question_proposals',[]).append({'turn':number,'proposals':proposals})
+  used=[];patient_reply=''
+  if patient_facts:
+   payload=chat_payload([{'role':'system','content':PATIENT_SYSTEM},
+    {'role':'user','content':json.dumps({'current_question':d['question'],
+     'permitted_statements':[{'id':f['id'],'text':f['patient_text']} for f in patient_facts]},ensure_ascii=False)}])
+   allowed=[f['id'] for f in patient_facts]
+   fallback=False
+   try:
+    response=operation(c['case_id']+f'.patient.{number:02d}',payload,
+     lambda o:patient_valid(o,allowed))
+    used=response['utterance_order']
+   except RuntimeError:
+    used=allowed;fallback=True
+   byid={f['id']:f for f in patient_facts}
+   patient_reply=' '.join(byid[fid]['patient_text'] for fid in used)
+  new_ids=list(dict.fromkeys(used+[f['id'] for f in records]))
+  if not new_ids:
+   notes.append('No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.')
+  turn={'number':number,'question':d['question'],'topics':d['topics'],'doctor_output':d,
+   'visible_fact_ids_before_question':sorted(released),'patient_reply':patient_reply,
+   'permitted_patient_fact_ids':[f['id'] for f in patient_facts],
+   'patient_used_fact_ids':used,'patient_layout_fallback':fallback if patient_facts else False,'fixed_records':records,'unavailable':not patient_facts,
+   'released_fact_ids':new_ids,'new_fact_ids':new_ids,'feedback':' '.join(notes),
+   'requested_period':scope_period(d),'report_groups':[f['release_group'] for f in records if f['topic'] in RECORD_TOPICS]}
+  turns.append(turn);released.update(new_ids)
+  state['released_fact_ids']=sorted(released);save(ROOT/'outputs'/(c['case_id']+'.json'),state)
+ state['released_fact_ids']=sorted(released)
+ state['question_turns']=len(turns)
+ state['interview_complete']=True
+ return state
+
+def grade_data(c,answer,arm):
+ if arm=='static':
+  facts=c['full_visible_snapshot'];history=''
+ else:
+  facts=c['common_information']+'\nOpening information:\n'+c['opening']
+  history='\n\n'.join(turn_text(t) for t in answer['turns'])
+ return {'case_id':c['case_id'],'title':c['title'],'facts':facts,'history':history,
+  'task':c['final_task'],'answer':answer['static_answer'] if arm=='static' else answer['interactive_answer'],
+  'reference':c['reference']+'\nFor factual accuracy, use only information actually supplied to this answering condition. For final-answer completeness, accept an appropriate statement of uncertainty or missing evidence rather than requiring hidden facts as if already known. Evaluate information elicitation separately in the dialogue assessment.',
+  'reference_status':'draft','judge_model':SETTINGS.judge_model,'answer_model':SETTINGS.answer_model}
+
+def generate_case(c):
+ cid=c['case_id'];path=ROOT/'outputs'/(cid+'.json')
+ state=read(path) if path.exists() else {'case_id':cid,'protocol_sha256':sha(ROOT/'protocol.json'),
+  'created_at':now(),'reference_status':'draft','status':'generating'}
+ save(path,state)
+ if 'static_answer' not in state:
+  data={'facts':c['full_visible_snapshot'],'task':c['final_task'],'history':''}
+  result=operation(cid+'.static.final',chat_payload(generation_messages(data),8192))
+  state['static_answer']=result['text'];state['static_word_count']=word_count_info(result['text'],c['final_task']);save(path,state)
+ if not state.get('interview_complete'):state=interview(c,state)
+ if 'interactive_answer' not in state:
+  data={'facts':c['common_information']+'\nPatient opening:\n'+c['opening'],'task':c['final_task'],\
+   'history':'\n\n'.join(turn_text(t) for t in state['turns'])}
+  messages=generation_messages(data)
+  result=operation(cid+'.interactive.final',chat_payload(messages,8192))
+  state['interactive_answer']=result['text'];state['interactive_word_count']=word_count_info(result['text'],c['final_task']);save(path,state)
+ state['status']='answers_ready';save(path,state)
+ print(now(),cid,'ANSWERS READY',state['question_turns'],'question turns',flush=True)
+ return state
+
+def grade_case(c):
+ cid=c['case_id'];path=ROOT/'outputs'/(cid+'.json');state=read(path)
+ for arm in ['static','interactive']:
+  grades=state.setdefault(arm+'_grades',{})
+  for item in c['final_criteria']:
+   if item in grades:continue
+   data=grade_data(c,state,arm)
+   grades[item]=operation(cid+'.'+arm+'.'+item,grade=(data,item));save(path,state)
+ transcript=c['common_information']+'\nPatient opening:\n'+c['opening']+'\n\n'+'\n\n'.join(turn_text(t,include_checkpoint=True) for t in state['turns'])
+ for item in c['dialogue_criteria']:
+  grades=state.setdefault('dialogue_grades',{})
+  if item in grades:continue
+  data={'facts':'EXAMINER-ONLY case inventory, not all supplied to the clinician:\n'+c['full_visible_snapshot'],
+   'history':'','task':'Assess the clinician\'s actual patient interview. The inventory identifies possible information, not facts the clinician already knew. Judge each turn using only the opening and facts released by then. For context seeking, judge useful explicit requests and prioritisation, not just the final answer. For uncertainty, assess the brief supported clinical checkpoints as well as questions, distinguishing tentative working hypotheses from unsupported established conclusions. ONLY for audience calibration, assess the clinician\'s patient-facing questions and explanations rather than the vocabulary of fixed clinical reports or non-patient-facing checkpoints. Do not apply this audience-only restriction to uncertainty or other criteria. Do not require unavailable information or a final diagnosis.',
+   'reference':c['reference']+'\nCoverage targets are provisional; do not invent a mandatory checklist or assume all unasked details were known.',
+   'reference_status':'draft','answer':transcript,'judge_model':SETTINGS.judge_model}
+  grades[item]=operation(cid+'.dialogue.'+item,grade=(data,item));save(path,state)
+ state['status']='complete';state['completed_at']=now();save(path,state)
+ print(now(),cid,'COMPLETE',flush=True)
+
+
+def main():
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--cases',nargs='*');parser.add_argument('--phase',choices=['all','generate','grade'],default='all');args=parser.parse_args()
+ assert sha(ROOT/'protocol.json')==(ROOT/'protocol.sha256').read_text().strip()
+ (ROOT/'outputs').mkdir(exist_ok=True)
+ selected=[c for c in PROTOCOL['cases'] if not args.cases or c['case_id'] in args.cases]
+ if not (ROOT/'environment.json').exists():
+  env={'started_at':now(),'settings':SETTINGS.public(),'autorubric_version':version('autorubric'),
+   'protocol_sha256':sha(ROOT/'protocol.json'),'runner_sha256':sha(Path(__file__)),
+   'engine_sha256':sha(REPO/'arena/engine.py'),'reference_status':'draft','call_policy':'serial; first successful visible response retained; up to three saved technical attempts (90s then 180s); no answer replacement based on grade or length; one saved behavioural repair per repetitive-question proposal'}
+  save(ROOT/'environment.json',env)
+ if not (ROOT/'provider_before.json').exists():
+  try:
+   r=httpx.get(SETTINGS.base_url+'/models',headers={'Authorization':'Bearer '+SETTINGS.api_key},timeout=20)
+   snapshot={'checked_at':now(),'http_status':r.status_code}
+   if r.status_code==200:snapshot['models']=[m for m in r.json().get('data',[]) if m.get('id') in ['arc:lite','arc:apex']]
+  except Exception as e:snapshot={'checked_at':now(),'error_type':type(e).__name__}
+  save(ROOT/'provider_before.json',snapshot)
+ if args.phase in ['all','generate']:
+  for c in selected:
+   try:generate_case(c)
+   except Exception as exc:print(now(),c['case_id'],'GENERATION ERROR',redact(str(exc),SETTINGS.api_key),flush=True)
+ if args.phase in ['all','grade']:
+  for c in selected:
+   try:grade_case(c)
+   except Exception as exc:print(now(),c['case_id'],'GRADING ERROR',redact(str(exc),SETTINGS.api_key),flush=True)
+ print('FINISHED',args.phase,[c['case_id'] for c in selected],flush=True)
+
+
+SETTINGS=Settings.load();SETTINGS.timeout=90
+PROVIDER=Provider(SETTINGS)
+PROTOCOL=read(ROOT/'protocol.json')
+if __name__=='__main__':main()

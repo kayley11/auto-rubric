@@ -1,0 +1,87 @@
+{
+  "id": "C01.doctor.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:56:21.264402+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nMy ankles have become swollen.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Is the swelling in both ankles or just one, and how long has it been going on?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"assessment\": {\"summary\": \"Ankle swelling reported; laterality, duration, and associated features not yet established.\", \"certainty\": \"uncertain\", \"working\": \"Ankle swelling of undetermined cause\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: My ankles are swollen, my face is puffy in the morning, and my urine is frothy. My breathing is normal.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you noticed any blood in your urine, a change in how much you're urinating, or any unexplained weight gain? Also, do you have any known kidney problems, diabetes, or high blood pressure?\", \"topics\": [\"presenting_symptoms\", \"medical_history\"], \"assessment\": {\"summary\": \"Bilateral ankle swelling, morning facial puffiness, and frothy urine together suggest significant proteinuria, possibly nephrotic-range. Normal breathing is reassuring against pulmonary oedema. Cause not yet established.\", \"certainty\": \"uncertain\", \"working\": \"Possible nephrotic syndrome or significant proteinuria\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: My ankles are swollen, my face is puffy in the morning, and my urine is frothy. I have rheumatoid arthritis. My breathing is normal.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"What medications are you currently taking for your rheumatoid arthritis, and have you ever had your blood pressure checked or any blood or urine tests done recently?\", \"topics\": [\"medications\", \"tests\"], \"assessment\": {\"summary\": \"Bilateral ankle swelling, morning facial puffiness, and frothy urine are consistent with nephrotic-range proteinuria. Known rheumatoid arthritis raises the possibility of secondary amyloidosis or medication-related kidney injury (e.g. NSAIDs, gold, penicillamine). Normal breathing is reassuring against pulmonary oedema. Cause not yet confirmed.\", \"certainty\": \"uncertain\", \"working\": \"Nephrotic-range proteinuria, possible secondary to rheumatoid arthritis or its treatment\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I take methotrexate and use NSAIDs intermittently. The furosemide I started recently has not helped.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-ae7486acc2525af3",
+        "model": "arc:lite",
+        "created": 1792756581,
+        "usage": {
+          "prompt_tokens": 998,
+          "total_tokens": 1373,
+          "completion_tokens": 375,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 190
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Have you had any blood or urine tests done recently, such as a urine dipstick, blood creatinine, or albumin level? If so, what were the results?\", \"topics\": [\"tests\"], \"assessment\": {\"summary\": \"Nephrotic-range proteinuria is strongly suggested by frothy urine, bilateral ankle swelling, and morning facial puffiness. Intermittent NSAID use is a recognised cause of nephrotic syndrome (minimal change or membranous nephropathy) and can also blunt diuretic response, which may explain why furosemide has not helped. Rheumatoid arthritis adds a further possible aetiology (secondary amyloidosis). Cause not yet confirmed.\", \"certainty\": \"uncertain\", \"working\": \"Nephrotic syndrome, likely NSAID-related or secondary to rheumatoid arthritis\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.36,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Have you had any blood or urine tests done recently, such as a urine dipstick, blood creatinine, or albumin level? If so, what were the results?",
+    "topics": [
+      "tests"
+    ],
+    "assessment": {
+      "summary": "Nephrotic-range proteinuria is strongly suggested by frothy urine, bilateral ankle swelling, and morning facial puffiness. Intermittent NSAID use is a recognised cause of nephrotic syndrome (minimal change or membranous nephropathy) and can also blunt diuretic response, which may explain why furosemide has not helped. Rheumatoid arthritis adds a further possible aetiology (secondary amyloidosis). Cause not yet confirmed.",
+      "certainty": "uncertain",
+      "working": "Nephrotic syndrome, likely NSAID-related or secondary to rheumatoid arthritis"
+    }
+  }
+}

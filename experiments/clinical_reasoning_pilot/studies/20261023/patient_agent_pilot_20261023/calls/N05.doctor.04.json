@@ -1,0 +1,87 @@
+{
+  "id": "N05.doctor.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:02:40.758142+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nI have had diarrhoea for a long time and have also become breathless and tired.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long have you had the diarrhoea, and can you describe what it looks like — for example, is it watery, does it contain blood or mucus, and how often are you going to the toilet each day?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"assessment\": {\"summary\": \"Chronic diarrhoea with breathlessness and fatigue; aetiology unclear. Could relate to malabsorption, inflammatory bowel disease, or another systemic condition causing both GI and respiratory/haematological symptoms.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness. The diarrhoea persisted. Over the preceding six months, I developed breathlessness with activity, fatigue and a 10 kg weight loss.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you had any blood tests or other investigations done for the diarrhoea or the breathlessness over the past year — for example, a full blood count, iron studies, or any stool tests?\", \"topics\": [\"tests\"], \"assessment\": {\"summary\": \"Chronic watery diarrhoea with weight loss, breathlessness, fatigue, and distal numbness raises concern for a malabsorptive or systemic process (e.g. coeliac disease, inflammatory bowel disease, or a haematological/lymphoproliferative condition). No investigations yet reported.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No further patient-reported information is supplied for this question; this is not a negative finding.\nFixed clinical record: At the initial examination, blood pressure was 80/46 mmHg and heart rate 52 beats/min.\nFixed clinical record: Initial NT-proBNP was 887 pg/mL, high-sensitivity troponin T 23.9 ng/L, creatinine 1.3 mg/dL and eGFR 62.7 mL/min/1.73 m².\nFixed clinical record: No updated vital signs are supplied for the later investigation-review point.\nFixed clinical record: Echocardiography showed symmetric left-ventricular wall thickening, septal thickness 14.1 mm, LVEF 36%, grade-II diastolic dysfunction and relative apical sparing on strain.\nFixed clinical record: Cardiac MRI showed diffuse wall thickening, high native myocardial T1, extracellular volume 49.85%–52.47%, and diffuse subendocardial late gadolinium enhancement involving the left ventricle and interatrial septum.\nFixed clinical record: Serum/urine immunofixation and serum free-light-chain testing found no monoclonal gammopathy.\nFixed clinical record: Alpha-galactosidase A activity was 1.70 µmol/L/h (laboratory reference >2.0); GLA sequencing found no pathogenic variant. Plasma lyso-Gb3 was not measured.\nFixed clinical record: Technetium-PYP scintigraphy showed planar grade-1 myocardial uptake and a heart-to-contralateral-lung ratio >1.42; acquisition timing and additional technical details are not supplied here.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Is there any family history of similar symptoms — such as unexplained heart failure, neuropathy, or early death in relatives? And could you describe the numbness a bit more — is it in both feet, does it extend up the legs, and have you noticed any difficulty with balance or sweating changes?\", \"topics\": [\"medical_history\", \"presenting_symptoms\"], \"assessment\": {\"summary\": \"Cardiac imaging (symmetric LV thickening, apical sparing, high T1, elevated ECV, subendocardial LGE) is consistent with an infiltrative cardiomyopathy, most likely amyloidosis. Negative monoclonal workup makes AL less likely; PYP grade-1 with H/CL >1.42 is suggestive but not definitive for ATTR. Mildly low alpha-galactosidase A with negative GLA sequencing makes Fabry less likely but not excluded. Autonomic features (hypotension, bradycardia) and distal numbness suggest a systemic process with neuropathy. Family history and neuropathy pattern would help distinguish hereditary ATTR from other causes.\", \"certainty\": \"working\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness.\nFixed clinical record: Previous gastrointestinal assessment identified bile reflux gastritis and a colonic lesion that was removed; histology showed a sessile serrated lesion with dysplasia.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9bfe0ab5231f9684",
+        "model": "arc:lite",
+        "created": 1792756961,
+        "usage": {
+          "prompt_tokens": 1543,
+          "total_tokens": 2823,
+          "completion_tokens": 1280,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1042
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Has anyone in your family — parents, siblings, or children — had heart failure, unexplained neuropathy, or died young? Also, have you ever had carpal tunnel syndrome or noticed any difficulty with fine movements in your hands?\", \"topics\": [\"medical_history\", \"presenting_symptoms\"], \"assessment\": {\"summary\": \"Cardiac imaging strongly suggests an infiltrative cardiomyopathy (symmetric LV thickening, apical sparing, high T1, elevated ECV, subendocardial LGE). Negative monoclonal workup argues against AL amyloidosis. PYP grade-1 with H/CL >1.42 is suggestive of ATTR but not definitive. Mildly low alpha-galactosidase A with negative GLA sequencing makes Fabry less likely but not excluded. Autonomic features (hypotension, bradycardia) and distal numbness suggest systemic neuropathy. Family history is critical to distinguish hereditary ATTR from wild-type. GI findings (bile reflux gastritis, sessile serrated lesion) are likely incidental.\", \"certainty\": \"working\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 3.99,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Has anyone in your family — parents, siblings, or children — had heart failure, unexplained neuropathy, or died young? Also, have you ever had carpal tunnel syndrome or noticed any difficulty with fine movements in your hands?",
+    "topics": [
+      "medical_history",
+      "presenting_symptoms"
+    ],
+    "assessment": {
+      "summary": "Cardiac imaging strongly suggests an infiltrative cardiomyopathy (symmetric LV thickening, apical sparing, high T1, elevated ECV, subendocardial LGE). Negative monoclonal workup argues against AL amyloidosis. PYP grade-1 with H/CL >1.42 is suggestive of ATTR but not definitive. Mildly low alpha-galactosidase A with negative GLA sequencing makes Fabry less likely but not excluded. Autonomic features (hypotension, bradycardia) and distal numbness suggest systemic neuropathy. Family history is critical to distinguish hereditary ATTR from wild-type. GI findings (bile reflux gastritis, sessile serrated lesion) are likely incidental.",
+      "certainty": "working"
+    }
+  }
+}

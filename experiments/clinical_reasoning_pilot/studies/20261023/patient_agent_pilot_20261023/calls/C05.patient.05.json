@@ -1,0 +1,56 @@
+{
+  "id": "C05.patient.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:00:30.661985+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"How are these seizures affecting your day-to-day life — for example, are you able to drive, work, or carry out your usual activities safely? And is there anything specific you are most concerned about or would like to discuss?\", \"permitted_statements\": [{\"id\": \"C05_F01\", \"text\": \"I am a young woman pursuing a modelling career.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9a0b96a4b449de3d",
+        "model": "arc:lite",
+        "created": 1792756830,
+        "usage": {
+          "prompt_tokens": 203,
+          "total_tokens": 338,
+          "completion_tokens": 135,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 120
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C05_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.91,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C05_F01"
+    ]
+  }
+}

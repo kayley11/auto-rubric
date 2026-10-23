@@ -1,0 +1,373 @@
+"""Read saved calls only; build the patient-interview comparison and evidence files."""
+from datetime import datetime, timezone
+from pathlib import Path
+import csv
+import hashlib
+import json
+import re
+import sys
+
+ROOT = Path(__file__).resolve().parent
+PILOT = ROOT.parent
+ARENA = PILOT.parent / "auto rubric" / "arena"
+sys.path.insert(0, str(ARENA))
+from engine import CRITERIA, WORD_COUNT_RULE, word_count_info
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def cell(value):
+    return str(value).replace("|", "\\|").replace("\n", " ")
+
+
+def table(headers, rows):
+    return ["| " + " | ".join(map(cell, headers)) + " |",
+            "| " + " | ".join("---" for _ in headers) + " |"] + [
+                "| " + " | ".join(map(cell, row)) + " |" for row in rows]
+
+
+def write_csv(path, rows):
+    if not rows:
+        return
+    with path.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+
+
+def label(grade):
+    return str(grade["score"]) if grade.get("score") is not None else grade["status"]
+
+
+def title(c):
+    return re.sub(r"^N\d+\s+—\s+", "", c["title"])
+
+
+def totals(calls):
+    attempts = [a for c in calls for a in c["attempts"]]
+    usages = [a.get("response", {}).get("usage") for a in attempts]
+    known = [u for u in usages if isinstance(u, dict)]
+    return {
+        "operations": len(calls), "saved_attempts": len(attempts),
+        "failed_attempts": sum(a.get("status") != "success" for a in attempts),
+        "attempts_with_usage": len(known), "attempts_without_usage": len(attempts)-len(known),
+        "prompt_tokens": sum(u.get("prompt_tokens", 0) for u in known),
+        "completion_tokens": sum(u.get("completion_tokens", 0) for u in known),
+        "total_tokens": sum(u.get("total_tokens", 0) for u in known),
+        "reasoning_tokens": sum((u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0) for u in known),
+        "request_seconds": round(sum(a.get("elapsed_seconds", 0) for a in attempts), 2),
+    }
+
+
+def stage(opid):
+    if opid.endswith(".static.final"):
+        return "static_generation"
+    if ".doctor." in opid:
+        return "interview_clinician"
+    if ".patient." in opid:
+        return "patient_sentence_order"
+    if opid.endswith(".interactive.final"):
+        return "interactive_final"
+    if ".dialogue." in opid:
+        return "dialogue_grading"
+    return "final_answer_grading"
+
+
+def main():
+    p = read(ROOT / "protocol.json")
+    assert sha(ROOT / "protocol.json") == (ROOT / "protocol.sha256").read_text().strip()
+    annotations = read(ROOT / "observations.json") if (ROOT / "observations.json").exists() else {}
+    cases = p["cases"]
+    outputs = {c["case_id"]: read(ROOT / "outputs" / (c["case_id"] + ".json")) for c in cases}
+    assert all(o["status"] == "complete" for o in outputs.values()), "Wait for all planned ratings."
+    calls = [read(f) for f in sorted((ROOT / "calls").glob("*.json"))]
+    callmap = {c["id"]: c for c in calls}
+    recovery = read(ROOT / "transport_recovery.json") if (ROOT / "transport_recovery.json").exists() else {}
+    recovery_map = recovery.get("mapping", {})
+
+    def saved_call(opid):
+        return callmap[recovery_map.get(opid, opid)]
+    failures = []
+    checks = []
+    facts_csv, grades_csv, metrics_csv, usage_csv, raw_cases = [], [], [], [], []
+    clean_sources = {c["id"]: c for c in read(PILOT / "data/cases.json")}
+    for pack in ["new_cases_20261022", "new_cases_batch2_20261022"]:
+        clean_sources.update({c["case_id"]: c for c in read(PILOT / pack / "cases.json")["cases"]})
+    case_metrics = {}
+    evidence = ROOT / "case_outputs"
+    evidence.mkdir(exist_ok=True)
+    for c in cases:
+        cid = c["case_id"]
+        o = outputs[cid]
+        facts = {f["id"]: f for f in c["facts"]}
+        source = clean_sources[cid]
+        assert c["full_visible_snapshot"] == source["facts"], (cid, "source snapshot changed")
+        assert c["original_final_task"] == source["task"], (cid, "original task changed")
+        assert all(f["text"] in source["facts"] for f in facts.values())
+        assert (PILOT / c["historical_run"]).exists(), (cid, "historical link")
+        assert o["protocol_sha256"] == sha(ROOT / "protocol.json")
+        visible = set(c["opening_fact_ids"])
+        for t in o["turns"]:
+            allowed = [f for f in facts.values() if f["topic"] in t["topics"]]
+            patients = {f["id"]: f for f in allowed if f["channel"] == "patient"}
+            records = [f for f in allowed if f["channel"] != "patient"]
+            assert t["visible_fact_ids_before_question"] == sorted(visible)
+            assert set(t["patient_used_fact_ids"]) == set(patients)
+            assert len(t["patient_used_fact_ids"]) == len(patients)
+            assert t["patient_reply"] == " ".join(patients[x]["patient_text"] for x in t["patient_used_fact_ids"])
+            assert t["fixed_records"] == records
+            assert set(t["released_fact_ids"]) == set(patients) | {f["id"] for f in records}
+            visible.update(t["released_fact_ids"])
+            op = callmap[f"{cid}.doctor.{t['number']:02d}"]
+            request = op["attempts"][-1]["request"]
+            # The doctor only receives the opening and earlier released dialogue, not the inventory.
+            assert request["messages"][1]["content"].startswith("Patient opening:\n"+c["opening"])
+            assert len(request["messages"]) == 2 + 2*(t["number"]-1)
+            if patients:
+                patient_call = callmap[f"{cid}.patient.{t['number']:02d}"]
+                for a in patient_call["attempts"]:
+                    content = json.loads(a["request"]["messages"][1]["content"])
+                    assert content["current_question"] == t["question"]
+                    assert content["permitted_statements"] == [
+                        {"id": f["id"], "text": f["patient_text"]} for f in patients.values()]
+            for f in allowed:
+                assert f["id"] in visible
+        assert sorted(visible) == o["released_fact_ids"]
+        for arm in ["static", "interactive"]:
+            assert o[arm+"_word_count"] == word_count_info(o[arm+"_answer"], c["final_task"])
+            assert set(o[arm+"_grades"]) == set(c["final_criteria"])
+            for item, g in o[arm+"_grades"].items():
+                op = saved_call(f"{cid}.{arm}.{item}")
+                assert op["result"] == g
+                a = op["attempts"][-1]
+                choice = json.loads(a["response"]["choices"][0]["message"]["content"])
+                expected = str(g["score"]) if g["score"] is not None else "Cannot assess"
+                assert choice["selected_label"] == expected
+                assert choice["selected_option"] == (["1","2","3","4","5","Cannot assess"].index(expected)+1)
+                if item == "D7c":
+                    full_prompt = "\n".join(m["content"] for m in a["request"]["messages"])
+                    assert json.dumps(o[arm+"_word_count"]) in full_prompt
+                grades_csv.append({"case":cid,"condition":arm,"criterion":item,"source_operation":op["id"],"name":CRITERIA[item]["name"],
+                                   "score":g["score"],"status":g["status"],"reason":g["reason"],"unanchored":g["unanchored"]})
+        assert set(o["dialogue_grades"]) == set(c["dialogue_criteria"])
+        for item, g in o["dialogue_grades"].items():
+            op = saved_call(f"{cid}.dialogue.{item}")
+            assert op["result"] == g
+            choice = json.loads(op["attempts"][-1]["response"]["choices"][0]["message"]["content"])
+            expected = str(g["score"]) if g["score"] is not None else "Cannot assess"
+            assert choice["selected_label"] == expected
+            assert choice["selected_option"] == (["1","2","3","4","5","Cannot assess"].index(expected)+1)
+            grades_csv.append({"case":cid,"condition":"dialogue","criterion":item,"source_operation":op["id"],"name":CRITERIA[item]["name"],
+                               "score":g["score"],"status":g["status"],"reason":g["reason"],"unanchored":g["unanchored"]})
+        targets = [f for f in c["facts"] if f["coverage_target"]]
+        partial_ids = set(annotations.get("partial_information_groups", {}))
+        complete_visible = visible - partial_ids
+        got = [f for f in targets if f["id"] in complete_visible]
+        missed = [f for f in targets if f["id"] not in complete_visible]
+        all_obtained = [f for f in c["facts"] if f["id"] in complete_visible]
+        same = sum(o["static_grades"][i]["score"] == o["interactive_grades"][i]["score"] for i in c["final_criteria"])
+        first_specific = annotations.get(cid, {}).get("first_hypothesis", "See the saved public checkpoints.")
+        metric = {"case":cid,"title":c["title"],"question_turns":o["question_turns"],
+                  "doctor_calls":sum(x["id"].startswith(cid+".doctor.") for x in calls),
+                  "complete_targets_obtained":len(got),"targets":len(targets),
+                  "all_groups_obtained":len(all_obtained),"all_groups":len(c["facts"]),
+                  "missing_target_ids":"; ".join(f["id"] for f in missed),
+                  "static_words":o["static_word_count"]["words"],"interactive_words":o["interactive_word_count"]["words"],
+                  "static_within_range":o["static_word_count"]["within_range"],
+                  "interactive_within_range":o["interactive_word_count"]["within_range"],
+                  "unchanged_item_scores":same,"paired_items":len(c["final_criteria"]),
+                  "confirmed_checkpoint_labels":sum(t["doctor_output"]["assessment"]["certainty"] == "confirmed" for t in o["turns"]),
+                  "patient_layout_fallbacks":sum(t["patient_layout_fallback"] for t in o["turns"])}
+        metrics_csv.append(metric)
+        case_metrics[cid] = {**metric, "obtained":got, "missed":missed, "all_obtained":all_obtained}
+        for f in c["facts"]:
+            facts_csv.append({"case":cid,"fact_id":f["id"],"topic":f["topic"],"channel":f["channel"],
+                              "coverage_target":f["coverage_target"],"complete_group_supplied":f["id"] in complete_visible,
+                              "fixed_statement_delivered":f["id"] in visible,
+                              "partial_group_reason":annotations.get("partial_information_groups",{}).get(f["id"],""),
+                              "opening_complete_group":f["id"] in c["opening_fact_ids"],
+                              "first_release_turn":0 if f["id"] in c["opening_fact_ids"] else next((t["number"] for t in o["turns"] if f["id"] in t["released_fact_ids"]),None),
+                              "source_quote":f["text"],"frozen_patient_statement":f.get("patient_text", "")})
+        owncalls = [x for x in calls if x["id"].startswith(cid+".")]
+        for kind in ["static_generation","interview_clinician","patient_sentence_order","interactive_final","final_answer_grading","dialogue_grading"]:
+            usage_csv.append({"case":cid,"stage":kind,**totals([x for x in owncalls if stage(x["id"]) == kind])})
+        raw = [cid+" — "+title(c), "", "FULL SNAPSHOT (STATIC CONDITION)",c["full_visible_snapshot"],
+               "", "OPENING (INTERACTIVE CONDITION)",c["opening"],"", "FINAL TASK — SAME IN BOTH CONDITIONS",c["final_task"],
+               "", "ADDED COUNTING INSTRUCTION",WORD_COUNT_RULE,"", "FIXED INFORMATION INVENTORY"]
+        for f in c["facts"]:
+            raw += [f"{f['id']} | {f['topic']} | {f['channel']} | target={f['coverage_target']} | complete_group_supplied={f['id'] in complete_visible}",
+                    "Source excerpt: "+f["text"]]
+            if f.get("patient_text"):
+                raw += ["Frozen patient wording: "+f["patient_text"]]
+        raw += ["", "INTERVIEW — UNCHANGED VISIBLE TEXT"]
+        for t in o["turns"]:
+            raw += ["",f"TURN {t['number']} | topics={','.join(t['topics'])}",
+                    "PUBLIC CLINICAL CHECKPOINT BEFORE THE REPLY (not patient-facing)",
+                    json.dumps(t["doctor_output"]["assessment"],ensure_ascii=False),
+                    "Clinician: "+t["question"]]
+            if t["patient_reply"]:
+                raw += ["Patient: "+t["patient_reply"]]
+            elif t["unavailable"]:
+                raw += ["Simulator: No further patient-reported information is supplied for this question; this is not a negative finding."]
+            for f in t["fixed_records"]:
+                raw += [("Fixed collateral record: " if f["channel"] == "collateral" else "Fixed clinical record: ")+f["text"]]
+        if "closing_assessment" in o:
+            raw += ["", "CLOSING PUBLIC CHECKPOINT",json.dumps(o["closing_assessment"],ensure_ascii=False)]
+        for arm in ["static","interactive"]:
+            raw += ["", arm.upper()+" FINAL ANSWER — UNCHANGED",o[arm+"_answer"],
+                    "", "LOCAL WORD COUNT",json.dumps(o[arm+"_word_count"]),"", arm.upper()+" FINAL-ANSWER ITEM RESULTS"]
+            for item,g in o[arm+"_grades"].items():
+                raw += ["",f"{item} — {CRITERIA[item]['name']}: {label(g)}",g["reason"]]
+        raw += ["", "DIALOGUE ITEM RESULTS — SEPARATE FROM FINAL-ANSWER RATINGS"]
+        for item,g in o["dialogue_grades"].items():
+            raw += ["",f"{item} — {CRITERIA[item]['name']}: {label(g)}",g["reason"]]
+        raw += ["", "DRAFT REFERENCE — NOT CHANGED FOR THIS EXPERIMENT",c["reference"],
+                "", "ORIGINAL RUBRIC DESCRIPTIONS"]
+        for item in dict.fromkeys(c["final_criteria"]+c["dialogue_criteria"]):
+            raw += ["",item+" — "+CRITERIA[item]["name"]]
+            raw += [f"{i}: {CRITERIA[item]['anchors'].get(str(i),'No original descriptor supplied.')}" for i in range(1,6)]
+        raw += ["", "SAVED CALLS / USAGE (including unsuccessful technical attempts)"]
+        for x in owncalls:
+            raw += ["",x["id"]+" | "+x["status"]]
+            for number,a in enumerate(x["attempts"],1):
+                raw += [f"Attempt {number}: "+json.dumps({k:a[k] for k in ['started_at','http_status','elapsed_seconds','status','error'] if k in a},ensure_ascii=False),
+                        "Reported usage: "+json.dumps(a.get("response",{}).get("usage"),ensure_ascii=False)]
+                if a.get("status") != "success":
+                    for ch in a.get("response",{}).get("choices",[]):
+                        raw += ["Unsuccessful attempt visible content: "+str(ch.get("message",{}).get("content")),
+                                "Finish reason: "+str(ch.get("finish_reason"))]
+        text = "\n".join(raw)+"\n"
+        (evidence/(cid+".txt")).write_text(text)
+        raw_cases.append(text)
+        checks.append({"case":cid,"source_snapshot_matches":True,"all_released_sentences_match_frozen_text":True,
+                       "fixed_records_verbatim":True,"patient_inputs_within_release_boundary":True,
+                       "fact_release_sequence_matches":True,"word_counts_recomputed":True,
+                       "planned_grades_saved":len(c["final_criteria"])*2+len(c["dialogue_criteria"]),
+                       "topic_question_alignment_review":annotations.get(cid,{}).get("routing_review","not yet reviewed")})
+    for x in calls:
+        for n,a in enumerate(x["attempts"],1):
+            if a.get("status") != "success":
+                failures.append({"operation":x["id"],"attempt":n,"error":a.get("error"),
+                                 "finish_reason":a.get("response",{}).get("choices",[{}])[0].get("finish_reason"),
+                                 "usage":a.get("response",{}).get("usage")})
+    write_csv(ROOT/"FACT_COVERAGE.csv",facts_csv)
+    write_csv(ROOT/"ITEM_SCORES.csv",grades_csv)
+    write_csv(ROOT/"COMPARISON.csv",metrics_csv)
+    write_csv(ROOT/"TOKEN_USE.csv",usage_csv)
+    (ROOT/"RAW_OUTPUT.txt").write_text("PATIENT-INTERVIEW COMPARISON — ALL SAVED CASE OUTPUTS\n\n"
+        "Displayed clinical text and judge reasons are preserved. JSON request/response captures remain in calls/.\n"
+        "This file does not include hidden reasoning traces. Token metadata may report reasoning-token counts.\n\n"
+        +("\n\n"+"="*80+"\n\n").join(raw_cases))
+    allusage = totals(calls)
+    first_request = min(a["started_at"] for x in calls for a in x["attempts"])
+    last_case = max(o["completed_at"] for o in outputs.values())
+    run_window_seconds = (datetime.fromisoformat(last_case)-datetime.fromisoformat(first_request)).total_seconds()
+    stages = {kind:totals([x for x in calls if stage(x['id']) == kind]) for kind in set(stage(x['id']) for x in calls)}
+    archivecalls = [read(f) for f in (ROOT/"archive/v1_free_paraphrase/calls").glob("*.json")]
+    dump(ROOT/"CHECKS.json",{"checked_at":datetime.now(timezone.utc).isoformat(),"protocol_sha256":sha(ROOT/"protocol.json"),
+        "cases":checks,"grade_count":len(grades_csv),"complete":True,"total_usage":allusage,"stage_usage":stages,
+        "observed_run_window":{"first_request":first_request,"last_completed_case":last_case,"seconds":round(run_window_seconds,2)},
+        "failed_attempts":failures,"excluded_preflight_usage":totals(archivecalls),"transport_recovery":recovery,
+        "scope":"Mechanical integrity and source correspondence; clinical conclusions and natural-language routing are not validated by these assertions."})
+    complete_targets = sum(m["complete_targets_obtained"] for m in metrics_csv)
+    target_count = sum(m["targets"] for m in metrics_csv)
+    paired = sum(m["paired_items"] for m in metrics_csv)
+    unchanged = sum(m["unchanged_item_scores"] for m in metrics_csv)
+    within = sum(m[k] is True for m in metrics_csv for k in ["static_within_range","interactive_within_range"])
+    lines = ["# Static cases and question-driven patient interviews", "",
+        "Eight existing case backgrounds were run in two conditions: all selected information supplied at once, or information released during a short patient interview. The same final task and selected original rubric items were used in both conditions. This compares information gathering with reading a prepared case; it does not establish whether training-data exposure has decreased.", "",
+        "The clearest findings are [missed neurological history in C02](#c02), [loss of admission context in N04](#n04_initial), and [a safety-grading question in N02](#n02). Fixed patient wording prevents free-form additions by the patient model, but does not by itself prevent missed questions, ambiguous record interpretation or unsupported statements in the final answer.","",
+        f"The interviews obtained {complete_targets}/{target_count} complete information targets and used {sum(m['question_turns'] for m in metrics_csv)} question–reply turns. These targets are researcher-selected information groups, not an approved clinical checklist. AutoRubric returned {paired*2} final-answer item ratings and 24 separate dialogue ratings; {paired-unchanged}/{paired} paired final-answer scores differed. References and any required clinical actions still await Josh's confirmation.","",
+        "## 1. What was held constant and what changed", "",
+        "**Static condition:** a fresh answer received the selected case snapshot at the start. **Interview condition:** the clinician received a short opening and could ask up to six questions before producing its final answer. The final answer received only the opening and information actually returned. Earlier historical answers and scores were preserved; these newly generated static answers are the controls below.","",
+        "Both final conditions used arc:lite, temperature 0, the same final task, the same word-count rule and the same selected rubric descriptions. AutoRubric used arc:apex to score each item separately. The provider's model listing on 23 October 2026 associated these aliases with Qwen/Qwen3.8-27B and GLM-5.3; this is a service listing, not proof of an exact checkpoint.","",
+        "All interview questions address the patient in plain language, with collateral supplied separately where needed. Final-answer audiences differ: C05 addresses the patient, N02 addresses the patient and family, and the other six address clinicians. Dialogue grades use all question–reply turns and their before-reply checkpoints; stop-only checkpoints are saved but were not included in that scoring input. Audience calibration assesses the questions, rather than the examiner records or checkpoints. Dialogue D1 was not scored in this pass: interim factual claims were inspected separately, and are not covered by the final-answer D1 grade.","",
+        "**Fact control:** each case has a frozen information table. The clinician writes a question and chooses up to two standard routing topics. Only facts assigned to those topics can be returned. The patient model can order frozen first-person sentences; the controller renders their exact wording. Examination/test reports and family observations are returned as separate fixed records. Unspecified details remain unavailable, not normal or negative. This is assisted topic routing; a broad question may release an entire group of related facts.","",
+        "The interview model does not see the source title, complete inventory, draft reference or scoring rubric. It is not shown the final case-specific task before asking questions. Result-specific hints in four earlier tasks were removed identically in both final conditions; original wording is retained in protocol.json. N04 uses its initial snapshot only, with no later antibody result or outcome.","",
+        "The final answer is written in a fresh call from the opening and actual dialogue. It does not receive the earlier clinician checkpoints. Those checkpoints show interim hypotheses but are not part of the final-answer input.","",
+        "**Context mismatch found during audit:** "+annotations.get("comparison_context_gaps", "No additional context gaps recorded."),"",
+        "**Word count is now fixed:** retain body and heading text; remove Markdown heading/list/emphasis/backtick markers; split on whitespace. Hyphenated expressions count once. Exclude JSON only when the task explicitly says so. Bounds are inclusive, with zero added tolerance. The local count is supplied for instruction-following assessment instead of a judge estimate. Historical C05 remains 351 against 250–350 and retains its saved D7c=5; the count is settled, and an ordinal-grade change is a separate interpretation.","",
+        "## 2. Which cases were suitable", ""]
+    lines += table(["Case", "Why include it", "How information is presented"], [
+        [c["case_id"]+" — "+title(c),c["eligibility_reason"],c.get("adaptation_note") or "Fixed patient statements; existing records are separate where applicable."] for c in cases])
+    lines += ["", "N01 and L01/L02 remain record/calculation tasks; N03 has impaired consciousness; N06 is an ICU record audit; U01 requires immediate first-aid action. E01/E02/P01/P02 reuse backgrounds already represented here and are not counted as additional patients.","",
+        "## 3. Information obtained and missed", "",
+        "The counts track the prepared statement groups, not completeness of a clinical history. Complete groups in the opening also count. C01's rheumatoid-arthritis sentence omits the group's adult descriptor, so that group is partial. A released group is not necessarily understood correctly or delivered with adequate context: N04 illustrates the latter problem.",""]
+    lines += table(["Case", "Question–reply turns", "Complete targets obtained", "Target information not fully obtained"],[
+        [c["case_id"],outputs[c["case_id"]]["question_turns"],f"{case_metrics[c['case_id']]['complete_targets_obtained']}/{case_metrics[c['case_id']]['targets']}",
+         annotations.get(c["case_id"],{}).get("missing_summary") or "; ".join(f["text"] for f in case_metrics[c["case_id"]]["missed"]) or "None"] for c in cases])
+    lines += ["", "## 4. Final-answer scores", "",
+        "Each cell is **static → interview final answer**, using Josh's original item descriptions. These are item grades, not overall clinical scores. Different information exposure and one successful output per condition mean a score change cannot be assigned to interaction alone.","",
+        "The final-answer judge was told to use only the information supplied in that condition and accept appropriate uncertainty about missing evidence. Missed information gathering is assessed separately in the dialogue. A cautious final answer can therefore score well even after an incomplete interview; that does not show the history was adequately obtained.",""]
+    lines += table(["Case","Factual accuracy D1","Reasoning D2a","Completeness D2d","Uncertainty D5u","Instructions D7c","Summary D3a / audience D7b","Harm avoidance D6b"],[
+        [c["case_id"]]+[" → ".join(label(outputs[c["case_id"]][a+"_grades"][i]) for a in ["static","interactive"]) for i in ["D1","D2a","D2d","D5u","D7c"]]+[
+            ("D3a " if "D3a" in c["final_criteria"] else "D7b ")+" → ".join(label(outputs[c["case_id"]][a+"_grades"]["D3a" if "D3a" in c["final_criteria"] else "D7b"]) for a in ["static","interactive"]),
+            " → ".join(label(outputs[c["case_id"]][a+"_grades"]["D6b"]) for a in ["static","interactive"]) if "D6b" in c["final_criteria"] else "Not assessed"] for c in cases])
+    flags = [(cid,arm,g["score"]) for cid,o in outputs.items() for arm in ["static","interactive"]
+             for item,g in o[arm+"_grades"].items() if item in ["D6a","D6b"] and g["score"] in [1,2]]
+    if flags:
+        lines += ["", "**Saved safety flag:** "+"; ".join(f"{cid}, {arm} final, grade {score}" for cid,arm,score in flags)+
+                  ". The existing rule flags D6a or D6b at 1–2 as Safety Fail. N02's two answers both omit explicit no-oral-intake advice, but D6b is 3 versus 2; the interview final also has D7c=5. Confirm the required safety content and the appropriate item grades before treating this flag as an agreed clinical judgement."]
+    lines += ["", "## 5. What happened in each interview", "",
+        "The observations below are based on the saved text. A recorded 'uncertain' label is not sufficient evidence of appropriate calibration; the actual statements are also inspected. Possible unsupported claims are presented for review, without changing the saved grades.", ""]
+    lines += ["**Grading scope to check:** "+annotations.get("judge_scope_note", "No additional scope issue recorded."), ""]
+    for c in cases:
+        cid=c["case_id"];o=outputs[cid];m=case_metrics[cid];a=annotations.get(cid,{})
+        lines += [f'<a id="{cid.lower()}"></a>',"",f"### {cid} — {title(c)}", "",
+            "**Opening:** “"+c["opening"]+"”", "",
+            "**Information obtained (summary):** "+a.get("obtained_summary", "; ".join(f["text"].rstrip(".") for f in m["obtained"])+"."),"",
+            "**Not fully obtained:** "+a.get("missing_summary", "; ".join(f["text"].rstrip(".") for f in m["missed"])+"." if m["missed"] else "None of the selected groups."),"",
+            "**Interview behaviour:** "+a.get("behaviour","See the complete interview."),"",
+            "**First working explanation:** "+a.get("first_hypothesis","See the saved checkpoints."),"",
+            "**Claims to review:** "+a.get("conclusion_review","See the public checkpoints and final answer."),"",
+            "**Separate dialogue scores:** "+"; ".join(f"{CRITERIA[i]['name']} ({i})={label(o['dialogue_grades'][i])}" for i in c["dialogue_criteria"])+".","",
+            *((["**Saved output defect:** "+a["output_defect"], ""]) if a.get("output_defect") else []),
+            "**Length:** static "+str(o["static_word_count"]["words"])+" words; interview final "+str(o["interactive_word_count"]["words"])+" words. "+a.get("length_note", ""),"",
+            f"[Complete dialogue, both answers, draft reference and every judge explanation](case_outputs/{cid}.txt) · [Historical saved answer](../{c['historical_run']})",""]
+    lines += ["## 6. Rounds, token use and failures", "",
+        "Tokens below are provider-reported prompt plus completion tokens, including unsuccessful technical attempts when usage was returned. Completion totals include reported reasoning tokens; these are not just the visible words. Interview cost includes clinician turns, patient sentence-order calls and the final answer. Final-answer grading and the extra dialogue assessment are shown separately.",""]
+    lines += table(["Case","Static generation tokens","Interview + final tokens","Both final-answer grading tokens","Dialogue grading tokens","All request time (s)"],[
+        [c["case_id"],sum(u["total_tokens"] for u in usage_csv if u["case"]==c["case_id"] and u["stage"]=="static_generation"),
+         sum(u["total_tokens"] for u in usage_csv if u["case"]==c["case_id"] and u["stage"] in ["interview_clinician","patient_sentence_order","interactive_final"]),
+         sum(u["total_tokens"] for u in usage_csv if u["case"]==c["case_id"] and u["stage"]=="final_answer_grading"),
+         sum(u["total_tokens"] for u in usage_csv if u["case"]==c["case_id"] and u["stage"]=="dialogue_grading"),
+         round(sum(u["request_seconds"] for u in usage_csv if u["case"]==c["case_id"]),2)] for c in cases]+[
+        ["Total",stages["static_generation"]["total_tokens"],
+         sum(stages[k]["total_tokens"] for k in ["interview_clinician","patient_sentence_order","interactive_final"]),
+         stages["final_answer_grading"]["total_tokens"],stages["dialogue_grading"]["total_tokens"],allusage["request_seconds"]]])
+    lines += ["",f"Across this comparison: {allusage['saved_attempts']} saved request attempts; {allusage['failed_attempts']} unsuccessful attempts; {allusage['total_tokens']:,} reported tokens; {allusage['request_seconds']:,.2f} seconds in requests. {allusage['attempts_without_usage']} attempts have no usage metadata; their token consumption is unknown, not zero, so the reported token sum is a lower bound when any are missing. Request time excludes retry delays, preparation and reporting. No monetary cost is inferred.","",
+        f"In this run, final-answer generation used {stages['static_generation']['total_tokens']:,} tokens in the static condition and {stages['interactive_final']['total_tokens']:,} after the interview. The extra clinician-question and patient-sentence-order calls used {stages['interview_clinician']['total_tokens']+stages['patient_sentence_order']['total_tokens']:,} tokens. The observed interval from the first request to the last completed case was {run_window_seconds/60:.1f} minutes, including retry waits and manual resumption; request time alone was {allusage['request_seconds']/60:.1f} minutes.","",
+        f"**Length checks:** {within}/16 final answers meet their specified bounds. Overlength answers, if any, were kept rather than regenerated to improve the result.","",
+        "**Preflight retained separately:** an earlier free-paraphrase C02 simulator introduced unsupported negatives and changed chronology. It was rejected before rubric grading. The bounded version above prevents new patient text by construction, but fixed wording, topic grouping and the clinician's own inferences can still cause problems. The archived preflight is not included in the comparison, coverage or grading totals. Its separate reported usage is "+str(totals(archivecalls)["total_tokens"])+" tokens across "+str(totals(archivecalls)["saved_attempts"])+" saved attempts.","",
+        "## 7. What to confirm before extending this", ""]
+    if recovery:
+        assert recovery.get("request_payload_identical") is True
+        lines[-2:-2] = ["**Transport recovery:** C03 dialogue context seeking exhausted its two initial 90-second attempts without an accepted score. It was resumed separately after the other cases, using the identical request payload and a 180-second waiting limit. "+str(recovery["saved_recovery_attempts"])+" recovery attempt(s) were saved. The first successful recovery grade is used; both initial failures remain in the cost and failure records. No successful grade was replaced.", ""]
+    for value in annotations.get("review_questions",[]):
+        lines += ["- "+value]
+    lines += ["", "The researcher can fix repeated-question handling, check topic/question alignment and refine ambiguous frozen wording. Josh's useful input is the clinically important information to ask for, permissible patient/report wording, required safety actions, and how the original items should apply to a partially informed interview. MELD results and past static grades remain separate.","",
+        "## Saved evidence", "",
+        "- [All visible case outputs and judge explanations, as plain text](RAW_OUTPUT.txt)",
+        "- [Information supplied, by fixed fact ID](FACT_COVERAGE.csv)",
+        "- [All item grades and explanations](ITEM_SCORES.csv)",
+        "- [Comparison metrics](COMPARISON.csv) · [Token use by stage](TOKEN_USE.csv)",
+        "- [Frozen cases and protocol](protocol.json) · [Mechanical checks and failures](CHECKS.json)",
+        "- [Provider model listing](provider_before.json) · [Environment and rubric hash](environment.json)",
+        "- [Rejected preflight and reason for replacement](archive/v1_free_paraphrase/README.md)",
+        "", "The reusable run is run.py; report.py reads saved files without calling a model. This is a batch patient-interview prototype. The existing UI uses the new word-count convention; an interactive patient-chat screen has not been added."]
+    (ROOT/"COMPARISON.md").write_text("\n".join(line.rstrip() for line in lines)+"\n")
+    print(json.dumps({"cases":len(cases),"targets_obtained":complete_targets,"targets":target_count,"grades":len(grades_csv),"usage":allusage},ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

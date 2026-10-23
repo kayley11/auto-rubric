@@ -1,0 +1,57 @@
+{
+  "id": "C02.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:21:10.199074+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Can you tell me more about the unsteadiness — when it started, how it has changed over time, and whether anything makes it better or worse?\", \"permitted_statements\": [{\"id\": \"C02_F05\", \"text\": \"My current unsteadiness became worse after a hot bath.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-93997196ee926fd8",
+        "model": "arc:lite",
+        "created": 1792765270,
+        "usage": {
+          "prompt_tokens": 190,
+          "total_tokens": 297,
+          "completion_tokens": 107,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 92
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C02_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.03,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C02_F05"
+    ]
+  }
+}

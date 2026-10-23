@@ -1,0 +1,465 @@
+"""N04–N06 original-text continuation check, using the preceding length-control method."""
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+from difflib import SequenceMatcher
+from pathlib import Path
+import csv
+import hashlib
+import io
+import json
+import math
+import re
+import time
+import unicodedata
+
+import httpx
+from dotenv import dotenv_values
+
+ROOT = Path(__file__).resolve().parent
+PACK = ROOT.parent
+REPO = PACK.parents[1] / "auto rubric"
+PREVIOUS = PACK.parent / "new_cases_20261022/meld_length_control_20261022"
+CLIENT_DATE = "2026-10-23"
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def save(path, obj):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n")
+    tmp.replace(path)
+
+def normalise(value):
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", value)).strip()
+
+def distance(a, b):
+    if len(b) > len(a):
+        a, b = b, a
+    previous = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        current = [i]
+        for j, cb in enumerate(b, 1):
+            current.append(min(previous[j] + 1, current[-1] + 1,
+                               previous[j - 1] + (ca != cb)))
+        previous = current
+    return previous[-1]
+
+def measure(target, visible):
+    output = normalise(visible)
+    horizon = len(target)
+    window = output[:horizon]
+    edit = distance(target, window)
+    full_edit = distance(target, output)
+    common_length = min(horizon, len(output))
+    common_edit = distance(target[:common_length], output[:common_length])
+    target_words, output_words = target.split(), window.split()
+    span = SequenceMatcher(None, target_words, output_words, autojunk=False).find_longest_match()
+    return {
+        "target_chars": horizon,
+        "visible_output_chars": len(output),
+        "visible_words": len(output.split()),
+        "compared_chars": len(window),
+        "coverage_ratio": len(output) / horizon,
+        "full_horizon_covered": len(output) >= horizon,
+        "minimum_length_gap": horizon - len(window),
+        "length_only_similarity_ceiling": len(window) / horizon,
+        "primary_edit_distance": edit,
+        "primary_similarity": 1 - edit / horizon,
+        "near_exact": edit * 100 <= horizon * 5,
+        "full_output_edit_distance": full_edit,
+        "full_output_similarity": 1 - full_edit / max(horizon, len(output)),
+        "equal_length_prefix_chars": common_length,
+        "equal_length_prefix_edit_distance": common_edit,
+        "equal_length_prefix_similarity": 1 - common_edit / common_length if common_length else None,
+        "comparison_output": window,
+        "longest_exact_word_span": {
+            "words": span.size,
+            "reference_word_start": span.a,
+            "output_word_start": span.b,
+            "text": " ".join(target_words[span.a:span.a + span.size]),
+        },
+    }
+
+def redact(value, key):
+    if isinstance(value, dict):
+        return {k: redact(v, key) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact(v, key) for v in value]
+    return value.replace(key, "[REDACTED]") if isinstance(value, str) and key else value
+
+def snapshot(base, key, models, label):
+    data = {"checked_at": now()}
+    try:
+        response = httpx.get(base + "/models", headers={"Authorization": "Bearer " + key}, timeout=30)
+        data["http_status"] = response.status_code
+        if response.status_code == 200:
+            fields = ("id", "created", "name", "backend_model", "backend_model_size",
+                      "backend_model_quant", "mode", "features")
+            data["models"] = [{k: m[k] for k in fields if k in m}
+                              for m in response.json().get("data", []) if m.get("id") in models]
+    except (httpx.HTTPError, ValueError) as exc:
+        data["error_type"] = type(exc).__name__
+    save(ROOT / f"provider_models_{label}.json", redact(data, key))
+
+def call_stage(record, path, stage_name, request, base, key, timeout):
+    stage = record["stages"].setdefault(stage_name, {"status": "pending", "attempts": []})
+    if stage["status"] == "complete":
+        return stage["visible_output"]
+    while len(stage["attempts"]) < 3:
+        attempt = {"started_at": now(), "request": request}
+        stage["attempts"].append(attempt)
+        stage["status"] = "running"
+        save(path, redact(record, key))
+        print(now(), record["model_alias"], record["case_id"], stage_name,
+              "attempt", len(stage["attempts"]), flush=True)
+        started = time.monotonic()
+        try:
+            with httpx.Client(timeout=timeout, follow_redirects=False) as client:
+                response = client.post(base + "/chat/completions", json=request,
+                                       headers={"Authorization": "Bearer " + key})
+            attempt["http_status"] = response.status_code
+            if response.status_code >= 400:
+                attempt["provider_error_body"] = response.text
+                raise ValueError("HTTP " + str(response.status_code))
+            raw = response.json()
+            attempt["response"] = {k: raw[k] for k in ("id", "object", "model", "created", "usage", "system_fingerprint") if k in raw}
+            attempt["response"]["choices"] = [
+                {"index": c.get("index"), "finish_reason": c.get("finish_reason"),
+                 "message": {"role": c.get("message", {}).get("role"), "content": c.get("message", {}).get("content")}}
+                for c in raw.get("choices", [])]
+            visible = raw.get("choices", [{}])[0].get("message", {}).get("content")
+            if not isinstance(visible, str) or not visible.strip():
+                raise ValueError("Missing or empty visible continuation")
+            stage.update(status="complete", visible_output=visible,
+                         selected_attempt=len(stage["attempts"]), completed_at=now())
+            (ROOT / "responses" / (path.stem + "." + stage_name + ".txt")).write_text(visible)
+        except (httpx.HTTPError, ValueError, KeyError, IndexError) as exc:
+            attempt["error"] = redact(type(exc).__name__ + ": " + str(exc), key)
+            stage["status"] = "unusable"
+        finally:
+            attempt["elapsed_seconds"] = round(time.monotonic() - started, 3)
+            save(path, redact(record, key))
+        if stage["status"] == "complete":
+            return stage["visible_output"]
+        if len(stage["attempts"]) < 3:
+            time.sleep(15)
+    return None
+
+def run(protocol):
+    cfg = dotenv_values(REPO / ".env")
+    key = cfg.get("OPENAI_API_KEY", "")
+    base = (cfg.get("OPENAI_BASE_URL") or cfg.get("OPENAI_API_BASE") or "").rstrip("/").removesuffix("/chat/completions")
+    if not key or not base:
+        raise SystemExit("Provider configuration unavailable")
+    environment = ROOT / "environment.json"
+    if not environment.exists():
+        save(environment, {"created_at": now(), "endpoint": base + "/chat/completions",
+                           "protocol_sha256": digest(ROOT / "protocol.json"),
+                           "runner_sha256": digest(Path(__file__)),
+                           "capture_scope": "Exact requests, complete visible outputs, response/model IDs, usage, finish reason and transport errors. Credentials and hidden deliberation fields are not saved."})
+    else:
+        assert json.loads(environment.read_text())["runner_sha256"] == digest(Path(__file__))
+    if not (ROOT / "provider_models_before.json").exists():
+        snapshot(base, key, protocol["models"], "before")
+    params = {k: protocol["sampling"][k] for k in ("temperature", "top_p", "max_tokens", "reasoning_effort", "stream")}
+    for model in protocol["models"]:
+        for probe in protocol["probes"]:
+            check_inputs(protocol)
+            prefix = (ROOT / probe["prefix_file"]).read_text()
+            suffix = (ROOT / probe["suffix_file"]).read_text()
+            name = model.replace(":", "-") + "_" + probe["case_id"]
+            path = ROOT / "responses" / (name + ".json")
+            record = json.loads(path.read_text()) if path.exists() else {
+                "case_id": probe["case_id"], "source_id": probe["source_id"], "model_alias": model,
+                "protocol_sha256": digest(ROOT / "protocol.json"), "status": "pending", "stages": {}}
+            if record["status"] in ("complete", "complete_append_unusable"):
+                continue
+            messages = [
+                {"role": "system", "content": protocol["prompt_system_template"].format(
+                    target_chars=len(suffix), aim_chars=math.ceil(1.4 * len(suffix)),
+                    aim_words=math.ceil(1.4 * probe["suffix_words"]))},
+                {"role": "user", "content": prefix}]
+            request = {**params, "model": model, "messages": messages}
+            assert suffix not in json.dumps(request, ensure_ascii=False)
+            assert request["messages"][1]["content"] == prefix
+            initial = call_stage(record, path, "initial", request, base, key, protocol["sampling"]["timeout_seconds"])
+            if initial is None:
+                record["status"] = "unusable"
+                save(path, redact(record, key))
+                continue
+            final = initial
+            short = len(normalise(initial)) < len(suffix)
+            record.update(append_triggered=short, status="complete", initial_visible_continuation=initial)
+            if short:
+                remaining = len(suffix) - len(normalise(initial))
+                append_words = max(120, math.ceil(1.4 * remaining * probe["suffix_words"] / len(suffix)))
+                append_messages = messages + [
+                    {"role": "assistant", "content": initial},
+                    {"role": "user", "content": protocol["append_user_template"].format(
+                        append_words=append_words, remaining_chars=remaining)}]
+                append_request = {**params, "model": model, "messages": append_messages}
+                assert suffix not in json.dumps(append_request, ensure_ascii=False)
+                appended = call_stage(record, path, "append", append_request, base, key, protocol["sampling"]["timeout_seconds"])
+                if appended is not None:
+                    final = initial + "\n" + appended
+                else:
+                    record["status"] = "complete_append_unusable"
+            record.update(visible_continuation=final, completed_at=now())
+            save(path, redact(record, key))
+            (ROOT / "responses" / (name + ".continuation.txt")).write_text(final)
+            print(model, probe["case_id"], "initial_chars", len(normalise(initial)),
+                  "final_chars", len(normalise(final)), "target_chars", len(suffix),
+                  "append", short, flush=True)
+    snapshot(base, key, protocol["models"], "after")
+
+def csv_file(name, rows, fields):
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
+    writer.writeheader()
+    writer.writerows(rows)
+    (ROOT / name).write_text(buf.getvalue())
+
+def prepare():
+    if (ROOT / "protocol.json").exists():
+        raise SystemExit("Protocol exists; do not overwrite frozen inputs.")
+    previous = json.loads((PREVIOUS / "protocol.json").read_text())
+    (ROOT / "probes").mkdir()
+    (ROOT / "responses").mkdir()
+    selected = [
+        ("N04", "S07", "S07_GFAP", 52, 54, "Trojan and colleagues",
+         "https://doi.org/10.3389/fimmu.2026.1960742", "2026-10-16",
+         "Case descriptions, 2.1 Case 1: first three prose paragraphs, before Table 1; first patient only.",
+         "Tests the first patient's readmission, repeated CSF and reported antibody-work-up wording; excludes the second patient, table, discussion and later follow-up."),
+        ("N05", "S08", "S08_ATTR", 62, 64, "Cai and colleagues",
+         "https://doi.org/10.3389/fcvm.2026.1928392", "2026-10-14",
+         "Methods and results, Clinical presentation and imaging findings: opening three prose paragraphs, before Figure 1.",
+         "Tests the published history, initial measurements and imaging narrative; excludes captions, later PYP/biopsy/genetics and follow-up."),
+        ("N06", "S09", "S09_PE", 93, 97, "Kang and colleagues",
+         "https://doi.org/10.3389/fcvm.2026.1977983", "2026-10-08",
+         "Case description, Therapeutic intervention: five consecutive prose paragraphs from initial 20-mg dose rationale through the UFH restart/transition account, before Follow-up and outcomes.",
+         "Tests the source's specific transfusion, infusion and restart sequence; excludes Table 1, figure captions and outcome paragraphs. It is one narrative window, not the full ICU record."),
+    ]
+    probes = []
+    for cid, sid, stem, first, last, authors, url, date, locator, reason in selected:
+        blocks_path = PACK / "evidence" / (stem + "_blocks.json")
+        blocks = json.loads(blocks_path.read_text())
+        parts = [b for b in blocks if first <= int(b["local_id"].split("B")[-1]) <= last]
+        assert len(parts) == last - first + 1 and all(b["tag"] == "p" for b in parts)
+        original = "\n\n".join(b["text"] for b in parts)
+        source = normalise(original)
+        cut = min((m.start() for m in re.finditer(" ", source)),
+                  key=lambda i: (abs(i - len(source) / 2), i))
+        prefix, suffix = source[:cut], source[cut + 1:]
+        assert prefix + " " + suffix == source and len(prefix) > 100 and len(suffix) > 100
+        files = {"original": f"probes/{cid}.original.txt", "source": f"probes/{cid}.source.txt",
+                 "prefix": f"probes/{cid}.prefix.txt", "suffix": f"probes/{cid}.suffix.txt"}
+        for label, value in [("original", original), ("source", source), ("prefix", prefix), ("suffix", suffix)]:
+            (ROOT / files[label]).write_text(value)
+        probe = {"case_id": cid, "source_id": sid, "authors": authors, "url": url,
+            "publisher_publication_date": date, "licence": "CC BY 4.0", "locator": locator,
+            "selection_reason": reason, "source_blocks": [b["local_id"] for b in parts],
+            "source_blocks_file": "../evidence/" + stem + "_blocks.json",
+            "source_blocks_sha256": digest(blocks_path),
+            "source_html_file": "../evidence/" + stem + ".html",
+            "source_html_sha256": digest(PACK / "evidence" / (stem + ".html")),
+            "source_text_file": "../evidence/" + stem + "_text.txt",
+            "source_text_file_sha256": digest(PACK / "evidence" / (stem + "_text.txt")),
+            "cleaning": "Use the already saved publisher HTML paragraph extraction. Join selected consecutive prose paragraphs. NFKC and whitespace normalisation only; keep source spelling, citations, digits and statements. No medical corrections. NFKC may flatten superscript glyphs, as in the previous method.",
+            "split_index": cut, "split_separator": "one space",
+            "source_chars": len(source), "source_words": len(source.split()),
+            "prefix_chars": len(prefix), "prefix_words": len(prefix.split()),
+            "suffix_chars": len(suffix), "suffix_words": len(suffix.split())}
+        for label, filename in files.items():
+            probe[label + "_file"] = filename
+            probe[label + "_sha256"] = digest(ROOT / filename)
+        probes.append(probe)
+
+    # Freeze previous clinical/MELD material and UI records before any provider call.
+    old_pack = PACK.parent / "new_cases_20261022"
+    protected = [p for p in old_pack.rglob("*") if p.is_file()]
+    protected += [p for p in PACK.rglob("*") if p.is_file() and ROOT not in p.parents]
+    protected += [p for p in (REPO / "arena/.data/runs").glob("*.json")]
+    protected += [REPO / "arena" / n for n in ("rubric.json", "case-library.json", "engine.py", "server.py", "src/App.jsx")]
+    protected = sorted(set(protected))
+    save(ROOT / "preservation_manifest.json", {"captured_at": now(), "protected_files": len(protected),
+        "scope": "Previous N01–N03 pack including both MELD rounds; existing N04–N06 source/design/clinical outputs; existing UI runs, library, rubric and app source. No writes to these files are part of this run.",
+        "sha256": {str(p): digest(p) for p in protected}})
+    keys = ("models", "method_source", "passage_selection", "normalisation", "split",
+            "primary_similarity", "comparison_output", "secondary_similarity", "auxiliary_diagnostic",
+            "near_exact_threshold", "sampling", "length_control", "prompt_system_template",
+            "append_user_template", "technical_retries", "classification")
+    protocol = {k: previous[k] for k in keys}
+    protocol.update({"prepared_on_client": CLIENT_DATE, "frozen_at": now(),
+        "method_label": "MELD-inspired length-controlled original-text check for N04–N06; not an exact reproduction",
+        "previous_method_protocol_sha256": digest(PREVIOUS / "protocol.json"),
+        "previous_method_runner_sha256": digest(PREVIOUS / "run_meld_length_control.py"),
+        "previous_method_note": "Reuse length/append prompts, generation parameters, normalisation, fixed character horizon and metric unchanged. These are three new source passages, not repeat runs of N01–N03. No paired before/after effect is estimated.",
+        "planned_probes_per_model": 3, "planned_model_case_pairs": 6,
+        "prompt_user": "Selected normalised source prefix only. No title, DOI, full article, suffix, clinical task/reference/rubric, previous clinical answer or source retrieval.",
+        "denominator": "Three passages per model. Report usable/planned, full-length coverage and near-exact counts separately. One shared-source N04 probe per model, irrespective of its three clinical answer conditions.",
+        "comparison_limit": "One initial continuation per source/model pair and at most one bounded append, plus technical retries only. No selection by similarity; no repetition to improve a low match.",
+        "separation": "Direct provider continuation requests only in this directory. No AutoRubric calls, clinical UI runs, reference revisions or score changes.",
+        "probes": probes})
+    save(ROOT / "protocol.json", protocol)
+    (ROOT / "protocol.sha256").write_text(digest(ROOT / "protocol.json") + "  protocol.json\n")
+    lines = ["# N04–N06 original-text MELD check: frozen protocol", "",
+        "Prepared 23 October 2026. Clinical references and rubric scores are outside this experiment.", "",
+        "The previous length-controlled method is reused: one original source passage per case, half supplied as a prefix and half withheld locally. Two model aliases receive independent requests; no clinical conversation is replayed.", "",
+        "| Case | Source location | Prefix chars | Suffix chars L | Minimum / aim chars | Aim words |", "|---|---|---:|---:|---:|---:|"]
+    for p in probes:
+        lines.append(f"| {p['case_id']} | {p['locator']} | {p['prefix_chars']} | {p['suffix_chars']} | {p['suffix_chars']} / {math.ceil(1.4*p['suffix_chars'])} | {math.ceil(1.4*p['suffix_words'])} |")
+    lines += ["", "## Source and length rules", "",
+        "Use only the selected original paragraphs, not the adapted UI summaries. Blocks, HTML/text hashes, raw joined prose, normalised source and both halves are saved before generation. Only Unicode NFKC and whitespace are normalised. Preserve punctuation, digits, citations and source medical wording. NFKC can flatten superscript characters; this is unchanged from the previous round.", "",
+        "Split at the whitespace nearest the halfway character position; the earlier position wins a tie. Ask for at least L normalised output characters and aim for 1.4 × L. If the first non-empty output is short, append once using the first output as conversation history; the append request supplies a remaining character count, never reference text. Keep initial and final metrics separately. If still short, retain and flag it. Never regenerate because similarity is low.", "",
+        "## Models and scoring", "",
+        "arc:lite and arc:apex; temperature 0; top_p 1; max_tokens 8192; reasoning_effort low; stream false; timeout 180 seconds; no seed. Up to three saved attempts per stage for technical/empty-response failures only.", "",
+        "Primary similarity: 1 − unit-cost character Levenshtein distance / L, comparing the first L normalised output characters with the complete L-character suffix. A shorter output stays short. Near-exact means similarity ≥ 0.95, checked before rounding. There is no best-window search, echo removal or reference-guided output correction. Whole-output similarity, equal-length-prefix similarity and longest exact word span are diagnostics, not alternative positive rules.", "",
+        "## Exact initial system prompt", "", "```text", protocol['prompt_system_template'], "```", "",
+        "## Exact optional append prompt", "", "```text", protocol['append_user_template'], "```", "",
+        "## Interpretation and separation", "",
+        "A high near-exact continuation is a signal to investigate text familiarity or leakage; it does not identify the path of exposure. Below-threshold continuations do not prove the paper is absent from training. These six pairs are not a contamination prevalence estimate. Clinical quality and rubric validity are not measured by this check. The source-reports' dates do not establish model cutoffs or earliest public versions.", "",
+        "[Nori et al., Section 6.2 and Appendix B](https://arxiv.org/abs/2303.13375v2). The local method paper and previous frozen protocol remain unchanged. Exact implementation settings and source locations: [protocol.json](protocol.json)."]
+    (ROOT / "PROTOCOL.md").write_text("\n".join(lines) + "\n")
+    print(json.dumps({"frozen_protocol_sha256": digest(ROOT / 'protocol.json'),
+        "protected_files": len(protected), "planned_pairs": 6,
+        "probes": [{k: p[k] for k in ('case_id', 'prefix_chars', 'suffix_chars', 'suffix_words')} for p in probes]}, indent=2))
+
+
+def check_inputs(protocol):
+    assert digest(ROOT / "protocol.json") == (ROOT / "protocol.sha256").read_text().split()[0]
+    previous = json.loads((PREVIOUS / "protocol.json").read_text())
+    for key in ("sampling", "length_control", "prompt_system_template", "append_user_template",
+                "normalisation", "split", "primary_similarity", "comparison_output", "near_exact_threshold"):
+        assert protocol[key] == previous[key], key
+    for p in protocol["probes"]:
+        for label in ("original", "source", "prefix", "suffix"):
+            assert digest(ROOT / p[label + "_file"]) == p[label + "_sha256"]
+        for label in ("source_blocks", "source_html", "source_text"):
+            hash_key = "source_text_file_sha256" if label == "source_text" else label + "_sha256"
+            assert digest(ROOT / p[label + "_file"]) == p[hash_key]
+        blocks = json.loads((ROOT / p["source_blocks_file"]).read_text())
+        original = "\n\n".join(b["text"] for b in blocks if b["local_id"] in p["source_blocks"])
+        assert original == (ROOT / p["original_file"]).read_text()
+        prefix, suffix = [(ROOT / p[k + "_file"]).read_text() for k in ("prefix", "suffix")]
+        assert prefix + " " + suffix == normalise(original)
+    manifest = json.loads((ROOT / "preservation_manifest.json").read_text())
+    changed = [p for p, h in manifest["sha256"].items() if not Path(p).is_file() or digest(Path(p)) != h]
+    assert not changed, "Protected files changed: " + repr(changed)
+
+
+def analyse(protocol):
+    check_inputs(protocol)
+    rows, calls = [], []
+    plain = ["N04–N06 MELD-INSPIRED LENGTH-CONTROLLED CHECK — COMPLETE VISIBLE CONTINUATIONS", "",
+        "Separate from clinical answers and AutoRubric scores. Generated continuations are text-completion outputs, not clinical recommendations or verified source facts.",
+        "Protocol SHA-256: " + digest(ROOT / "protocol.json"), ""]
+    raw = ["N04–N06 MELD CHECK — ALL SAVED REQUESTS AND VISIBLE OUTPUTS", "",
+        "Credentials and hidden deliberation are excluded. All technical attempts are retained.", ""]
+    for model in protocol["models"]:
+        for p in protocol["probes"]:
+            name = model.replace(":", "-") + "_" + p["case_id"]
+            path = ROOT / "responses" / (name + ".json")
+            if not path.exists():
+                raise SystemExit("A planned pair has not been attempted: " + name)
+            record = json.loads(path.read_text())
+            prefix, suffix = [(ROOT / p[k + "_file"]).read_text() for k in ("prefix", "suffix")]
+            row = {"case_id": p["case_id"], "source_id": p["source_id"], "model": model,
+                "status": record["status"], "append_triggered": record.get("append_triggered", False),
+                "response_file": "responses/" + name + ".json",
+                "continuation_file": "responses/" + name + ".continuation.txt"}
+            raw += ["=" * 80, p["case_id"] + " / " + model, ""]
+            for stage_name, stage in record["stages"].items():
+                for n, attempt in enumerate(stage["attempts"], 1):
+                    calls.append({"case_id": p["case_id"], "model": model, "stage": stage_name, **attempt})
+                    assert attempt["request"]["messages"][1]["content"] == prefix
+                    assert suffix not in json.dumps(attempt["request"], ensure_ascii=False)
+                    raw += [f"STAGE {stage_name} — ATTEMPT {n}", "ATTEMPT METADATA",
+                        json.dumps({k: v for k, v in attempt.items() if k not in ("request", "response")}, ensure_ascii=False, indent=2),
+                        "REQUEST PARAMETERS", json.dumps({k: v for k, v in attempt["request"].items() if k != "messages"}, ensure_ascii=False, indent=2)]
+                    for message in attempt["request"]["messages"]:
+                        raw += ["REQUEST MESSAGE — " + message["role"], message["content"], ""]
+                    response = attempt.get("response", {})
+                    raw += ["RESPONSE METADATA", json.dumps({k: v for k, v in response.items() if k != "choices"}, ensure_ascii=False, indent=2)]
+                    for choice in response.get("choices", []):
+                        raw += ["VISIBLE RESPONSE — finish_reason: " + str(choice.get("finish_reason")),
+                            choice.get("message", {}).get("content") or "[No visible output]", ""]
+            if "visible_continuation" in record:
+                row.update(measure(suffix, record["visible_continuation"]))
+                row["initial_metrics"] = measure(suffix, record["initial_visible_continuation"])
+                row["classification"] = "near_exact_continuation" if row["near_exact"] else "below_threshold"
+                row["flags"] = []
+                if not row["full_horizon_covered"]:
+                    row["flags"].append("shorter_than_reference_character_horizon")
+                if prefix in normalise(record["visible_continuation"]):
+                    row["flags"].append("prefix_echo")
+                if record["visible_continuation"].lstrip().startswith("```"):
+                    row["flags"].append("leading_code_fence")
+                row["finish_reasons"] = {k: s["attempts"][s["selected_attempt"] - 1]["response"]["choices"][0].get("finish_reason")
+                    for k, s in record["stages"].items() if s["status"] == "complete"}
+                if "length" in row["finish_reasons"].values():
+                    row["flags"].append("api_token_limit")
+                (ROOT / "responses" / (name + ".comparison_window.txt")).write_text(row["comparison_output"])
+            else:
+                row["classification"] = "unusable"
+            rows.append(row)
+            plain += ["=" * 80, p["case_id"] + " / " + model, "SOURCE", p["authors"] + "; " + p["url"], p["locator"],
+                "ORIGINAL PREFIX SENT TO MODEL", prefix, "", "HELD-OUT ORIGINAL SUFFIX — NOT SENT", suffix, "",
+                "COMPLETE INITIAL VISIBLE OUTPUT", record.get("initial_visible_continuation", "NO USABLE OUTPUT"), ""]
+            if "append" in record["stages"]:
+                plain += ["COMPLETE APPEND VISIBLE OUTPUT", record["stages"]["append"].get("visible_output", "NO USABLE APPEND"), ""]
+            plain += ["FINAL ASSEMBLED CONTINUATION", record.get("visible_continuation", "NO USABLE OUTPUT"), "",
+                "MEASUREMENTS", json.dumps({k: v for k, v in row.items() if k != "comparison_output"}, ensure_ascii=False, indent=2), ""]
+    stats = {}
+    for model in protocol["models"]:
+        group = [r for r in rows if r["model"] == model]
+        stats[model] = {"planned": len(group), "usable": sum(r["classification"] != "unusable" for r in group),
+            "full_horizon_covered": sum(r.get("full_horizon_covered", False) for r in group),
+            "near_exact": sum(r.get("near_exact", False) for r in group),
+            "append_triggered": sum(r["append_triggered"] for r in group)}
+    uses = [a.get("response", {}).get("usage") for a in calls]
+    resources = {"attempts": len(calls), "attempts_with_usage": sum(u is not None for u in uses),
+        "reported_tokens": sum((u or {}).get("total_tokens", 0) for u in uses),
+        "request_seconds": round(sum(a.get("elapsed_seconds", 0) for a in calls), 3),
+        "failed_attempts": sum("error" in a for a in calls), "by_stage": dict(Counter(a["stage"] for a in calls)),
+        "returned_finish_reasons": dict(Counter(c.get("finish_reason") for a in calls for c in a.get("response", {}).get("choices", [])))}
+    result = {"analysed_at": now(), "prepared_on_client": CLIENT_DATE,
+        "protocol_sha256": digest(ROOT / "protocol.json"), "method_label": protocol["method_label"],
+        "threshold": protocol["near_exact_threshold"], "by_model": stats, "probes": rows,
+        "resource_use": resources, "clinical_and_previous_MELD_files_unchanged": True,
+        "clinical_reference_status": "draft", "training_cutoff_status": "unverified"}
+    save(ROOT / "results.json", result)
+    csv_file("similarities.csv", [{**r, "initial_output_chars": r.get("initial_metrics", {}).get("visible_output_chars"),
+        "initial_similarity": r.get("initial_metrics", {}).get("primary_similarity")} for r in rows],
+        ["case_id", "source_id", "model", "status", "classification", "target_chars", "initial_output_chars",
+         "initial_similarity", "visible_output_chars", "visible_words", "full_horizon_covered", "coverage_ratio",
+         "append_triggered", "primary_edit_distance", "primary_similarity", "near_exact", "full_output_similarity",
+         "continuation_file", "response_file"])
+    (ROOT / "CONTINUATIONS.txt").write_text("\n".join(plain) + "\n")
+    (ROOT / "RAW_OUTPUT.txt").write_text("\n".join(raw) + "\n")
+    print(json.dumps({"by_model": stats, "resource_use": resources}, indent=2))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prepare", action="store_true")
+    parser.add_argument("--analyse-only", action="store_true")
+    args = parser.parse_args()
+    if args.prepare:
+        prepare()
+        return
+    protocol = json.loads((ROOT / "protocol.json").read_text())
+    check_inputs(protocol)
+    for a, b, expected in [("", "", 0), ("abc", "abc", 0), ("abc", "abX", 1),
+                           ("kitten", "sitting", 3), ("ab", "ba", 2), ("", "xyz", 3)]:
+        assert distance(a, b) == distance(b, a) == expected
+    if not args.analyse_only:
+        run(protocol)
+    analyse(protocol)
+
+
+if __name__ == "__main__":
+    main()

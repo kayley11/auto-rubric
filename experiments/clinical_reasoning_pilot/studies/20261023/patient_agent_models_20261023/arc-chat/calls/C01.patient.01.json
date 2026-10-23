@@ -1,0 +1,58 @@
+{
+  "id": "C01.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:16:50.109775+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"When did the ankle swelling start, and have you noticed any other symptoms such as shortness of breath, weight gain, or swelling elsewhere?\", \"permitted_statements\": [{\"id\": \"C01_F03\", \"text\": \"My ankles are swollen, my face is puffy in the morning, and my urine is frothy.\"}, {\"id\": \"C01_F04\", \"text\": \"My breathing is normal.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-bd30877858f8a9dd",
+        "model": "arc:lite",
+        "created": 1792765010,
+        "usage": {
+          "prompt_tokens": 217,
+          "total_tokens": 397,
+          "completion_tokens": 180,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 158
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C01_F03\",\"C01_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.01,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C01_F03",
+      "C01_F04"
+    ]
+  }
+}

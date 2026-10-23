@@ -1,0 +1,202 @@
+"""Freeze a revised comparison from the previous eight source-checked inventories."""
+from copy import deepcopy
+from datetime import datetime, timezone
+from pathlib import Path
+import hashlib
+import json
+
+ROOT = Path(__file__).resolve().parent
+OLD = ROOT.parent / "patient_agent_pilot_20261023"
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+TOPICS = {
+    "presenting_symptoms": "Current symptoms and associated symptoms",
+    "timecourse": "Onset, course, triggers and aggravating factors",
+    "previous_episodes": "Earlier similar or other relevant episodes",
+    "medications": "Medicines, dose changes and treatment response",
+    "medical_history": "Conditions, previous admissions and procedures",
+    "exposures": "Travel, exposures and lifestyle history",
+    "daily_life": "Occupation, function, living situation and practical support",
+    "concerns": "Patient concerns, priorities and preferences",
+    "tests": "A general request: ask for a particular type of existing report; this tag alone releases no results",
+    "examination": "Existing physical/neurological examination findings",
+    "vital_signs": "Existing blood pressure, pulse and other vital-sign records",
+    "routine_laboratory": "Existing routine blood/biochemistry results, other than glucose or specialised tests",
+    "glucose": "Existing glucose measurements; distinguish daytime and night-time observations",
+    "microbiology": "Existing infection PCR, serology or culture records; do not infer unreported culture results",
+    "csf": "Existing cerebrospinal-fluid cell count/protein records",
+    "ct_imaging": "Existing CT reports",
+    "mri_imaging": "Existing MRI reports",
+    "echocardiography": "Existing ultrasound/echocardiography reports",
+    "eeg": "Existing electroencephalography reports",
+    "monoclonal_testing": "Existing monoclonal protein, immunofixation or free-light-chain reports",
+    "enzyme_genetics": "Existing enzyme and genetic test reports",
+    "nuclear_imaging": "Existing nuclear medicine/scintigraphy reports",
+    "gastrointestinal_records": "Existing gastrointestinal endoscopy or histology reports",
+    "device_check": "Existing implanted-device/pacemaker check records",
+}
+
+BASIC = {
+    "C01": "Adult; exact age and sex are not supplied.",
+    "C02": "Young adult; exact age and sex are not supplied.",
+    "C03": "Young adult; exact age and sex are not supplied.",
+    "C04": "Older adult; exact age and sex are not supplied.",
+    "C05": "Young woman; exact age is not supplied.",
+    "N02": "58-year-old woman.",
+    "N04_INITIAL": "36-year-old woman.",
+    "N05": "52-year-old man.",
+}
+
+CONSULTATION = {
+    "C01": "Review of the current swelling presentation; do not simulate additional events.",
+    "C02": "Review of the presenting symptoms; do not simulate an additional clinical episode.",
+    "C03": "Review of the presenting symptoms; do not simulate an additional clinical episode.",
+    "C04": "Review of the recorded brief collapses; do not simulate a new collapse.",
+    "C05": "Post-event consultation after the two recorded seizures; no new seizure is simulated.",
+    "N02": "The recorded alert daytime consultation; night-time events are historical or collateral observations.",
+    "N04_INITIAL": "The current consultation is the readmission beginning 14 March 2026. The earlier admission ended on 11 March 2026. No later recurrence or additional admission is being simulated.",
+    "N05": "Later investigation-review point. The initial examination values are historical; updated vital signs are not supplied for this review.",
+}
+
+
+def revise_case(original):
+    c = deepcopy(original)
+    cid = c["case_id"]
+    c["original_full_visible_snapshot"] = c["full_visible_snapshot"]
+    c["basic_information"] = BASIC[cid]
+    c["common_information"] = (
+        "Basic patient information: " + BASIC[cid]
+        + "\nConsultation context: " + CONSULTATION[cid]
+        + "\nOnly existing selected records are available. Unreported information remains unknown, "
+        "not normal, negative or evidence that a test was never performed. "
+        "Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld."
+    )
+    if cid == "C05":
+        c["opening"] = "The available record says I have had two generalised seizures within three months."
+    facts = []
+    for old in c["facts"]:
+        f = deepcopy(old)
+        f["parent_fact_id"] = old["id"]
+        f["source_excerpt"] = old["text"]
+        f["context"] = "Selected history; exact dates are not supplied."
+        f["period"] = "any"
+        number = int(f["id"].rsplit("F", 1)[1])
+        if cid == "C01" and number == 1:
+            f["patient_text"] = "I am an adult and have rheumatoid arthritis."
+        if cid == "C04" and number == 2:
+            f["patient_text"] = "The brief collapses began after my blood pressure medicine dose was increased."
+        if cid == "C04" and number == 4:
+            f.update(topic="medical_history", also_topics=["device_check"], context="Device history: a recent pacemaker check occurred; its result is not supplied.")
+        if cid == "C05" and number in [3, 4]:
+            f.update(topic="ct_imaging" if number == 3 else "routine_laboratory",
+                     context="Existing assessment following the recorded seizures; exact dates are not supplied.")
+        if cid == "C05" and number == 2:
+            f["context"] = "Recorded seizure history over three months; witness details are not supplied."
+        if cid == "N02":
+            f["context"] = "Six-month night-time episode history; no exact event dates supplied."
+            if number == 6:
+                f.update(topic="glucose", period="previous",
+                         context="Night-time observations: family readings and inpatient overnight monitoring; not a daytime glucose result.")
+            if number == 10:
+                f.update(topic="examination", period="current", context="Daytime clinical examination, when alert.")
+            if number == 11:
+                f.update(topic="glucose", period="current", context="Daytime examination: glucose at this precise time is not supplied.")
+            if number == 12:
+                f.update(topic="eeg", context="Existing EEG; precise recording time is not supplied.")
+        if cid == "N04_INITIAL":
+            first = number <= 8
+            f["period"] = "initial" if first else "readmission"
+            f["context"] = (
+                "First admission, before discharge on 11 March 2026; exact investigation times are not supplied."
+                if first else
+                "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied."
+            )
+            if number == 3:
+                a = deepcopy(f)
+                a.update(id=f["id"] + "a", topic="examination",
+                         text="Examination recorded marked meningeal signs", source_excerpt="Examination recorded marked meningeal signs")
+                b = deepcopy(f)
+                b.update(id=f["id"] + "b", topic="ct_imaging",
+                         text="head CT showed no abnormality.", source_excerpt="head CT showed no abnormality.")
+                facts.extend([a, b])
+                continue
+            topics = {4: "csf", 5: "microbiology", 7: "csf", 11: "examination", 12: "mri_imaging", 13: "mri_imaging", 14: "csf"}
+            if number in topics:
+                f["topic"] = topics[number]
+            if number == 7:
+                f["context"] += " Repeat lumbar-puncture record during the first admission, not the readmission."
+            if number == 13:
+                f["context"] += " This is spinal MRI, not brain MRI."
+        if cid == "N05":
+            f["context"] = "Existing investigation-review material; exact investigation/report times are not supplied."
+            topics = {2: "gastrointestinal_records", 5: "vital_signs", 6: "routine_laboratory", 7: "vital_signs",
+                      8: "echocardiography", 9: "mri_imaging", 10: "monoclonal_testing", 11: "enzyme_genetics", 12: "nuclear_imaging"}
+            if number in topics:
+                f["topic"] = topics[number]
+            if number in [5, 6]:
+                f.update(period="initial", context="Initial assessment; historical values, not the patient's current status at later investigation review.")
+            if number == 7:
+                f.update(period="current", context="Later investigation-review point: updated vital signs are not supplied.")
+        assert f["source_excerpt"] in c["original_full_visible_snapshot"], (cid, f["id"])
+        facts.append(f)
+    c["facts"] = facts
+    if cid == "N05":
+        # This availability fact is now explicitly shared in the consultation context.
+        c["opening_fact_ids"] = list(dict.fromkeys(c["opening_fact_ids"] + ["N05_F07"]))
+    # Each existing report is one unit. A request cannot release unrelated reports.
+    for f in facts:
+        f["release_group"] = f["id"]
+    # The later-vital-sign availability caveat travels with the historical vital-sign record.
+    if cid == "N05":
+        for f in facts:
+            if f["id"] in ["N05_F05", "N05_F07"]:
+                f["release_group"] = "N05_vital_sign_record"
+    c["coverage_groups"] = [
+        {"parent_fact_id": f["id"], "source_text": f["text"],
+         "member_ids": [a["id"] for a in facts if a["parent_fact_id"] == f["id"]]}
+        for f in original["facts"] if f.get("coverage_target")
+    ]
+    patient = ["- " + f["patient_text"] for f in facts if f["channel"] == "patient"]
+    records = ["- [" + f["context"] + "] " + f["text"] for f in facts if f["channel"] != "patient"]
+    c["full_visible_snapshot"] = (
+        c["common_information"] + "\n\nSelected patient history:\n" + "\n".join(patient)
+        + "\n\nExisting records (contexts retained):\n" + "\n".join(records)
+    )
+    return c
+
+
+def main():
+    assert not (ROOT / "protocol.json").exists(), "Do not replace an existing frozen protocol."
+    old = json.loads((OLD / "protocol.json").read_text())
+    manifest = {str(p.relative_to(OLD)): {"sha256": sha(p), "bytes": p.stat().st_size}
+                for p in OLD.rglob("*") if p.is_file() and "__pycache__" not in p.parts}
+    write(ROOT / "PREVIOUS_FILES.json", manifest)
+    protocol = {k: deepcopy(v) for k, v in old.items() if k not in ["cases", "topics"]}
+    protocol.update(
+        prepared_at=datetime.now(timezone.utc).isoformat(),
+        version="patient-agent-v3.3-targeted-reports-and-question-matching",
+        previous_run=OLD.name, previous_protocol_sha256=sha(OLD / "protocol.json"),
+        topics=TOPICS, cases=[revise_case(c) for c in old["cases"]],
+        maximum_question_turns=6, maximum_reports_per_turn=2, maximum_reports_per_topic=1,
+        maximum_behavioural_repairs_per_turn=1,
+        repeats="One successful visible output per operation; retain all technical failures, at most three technical attempts (90 seconds then 180 seconds). One explicitly recorded behavioural repair is permitted for a repetitive-question proposal. Never replace an answer because of its grade or length.",
+        repeat_policy="Save proposed repetitions; one explicit request to change a repeated/exhausted question, then stop if it is still repetitive. Repairs are visible and counted as extra model calls, not silently regenerated answers.",
+        report_policy="At most one existing report group per requested record category and two per turn. Tags assist routing; literal examination names and medication/treatment requests in the actual question can also match fixed facts. A general tests request returns clarification, not all reports. Explicit admission wording controls period scope; otherwise use a valid period tag or the next unreleased report in source order. Every record retains its episode context.",
+        information_policy="Identical basic demographic information and unknown-information policy in both arms. Static sees all selected fixed facts with the same context labels used for interactive reports. Patient speech stays fixed. Later outcomes remain withheld.",
+        comparison="One fresh static and one fresh interactive final answer per case. Compare both with the preserved previous run; do not attribute a score change to a single fix or claim a reduction in training contamination.",
+    )
+    write(ROOT / "protocol.json", protocol)
+    (ROOT / "protocol.sha256").write_text(sha(ROOT / "protocol.json") + "\n")
+    print("Frozen", len(protocol["cases"]), "cases; old files recorded:", len(manifest))
+
+
+if __name__ == "__main__":
+    main()

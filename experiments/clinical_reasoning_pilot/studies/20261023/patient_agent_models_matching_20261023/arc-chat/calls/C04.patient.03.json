@@ -1,0 +1,57 @@
+{
+  "id": "C04.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:06:33.740040+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Are you currently taking any medications, particularly blood pressure tablets, diuretics, or alpha-blockers?\", \"permitted_statements\": [{\"id\": \"C04_F02\", \"text\": \"The brief collapses began after my blood pressure medicine dose was increased.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-874ce113553b5e90",
+        "model": "arc:lite",
+        "created": 1792767993,
+        "usage": {
+          "prompt_tokens": 181,
+          "total_tokens": 305,
+          "completion_tokens": 124,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 109
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C04_F02\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.69,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C04_F02"
+    ]
+  }
+}

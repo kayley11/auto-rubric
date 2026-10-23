@@ -1,0 +1,58 @@
+{
+  "id": "C03.patient.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:24:26.255863+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any ongoing medical conditions or regular medications, and any recent travel or new foods or medicines before this started?\", \"permitted_statements\": [{\"id\": \"C03_F02\", \"text\": \"The diarrhoea followed travel.\"}, {\"id\": \"C03_F04\", \"text\": \"Antibiotics have helped little.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-956a8d0211414dfe",
+        "model": "arc:lite",
+        "created": 1792769066,
+        "usage": {
+          "prompt_tokens": 201,
+          "total_tokens": 465,
+          "completion_tokens": 264,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 242
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F02\",\"C03_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.2,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F02",
+      "C03_F04"
+    ]
+  }
+}

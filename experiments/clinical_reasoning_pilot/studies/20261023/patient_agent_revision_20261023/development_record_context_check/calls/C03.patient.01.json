@@ -1,0 +1,58 @@
+{
+  "id": "C03.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:01:37.176125+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"How long has the diarrhoea and blood in your stool been going on, and are you having any other symptoms such as fever, abdominal pain, weight loss, or joint pain?\", \"permitted_statements\": [{\"id\": \"C03_F03\", \"text\": \"There is blood, urgency and cramping.\"}, {\"id\": \"C03_F05\", \"text\": \"My back is stiff in the mornings.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-904b64d81214c068",
+        "model": "arc:lite",
+        "created": 1792760497,
+        "usage": {
+          "prompt_tokens": 217,
+          "total_tokens": 442,
+          "completion_tokens": 225,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 203
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F03\",\"C03_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.05,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F03",
+      "C03_F05"
+    ]
+  }
+}

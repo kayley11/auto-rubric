@@ -1,0 +1,55 @@
+{
+  "id": "C05.interactive.final",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:08:14.105568+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Respond to a fictional educational clinical case for a research evaluation. Follow the stated task and audience. Use only the supplied patient facts and conversation. Distinguish facts from hypotheses and make uncertainty explicit. Give concise final clinical justifications, not a private internal reasoning trace."
+          },
+          {
+            "role": "user",
+            "content": "Case facts:\nBasic patient information: Young woman; exact age is not supplied.\nConsultation context: Post-event consultation after the two recorded seizures; no new seizure is simulated.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nThe available record says I have had two generalised seizures within three months.\n\nTask:\nAudience: the patient. Write 250–350 words in English as a supportive explanation addressed to \"you\". Explain what the episodes may mean, what any investigation findings obtained do and do not establish, the specialist follow-up plan, practical safety considerations and the patient priorities you would ask about. Use short paragraphs and plain language; explain any necessary medical terms. Ask two focused questions at the end. Do not invent patient replies, findings or preferences. Do not prescribe a named new medication or dose. For driving, refer to the applicable local licensing rules and the treating team rather than inventing an exact waiting period.\n\nWord-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.\n\nEarlier conversation (context):\nClinician: Can you describe what happened during each of the two seizures — for example, how they started, how long they lasted, and how you felt afterwards? Also, were there any possible triggers or warning signs before either event?\nSimulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\n\nClinician: Were there any physical or neurological examination findings recorded after either seizure, and was any brain imaging such as a CT or MRI scan performed?\nFixed clinical record [Existing assessment following the recorded seizures; exact dates are not supplied.]: CT head is normal\nController: One existing ct_imaging report group returned with its clinical context. A later question can request another existing report.\n\nClinician: Was an EEG performed after either of the seizures, and if so, what were the findings?\nSimulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\n\nClinician: Do you have any relevant medical history such as head injury, prior seizures, or a family history of epilepsy, and were you taking any medications or using substances around the time of the seizures?\nSimulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\n\nClinician: Were any routine blood tests performed around the time of the seizures, such as electrolytes, glucose, or full blood count?\nFixed clinical record [Existing assessment following the recorded seizures; exact dates are not supplied.]: metabolic causes were excluded\nController: One existing routine_laboratory report group returned with its clinical context. A later question can request another existing report.\n\nClinician: What are your main concerns about these seizures, and do you have any practical considerations such as driving, work, or caring responsibilities that are affected?\nPatient: I am a young woman pursuing a modelling career."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 8192
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a8f4a52c7c8fe625",
+        "model": "arc:chat",
+        "created": 1792768094,
+        "usage": {
+          "prompt_tokens": 882,
+          "total_tokens": 6580,
+          "completion_tokens": 5698,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 5309
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n**Understanding Your Seizures**\n\nHaving two generalised seizures within three months is a significant finding. \"Generalised\" means the electrical disturbance involved both sides of the brain at once. Two unprovoked seizures like this meet the clinical definition of epilepsy, which is a tendency to have recurrent seizures rather than a single event. This does not mean something is wrong with your brain in a structural sense. Many people with epilepsy have normal scans and live full lives.\n\n**What Your Tests Show**\n\nYour CT scan was normal, which is reassuring. It rules out a structural cause such as a bleed, tumour, or significant injury. Blood tests excluded metabolic causes like abnormal sodium or glucose levels. However, a normal CT does not confirm or exclude epilepsy itself, because epilepsy is a diagnosis based on the pattern of seizures, not on imaging. An EEG, a recording of brain electrical activity, may still be helpful, and your specialist may arrange one.\n\n**Follow-Up Plan**\n\nYou will need ongoing review by a neurologist or epilepsy specialist. They will take a detailed history of both events, consider whether an EEG is needed, and discuss whether treatment is appropriate. Treatment decisions depend on seizure type, frequency, and your personal circumstances.\n\n**Practical Safety**\n\nUntil your specialist advises otherwise, avoid swimming alone, bathing in a locked room, working at heights, or operating heavy machinery. For driving, your treating team and your local licensing authority set the rules. Please ask them directly rather than relying on general information.\n\n**Your Priorities**\n\nI understand you are pursuing a modelling career. I would like to ask:\n\n1. Are there specific aspects of your work, such as shoots involving water, heights, or long hours, that you are most worried about?\n2. What matters most to you right now: understanding the diagnosis, getting back to work quickly, or something else?"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 39.08,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "text": "**Understanding Your Seizures**\n\nHaving two generalised seizures within three months is a significant finding. \"Generalised\" means the electrical disturbance involved both sides of the brain at once. Two unprovoked seizures like this meet the clinical definition of epilepsy, which is a tendency to have recurrent seizures rather than a single event. This does not mean something is wrong with your brain in a structural sense. Many people with epilepsy have normal scans and live full lives.\n\n**What Your Tests Show**\n\nYour CT scan was normal, which is reassuring. It rules out a structural cause such as a bleed, tumour, or significant injury. Blood tests excluded metabolic causes like abnormal sodium or glucose levels. However, a normal CT does not confirm or exclude epilepsy itself, because epilepsy is a diagnosis based on the pattern of seizures, not on imaging. An EEG, a recording of brain electrical activity, may still be helpful, and your specialist may arrange one.\n\n**Follow-Up Plan**\n\nYou will need ongoing review by a neurologist or epilepsy specialist. They will take a detailed history of both events, consider whether an EEG is needed, and discuss whether treatment is appropriate. Treatment decisions depend on seizure type, frequency, and your personal circumstances.\n\n**Practical Safety**\n\nUntil your specialist advises otherwise, avoid swimming alone, bathing in a locked room, working at heights, or operating heavy machinery. For driving, your treating team and your local licensing authority set the rules. Please ask them directly rather than relying on general information.\n\n**Your Priorities**\n\nI understand you are pursuing a modelling career. I would like to ask:\n\n1. Are there specific aspects of your work, such as shoots involving water, heights, or long hours, that you are most worried about?\n2. What matters most to you right now: understanding the diagnosis, getting back to work quickly, or something else?"
+  }
+}

@@ -1,0 +1,133 @@
+"""Run the frozen cross-model interviews serially, preserving every attempt."""
+from pathlib import Path
+from importlib.metadata import version
+import argparse
+import hashlib
+import importlib.util
+import json
+
+ROOT = Path(__file__).resolve().parent
+spec = importlib.util.spec_from_file_location('frozen_patient_interview', ROOT / 'frozen_interview.py')
+legacy = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(legacy)
+PROTOCOL = json.loads((ROOT / 'protocol.json').read_text())
+
+
+def slug(model):
+    return model.replace(':', '-')
+
+
+def configure(model):
+    legacy.ROOT = ROOT / slug(model)
+    legacy.ROOT.mkdir(exist_ok=True)
+    (legacy.ROOT / 'outputs').mkdir(exist_ok=True)
+    legacy.PROTOCOL = PROTOCOL
+    legacy.SETTINGS.answer_model = model
+    legacy.SETTINGS.judge_model = PROTOCOL['judge_model']
+
+    def fixed_role_payload(messages, limit=2048):
+        patient = messages[0]['content'] == legacy.PATIENT_SYSTEM
+        return {'model': PROTOCOL['patient_model'] if patient else model,
+                'messages': messages, 'temperature': 0, 'reasoning_effort': 'low',
+                'max_tokens': limit}
+
+    legacy.chat_payload = fixed_role_payload
+
+
+def final_data(c, state):
+    return {'case_id': c['case_id'],
+            'facts': c['common_information'] + '\nPatient opening:\n' + c['opening'],
+            'history': '\n\n'.join(legacy.turn_text(t) for t in state['turns']),
+            'task': c['final_task'], 'answer': state.get('final_answer', ''),
+            'judge_model': PROTOCOL['judge_model']}
+
+
+def grading_data(c, state, item):
+    if item == 'D3a':
+        data = final_data(c, state)
+        data.update(reference='Assessment scope: assess the final answer against only the facts and conversation actually supplied here. The complete case inventory and its clinical reference are intentionally withheld from this assessment. The original task is unchanged. Use the original rubric descriptors; do not assume unasked facts or later outcomes. Use Cannot assess if this task/output does not support a defensible assessment.',
+                    reference_status='scope instruction only; no complete-case clinical reference')
+        return data
+    transcript = c['common_information'] + '\nPatient opening:\n' + c['opening'] + '\n\n'
+    transcript += '\n\n'.join(legacy.turn_text(t, include_checkpoint=True) for t in state['turns'])
+    return {'case_id': c['case_id'],
+            'facts': 'EXAMINER-ONLY case inventory, not all supplied to the clinician:\n' + c['full_visible_snapshot'],
+            'history': '',
+            'task': "Assess the clinician's actual patient interview. The inventory identifies possible information, not facts the clinician already knew. Judge each turn using only the opening and facts released by then. For context seeking, judge useful explicit requests and prioritisation, not just the final answer. Do not require unavailable information or a final diagnosis.",
+            'reference': c['reference'] + '\nCoverage targets are provisional; do not invent a mandatory checklist or assume all unasked details were known.',
+            'reference_status': 'draft', 'answer': transcript,
+            'judge_model': PROTOCOL['judge_model']}
+
+
+def one(c, model):
+    configure(model)
+    path = legacy.ROOT / 'outputs' / (c['case_id'] + '.json')
+    state = legacy.read(path) if path.exists() else {
+        'case_id': c['case_id'], 'answer_model': model,
+        'patient_model': PROTOCOL['patient_model'], 'judge_model': PROTOCOL['judge_model'],
+        'protocol_sha256': legacy.sha(ROOT / 'protocol.json'),
+        'created_at': legacy.now(), 'reference_status': 'draft', 'status': 'interviewing'}
+    legacy.save(path, state)
+    if not state.get('interview_complete'):
+        state = legacy.interview(c, state)
+    if 'final_answer' not in state:
+        data = final_data(c, state)
+        result = legacy.operation(c['case_id'] + '.interactive.final',
+                                  legacy.chat_payload(legacy.generation_messages(data), 8192))
+        state['final_answer'] = result['text']
+        state['word_count'] = legacy.word_count_info(result['text'], c['final_task'])
+        legacy.save(path, state)
+    for item in ['D5c', 'D3a']:
+        grades = state.setdefault('grades', {})
+        if item not in grades:
+            grades[item] = legacy.operation(c['case_id'] + '.' + item,
+                                            grade=(grading_data(c, state, item), item))
+            legacy.save(path, state)
+    state['status'] = 'complete'
+    state['completed_at'] = legacy.now()
+    legacy.save(path, state)
+    print(legacy.now(), model, c['case_id'], 'COMPLETE', state['question_turns'], 'turns',
+          {k: v['score'] for k, v in state['grades'].items()}, flush=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--models', nargs='*')
+    parser.add_argument('--cases', nargs='*')
+    args = parser.parse_args()
+    assert legacy.sha(ROOT / 'protocol.json') == (ROOT / 'protocol.sha256').read_text().strip()
+    assert legacy.sha(ROOT / 'frozen_interview.py') == PROTOCOL['controller_sha256']
+    previous = json.loads((ROOT / 'previous_protocol.json').read_text())
+    assert PROTOCOL['cases'] == previous['cases']
+    if not (ROOT / 'environment.json').exists():
+        legacy.save(ROOT / 'environment.json', {
+            'started_at': legacy.now(), 'settings': legacy.SETTINGS.public(),
+            'autorubric_version': version('autorubric'),
+            'runner_sha256': legacy.sha(Path(__file__)),
+            'controller_sha256': legacy.sha(ROOT / 'frozen_interview.py'),
+            'engine_sha256': legacy.sha(legacy.REPO / 'arena/engine.py'),
+            'protocol_sha256': legacy.sha(ROOT / 'protocol.json'),
+            'answer_models': PROTOCOL['answer_models'],
+            'patient_model': PROTOCOL['patient_model'], 'judge_model': PROTOCOL['judge_model']})
+        legacy.save(ROOT / 'rubric_items.json', {k: legacy.CRITERIA[k] for k in ['D5c', 'D3a']})
+    byid = {c['case_id']: c for c in PROTOCOL['cases']}
+    errors = []
+    for scheduled in PROTOCOL['execution_order']:
+        if args.cases and scheduled['case'] not in args.cases:
+            continue
+        for model in scheduled['models']:
+            if args.models and model not in args.models:
+                continue
+            try:
+                one(byid[scheduled['case']], model)
+            except Exception as exc:
+                err = {'case': scheduled['case'], 'model': model,
+                       'error': legacy.redact(str(exc), legacy.SETTINGS.api_key), 'at': legacy.now()}
+                errors.append(err)
+                print('INCOMPLETE', json.dumps(err), flush=True)
+    legacy.save(ROOT / 'last_execution.json', {'finished_at': legacy.now(), 'errors': errors})
+    print('FINISHED; incomplete conditions:', len(errors), flush=True)
+
+
+if __name__ == '__main__':
+    main()

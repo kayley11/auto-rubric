@@ -4,7 +4,7 @@ An English command-line deployment of [AutoRubric](https://github.com/delip/auto
 
 This repository builds on **AutoRubric v1.5.3** and provides a ready-to-configure runner for the **KCL OpenAI-compatible API**. The default model is `arc:nexus`. Commands, samples, and requested grading explanations are in English.
 
-The [clinical reasoning pilot](experiments/clinical_reasoning_pilot/README.md) adds findings from 16 answers and 93 selected item ratings, numeric result exports, and the experiment runner. Its public tests use authored software fixtures; the original clinical inputs and full rubric are kept separately. Start with the [experimental findings](experiments/clinical_reasoning_pilot/FINDINGS.md).
+The [clinical reasoning experiments](experiments/clinical_reasoning_pilot/README.md) include the original rubric pilot, six new cases, separate MELD checks and the latest eight-case comparison across three models. Start with the [three short English reports and complete results](experiments/clinical_reasoning_pilot/studies/20261023/README.md). Saved answers, item scores, judge explanations and earlier comparison rounds are included; clinical references remain provisional.
 
 ## Quick start
 

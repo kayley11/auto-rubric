@@ -1,0 +1,57 @@
+{
+  "id": "C03.patient.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:24:04.172703+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"How long have you had the bloody diarrhoea and the morning back stiffness, and is there any family history of inflammatory bowel disease, arthritis, or psoriasis?\", \"permitted_statements\": [{\"id\": \"C03_F06\", \"text\": \"Previously, I had painful lesions on my shins.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-b8d4e15e3b2f2181",
+        "model": "arc:lite",
+        "created": 1792765444,
+        "usage": {
+          "prompt_tokens": 191,
+          "total_tokens": 363,
+          "completion_tokens": 172,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 157
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F06\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.91,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F06"
+    ]
+  }
+}

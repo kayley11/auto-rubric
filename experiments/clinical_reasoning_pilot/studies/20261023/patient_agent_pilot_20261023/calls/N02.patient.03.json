@@ -1,0 +1,58 @@
+{
+  "id": "N02.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:01:05.019188+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any history of seizures, head injury, or neurological conditions, and are you currently taking any regular medications?\", \"permitted_statements\": [{\"id\": \"N02_F07\", \"text\": \"I have no history of diabetes.\"}, {\"id\": \"N02_F08\", \"text\": \"I take irbesartan for high blood pressure.\"}, {\"id\": \"N02_F09\", \"text\": \"I was diagnosed with moderate obstructive sleep apnoea one month ago, and it has not been treated.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-96fe463a11446679",
+        "model": "arc:lite",
+        "created": 1792756865,
+        "usage": {
+          "prompt_tokens": 243,
+          "total_tokens": 603,
+          "completion_tokens": 360,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 331
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F07\",\"N02_F09\",\"N02_F08\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.34,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F07",
+      "N02_F09",
+      "N02_F08"
+    ]
+  }
+}

@@ -1,5 +1,12 @@
 # Clinical reasoning rubric pilot
 
+**Latest results:** [experiments through 23 October 2026](studies/20261023/README.md).
+This includes six new cases, separate MELD checks, static/interview comparisons and
+the corrected eight-case, three-model comparison, with complete saved output.
+Start with its [three short English reports](studies/20261023/README.md#latest-findings).
+
+## Earlier pilot and evaluator checks
+
 The pilot applies a supplied clinical reasoning rubric through AutoRubric, then
 checks the resulting scores, explanations and failure records. The extension
 completed **16 answers across seven parent case clusters and 93 selected item

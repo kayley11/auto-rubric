@@ -1,0 +1,81 @@
+{
+  "id": "C02.doctor.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:10:19.846005+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: Young adult; exact age and sex are not supplied.\nConsultation context: The current presentation is gait unsteadiness; earlier neurological episodes are history.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI am a young adult and have recently been unsteady when walking.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you tell me more about when this unsteadiness started and whether you've noticed any other symptoms alongside it, such as numbness, weakness, vision changes, or difficulty with balance in one direction?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"Young adult with recent gait unsteadiness; earlier neurological episodes noted in history but not yet characterised. Working assessment is uncertain pending further history.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: My current unsteadiness became worse after a hot bath.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"You mentioned you've had earlier neurological episodes — could you describe what those were like, how long they lasted, and whether they fully resolved on their own?\", \"topics\": [\"previous_episodes\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"Young adult with gait unsteadiness that worsens with heat exposure (hot bath). Earlier neurological episodes are noted in history but not yet characterised. The heat-sensitivity pattern is notable but does not confirm a diagnosis. Working assessment remains uncertain.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: About a year ago, I had trouble with my speech. Some months ago, I had painful blurred vision in one eye and urinary symptoms. Those earlier symptoms resolved.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-bd64fd73880b3e6e",
+        "model": "arc:lite",
+        "created": 1792761020,
+        "usage": {
+          "prompt_tokens": 1321,
+          "total_tokens": 1765,
+          "completion_tokens": 444,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 282
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Were any investigations done during those earlier episodes — for example, an MRI scan of your brain or spine, or a lumbar puncture? If so, could you share what those reports showed?\", \"topics\": [\"mri_imaging\", \"csf\"], \"record_period\": \"previous\", \"assessment\": {\"summary\": \"Young adult with current gait unsteadiness worsened by heat, plus prior separate episodes of speech difficulty, painful unilateral blurred vision, and urinary symptoms, all resolved. The pattern of multiple neurological deficits in different locations separated in time, with heat sensitivity, is suggestive of a demyelinating process, but this remains a working hypothesis only. No confirmatory investigation results yet available.\", \"certainty\": \"working\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.99,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Were any investigations done during those earlier episodes — for example, an MRI scan of your brain or spine, or a lumbar puncture? If so, could you share what those reports showed?",
+    "topics": [
+      "mri_imaging",
+      "csf"
+    ],
+    "record_period": "previous",
+    "assessment": {
+      "summary": "Young adult with current gait unsteadiness worsened by heat, plus prior separate episodes of speech difficulty, painful unilateral blurred vision, and urinary symptoms, all resolved. The pattern of multiple neurological deficits in different locations separated in time, with heat sensitivity, is suggestive of a demyelinating process, but this remains a working hypothesis only. No confirmatory investigation results yet available.",
+      "certainty": "working"
+    }
+  }
+}

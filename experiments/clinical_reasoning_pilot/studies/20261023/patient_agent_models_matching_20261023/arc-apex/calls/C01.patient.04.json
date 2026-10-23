@@ -1,0 +1,59 @@
+{
+  "id": "C01.patient.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:00:34.308401+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any existing medical conditions or regular medicines, such as diabetes, high blood pressure, or kidney problems?\", \"permitted_statements\": [{\"id\": \"C01_F01\", \"text\": \"I am an adult and have rheumatoid arthritis.\"}, {\"id\": \"C01_F02\", \"text\": \"I take methotrexate and use NSAIDs intermittently.\"}, {\"id\": \"C01_F05\", \"text\": \"The furosemide I started recently has not helped.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-bae53b419f46d153",
+        "model": "arc:lite",
+        "created": 1792767634,
+        "usage": {
+          "prompt_tokens": 238,
+          "total_tokens": 513,
+          "completion_tokens": 275,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 246
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C01_F01\",\"C01_F02\",\"C01_F05\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.14,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C01_F01",
+      "C01_F02",
+      "C01_F05"
+    ]
+  }
+}

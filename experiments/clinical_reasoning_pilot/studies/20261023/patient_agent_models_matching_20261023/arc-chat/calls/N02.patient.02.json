@@ -1,0 +1,57 @@
+{
+  "id": "N02.patient.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:16:03.005730+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"When did the weight loss and low energy start relative to the night-time episodes — did they begin around the same time, or did one come first? And do you ever have any unusual sensations, brief confusion, or jerking during the daytime?\", \"permitted_statements\": [{\"id\": \"N02_F04\", \"text\": \"I usually wake around 07:00–08:00 and feel normal afterwards.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-92b8a279fa9b569e",
+        "model": "arc:lite",
+        "created": 1792768563,
+        "usage": {
+          "prompt_tokens": 217,
+          "total_tokens": 417,
+          "completion_tokens": 200,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 185
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.04,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F04"
+    ]
+  }
+}

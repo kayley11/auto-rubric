@@ -1,0 +1,292 @@
+"""Run the frozen six-probe continuation check without invoking AutoRubric."""
+
+from collections import Counter
+from datetime import datetime, timezone
+from difflib import SequenceMatcher
+from pathlib import Path
+import argparse
+import csv
+import hashlib
+import io
+import json
+import re
+import time
+import unicodedata
+
+import httpx
+from dotenv import dotenv_values
+
+ROOT = Path(__file__).resolve().parent
+PACK = ROOT.parent
+REPO = PACK.parents[1] / 'auto rubric'
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def save(path, value):
+    temp = path.with_suffix('.tmp')
+    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+    temp.replace(path)
+
+
+def normalise(text):
+    return re.sub(r'\s+', ' ', unicodedata.normalize('NFKC', text)).strip()
+
+
+def distance(a, b):
+    if len(b) > len(a):
+        a, b = b, a
+    previous = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        current = [i]
+        for j, cb in enumerate(b, 1):
+            current.append(min(previous[j] + 1, current[-1] + 1,
+                               previous[j - 1] + (ca != cb)))
+        previous = current
+    return previous[-1]
+
+
+def measure(target, visible):
+    output = normalise(visible)
+    window = output[:len(target)]
+    edit = distance(target, window)
+    full_edit = distance(target, output)
+    denominator = max(len(target), len(window))
+    reference_words, output_words = target.split(), window.split()
+    match = SequenceMatcher(None, reference_words, output_words, autojunk=False).find_longest_match()
+    return {
+        'target_chars': len(target), 'visible_output_chars': len(output),
+        'compared_chars': len(window), 'full_horizon_covered': len(output) >= len(target),
+        'primary_edit_distance': edit,
+        'primary_similarity': 1 - edit / denominator,
+        'full_output_edit_distance': full_edit,
+        'full_output_similarity': 1 - full_edit / max(len(target), len(output)),
+        # Integer comparison implements the inclusive 0.95 cutoff without rounding.
+        'near_exact': edit * 100 <= denominator * 5,
+        'visible_words': len(output.split()),
+        'comparison_output': window,
+        'longest_exact_word_span': {
+            'words': match.size, 'reference_word_start': match.a,
+            'output_word_start': match.b,
+            'text': ' '.join(reference_words[match.a:match.a + match.size]),
+        },
+    }
+
+
+def redact(value, secret):
+    if isinstance(value, dict):
+        return {k: redact(v, secret) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact(v, secret) for v in value]
+    return value.replace(secret, '[REDACTED]') if isinstance(value, str) and secret else value
+
+
+def check_inputs(protocol, protocol_hash):
+    assert digest(ROOT / 'protocol.json') == protocol_hash
+    for probe in protocol['probes']:
+        for label in ('source', 'prefix', 'suffix'):
+            assert digest(ROOT / probe[f'{label}_file']) == probe[f'{label}_sha256']
+        text = (ROOT / probe['source_file']).read_text()
+        prefix = (ROOT / probe['prefix_file']).read_text()
+        suffix = (ROOT / probe['suffix_file']).read_text()
+        assert prefix + ' ' + suffix == text
+        assert digest(ROOT / probe['source_text_file']) == probe['source_text_file_sha256']
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--analyse-only', action='store_true')
+    args = parser.parse_args()
+    protocol = json.loads((ROOT / 'protocol.json').read_text())
+    protocol_hash = (ROOT / 'protocol.sha256').read_text().split()[0]
+    check_inputs(protocol, protocol_hash)
+    for a, b, expected in [('', '', 0), ('abc', 'abc', 0), ('abc', 'abX', 1),
+                           ('kitten', 'sitting', 3), ('ab', 'ba', 2), ('', 'xyz', 3)]:
+        assert distance(a, b) == distance(b, a) == expected
+    cfg = dotenv_values(REPO / '.env')
+    key = cfg.get('OPENAI_API_KEY', '')
+    base = (cfg.get('OPENAI_BASE_URL') or cfg.get('OPENAI_API_BASE') or '').rstrip('/').removesuffix('/chat/completions')
+    if not args.analyse_only and (not key or not base):
+        raise SystemExit('Existing provider configuration is unavailable.')
+
+    environment_path = ROOT / 'environment.json'
+    if environment_path.exists():
+        environment = json.loads(environment_path.read_text())
+    else:
+        protected = [PACK / n for n in ('SCORE_OUTPUT.txt', 'RAW_OUTPUT.txt', 'scores.csv',
+                                        'reference_notes.json', 'cases.json')]
+        protected += sorted((PACK / 'runs/ui_batch_20261022').glob('N0[123].*'))
+        protected += [REPO / 'arena/rubric.json', REPO / 'arena/case-library.json']
+        environment = {
+            'created_at': now(), 'protocol_sha256': protocol_hash,
+            'endpoint': base + '/chat/completions',
+            'runner_sha256': digest(Path(__file__)),
+            'protected_rubric_files': {str(p): digest(p) for p in protected},
+            'capture_scope': 'Complete visible continuation, exact request, response IDs/model/usage/finish reasons and error bodies with credentials removed. Hidden deliberation fields are not collected.',
+            'notes': 'Separate direct provider calls. No AutoRubric API, clinical UI run creation or clinical-reference change.',
+        }
+        save(environment_path, environment)
+
+    def model_snapshot(label):
+        data = {'checked_at': now()}
+        try:
+            r = httpx.get(base + '/models', headers={'Authorization': 'Bearer ' + key}, timeout=30)
+            data['http_status'] = r.status_code
+            if r.status_code == 200:
+                fields = ('id', 'created', 'name', 'backend_model', 'backend_model_size',
+                          'backend_model_quant', 'mode', 'features')
+                data['models'] = [{k:m[k] for k in fields if k in m}
+                                  for m in r.json().get('data', []) if m.get('id') in protocol['models']]
+        except httpx.HTTPError as exc:
+            data['error_type'] = type(exc).__name__
+        save(ROOT / f'provider_models_{label}.json', redact(data, key))
+
+    if not args.analyse_only:
+        if not (ROOT / 'provider_models_before.json').exists():
+            model_snapshot('before')
+        for model in protocol['models']:
+            for probe in protocol['probes']:
+                check_inputs(protocol, protocol_hash)
+                prefix = (ROOT / probe['prefix_file']).read_text()
+                suffix = (ROOT / probe['suffix_file']).read_text()
+                name = model.replace(':', '-') + '_' + probe['case_id']
+                path = ROOT / 'responses' / (name + '.json')
+                record = json.loads(path.read_text()) if path.exists() else {
+                    'case_id': probe['case_id'], 'source_id': probe['source_id'], 'model_alias': model,
+                    'protocol_sha256': protocol_hash, 'status': 'pending', 'attempts': [],
+                }
+                if record['status'] == 'complete':
+                    continue
+                while len(record['attempts']) < 3:
+                    parameters = protocol['sampling']
+                    request = {k:parameters[k] for k in ('temperature', 'top_p', 'max_tokens', 'reasoning_effort', 'stream')}
+                    request.update(model=model, messages=[
+                        {'role':'system', 'content':protocol['prompt_system_template'].format(target_words=probe['suffix_words'])},
+                        {'role':'user', 'content':prefix},
+                    ])
+                    assert suffix not in json.dumps(request, ensure_ascii=False)
+                    assert request['messages'][1]['content'] == prefix
+                    attempt = {'started_at': now(), 'request': request}
+                    record['attempts'].append(attempt)
+                    record['status'] = 'running'
+                    save(path, redact(record, key))
+                    print(now(), model, probe['case_id'], 'attempt', len(record['attempts']), flush=True)
+                    started = time.monotonic()
+                    try:
+                        with httpx.Client(timeout=parameters['timeout_seconds'], follow_redirects=False) as client:
+                            response = client.post(base + '/chat/completions', json=request,
+                                                   headers={'Authorization':'Bearer ' + key})
+                        attempt['http_status'] = response.status_code
+                        if response.status_code >= 400:
+                            attempt['provider_error_body'] = response.text
+                            raise ValueError('HTTP ' + str(response.status_code))
+                        raw = response.json()
+                        attempt['response'] = {k:raw[k] for k in ('id','object','model','created','usage','system_fingerprint') if k in raw}
+                        attempt['response']['choices'] = [
+                            {'index':c.get('index'), 'finish_reason':c.get('finish_reason'),
+                             'message':{'role':c.get('message',{}).get('role'), 'content':c.get('message',{}).get('content')}}
+                            for c in raw.get('choices', [])]
+                        visible = raw.get('choices', [{}])[0].get('message', {}).get('content')
+                        if not isinstance(visible, str) or not visible.strip():
+                            raise ValueError('No non-empty visible continuation returned.')
+                        record.update(status='complete', visible_continuation=visible,
+                                      selected_attempt=len(record['attempts']), completed_at=now())
+                        (ROOT / 'responses' / (name + '.continuation.txt')).write_text(visible)
+                    except (httpx.HTTPError, ValueError, KeyError, IndexError) as exc:
+                        attempt['error'] = redact(type(exc).__name__ + ': ' + str(exc), key)
+                        record['status'] = 'unusable'
+                    finally:
+                        attempt['elapsed_seconds'] = round(time.monotonic() - started, 3)
+                        save(path, redact(record, key))
+                    if record['status'] == 'complete':
+                        measured = measure(suffix, record['visible_continuation'])
+                        print(model, probe['case_id'], 'primary_similarity', round(measured['primary_similarity'], 6), flush=True)
+                        break
+                    if len(record['attempts']) < 3:
+                        time.sleep(15)
+        model_snapshot('after')
+
+    rows = []
+    plain = ['MELD-INSPIRED CHECK — ORIGINAL PREFIX, HELD-OUT SUFFIX AND MODEL CONTINUATION',
+             'Clinical answers and rubric grades are stored separately. Generated continuations are experimental text, not additional patient facts.',
+             'Protocol SHA-256: ' + protocol_hash, '']
+    calls = []
+    for model in protocol['models']:
+        for probe in protocol['probes']:
+            name = model.replace(':', '-') + '_' + probe['case_id']
+            path = ROOT / 'responses' / (name + '.json')
+            if not path.exists():
+                raise SystemExit('A planned probe has not been attempted: ' + name)
+            record = json.loads(path.read_text())
+            prefix = (ROOT / probe['prefix_file']).read_text()
+            suffix = (ROOT / probe['suffix_file']).read_text()
+            row = {'case_id':probe['case_id'], 'source_id':probe['source_id'], 'model':model,
+                   'status':record['status'], 'attempts':len(record['attempts']),
+                   'target_chars':len(suffix), 'target_words':probe['suffix_words'],
+                   'response_file':'responses/' + name + '.json',
+                   'continuation_file':'responses/' + name + '.continuation.txt'}
+            if record['status'] == 'complete':
+                row.update(measure(suffix, record['visible_continuation']))
+                final = record['attempts'][record['selected_attempt']-1]
+                row['finish_reason'] = final['response']['choices'][0].get('finish_reason')
+                row['classification'] = 'near_exact_continuation' if row['near_exact'] else 'below_threshold'
+                row['flags'] = []
+                if not row['full_horizon_covered']:
+                    row['flags'].append('shorter_than_reference_character_horizon')
+                if row['finish_reason'] == 'length':
+                    row['flags'].append('api_token_limit')
+                if prefix in normalise(record['visible_continuation']):
+                    row['flags'].append('prefix_echo')
+                if record['visible_continuation'].lstrip().startswith('```'):
+                    row['flags'].append('leading_code_fence')
+                (ROOT / 'responses' / (name + '.comparison_window.txt')).write_text(row['comparison_output'])
+            else:
+                row['classification'] = 'unusable'
+            calls += [{'case_id':probe['case_id'], 'model':model, **a} for a in record['attempts']]
+            rows.append(row)
+            plain += ['='*80,probe['case_id'] + ' / ' + model, 'SOURCE',probe['authors'] + '; ' + probe['url'],
+                      'ORIGINAL PREFIX SENT TO MODEL',prefix,'','HELD-OUT ORIGINAL SUFFIX — NOT SENT TO MODEL',suffix,
+                      '','COMPLETE VISIBLE MODEL CONTINUATION',record.get('visible_continuation','NO USABLE CONTINUATION'),
+                      '','SIMILARITY AND FLAGS',json.dumps({k:v for k,v in row.items() if k!='comparison_output'},ensure_ascii=False,indent=2),'']
+
+    stats = {}
+    for model in protocol['models']:
+        group = [r for r in rows if r['model'] == model]
+        stats[model] = {'planned':len(group), 'usable':sum(r['status']=='complete' for r in group),
+                        'near_exact':sum(r.get('near_exact',False) for r in group),
+                        'below_threshold':sum(r['classification']=='below_threshold' for r in group),
+                        'unusable':sum(r['status']!='complete' for r in group)}
+    uses = [a.get('response',{}).get('usage') for a in calls]
+    protected_changed = [p for p,h in environment['protected_rubric_files'].items() if digest(Path(p)) != h]
+    assert not protected_changed
+    check_inputs(protocol, protocol_hash)
+    result = {'analysed_at':now(), 'protocol_sha256':protocol_hash,
+              'method_label':protocol['method_label'], 'threshold':protocol['near_exact_threshold'],
+              'by_model':stats,'probes':rows,
+              'resource_use':{'attempts':len(calls),'attempts_with_usage':sum(u is not None for u in uses),
+                              'reported_tokens':sum((u or {}).get('total_tokens',0) for u in uses),
+                              'request_seconds':round(sum(a.get('elapsed_seconds',0) for a in calls),3),
+                              'failed_attempts':sum('error' in a for a in calls)},
+              'protected_rubric_files_unchanged':True,
+              'clinical_reference_status':'draft', 'training_cutoff_status':'unverified'}
+    save(ROOT / 'results.json', result)
+    (ROOT / 'CONTINUATIONS.txt').write_text('\n'.join(plain)+'\n')
+    buffer = io.StringIO()
+    fields = ['case_id','source_id','model','status','classification','primary_similarity','full_output_similarity',
+              'primary_edit_distance','target_chars','visible_output_chars','compared_chars','full_horizon_covered',
+              'target_words','visible_words','finish_reason','attempts']
+    writer = csv.DictWriter(buffer,fieldnames=fields,extrasaction='ignore')
+    writer.writeheader();writer.writerows(rows)
+    (ROOT / 'similarities.csv').write_text(buffer.getvalue())
+    print(json.dumps({'by_model':stats, 'resource_use':result['resource_use'],
+                      'rubric_files_unchanged':True},ensure_ascii=False,indent=2),flush=True)
+
+
+if __name__ == '__main__':
+    main()

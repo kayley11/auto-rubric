@@ -1,0 +1,56 @@
+{
+  "id": "N05.patient.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:02:39.886237+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Is there any family history of similar symptoms — such as unexplained heart failure, neuropathy, or early death in relatives? And could you describe the numbness a bit more — is it in both feet, does it extend up the legs, and have you noticed any difficulty with balance or sweating changes?\", \"permitted_statements\": [{\"id\": \"N05_F01\", \"text\": \"I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-937aa710c6f6964a",
+        "model": "arc:lite",
+        "created": 1792756960,
+        "usage": {
+          "prompt_tokens": 238,
+          "total_tokens": 433,
+          "completion_tokens": 195,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 180
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N05_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.87,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N05_F01"
+    ]
+  }
+}

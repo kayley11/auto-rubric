@@ -1,0 +1,80 @@
+{
+  "id": "C03.doctor.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:22:35.107354+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:apex",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: Young adult; exact age and sex are not supplied.\nConsultation context: Review of the presenting symptoms; do not simulate an additional clinical episode.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI have persistent diarrhoea and there is blood in my stool.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"How long has the diarrhoea and blood in your stool been going on, and has anything made it better or worse?\", \"topics\": [\"timecourse\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent diarrhoea and blood in the stool; cause not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Have you had similar episodes of diarrhoea or bleeding before, or any other ongoing health conditions?\", \"topics\": [\"previous_episodes\", \"medical_history\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Young adult with persistent diarrhoea and blood in the stool; cause not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: Previously, I had painful lesions on my shins.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9e4824550a246633",
+        "model": "arc:apex",
+        "created": 1792765355,
+        "usage": {
+          "prompt_tokens": 1205,
+          "total_tokens": 1333,
+          "completion_tokens": 128,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 20
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "{\"action\": \"ask\", \"question\": \"Have you had any other symptoms alongside the diarrhoea, such as abdominal pain, weight loss, fever, or mouth ulcers?\", \"topics\": [\"presenting_symptoms\"], \"record_period\": \"current\", \"assessment\": {\"summary\": \"Persistent bloody diarrhoea in a young adult with a history of shin lesions (possibly erythema nodosum) raises the possibility of inflammatory bowel disease, though this remains unconfirmed.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 3.14,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Have you had any other symptoms alongside the diarrhoea, such as abdominal pain, weight loss, fever, or mouth ulcers?",
+    "topics": [
+      "presenting_symptoms"
+    ],
+    "record_period": "current",
+    "assessment": {
+      "summary": "Persistent bloody diarrhoea in a young adult with a history of shin lesions (possibly erythema nodosum) raises the possibility of inflammatory bowel disease, though this remains unconfirmed.",
+      "certainty": "uncertain"
+    }
+  }
+}

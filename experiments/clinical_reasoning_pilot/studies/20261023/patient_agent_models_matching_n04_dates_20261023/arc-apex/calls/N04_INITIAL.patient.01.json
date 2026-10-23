@@ -1,0 +1,57 @@
+{
+  "id": "N04_INITIAL.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:41:19.385551+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Can you tell me more about this headache and what happened during your recent admission — when it started, how it has changed, and what tests or treatments you had before discharge?\", \"permitted_statements\": [{\"id\": \"N04_INITIAL_F01\", \"text\": \"I initially had five days of low-grade fever and severe headache.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-ba9424aaea92b9f6",
+        "model": "arc:lite",
+        "created": 1792770079,
+        "usage": {
+          "prompt_tokens": 196,
+          "total_tokens": 291,
+          "completion_tokens": 95,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 79
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N04_INITIAL_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.81,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N04_INITIAL_F01"
+    ]
+  }
+}

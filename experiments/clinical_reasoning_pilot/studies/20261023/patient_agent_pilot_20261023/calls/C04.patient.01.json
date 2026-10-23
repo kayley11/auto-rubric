@@ -1,0 +1,56 @@
+{
+  "id": "C04.patient.01",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:59:07.945156+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Can you describe what happens during these episodes of light-headedness or collapse? For example, do you lose consciousness completely, how long does it last, and do you notice anything else like a racing heart, chest tightness, sweating, or nausea before or during the episode?\", \"permitted_statements\": [{\"id\": \"C04_F01\", \"text\": \"I feel light-headed on standing and have had brief collapses.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-b04611ddbfcf7157",
+        "model": "arc:lite",
+        "created": 1792756748,
+        "usage": {
+          "prompt_tokens": 214,
+          "total_tokens": 346,
+          "completion_tokens": 132,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 117
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C04_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.89,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C04_F01"
+    ]
+  }
+}

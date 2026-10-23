@@ -1,0 +1,89 @@
+{
+  "id": "C04.doctor.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:25:41.697086+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: Older adult; exact age and sex are not supplied.\nConsultation context: Review of the recorded brief collapses; do not simulate a new collapse.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI feel light-headed when I stand up and have had brief collapses.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"When did these brief collapses first start, how often are they happening, and do they always occur when you stand up or sometimes happen at other times too?\", \"topics\": [\"timecourse\", \"presenting_symptoms\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Older adult with orthostatic light-headedness and brief collapses; cause not yet established. Differential includes orthostatic hypotension, cardiac arrhythmia, structural heart disease, or other causes of transient loss of consciousness.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"What medications are you currently taking, including any recent changes to doses or new medicines?\", \"topics\": [\"medications\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Older adult with orthostatic light-headedness and brief collapses; cause not yet established. No additional history available from initial question. Considering medication-related orthostatic hypotension, cardiac causes, and other differentials.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: The brief collapses began after my blood pressure medicine dose was increased.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Which blood pressure medicine was increased, and do you have any existing records of blood pressure measurements taken while lying down and then standing?\", \"topics\": [\"medications\", \"vital_signs\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Older adult with brief collapses temporally related to an increase in blood pressure medication dose. Medication-related orthostatic hypotension is a leading consideration. Need to identify the specific agent and confirm orthostatic changes if recorded.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-b1c4ec06d3706146",
+        "model": "arc:chat",
+        "created": 1792765541,
+        "usage": {
+          "prompt_tokens": 1527,
+          "total_tokens": 2031,
+          "completion_tokens": 504,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 386
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Are there any existing examination records that include blood pressure measurements taken in different positions, or any findings from a physical examination?\", \"topics\": [\"examination\", \"vital_signs\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"Older adult with brief collapses temporally related to an increase in blood pressure medication dose. Medication-related orthostatic hypotension is the leading consideration. Specific medication and orthostatic vital signs not yet available from records.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 3.45,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Are there any existing examination records that include blood pressure measurements taken in different positions, or any findings from a physical examination?",
+    "topics": [
+      "examination",
+      "vital_signs"
+    ],
+    "record_period": "any",
+    "assessment": {
+      "summary": "Older adult with brief collapses temporally related to an increase in blood pressure medication dose. Medication-related orthostatic hypotension is the leading consideration. Specific medication and orthostatic vital signs not yet available from records.",
+      "certainty": "uncertain"
+    }
+  }
+}

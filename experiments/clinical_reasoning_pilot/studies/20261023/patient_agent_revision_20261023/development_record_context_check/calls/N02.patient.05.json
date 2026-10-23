@@ -1,0 +1,57 @@
+{
+  "id": "N02.patient.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:05:07.324241+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Are you currently taking any medications or supplements, and have you noticed any other changes in your health over the past few months, such as changes in appetite, sleep, mood, or any new symptoms like headaches or visual changes?\", \"permitted_statements\": [{\"id\": \"N02_F08\", \"text\": \"I take irbesartan for high blood pressure.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-8c02a62178540bb1",
+        "model": "arc:lite",
+        "created": 1792760707,
+        "usage": {
+          "prompt_tokens": 203,
+          "total_tokens": 286,
+          "completion_tokens": 83,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 68
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F08\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.81,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F08"
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+"""Run the three prepared cases through the local UI API, resuming saved IDs."""
+
+from datetime import datetime, timezone
+from importlib.metadata import version
+from pathlib import Path
+import argparse
+import hashlib
+import json
+import time
+
+import httpx
+from dotenv import dotenv_values
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1] / 'auto rubric'
+OUT = ROOT / 'runs/ui_batch_20261022'
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def save(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix('.tmp')
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+    temporary.replace(path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--url', default='http://127.0.0.1:8765')
+    args = parser.parse_args()
+    OUT.mkdir(parents=True, exist_ok=True)
+    index_path = OUT / 'batch_index.json'
+    index = json.loads(index_path.read_text()) if index_path.exists() else {
+        'started_at': now(), 'reference_status': 'draft', 'cases': {}, 'events': []
+    }
+    prepared = json.loads((ROOT / 'cases.json').read_text())
+    refs = json.loads((ROOT / 'reference_notes.json').read_text())
+    snapshot = OUT / 'prepared_inputs.json'
+    if not snapshot.exists():
+        save(snapshot, {'cases_file': prepared, 'references_file': refs})
+
+    with httpx.Client(base_url=args.url, timeout=15, follow_redirects=False) as client:
+        def api(path, body=None):
+            response = client.get(path) if body is None else client.post(path, json=body)
+            response.raise_for_status()
+            return response.json()
+
+        config = api('/api/config')
+        library = {c['case_id']: c for c in config['cases']}
+        assert set(library) == {'N01', 'N02', 'N03'}
+        for row in prepared['cases']:
+            lib = library[row['case_id']]
+            for field in ('facts', 'task', 'history', 'criteria', 'answer_model', 'judge_model'):
+                assert lib[field] == row[field], (row['case_id'], field)
+            ref = next(r for r in refs['cases'] if r['case_id'] == row['case_id'])
+            assert lib['reference'] == ref['reference'] and lib['reference_status'] == 'draft'
+
+        if not (OUT / 'run_environment.json').exists():
+            hashes = {name: hashlib.sha256((REPO / 'arena' / name).read_bytes()).hexdigest()
+                      for name in ('engine.py', 'server.py', 'rubric.json', 'case-library.json')}
+            save(OUT / 'run_environment.json', {
+                'recorded_at': now(), 'url': args.url, 'settings': config['settings'],
+                'autorubric_version': version('autorubric'), 'app_sha256': hashes,
+                'reference_status': 'draft', 'exposure_status': 'unverified',
+                'method': 'One generated answer per base case, followed by separate sequential item calls. No answer edits, repeat conditions, tool use or reference changes.',
+                'capture_scope': 'Exact saved requests, complete visible answer/judge content, response identifiers, finish reason, available token usage and timings. Hidden deliberation fields and credentials are not stored.',
+                'automatic_retry_limit': 'Up to three saved attempts for a failing generation or item; retry only incomplete work.',
+            })
+
+        def models_snapshot(label):
+            cfg = dotenv_values(REPO / '.env')
+            try:
+                response = httpx.get(config['settings']['base_url'] + '/models',
+                    headers={'Authorization': 'Bearer ' + cfg.get('OPENAI_API_KEY', '')}, timeout=20)
+                fields = ('id', 'created', 'name', 'description', 'backend_model',
+                          'backend_model_size', 'backend_model_quant', 'mode', 'features')
+                saved = {'checked_at': now(), 'http_status': response.status_code}
+                if response.status_code == 200:
+                    saved['models'] = [{k:m[k] for k in fields if k in m}
+                                       for m in response.json().get('data', [])
+                                       if m.get('id') in ('arc:lite', 'arc:apex')]
+                save(OUT / f'provider_models_{label}.json', saved)
+            except httpx.HTTPError as exc:
+                save(OUT / f'provider_models_{label}.json', {'checked_at': now(), 'error_type': type(exc).__name__})
+
+        if not (OUT / 'provider_models_before.json').exists():
+            models_snapshot('before')
+
+        def export(case_id, run_id):
+            for ext in ('json', 'txt', 'csv'):
+                response = client.get(f'/api/runs/{run_id}/{ext}')
+                response.raise_for_status()
+                (OUT / f'{case_id}.{ext}').write_bytes(response.content)
+
+        def wait(case_id, run_id):
+            previous = None
+            while True:
+                run = api(f'/api/runs/{run_id}')
+                state = (run['status'], run.get('current_item'))
+                if state != previous:
+                    print(now(), case_id, run['status'], run.get('current_item') or '', flush=True)
+                    previous = state
+                if run['status'] not in ('generating', 'scoring'):
+                    export(case_id, run_id)
+                    return run
+                time.sleep(3)
+
+        for case_id in ('N01', 'N02', 'N03'):
+            row = library[case_id]
+            if case_id not in index['cases']:
+                run = api('/api/runs', {**row, 'action': 'generate'})
+                index['cases'][case_id] = {'run_id': run['id'], 'title': row['title']}
+                save(index_path, index)
+            run_id = index['cases'][case_id]['run_id']
+            while True:
+                run = wait(case_id, run_id)
+                assert run['input']['reference_status'] == 'draft'
+                if run['status'] == 'complete':
+                    break
+                if run['status'] == 'answer_ready':
+                    api(f'/api/runs/{run_id}/evaluate', {**run['input'], 'action': 'evaluate'})
+                    continue
+                attempts = run.get('generation_attempts', []) if not run['input']['answer'] else [
+                    g.get('attempts', []) for g in run.get('grades', {}).values() if g.get('status') == 'error'
+                ]
+                count = len(attempts) if not run['input']['answer'] else max((len(a) for a in attempts), default=0)
+                if count >= 3:
+                    print(case_id, 'paused after three saved failed attempts', flush=True)
+                    break
+                delay = min(15 * max(count, 1), 45)
+                index['events'].append({'at': now(), 'case_id': case_id, 'action': 'retry',
+                                        'previous_status': run['status'], 'delay_seconds': delay})
+                save(index_path, index)
+                time.sleep(delay)
+                api(f'/api/runs/{run_id}/retry', {})
+            index['cases'][case_id].update(status=run['status'], updated_at=now(),
+                graded=sum(g['status'] in ('scored','cannot_assess') for g in run.get('grades', {}).values()),
+                total=len(run['input']['criteria']))
+            save(index_path, index)
+        models_snapshot('after')
+        index['finished_at'] = now()
+        index['status'] = 'complete' if all(c['status']=='complete' for c in index['cases'].values()) else 'partial'
+        save(index_path, index)
+        print(json.dumps(index, ensure_ascii=False, indent=2), flush=True)
+
+
+if __name__ == '__main__':
+    main()

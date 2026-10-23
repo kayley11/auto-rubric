@@ -1,0 +1,57 @@
+{
+  "id": "C05.patient.06",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T15:08:13.321285+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"What are your main concerns about these seizures, and do you have any practical considerations such as driving, work, or caring responsibilities that are affected?\", \"permitted_statements\": [{\"id\": \"C05_F01\", \"text\": \"I am a young woman pursuing a modelling career.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-84eef1558a0e0add",
+        "model": "arc:lite",
+        "created": 1792768093,
+        "usage": {
+          "prompt_tokens": 186,
+          "total_tokens": 305,
+          "completion_tokens": 119,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 104
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C05_F01\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.78,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C05_F01"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "C03.patient.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:12:56.465339+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any family members with inflammatory bowel disease, arthritis, or similar conditions, and are you currently taking any regular medications such as NSAIDs or other painkillers?\", \"permitted_statements\": [{\"id\": \"C03_F04\", \"text\": \"Antibiotics have helped little.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-9232d183e79805c8",
+        "model": "arc:lite",
+        "created": 1792761176,
+        "usage": {
+          "prompt_tokens": 189,
+          "total_tokens": 340,
+          "completion_tokens": 151,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 136
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C03_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.82,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C03_F04"
+    ]
+  }
+}

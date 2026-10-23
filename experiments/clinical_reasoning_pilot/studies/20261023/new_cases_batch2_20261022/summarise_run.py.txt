@@ -1,0 +1,195 @@
+"""Export the saved batch and check counts, branches and preserved source material."""
+
+import csv
+import hashlib
+import io
+import json
+import re
+from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+APP = ROOT.parents[1] / "auto rubric/arena"
+OUT = ROOT / "runs/ui_batch2_20261022"
+ORDER = ("N04_INITIAL", "N04_EVIDENCE", "N04_NEUTRAL", "N05", "N06")
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def save(path, data):
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+
+
+def words(text):
+    text = re.sub(r"(?m)^\s*(?:#{1,6}\s+|[-*+]\s+|\d+[.)]\s+)", "", text)
+    return len(text.replace("**", "").replace("__", "").split())
+
+
+def render_attempt(attempt):
+    # Print message bodies literally, so paragraph breaks are readable in a text editor.
+    lines = ["ATTEMPT METADATA", json.dumps({k: v for k, v in attempt.items()
+             if k not in ("request", "response", "autorubric_report")}, ensure_ascii=False, indent=2)]
+    request = attempt.get("request", {})
+    lines += ["REQUEST PARAMETERS", json.dumps({k: v for k, v in request.items()
+               if k != "messages"}, ensure_ascii=False, indent=2)]
+    for n, message in enumerate(request.get("messages", []), 1):
+        lines += [f"REQUEST MESSAGE {n} — {message['role']}", message["content"], ""]
+    response = attempt.get("response", {})
+    lines += ["RESPONSE METADATA", json.dumps({k: v for k, v in response.items()
+               if k != "choices"}, ensure_ascii=False, indent=2)]
+    for n, choice in enumerate(response.get("choices", []), 1):
+        lines += [f"VISIBLE RESPONSE {n} — finish_reason: {choice.get('finish_reason')}",
+                  choice.get("message", {}).get("content") or "[No visible content]", ""]
+    if "autorubric_report" in attempt:
+        lines += ["PARSED AUTORUBRIC RESULT", json.dumps(attempt["autorubric_report"], ensure_ascii=False, indent=2)]
+    return lines + [""]
+
+
+def main():
+    index = json.loads((OUT / "batch_index.json").read_text())
+    assert index["status"] == "complete", "Do not label an incomplete batch complete."
+    runs = {cid: json.loads((OUT / f"{cid}.json").read_text()) for cid in ORDER}
+    prepared = json.loads((OUT / "prepared_inputs.json").read_text())
+    planned = {c["case_id"]: c for c in prepared["cases_file"]["cases"]}
+    refs = {c["case_id"]: c for c in prepared["references_file"]["cases"]}
+    rubric = json.loads((ROOT / "evidence/rubric_snapshot.json").read_text())
+    items = {c["id"]: c for c in rubric["criteria"]}
+    branches = json.loads((OUT / "branch_verification.json").read_text())
+    attempts, scores, rows, summary = [], [], [], {}
+    raw = ["AUTORUBRIC N04–N06 — ALL SAVED VISIBLE OUTPUTS AND REQUESTS", "",
+           "Five answer conditions for three patients. Clinical references: draft — awaiting Josh.",
+           "All attempts are included below. Request and response message bodies are printed literally; parameters/metadata and parsed results are ordinary JSON text. Hidden deliberation and credentials are not stored.", ""]
+    plain = ["AUTORUBRIC N04–N06 — COMPLETE CASES, ANSWERS AND ITEM JUDGEMENTS", "",
+             "Clinical references: draft — awaiting Josh. Human rating fields remain blank.", ""]
+    for cid, run in runs.items():
+        data = run["input"]
+        assert run["status"] == "complete" and data["reference_status"] == "draft"
+        assert data["answer"] == run["generated_answer"]
+        assert not run["review"].get("items")
+        for field in ("facts", "task", "criteria"):
+            assert data[field] == planned[cid][field], (cid, field)
+        assert data["reference"] == refs[cid]["reference"]
+        assert set(run["grades"]) == set(data["criteria"])
+        assert run["rubric"] == rubric
+        raw += ["=" * 76, cid, "RUN ID: " + run["id"], ""]
+        for n, attempt in enumerate(run["generation_attempts"], 1):
+            attempts.append(attempt)
+            raw += [f"ANSWER GENERATION — ATTEMPT {n}", *render_attempt(attempt)]
+        for criterion in data["criteria"]:
+            grade = run["grades"][criterion]
+            assert grade["status"] in ("scored", "cannot_assess")
+            for n, attempt in enumerate(grade["attempts"], 1):
+                attempts.append(attempt)
+                raw += [f"JUDGE {criterion} — {items[criterion]['name']} — ATTEMPT {n}",
+                        *render_attempt(attempt)]
+            accepted = next(a for a in reversed(grade["attempts"]) if not a.get("error"))
+            verdict = json.loads(accepted["response"]["choices"][0]["message"]["content"])
+            label = str(grade["score"]) if grade["score"] is not None else "Cannot assess"
+            assert verdict["selected_label"] == label
+            assert verdict["selected_option"] == ["1", "2", "3", "4", "5", "Cannot assess"].index(label) + 1
+            scores.append(label)
+            rows.append([cid, run["id"], criterion, items[criterion]["name"], grade["status"],
+                         grade["score"], grade["reason"], grade["unanchored"], "draft", "", ""])
+        plain += ["CASE / CONDITION: " + cid, (OUT / f"{cid}.txt").read_text(),
+                  "\n" + "=" * 76 + "\n"]
+        summary[cid] = {"run_id": run["id"], "word_count": words(data["answer"]),
+                        "grades": {k: g["score"] for k, g in run["grades"].items()},
+                        "usage": run["usage"], "safety": run["safety"]}
+    (ROOT / "RAW_OUTPUT.txt").write_text("\n".join(raw))
+    (ROOT / "SCORE_OUTPUT.txt").write_text("\n".join(plain))
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["case_id", "run_id", "criterion", "name", "status", "machine_score",
+                     "machine_reason", "missing_original_descriptor", "reference_status", "human_score", "human_comment"])
+    writer.writerows(rows)
+    (ROOT / "scores.csv").write_text(output.getvalue())
+
+    limits = {"N04_INITIAL": (160, 230), "N04_EVIDENCE": (120, 180),
+              "N04_NEUTRAL": (120, 180), "N05": (180, 240), "N06": (180, 240)}
+    for cid, row in summary.items():
+        row["word_range"] = limits[cid]
+        row["within_word_range"] = limits[cid][0] <= row["word_count"] <= limits[cid][1]
+    assert all(r["within_word_range"] for r in summary.values())
+    assert len(rows) == 37 and len(runs) == 5
+    a, b = runs["N04_EVIDENCE"], runs["N04_NEUTRAL"]
+    assert a["input"]["history"] == b["input"]["history"]
+    assert a["input"]["task"] == b["input"]["task"]
+    assert "D5b" in a["input"]["criteria"] and "D5b" not in b["input"]["criteria"]
+    for cid, run in runs.items():
+        for gen in run["generation_attempts"]:
+            req = json.dumps(gen["request"], ensure_ascii=False)
+            assert run["input"]["reference"] not in req
+            assert run["input"]["source"] not in req
+        assert not {"D6a", "D6b"}.intersection(run["input"]["criteria"])
+
+    before = json.loads((OUT / "before_integration.json").read_text())
+    before_lib = json.loads(before["files"]["case-library.json"])
+    current_lib = json.loads((APP / "case-library.json").read_text())
+    original_ids = {c["case_id"] for c in before_lib["cases"]}
+    assert [c for c in current_lib["cases"] if c["case_id"] in original_ids] == before_lib["cases"]
+    preservation = json.loads((ROOT / "preservation_manifest.json").read_text())["sha256"]
+    changed = [p for p, old in preservation.items() if sha(p) != old]
+    assert changed == [str(APP / "case-library.json")], changed
+    assert sha(APP / "rubric.json") == sha(ROOT / "evidence/rubric_snapshot.json")
+    usage = [a.get("response", {}).get("usage") for a in attempts]
+    finish_reasons = Counter(c.get("finish_reason") for a in attempts
+                             for c in a.get("response", {}).get("choices", []))
+    errors = [{"error": a["error"], "started_at": a.get("started_at")} for a in attempts if a.get("error")]
+    checks = {"checked_at": datetime.now(timezone.utc).isoformat(), "status": "complete",
+        "base_patients": 3, "answer_conditions": len(runs), "accepted_item_results": len(rows),
+        "score_distribution": dict(Counter(scores)), "saved_provider_attempts": len(attempts),
+        "attempt_errors": errors, "finish_reasons": dict(finish_reasons),
+        "calls_with_usage": sum(bool(u) for u in usage),
+        "reported_prompt_tokens": sum((u or {}).get("prompt_tokens", 0) for u in usage),
+        "reported_completion_tokens": sum((u or {}).get("completion_tokens", 0) for u in usage),
+        "reported_total_tokens": sum((u or {}).get("total_tokens", 0) for u in usage),
+        "summed_request_seconds": round(sum(a.get("elapsed_seconds", 0) for a in attempts), 2),
+        "batch_wall_seconds": round((datetime.fromisoformat(index["finished_at"]) - datetime.fromisoformat(index["started_at"])).total_seconds(), 2),
+        "clinical_reference_status": "draft", "human_ratings": 0,
+        "unchanged_prepared_facts_tasks_criteria_and_references": True,
+        "answer_edits": 0, "branch_verification": branches,
+        "previous_manifest_files_checked": len(preservation), "authorised_changed_files": changed,
+        "all_other_manifest_files_unchanged": True, "previous_library_entries_unchanged": True,
+        "original_rubric_unchanged": True, "per_condition": summary,
+        "word_count_method": "Remove Markdown heading/list markers and emphasis; count whitespace-separated words including heading text. Hyphenated expressions count as one.",
+        "objective_N06": {"derived_restart": "approximately 20:25, not an exact recorded timestamp",
+            "sample_to_report_minutes": 53, "report_after_estimated_restart_minutes": 41,
+            "answer_has_all_three_values": all(s in runs["N06"]["input"]["answer"] for s in ("20:25", "53", "41")),
+            "certainty_issue": "The phrase 'was not yet available when UFH was restarted' is stronger than the approximate restart record establishes; the next paragraph correctly qualifies the conclusion."},
+        "judge_output_checks": [
+            {"case_id": "N05", "criterion": "D7c", "machine_score_retained": 3,
+             "issue": "Judge estimated approximately 250 words and penalised the 180–240 limit. Both raw whitespace and the predeclared cleaned count give 219, within range. The separate biopsy-instruction interpretation remains for review.",
+             "raw_whitespace_words": len(runs["N05"]["input"]["answer"].split()),
+             "predeclared_count_words": words(runs["N05"]["input"]["answer"])},
+            {"case_id": "N06", "criterion": "D5u", "machine_score_retained": 4,
+             "issue": "The visible explanation ends mid-sentence with an opening parenthesis. The saved provider JSON is valid and finish_reason is stop, not length; no local export truncation was found. Cause unknown.",
+             "visible_explanation": runs["N06"]["grades"]["D5u"]["reason"]},
+            {"case_id": "N06", "criterion": "D7c", "machine_score_retained": 3,
+             "issue": "The explanation calls this choice provisional because of missing intermediate descriptions. Score 3 has an original descriptor; missing neighbouring scores 2/4 do not remove it. The engine correctly sets unanchored=false.",
+             "original_selected_descriptor": items["D7c"]["anchors"]["3"],
+             "engine_unanchored_flag": runs["N06"]["grades"]["D7c"]["unanchored"]},
+        ],
+    }
+    save(ROOT / "CHECKS.json", checks)
+    save(OUT / "integration_manifest.json", {"recorded_at": checks["checked_at"],
+        "changed_app_files": {n: {"before": before["sha256"][n], "after": sha(APP / n)}
+            for n in before["files"] if before["sha256"][n] != sha(APP / n)},
+        "library_after_shared_context_sha256": sha(APP / "case-library.json"),
+        "previous_pack_preserved": True, "rubric_preserved": True})
+    for filename in ("cases.json", "reference_notes.json"):
+        path = ROOT / filename
+        d = json.loads(path.read_text())
+        d.update(status="run_complete_clinical_review_pending", new_model_answers=5,
+                 new_item_ratings=37, models_called=True, ui_updated=True,
+                 clinical_reference_status="draft", review_status="awaiting_Josh",
+                 completed_at=index["finished_at"], results="RESULTS.md",
+                 run_index="runs/ui_batch2_20261022/batch_index.json")
+        save(path, d)
+    print(json.dumps({k: v for k, v in checks.items() if k not in ("per_condition", "branch_verification")}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

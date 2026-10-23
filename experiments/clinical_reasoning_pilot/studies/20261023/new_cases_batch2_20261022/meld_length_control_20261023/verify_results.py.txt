@@ -1,0 +1,152 @@
+"""Independently recalculate saved distances and verify frozen inputs and preservation."""
+
+import hashlib
+import json
+from pathlib import Path
+import random
+import re
+import unicodedata
+
+ROOT = Path(__file__).resolve().parent
+
+
+def normalise(text):
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", text)).strip()
+
+
+def bit_distance(pattern, text):
+    """Myers bit-vector edit distance, independent of the runner's row-wise DP."""
+    if not pattern:
+        return len(text)
+    masks = {}
+    for i, char in enumerate(pattern):
+        masks[char] = masks.get(char, 0) | (1 << i)
+    length = len(pattern)
+    mask = (1 << length) - 1
+    highest = 1 << (length - 1)
+    positive, negative, score = mask, 0, length
+    for char in text:
+        equal = masks.get(char, 0)
+        vertical = equal | negative
+        horizontal = (((equal & positive) + positive) ^ positive) | equal | negative
+        plus = negative | ~(horizontal | positive)
+        minus = positive & horizontal
+        score += bool(plus & highest) - bool(minus & highest)
+        plus = (plus << 1) | 1
+        minus <<= 1
+        positive = (minus | ~(horizontal | plus)) & mask
+        negative = (horizontal & plus) & mask
+    return score
+
+
+def small_matrix_distance(a, b):
+    matrix = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
+    for i in range(len(a) + 1):
+        matrix[i][0] = i
+    for j in range(len(b) + 1):
+        matrix[0][j] = j
+    for i in range(1, len(a) + 1):
+        for j in range(1, len(b) + 1):
+            matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1,
+                               matrix[i - 1][j - 1] + (a[i - 1] != b[j - 1]))
+    return matrix[-1][-1]
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    controls = [("", "", 0), ("abc", "abc", 0), ("kitten", "sitting", 3),
+                ("ab", "ba", 2), ("", "xyz", 3), ("µg", "μg", 1)]
+    for a, b, expected in controls:
+        assert bit_distance(a, b) == bit_distance(b, a) == expected
+    rng = random.Random(20261023)
+    for _ in range(200):
+        a = "".join(rng.choice("abCD19 μ.") for _ in range(rng.randrange(35)))
+        b = "".join(rng.choice("abCD19 μ.") for _ in range(rng.randrange(35)))
+        assert bit_distance(a, b) == small_matrix_distance(a, b)
+    assert (50 * 100 <= 1000 * 5) and not (51 * 100 <= 1000 * 5)
+    protocol = json.loads((ROOT / "protocol.json").read_text())
+    result = json.loads((ROOT / "results.json").read_text())
+    assert digest(ROOT / "protocol.json") == (ROOT / "protocol.sha256").read_text().split()[0]
+    previous = ROOT.parent.parent / "new_cases_20261022/meld_length_control_20261022"
+    old = json.loads((previous / "protocol.json").read_text())
+    same_keys = ["sampling", "length_control", "prompt_system_template", "append_user_template",
+                 "normalisation", "split", "primary_similarity", "comparison_output", "near_exact_threshold"]
+    assert all(protocol[k] == old[k] for k in same_keys)
+    probes = {p["case_id"]: p for p in protocol["probes"]}
+    for probe in probes.values():
+        for label in ("original", "source", "prefix", "suffix", "source_blocks", "source_html", "source_text"):
+            hash_key = "source_text_file_sha256" if label == "source_text" else label + "_sha256"
+            assert digest(ROOT / probe[label + "_file"]) == probe[hash_key]
+        blocks = json.loads((ROOT / probe["source_blocks_file"]).read_text())
+        selected = [b for b in blocks if b["local_id"] in probe["source_blocks"]]
+        assert [b["local_id"] for b in selected] == probe["source_blocks"]
+        assert all(b["tag"] == "p" for b in selected)
+        assert "\n\n".join(b["text"] for b in selected) == (ROOT / probe["original_file"]).read_text()
+    environment = json.loads((ROOT / "environment.json").read_text())
+    assert environment["runner_sha256"] == digest(ROOT / "run_meld.py")
+    before = json.loads((ROOT / "provider_models_before.json").read_text())
+    after = json.loads((ROOT / "provider_models_after.json").read_text())
+    assert before["models"] == after["models"]
+    records, total_attempts, total_tokens = [], 0, 0
+    for row in result["probes"]:
+        probe = probes[row["case_id"]]
+        suffix = (ROOT / probe["suffix_file"]).read_text()
+        prefix = (ROOT / probe["prefix_file"]).read_text()
+        original = (ROOT / probe["original_file"]).read_text()
+        assert prefix + " " + suffix == normalise(original)
+        raw = json.loads((ROOT / row["response_file"]).read_text())
+        visible = raw["visible_continuation"]
+        output = normalise(visible)
+        window = output[:len(suffix)]
+        distance = bit_distance(suffix, window)
+        full_distance = bit_distance(suffix, output)
+        assert distance == row["primary_edit_distance"]
+        assert full_distance == row["full_output_edit_distance"]
+        assert row["primary_similarity"] == 1 - distance / len(suffix)
+        assert row["near_exact"] == (distance * 100 <= len(suffix) * 5)
+        assert (ROOT / row["continuation_file"]).read_text() == visible
+        assert (ROOT / "responses" / (Path(row["response_file"]).stem + ".comparison_window.txt")).read_text() == window
+        assert len(output) >= len(suffix) and not raw["append_triggered"]
+        stage = raw["stages"]["initial"]
+        selected = stage["attempts"][stage["selected_attempt"] - 1]
+        assert selected["response"]["choices"][0]["message"]["content"] == visible
+        for attempt in stage["attempts"]:
+            total_attempts += 1
+            request = attempt["request"]
+            expected_system = protocol["prompt_system_template"].format(target_chars=len(suffix),
+                aim_chars=__import__("math").ceil(1.4 * len(suffix)),
+                aim_words=__import__("math").ceil(1.4 * probe["suffix_words"]))
+            assert request["messages"] == [{"role": "system", "content": expected_system},
+                                           {"role": "user", "content": prefix}]
+            assert suffix not in json.dumps(request, ensure_ascii=False)
+            assert "tools" not in request and "functions" not in request
+            total_tokens += attempt.get("response", {}).get("usage", {}).get("total_tokens", 0)
+        records.append({"case_id": row["case_id"], "model": row["model"],
+            "independent_primary_distance": distance, "independent_full_output_distance": full_distance,
+            "full_length": True, "near_exact": row["near_exact"], "unchanged_visible_output": True})
+    assert len(records) == 6 and total_attempts == result["resource_use"]["attempts"]
+    assert total_tokens == result["resource_use"]["reported_tokens"]
+    manifest = json.loads((ROOT / "preservation_manifest.json").read_text())
+    changes = [p for p, h in manifest["sha256"].items() if not Path(p).is_file() or digest(Path(p)) != h]
+    assert not changes, changes
+    all_text = "\n".join(p.read_text() for p in (ROOT / "responses").glob("*.json"))
+    assert not re.search(r"\bsk-[\w-]{12,}", all_text)
+    verification = {"status": "verified", "distance_method": "Independent Myers bit-vector implementation; controls and 200 seeded small-string matrix comparisons passed.",
+        "all_six_primary_and_whole_output_distances_match": True,
+        "inclusive_095_boundary_checked": True, "previous_length_control_settings_unchanged": same_keys,
+        "exact_prefix_only_requests": True, "heldout_suffix_not_sent": True,
+        "clinical_reference_or_rubric_not_sent": True, "source_extractions_verified": True,
+        "runner_matches_execution_snapshot": True, "provider_reported_models_unchanged": True,
+        "planned_pairs": 6, "usable_pairs": 6, "full_length_pairs": 6, "near_exact_pairs": 0,
+        "append_calls": 0, "provider_attempts": total_attempts, "reported_tokens": total_tokens,
+        "protected_files_checked": len(manifest["sha256"]), "protected_files_changed": changes,
+        "per_pair": records}
+    (ROOT / "verification.json").write_text(json.dumps(verification, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({k: v for k, v in verification.items() if k != "per_pair"}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

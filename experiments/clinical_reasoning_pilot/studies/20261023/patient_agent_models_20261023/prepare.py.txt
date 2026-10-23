@@ -1,0 +1,69 @@
+"""Freeze the existing interview cases/controller for a three-model comparison."""
+from pathlib import Path
+from datetime import datetime, timezone
+from copy import deepcopy
+import hashlib
+import json
+import shutil
+
+ROOT = Path(__file__).resolve().parent
+PREVIOUS = ROOT.parent / 'patient_agent_revision_20261023'
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+
+
+def main():
+    assert not (ROOT / 'protocol.json').exists(), 'Do not replace a frozen experiment.'
+    old = json.loads((PREVIOUS / 'protocol.json').read_text())
+    catalogue = json.loads(Path('/private/tmp/autorubric_models_20261023.json').read_text())
+    models = ['arc:lite', 'arc:chat', 'arc:apex']
+    offered = {m['id']: m for m in catalogue['models']}
+    assert len({offered[m]['backend_model'] for m in models}) == 3
+    preserved = {}
+    for directory in [PREVIOUS, ROOT.parent / 'patient_agent_pilot_20261023']:
+        for path in directory.rglob('*'):
+            if path.is_file() and '__pycache__' not in path.parts:
+                preserved[str(path.relative_to(ROOT.parent))] = digest(path)
+    write(ROOT / 'PREVIOUS_FILES.json', preserved)
+    shutil.copy2(PREVIOUS / 'run.py', ROOT / 'frozen_interview.py')
+    shutil.copy2(PREVIOUS / 'protocol.json', ROOT / 'previous_protocol.json')
+    write(ROOT / 'provider_before.json', catalogue)
+    protocol = deepcopy(old)
+    protocol.update(
+        version='patient-agent-cross-model-v1',
+        prepared_at=datetime.now(timezone.utc).isoformat(),
+        answer_models=models,
+        patient_model='arc:lite',
+        judge_model='arc:apex',
+        model_backends={m: offered[m]['backend_model'] for m in models},
+        comparison='One fresh question-driven interview and final answer per model/case. No new static arm. The earlier two rounds remain unchanged and are not pooled.',
+        primary_criteria={'D5c': 'Actual interview and examiner-only inventory; assess requests and prioritisation.',
+                          'D3a': 'Final answer against only the information obtained. Complete-case clinical reference withheld from this grade.'},
+        grading_scope='D5c can inspect the examiner inventory; D3a cannot. Clinical references are unchanged drafts, reproduced for review but not used as hidden answer requirements in D3a.',
+        patient_task_applicability='C05 and N02 retain their patient-facing tasks without an added summary requirement. Their D3a results are exploratory and require author confirmation of applicability.',
+        parameters={'generation_temperature': 0, 'generation_reasoning_effort': 'low',
+                    'question_max_tokens': 2048, 'final_max_tokens': 8192,
+                    'grade_temperature': 0.7, 'grade_top_p': 0.8,
+                    'score_order': ['1', '2', '3', '4', '5', 'Cannot assess']},
+        previous_run=PREVIOUS.name,
+        previous_protocol_sha256=digest(PREVIOUS / 'protocol.json'),
+        controller_sha256=digest(ROOT / 'frozen_interview.py'),
+        repeated_runs=1,
+        execution_order=[{'case': c['case_id'], 'models': models[i % 3:] + models[:i % 3]}
+                         for i, c in enumerate(old['cases'])],
+    )
+    assert protocol['cases'] == old['cases']
+    write(ROOT / 'protocol.json', protocol)
+    (ROOT / 'protocol.sha256').write_text(digest(ROOT / 'protocol.json') + '\n')
+    write(ROOT / 'rubric_items.json', {})
+    print('Frozen 8 cases × 3 distinct provider-reported backends; preserved files:', len(preserved))
+
+
+if __name__ == '__main__':
+    main()

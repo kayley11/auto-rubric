@@ -1,0 +1,96 @@
+{
+  "id": "N02.doctor.05",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T14:30:33.451070+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"record_period\":\"any, initial, previous, readmission, or current\", \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them.\nDo not repeat an answered question or repeatedly request details the source cannot supply. After an unavailable or uninformative reply, change to another relevant question or finish with the limitation recorded. A different wording of the same question does not obtain new facts. Use the six-question budget thoughtfully; the topic list is not a mandatory clinical checklist.\nFor existing records, ask explicitly for the examination or type of investigation you want. A generic request for all tests does not release every result. At most one existing report per requested record category, and at most two reports total, are returned in a turn. You can ask to review another existing report in a later turn. Use record_period only when your question explicitly asks about that period; otherwise use any. Keep admission dates and historical/current observations separate. Asking about a feature does not establish it. Unreported is not negative, normal, or not performed.\nStop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Medicines, dose changes and treatment response\", \"medical_history\": \"Conditions, previous admissions and procedures\", \"exposures\": \"Travel, exposures and lifestyle history\", \"daily_life\": \"Occupation, function, living situation and practical support\", \"concerns\": \"Patient concerns, priorities and preferences\", \"tests\": \"A general request: ask for a particular type of existing report; this tag alone releases no results\", \"examination\": \"Existing physical/neurological examination findings\", \"vital_signs\": \"Existing blood pressure, pulse and other vital-sign records\", \"routine_laboratory\": \"Existing routine blood/biochemistry results, other than glucose or specialised tests\", \"glucose\": \"Existing glucose measurements; distinguish daytime and night-time observations\", \"microbiology\": \"Existing infection PCR, serology or culture records; do not infer unreported culture results\", \"csf\": \"Existing cerebrospinal-fluid cell count/protein records\", \"ct_imaging\": \"Existing CT reports\", \"mri_imaging\": \"Existing MRI reports\", \"echocardiography\": \"Existing ultrasound/echocardiography reports\", \"eeg\": \"Existing electroencephalography reports\", \"monoclonal_testing\": \"Existing monoclonal protein, immunofixation or free-light-chain reports\", \"enzyme_genetics\": \"Existing enzyme and genetic test reports\", \"nuclear_imaging\": \"Existing nuclear medicine/scintigraphy reports\", \"gastrointestinal_records\": \"Existing gastrointestinal endoscopy or histology reports\", \"device_check\": \"Existing implanted-device/pacemaker check records\"}"
+          },
+          {
+            "role": "user",
+            "content": "Basic patient information: 58-year-old woman.\nConsultation context: The recorded alert daytime consultation; night-time events are historical or collateral observations.\nOnly existing selected records are available. Unreported information remains unknown, not normal, negative or evidence that a test was never performed. Do not infer an exact test/report time when none is given. Later diagnoses and outcomes are withheld.\nPatient opening:\nI do not remember the night-time events and feel normal again in the morning.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you tell me what the night-time events look like when someone witnesses them, and how often they have been happening?\", \"topics\": [\"presenting_symptoms\", \"timecourse\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"58-year-old woman with amnesia for night-time events and full daytime recovery. Differential includes nocturnal seizures, syncope, parasomnias, or other paroxysmal events. No further details available yet.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I usually wake around 07:00–08:00 and feel normal afterwards. I have lost about 5 kg and have less energy and more difficulty concentrating.\nFixed collateral record [Six-month night-time episode history; no exact event dates supplied.]: She shouts, makes purposeless movements and thrashes in bed, sometimes with urinary incontinence.\nFixed collateral record [Six-month night-time episode history; no exact event dates supplied.]: Her family cannot easily wake her, and she cannot remember the events.\nFixed collateral record [Six-month night-time episode history; no exact event dates supplied.]: six months of episodes between approximately 04:00 and 06:00\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Has she had any EEG or brain imaging (CT or MRI) done during these six months, and if so, what were the results?\", \"topics\": [\"eeg\", \"mri_imaging\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"58-year-old woman with six months of stereotyped early-morning (04:00-06:00) nocturnal episodes: shouting, purposeless/hypermotor movements, thrashing, urinary incontinence, post-ictal-like unresponsiveness, and amnesia. Full daytime recovery. Constitutional symptoms (5 kg weight loss, fatigue, poor concentration) raise concern for an underlying structural or systemic cause. Differential includes nocturnal frontal lobe seizures, parasomnias, or secondary causes.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Fixed clinical record [Existing EEG; precise recording time is not supplied.]: An electroencephalogram (EEG) showed no definite epileptiform discharges.\nController: One existing eeg report group returned with its clinical context. A later question can request another existing report.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Has she had a brain MRI or CT scan during these six months, and if so, what were the findings?\", \"topics\": [\"mri_imaging\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"58-year-old woman with six months of stereotyped early-morning (04:00-06:00) nocturnal episodes: shouting, purposeless/hypermotor movements, thrashing, urinary incontinence, post-event unresponsiveness, and amnesia. Full daytime recovery. Constitutional symptoms (5 kg weight loss, fatigue, poor concentration) raise concern for an underlying structural or systemic cause. Routine EEG showed no definite epileptiform discharges, which does not exclude epilepsy. Differential includes sleep-related hypermotor epilepsy (nocturnal frontal lobe epilepsy), parasomnias, or secondary causes.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No additional recorded detail is available for this question. This is not a negative finding or proof that a test was never performed.\nController: No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Is she taking any medications, and does she have any known medical conditions or history of head injury?\", \"topics\": [\"medications\", \"medical_history\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"58-year-old woman with six months of stereotyped early-morning (04:00-06:00) nocturnal episodes: shouting, purposeless/hypermotor movements, thrashing, urinary incontinence, post-event unresponsiveness, and amnesia. Full daytime recovery. Constitutional symptoms (5 kg weight loss, fatigue, poor concentration) raise concern for an underlying structural or systemic cause. Routine EEG showed no definite epileptiform discharges, which does not exclude epilepsy. No brain imaging results available. Differential includes sleep-related hypermotor epilepsy, parasomnias, or secondary causes.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I take irbesartan for high blood pressure. I was diagnosed with moderate obstructive sleep apnoea one month ago, and it has not been treated. I have no history of diabetes.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-8f7aee6e5ff99a0f",
+        "model": "arc:chat",
+        "created": 1792765833,
+        "usage": {
+          "prompt_tokens": 2063,
+          "total_tokens": 2591,
+          "completion_tokens": 528,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 314
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Has she had any routine blood tests (such as full blood count, biochemistry, or thyroid function) during these six months, and if so, what were the results?\", \"topics\": [\"routine_laboratory\"], \"record_period\": \"any\", \"assessment\": {\"summary\": \"58-year-old woman with six months of stereotyped early-morning (04:00-06:00) nocturnal episodes: shouting, purposeless/hypermotor movements, thrashing, urinary incontinence, post-event unresponsiveness, and amnesia. Full daytime recovery. Constitutional symptoms (5 kg weight loss, fatigue, poor concentration). Untreated moderate OSA diagnosed one month ago (episodes predate diagnosis). On irbesartan for hypertension. Routine EEG non-diagnostic. No brain imaging available. Differential includes sleep-related hypermotor epilepsy, parasomnias (possibly exacerbated by OSA), or secondary causes.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 3.71,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Has she had any routine blood tests (such as full blood count, biochemistry, or thyroid function) during these six months, and if so, what were the results?",
+    "topics": [
+      "routine_laboratory"
+    ],
+    "record_period": "any",
+    "assessment": {
+      "summary": "58-year-old woman with six months of stereotyped early-morning (04:00-06:00) nocturnal episodes: shouting, purposeless/hypermotor movements, thrashing, urinary incontinence, post-event unresponsiveness, and amnesia. Full daytime recovery. Constitutional symptoms (5 kg weight loss, fatigue, poor concentration). Untreated moderate OSA diagnosed one month ago (episodes predate diagnosis). On irbesartan for hypertension. Routine EEG non-diagnostic. No brain imaging available. Differential includes sleep-related hypermotor epilepsy, parasomnias (possibly exacerbated by OSA), or secondary causes.",
+      "certainty": "uncertain"
+    }
+  }
+}

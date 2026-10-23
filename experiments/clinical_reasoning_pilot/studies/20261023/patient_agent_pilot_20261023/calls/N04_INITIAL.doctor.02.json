@@ -1,0 +1,71 @@
+{
+  "id": "N04_INITIAL.doctor.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T12:01:49.524157+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nMy severe headache has returned and is worse when I am upright.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"When did this headache start, and has it happened before? If so, what was different or similar about the previous episode?\", \"topics\": [\"timecourse\", \"previous_episodes\"], \"assessment\": {\"summary\": \"Severe positional headache, worse upright, with a history of recurrence. Pattern is suggestive of a low-pressure (post-dural puncture or spontaneous CSF leak) headache, but this is not yet confirmed. No other details available.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I initially had five days of low-grade fever and severe headache.\nFixed clinical record: She improved and was discharged after 12 days on 11 March 2026.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-b27067936f4ad0ae",
+        "model": "arc:lite",
+        "created": 1792756909,
+        "usage": {
+          "prompt_tokens": 636,
+          "total_tokens": 1043,
+          "completion_tokens": 407,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 254
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"During that hospital stay, what was the diagnosis, and was a lumbar puncture (spinal tap) performed?\", \"topics\": [\"medical_history\", \"tests\"], \"assessment\": {\"summary\": \"Initial presentation of 5-day low-grade fever with severe headache, treated in hospital for 12 days (discharged 11 March 2026). Now a recurrent severe headache, worse upright. The positional nature raises concern for a CSF leak, possibly post-lumbar puncture if one was performed during the admission. The initial aetiology (e.g. meningitis, encephalitis) is not yet known.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.8,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "During that hospital stay, what was the diagnosis, and was a lumbar puncture (spinal tap) performed?",
+    "topics": [
+      "medical_history",
+      "tests"
+    ],
+    "assessment": {
+      "summary": "Initial presentation of 5-day low-grade fever with severe headache, treated in hospital for 12 days (discharged 11 March 2026). Now a recurrent severe headache, worse upright. The positional nature raises concern for a CSF leak, possibly post-lumbar puncture if one was performed during the admission. The initial aetiology (e.g. meningitis, encephalitis) is not yet known.",
+      "certainty": "uncertain"
+    }
+  }
+}

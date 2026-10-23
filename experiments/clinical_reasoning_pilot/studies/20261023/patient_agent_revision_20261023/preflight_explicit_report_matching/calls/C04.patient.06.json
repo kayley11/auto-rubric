@@ -1,0 +1,57 @@
+{
+  "id": "C04.patient.06",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:14:03.467096+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"Do you have any known heart conditions, diabetes, or neurological problems that might be relevant to these episodes?\", \"permitted_statements\": [{\"id\": \"C04_F03\", \"text\": \"I have previously had a heart attack.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-82da6bb51105dd22",
+        "model": "arc:lite",
+        "created": 1792761243,
+        "usage": {
+          "prompt_tokens": 176,
+          "total_tokens": 273,
+          "completion_tokens": 97,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 82
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"C04_F03\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.7,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "C04_F03"
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+"""Print compact, source-backed tables after summarise.py has completed."""
+from pathlib import Path
+import json
+
+ROOT = Path(__file__).resolve().parent
+
+NAMES = {
+    'C01': 'Swelling and rheumatoid arthritis', 'C02': 'Gait imbalance',
+    'C03': 'Bloody diarrhoea', 'C04': 'Collapses', 'C05': 'Seizure explanation',
+    'N02': 'Night-time episodes', 'N04_INITIAL': 'Recurrent headache',
+    'N05': 'Gut and cardiac findings',
+}
+LABELS = {
+    'C01_F01': 'adult/arthritis context', 'C01_F02': 'medicines', 'C01_F03': 'associated swelling/urine symptoms',
+    'C01_F05': 'poor diuretic response',
+    'C02_F01': 'current gait symptoms', 'C02_F02': 'past speech episode',
+    'C02_F03': 'past visual/urinary symptoms', 'C02_F04': 'previous recovery', 'C02_F05': 'heat trigger',
+    'C03_F01': 'persistent diarrhoea', 'C03_F02': 'travel', 'C03_F03': 'blood/urgency/cramps',
+    'C03_F04': 'poor antibiotic response', 'C03_F05': 'back stiffness', 'C03_F06': 'shin lesions',
+    'C04_F01': 'postural symptoms', 'C04_F02': 'dose–collapse sequence', 'C04_F03': 'previous infarction',
+    'C04_F04': 'pacemaker/check history', 'C04_F05': 'living alone',
+    'C05_F01': 'modelling career', 'C05_F02': 'seizure history', 'C05_F03': 'normal CT', 'C05_F04': 'metabolic exclusion',
+    'N02_F01': 'episode timing', 'N02_F02': 'witnessed movements/incontinence',
+    'N02_F03': 'difficulty waking/amnesia', 'N02_F04': 'morning recovery',
+    'N02_F05': 'weight/energy change', 'N02_F06': 'low glucose', 'N02_F07': 'diabetes history',
+    'N02_F08': 'medicines', 'N02_F10': 'daytime neurological examination', 'N02_F12': 'EEG',
+    'N04_INITIAL_F01': 'initial fever/headache', 'N04_INITIAL_F03': 'first examination/CT',
+    'N04_INITIAL_F04': 'initial CSF', 'N04_INITIAL_F05': 'infection tests',
+    'N04_INITIAL_F06': 'steroid treatment', 'N04_INITIAL_F08': 'improvement/length of stay',
+    'N04_INITIAL_F09': 'post-discharge symptoms', 'N04_INITIAL_F10': 'readmission symptoms',
+    'N04_INITIAL_F12': 'brain MRI', 'N04_INITIAL_F14': 'readmission CSF',
+    'N05_F01': 'gut/sensory symptoms', 'N05_F03': 'persistent diarrhoea',
+    'N05_F04': 'breathlessness/fatigue/weight loss', 'N05_F05': 'initial vital signs',
+    'N05_F07': 'current-vital-sign uncertainty', 'N05_F08': 'echo', 'N05_F09': 'cardiac MRI',
+    'N05_F10': 'monoclonal screen', 'N05_F11': 'enzyme/genetic tests', 'N05_F12': 'pyrophosphate scan',
+}
+
+
+def tables():
+    a = json.loads((ROOT / 'ANALYSIS.json').read_text())
+    p = json.loads((ROOT / 'protocol.json').read_text())
+    by = {(r['case'], r['answer_model']): r for r in a['conditions']}
+    models = p['answer_models']
+    result = ['| Case | arc:lite | arc:chat | arc:apex |', '| --- | --- | --- | --- |']
+    grades = result.copy()
+    for c in p['cases']:
+        cid = c['case_id']; label = 'N04' if cid == 'N04_INITIAL' else cid
+        cells, scores = [], []
+        for model in models:
+            r = by[cid, model]
+            missing = [LABELS[g['parent_fact_id']] for g in c['coverage_groups'] if g['source_text'] in r['missing_groups']]
+            if cid == 'N04_INITIAL' and model == 'arc:apex':
+                missing = ['first meningeal examination' if label == 'first examination/CT' else label for label in missing]
+            cells.append(str(r['groups_obtained']) + '/' + str(r['groups_available']) + '; ' + (', '.join(missing) if missing else 'complete'))
+            scores.append(' / '.join(str(r[k]) if r[k] is not None else 'N/A' for k in ['D5c', 'D3a']))
+        result.append('| [' + label + ' — ' + NAMES[cid] + '](case_outputs/' + cid + '.txt) | ' + ' | '.join(cells) + ' |')
+        grades.append('| ' + label + ('*' if cid in ['C05', 'N02'] else '') + ' | ' + ' | '.join(scores) + ' |')
+    print('INFORMATION OBTAINED AND MISSED\n' + '\n'.join(result))
+    print('\nSCORES: D5c / D3a\n' + '\n'.join(grades))
+    for model in models:
+        rs = [r for r in a['conditions'] if r['answer_model'] == model]
+        print(model, 'information', sum(r['groups_obtained'] for r in rs), '/54',
+              'turns', sum(r['turns'] for r in rs),
+              'word-limit exceptions', [(r['case'], r['word_count']) for r in rs if not r['word_count']['within_range']],
+              'resources', a['resources'][model])
+
+
+if __name__ == '__main__':
+    tables()

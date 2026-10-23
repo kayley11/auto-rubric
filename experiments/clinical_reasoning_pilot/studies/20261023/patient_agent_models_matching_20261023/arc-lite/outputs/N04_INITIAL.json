@@ -1,0 +1,520 @@
+{
+  "case_id": "N04_INITIAL",
+  "answer_model": "arc:lite",
+  "patient_model": "arc:lite",
+  "judge_model": "arc:apex",
+  "protocol_sha256": "402158c7b72b5b8b1cf4599a99f5321bc8ac0f239c99b158ccc691f571fbcd43",
+  "created_at": "2026-10-23T15:16:53.070535+00:00",
+  "reference_status": "draft",
+  "status": "complete",
+  "turns": [
+    {
+      "number": 1,
+      "question": "Could you tell me what was diagnosed and what treatment or procedure was carried out during your previous admission that ended on 11 March?",
+      "topics": [
+        "medical_history",
+        "previous_episodes"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Could you tell me what was diagnosed and what treatment or procedure was carried out during your previous admission that ended on 11 March?",
+        "topics": [
+          "medical_history",
+          "previous_episodes"
+        ],
+        "record_period": "previous",
+        "assessment": {
+          "summary": "36-year-old woman readmitted with recurrent severe orthostatic headache, a pattern suggestive of low CSF pressure; prior admission context needed to understand aetiology and prior management.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F06",
+          "topic": "medications",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "During that admission she received intravenous dexamethasone for nine days.",
+          "parent_fact_id": "N04_INITIAL_F06",
+          "source_excerpt": "During that admission she received intravenous dexamethasone for nine days.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F06"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F06"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F06"
+      ],
+      "feedback": "Matched medications to its requested admission; retained the original context label.",
+      "requested_period": "initial",
+      "report_groups": []
+    },
+    {
+      "number": 2,
+      "question": "During that previous admission, was any procedure performed or any imaging (such as MRI or CT) done? If so, could I review those reports?",
+      "topics": [
+        "mri_imaging",
+        "ct_imaging"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "During that previous admission, was any procedure performed or any imaging (such as MRI or CT) done? If so, could I review those reports?",
+        "topics": [
+          "mri_imaging",
+          "ct_imaging"
+        ],
+        "record_period": "previous",
+        "assessment": {
+          "summary": "36-year-old woman readmitted with recurrent severe orthostatic headache. Previous admission involved 9 days of IV dexamethasone, suggesting an inflammatory or post-procedural context; need to identify what was diagnosed or done to understand the aetiology of the current orthostatic headache.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F06"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F03b",
+          "topic": "ct_imaging",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "head CT showed no abnormality.",
+          "parent_fact_id": "N04_INITIAL_F03",
+          "source_excerpt": "head CT showed no abnormality.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F03b"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F03b"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F03b"
+      ],
+      "feedback": "Matched ct_imaging to its requested admission; retained the original context label.",
+      "requested_period": "initial",
+      "report_groups": [
+        "N04_INITIAL_F03b"
+      ]
+    },
+    {
+      "number": 3,
+      "question": "Was a lumbar puncture or any other procedure performed during that previous admission? And are you experiencing any other symptoms now, such as neck stiffness, nausea, or hearing changes?",
+      "topics": [
+        "previous_episodes",
+        "presenting_symptoms"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Was a lumbar puncture or any other procedure performed during that previous admission? And are you experiencing any other symptoms now, such as neck stiffness, nausea, or hearing changes?",
+        "topics": [
+          "previous_episodes",
+          "presenting_symptoms"
+        ],
+        "record_period": "any",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days after discharge with recurrent severe orthostatic headache. Previous admission included 9 days IV dexamethasone and a normal head CT. Orthostatic pattern raises concern for CSF leak; need to determine whether a lumbar puncture or other procedure was performed during the prior admission, and to characterise current associated symptoms.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F03b",
+        "N04_INITIAL_F06"
+      ],
+      "patient_reply": "The headache and sensitivity to light persisted, and I returned to emergency care. I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness.",
+      "permitted_patient_fact_ids": [
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10"
+      ],
+      "patient_used_fact_ids": [
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10"
+      ],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F04",
+          "topic": "csf",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.",
+          "parent_fact_id": "N04_INITIAL_F04",
+          "source_excerpt": "Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F04"
+        }
+      ],
+      "unavailable": false,
+      "released_fact_ids": [
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F04"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F04"
+      ],
+      "feedback": "Matched csf to its requested admission; retained the original context label.",
+      "requested_period": "initial",
+      "report_groups": [
+        "N04_INITIAL_F04"
+      ]
+    },
+    {
+      "number": 4,
+      "question": "On this current readmission, have any new investigations been performed — for example, a repeat lumbar puncture, MRI, or blood tests? If so, could I review those results?",
+      "topics": [
+        "csf",
+        "mri_imaging"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "On this current readmission, have any new investigations been performed — for example, a repeat lumbar puncture, MRI, or blood tests? If so, could I review those results?",
+        "topics": [
+          "csf",
+          "mri_imaging"
+        ],
+        "record_period": "current",
+        "assessment": {
+          "summary": "36-year-old woman readmitted 3 days after discharge with severe orthostatic headache, photophobia, arm tremor, and dizziness. First admission showed lymphocytic CSF pleocytosis (183 cells, 97.8% lymphocytes, protein 83.3) treated with 9 days IV dexamethasone; head CT was normal. The orthostatic pattern raises concern for post-procedural CSF leak versus recurrent/worsening meningitis. Current investigation data needed to differentiate.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F03b",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F06",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F12",
+          "topic": "mri_imaging",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Brain MRI was normal.",
+          "parent_fact_id": "N04_INITIAL_F12",
+          "source_excerpt": "Brain MRI was normal.",
+          "context": "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied.",
+          "period": "readmission",
+          "release_group": "N04_INITIAL_F12"
+        },
+        {
+          "id": "N04_INITIAL_F14",
+          "topic": "csf",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "Repeat CSF contained 178 cells/µL, 97.7% lymphocytes, and protein 36.6 mg/dL.",
+          "parent_fact_id": "N04_INITIAL_F14",
+          "source_excerpt": "Repeat CSF contained 178 cells/µL, 97.7% lymphocytes, and protein 36.6 mg/dL.",
+          "context": "Recurrence/readmission beginning 14 March 2026; exact investigation times are not supplied.",
+          "period": "readmission",
+          "release_group": "N04_INITIAL_F14"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ],
+      "feedback": "Matched mri_imaging to its requested admission; retained the original context label. Matched csf to its requested admission; retained the original context label.",
+      "requested_period": "readmission",
+      "report_groups": [
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ]
+    },
+    {
+      "number": 5,
+      "question": "During the first admission, was a specific diagnosis made for the CSF findings? Were any additional CSF studies performed, such as cultures, PCR for infections, or autoimmune antibody testing?",
+      "topics": [
+        "previous_episodes",
+        "microbiology"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "During the first admission, was a specific diagnosis made for the CSF findings? Were any additional CSF studies performed, such as cultures, PCR for infections, or autoimmune antibody testing?",
+        "topics": [
+          "previous_episodes",
+          "microbiology"
+        ],
+        "record_period": "previous",
+        "assessment": {
+          "summary": "36-year-old woman with persistent lymphocytic CSF pleocytosis (183→178 cells, ~98% lymphocytes) and mildly elevated protein (83.3→36.6 mg/dL) despite 9 days of IV dexamethasone. Normal head CT and brain MRI. Readmitted with orthostatic headache, photophobia, arm tremor, and dizziness. The persistent pleocytosis suggests an ongoing inflammatory or infectious meningeal process not fully controlled by steroids. Need to identify the working diagnosis and whether infectious/autoimmune aetiology was investigated.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F03b",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F06",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [
+        {
+          "id": "N04_INITIAL_F05",
+          "topic": "microbiology",
+          "channel": "record",
+          "coverage_target": true,
+          "text": "CSF PCR did not identify an infectious cause, and Borrelia serology was negative. No CSF culture result is supplied.",
+          "parent_fact_id": "N04_INITIAL_F05",
+          "source_excerpt": "CSF PCR did not identify an infectious cause, and Borrelia serology was negative. No CSF culture result is supplied.",
+          "context": "First admission, before discharge on 11 March 2026; exact investigation times are not supplied.",
+          "period": "initial",
+          "release_group": "N04_INITIAL_F05"
+        }
+      ],
+      "unavailable": true,
+      "released_fact_ids": [
+        "N04_INITIAL_F05"
+      ],
+      "new_fact_ids": [
+        "N04_INITIAL_F05"
+      ],
+      "feedback": "Matched microbiology to its requested admission; retained the original context label.",
+      "requested_period": "initial",
+      "report_groups": [
+        "N04_INITIAL_F05"
+      ]
+    },
+    {
+      "number": 6,
+      "question": "Do you have any history of autoimmune conditions, recent infections, or new medications before the first admission? And was any autoimmune antibody testing (such as anti-NMDAR or other encephalitis panel) performed on the CSF or blood?",
+      "topics": [
+        "medical_history",
+        "enzyme_genetics"
+      ],
+      "doctor_output": {
+        "action": "ask",
+        "question": "Do you have any history of autoimmune conditions, recent infections, or new medications before the first admission? And was any autoimmune antibody testing (such as anti-NMDAR or other encephalitis panel) performed on the CSF or blood?",
+        "topics": [
+          "medical_history",
+          "enzyme_genetics"
+        ],
+        "record_period": "previous",
+        "assessment": {
+          "summary": "36-year-old woman with persistent lymphocytic CSF pleocytosis (~180 cells, ~98% lymphocytes) and protein trending down (83.3→36.6 mg/dL) despite 9 days IV dexamethasone. Infectious workup negative (CSF PCR, Borrelia serology). Normal head CT and brain MRI. Readmitted with orthostatic headache, photophobia, arm tremor, and dizziness. The arm tremor and persistent pleocytosis raise concern for autoimmune/inflammatory encephalitis or other non-infectious meningoencephalitis. Autoimmune antibody testing not yet reported.",
+          "certainty": "uncertain"
+        }
+      },
+      "visible_fact_ids_before_question": [
+        "N04_INITIAL_F03b",
+        "N04_INITIAL_F04",
+        "N04_INITIAL_F05",
+        "N04_INITIAL_F06",
+        "N04_INITIAL_F09",
+        "N04_INITIAL_F10",
+        "N04_INITIAL_F12",
+        "N04_INITIAL_F14"
+      ],
+      "patient_reply": "",
+      "permitted_patient_fact_ids": [],
+      "patient_used_fact_ids": [],
+      "patient_layout_fallback": false,
+      "fixed_records": [],
+      "unavailable": true,
+      "released_fact_ids": [],
+      "new_fact_ids": [],
+      "feedback": "No new recorded information was returned. Do not repeat this request; change the question or finish. This is not a negative finding.",
+      "requested_period": "initial",
+      "report_groups": []
+    }
+  ],
+  "question_proposals": [
+    {
+      "turn": 1,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Could you tell me what was diagnosed and what treatment or procedure was carried out during your previous admission that ended on 11 March?",
+            "topics": [
+              "medical_history",
+              "previous_episodes"
+            ],
+            "record_period": "previous",
+            "assessment": {
+              "summary": "36-year-old woman readmitted with recurrent severe orthostatic headache, a pattern suggestive of low CSF pressure; prior admission context needed to understand aetiology and prior management.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "During that previous admission, was any procedure performed or any imaging (such as MRI or CT) done? If so, could I review those reports?",
+            "topics": [
+              "mri_imaging",
+              "ct_imaging"
+            ],
+            "record_period": "previous",
+            "assessment": {
+              "summary": "36-year-old woman readmitted with recurrent severe orthostatic headache. Previous admission involved 9 days of IV dexamethasone, suggesting an inflammatory or post-procedural context; need to identify what was diagnosed or done to understand the aetiology of the current orthostatic headache.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Was a lumbar puncture or any other procedure performed during that previous admission? And are you experiencing any other symptoms now, such as neck stiffness, nausea, or hearing changes?",
+            "topics": [
+              "previous_episodes",
+              "presenting_symptoms"
+            ],
+            "record_period": "any",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days after discharge with recurrent severe orthostatic headache. Previous admission included 9 days IV dexamethasone and a normal head CT. Orthostatic pattern raises concern for CSF leak; need to determine whether a lumbar puncture or other procedure was performed during the prior admission, and to characterise current associated symptoms.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "On this current readmission, have any new investigations been performed — for example, a repeat lumbar puncture, MRI, or blood tests? If so, could I review those results?",
+            "topics": [
+              "csf",
+              "mri_imaging"
+            ],
+            "record_period": "current",
+            "assessment": {
+              "summary": "36-year-old woman readmitted 3 days after discharge with severe orthostatic headache, photophobia, arm tremor, and dizziness. First admission showed lymphocytic CSF pleocytosis (183 cells, 97.8% lymphocytes, protein 83.3) treated with 9 days IV dexamethasone; head CT was normal. The orthostatic pattern raises concern for post-procedural CSF leak versus recurrent/worsening meningitis. Current investigation data needed to differentiate.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "During the first admission, was a specific diagnosis made for the CSF findings? Were any additional CSF studies performed, such as cultures, PCR for infections, or autoimmune antibody testing?",
+            "topics": [
+              "previous_episodes",
+              "microbiology"
+            ],
+            "record_period": "previous",
+            "assessment": {
+              "summary": "36-year-old woman with persistent lymphocytic CSF pleocytosis (183→178 cells, ~98% lymphocytes) and mildly elevated protein (83.3→36.6 mg/dL) despite 9 days of IV dexamethasone. Normal head CT and brain MRI. Readmitted with orthostatic headache, photophobia, arm tremor, and dizziness. The persistent pleocytosis suggests an ongoing inflammatory or infectious meningeal process not fully controlled by steroids. Need to identify the working diagnosis and whether infectious/autoimmune aetiology was investigated.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "proposals": [
+        {
+          "kind": "initial",
+          "output": {
+            "action": "ask",
+            "question": "Do you have any history of autoimmune conditions, recent infections, or new medications before the first admission? And was any autoimmune antibody testing (such as anti-NMDAR or other encephalitis panel) performed on the CSF or blood?",
+            "topics": [
+              "medical_history",
+              "enzyme_genetics"
+            ],
+            "record_period": "previous",
+            "assessment": {
+              "summary": "36-year-old woman with persistent lymphocytic CSF pleocytosis (~180 cells, ~98% lymphocytes) and protein trending down (83.3→36.6 mg/dL) despite 9 days IV dexamethasone. Infectious workup negative (CSF PCR, Borrelia serology). Normal head CT and brain MRI. Readmitted with orthostatic headache, photophobia, arm tremor, and dizziness. The arm tremor and persistent pleocytosis raise concern for autoimmune/inflammatory encephalitis or other non-infectious meningoencephalitis. Autoimmune antibody testing not yet reported.",
+              "certainty": "uncertain"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "released_fact_ids": [
+    "N04_INITIAL_F03b",
+    "N04_INITIAL_F04",
+    "N04_INITIAL_F05",
+    "N04_INITIAL_F06",
+    "N04_INITIAL_F09",
+    "N04_INITIAL_F10",
+    "N04_INITIAL_F12",
+    "N04_INITIAL_F14"
+  ],
+  "question_turns": 6,
+  "interview_complete": true,
+  "final_answer": "Recurrent lymphocytic meningitis with orthostatic headache and persistent CSF pleocytosis despite prior dexamethasone therapy.\n\n**Aseptic lymphocytic meningitis of uncertain aetiology (autoimmune or post-infectious).** Supporting: near-pure lymphocytic pleocytosis (183 to 178 cells/µL, approximately 98% lymphocytes) with elevated protein, negative standard PCR and Borrelia serology. Limitations: no CSF culture result supplied; autoimmune antibody panel not reported. Next: CSF and serum autoimmune encephalitis antibody panel, CSF culture, expanded viral PCR.\n\n**Post-dural puncture low-pressure headache superimposed on meningitis.** Supporting: orthostatic worsening is characteristic of CSF hypotension; lumbar puncture was performed. Limitations: does not explain persistent pleocytosis, tremor, or dizziness. Next: assess for post-LP headache features, measure CSF opening pressure; consider epidural blood patch if confirmed.\n\n**Undiagnosed infectious meningitis masked by dexamethasone.** Supporting: immunosuppression may blunt typical signs; standard PCR excludes only a subset of pathogens. Limitations: no culture result; no risk-factor history supplied. Next: bacterial, fungal, and mycobacterial CSF cultures; review exposure history.\n\nReassessment before management: full neurological examination, CSF opening pressure, and confirmation that CSF culture and autoimmune serology have been sent.",
+  "word_count": {
+    "words": 169,
+    "minimum": 160,
+    "maximum": 230,
+    "within_range": true,
+    "extra_tolerance": 0,
+    "json_excluded": false
+  },
+  "grades": {
+    "D5c": {
+      "status": "scored",
+      "score": 5,
+      "reason": "The clinician systematically requests the most diagnostically useful missing information at each step: prior diagnosis and treatment, prior imaging, whether lumbar puncture was performed, current readmission investigations, additional CSF studies (cultures, PCR, autoimmune antibodies), and autoimmune/infectious history. Each request is tied to an explicit reasoning checkpoint explaining how it would clarify the differential (post-LP CSF leak vs recurrent meningitis vs autoimmune/inflammatory meningoencephalitis), meeting the Score 5 anchor.",
+      "unanchored": false
+    },
+    "D3a": {
+      "status": "scored",
+      "score": 5,
+      "reason": "The one-sentence summary accurately captures the pivot: recurrent lymphocytic meningitis with orthostatic headache and persistent pleocytosis despite steroids. It correctly frames the key diagnostic tension (aseptic lymphocytic meningitis, possibly autoimmune, vs. low-pressure/post-LP headache vs. masked infection) and directly guides next investigations, using only supplied facts.",
+      "unanchored": false
+    }
+  },
+  "completed_at": "2026-10-23T15:17:27.116099+00:00"
+}

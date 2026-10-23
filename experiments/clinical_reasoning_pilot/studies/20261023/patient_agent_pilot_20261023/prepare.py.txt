@@ -1,0 +1,195 @@
+"""Freeze eight patient-interview cases without adding clinical facts."""
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json
+
+ROOT=Path(__file__).resolve().parent
+PILOT=ROOT.parent
+
+def read(p):return json.loads(p.read_text())
+old={c['id']:c for c in read(PILOT/'data/cases.json')}
+refs=read(PILOT/'data/reference_notes.json')
+new={}
+for pack in ['new_cases_20261022','new_cases_batch2_20261022']:
+ rr={c['case_id']:c['reference'] for c in read(PILOT/pack/'reference_notes.json')['cases']}
+ for c in read(PILOT/pack/'cases.json')['cases']:
+  new[c['case_id']]={**c,'reference':rr[c['case_id']],'pack':pack}
+
+TOPICS={
+ 'presenting_symptoms':'Current symptoms and associated symptoms',
+ 'timecourse':'Onset, course, triggers and aggravating factors',
+ 'previous_episodes':'Earlier similar or other relevant episodes',
+ 'medications':'Current/recent medicines and treatment response',
+ 'medical_history':'Other conditions, previous admissions and procedures',
+ 'tests':'Existing examination findings and test reports; no new test is performed',
+ 'exposures':'Travel, exposures and relevant lifestyle history',
+ 'daily_life':'Function, occupation, living situation and practical support',
+ 'concerns':'Patient priorities, questions and preferences; do not invent them'}
+CASES=[]
+
+def add(cid,opening,groups,reason,notes=''):
+ c=old[cid] if cid in old else new[cid]
+ facts=c['facts'];atoms=[]
+ for topic,channel,key,quote in groups:
+  assert quote in facts,(cid,quote)
+  atoms.append({'id':f'{cid}_F{len(atoms)+1:02d}','topic':topic,'channel':channel,
+   'coverage_target':key,'text':quote})
+ ref=json.dumps(refs[cid],ensure_ascii=False,indent=2) if cid in old else c['reference']
+ task=c['task']
+ if cid=='C05':
+  task=task.replace('what the normal scan does and does not establish','what any investigation findings obtained do and do not establish')
+ if cid=='N02':
+  task=task.replace('what does the EEG result tell us','what do any investigation results obtained tell us')
+  task=task.replace('Explain the relevance of the low glucose without claiming a final cause','Explain the relevance of any glucose measurements obtained without claiming a final cause')
+ if cid=='N04_INITIAL':
+  task=task.replace('Consider the recurrence, CSF pattern, posture-related headache, prior treatment and imaging together.', 'Consider the history, treatment and investigation information actually supplied together.')
+ if cid=='N05':
+  task=task.replace('Explain how the gastrointestinal, neurological and cardiac findings affect the working differential.', 'Explain how the symptom and investigation findings actually obtained affect the working differential.')
+  task=task.replace('Interpret what the PYP result supports and what it does not establish, alongside the other investigations.', 'Interpret what the investigation results actually obtained support and what they do not establish.')
+  task=task.replace("Address the significance of the earlier abnormal vital signs without assuming that they describe the patient's current condition.", 'Distinguish historical observations actually obtained from the current state; do not assume current vital signs.')
+ selected=['D1','D2a','D2d','D5u','D7c']
+ if cid not in ['C05','N02']:selected.append('D3a')
+ else:selected.append('D7b')
+ if cid in ['C01','C02','C03','C04','C05','N02']:selected.append('D6b')
+ CASES.append({'case_id':cid,'title':c.get('topic',c.get('title')),
+  'source_case_id':cid,'eligibility_reason':reason,'adaptation_note':notes,
+  'full_visible_snapshot':facts,'opening':opening,'facts':atoms,'final_task':task,'original_final_task':c['task'],
+  'reference':ref,'reference_status':'draft — awaiting clinical confirmation',
+  'final_criteria':selected,'dialogue_criteria':['D5c','D5u','D7b'],
+  'historical_run':('runs/apex_v1_5/results/operations/'+cid+'.generate.json') if cid in old else
+   c['pack']+'/runs/'+('ui_batch_20261022' if c['pack']=='new_cases_20261022' else 'ui_batch2_20261022')+'/'+cid+'.json'})
+
+add('C01','My ankles have become swollen.',[
+ ('medical_history','patient',True,'Adult with rheumatoid arthritis'),
+ ('medications','patient',True,'taking methotrexate and intermittent NSAIDs'),
+ ('presenting_symptoms','patient',True,'ankle swelling, morning facial puffiness and frothy urine'),
+ ('presenting_symptoms','patient',False,'Breathing is normal'),
+ ('medications','patient',True,'recent furosemide has not helped')],
+ 'Conscious outpatient-style history; symptoms and medication context can be elicited.')
+add('C02','I am a young adult and have recently been unsteady when walking.',[
+ ('presenting_symptoms','patient',True,'Young adult has recent gait imbalance'),
+ ('previous_episodes','patient',True,'speech disturbance a year earlier'),
+ ('previous_episodes','patient',True,'painful unilateral blurred vision with urinary symptoms months earlier'),
+ ('previous_episodes','patient',True,'Earlier symptoms resolved'),
+ ('timecourse','patient',True,'current imbalance worsened after a hot bath')],
+ 'The earlier staged E01 case can become a question-driven history without inventing test results.')
+add('C03','I have persistent diarrhoea and there is blood in my stool.',[
+ ('presenting_symptoms','patient',True,'persistent diarrhoea'),
+ ('exposures','patient',True,'after travel'),
+ ('presenting_symptoms','patient',True,'blood, urgency, cramps'),
+ ('medications','patient',True,'little antibiotic benefit'),
+ ('presenting_symptoms','patient',True,'morning back stiffness'),
+ ('previous_episodes','patient',True,'previous painful shin lesions'),
+ ('presenting_symptoms','record',False,'No weight loss or fever is reported.')],
+ 'Current symptoms, travel, earlier skin findings and treatment response can be elicited.',
+ 'No reported fever/weight loss is a limit of the supplied record, not a new patient-confirmed negative.')
+add('C04','I feel light-headed when I stand up and have had brief collapses.',[
+ ('presenting_symptoms','patient',True,'postural light-headedness and brief collapses'),
+ ('medications','patient',True,'after an antihypertensive dose increase'),
+ ('medical_history','patient',True,'previous myocardial infarction'),
+ ('tests','record',True,'a recently checked pacemaker'),
+ ('daily_life','patient',True,'The patient lives alone.')],
+ 'The task concerns a conscious person recounting prior events, not a currently unconscious patient.',
+ 'The check result remains unknown. No prodrome, injury, duration or family observations are invented.')
+add('C05','The record says I have had two generalised seizures within three months.',[
+ ('daily_life','patient',True,'Young woman pursuing a modelling career'),
+ ('previous_episodes','record',True,'two generalised seizures within three months'),
+ ('tests','record',True,'CT head is normal'),
+ ('tests','record',True,'metabolic causes were excluded')],
+ 'A post-event consultation supports patient questions and explanation.',
+ 'The opening paraphrases the supplied event count. Witness details, recall, concerns and preferences remain unknown; recorded seizure details are supplied as records, not invented recollections.')
+
+n=new['N02']['facts']
+add('N02','I do not remember the night-time events and feel normal again in the morning.',[
+ ('timecourse','collateral',True,'six months of episodes between approximately 04:00 and 06:00'),
+ ('presenting_symptoms','collateral',True,'She shouts, makes purposeless movements and thrashes in bed, sometimes with urinary incontinence.'),
+ ('presenting_symptoms','collateral',True,'Her family cannot easily wake her, and she cannot remember the events.'),
+ ('timecourse','patient',True,'She usually wakes around 07:00–08:00 and feels normal afterwards.'),
+ ('presenting_symptoms','patient',True,'She has lost approximately 5 kg and reports reduced energy and concentration.'),
+ ('tests','record',True,'Her family has recorded night-time glucose around 2.0 mmol/L; inpatient night-time monitoring recorded 1.2–2.0 mmol/L.'),
+ ('medical_history','patient',True,'She reports no history of diabetes.'),
+ ('medications','patient',True,'She takes irbesartan for hypertension.'),
+ ('medical_history','patient',False,'Moderate obstructive sleep apnoea was diagnosed one month earlier and has not been treated.'),
+ ('tests','record',True,'At the daytime examination she is alert and cooperative, with a normal neurological examination.'),
+ ('tests','record',False,'Her glucose at that precise daytime moment is not supplied.'),
+ ('tests','record',True,'An electroencephalogram (EEG) showed no definite epileptiform discharges.')],
+ 'The patient can be interviewed during the recorded alert daytime review, with fixed collateral and report channels.',
+ 'Night-time witnessed behaviours come from labelled collateral records, never fabricated first-person recall. Later pathology and diagnosis remain hidden.')
+
+f=new['N04_INITIAL']['facts']
+add('N04_INITIAL','My severe headache has returned and is worse when I am upright.',[
+ ('previous_episodes','patient',True,'five days of low-grade fever and severe headache'),
+ ('medical_history','record',False,'Her past medical history was unremarkable.'),
+ ('tests','record',True,'Examination recorded marked meningeal signs; head CT showed no abnormality.'),
+ ('tests','record',True,'Initial cerebrospinal fluid (CSF) contained 183 cells/µL, 97.8% lymphocytes, and protein 83.3 mg/dL.'),
+ ('tests','record',True,'CSF PCR did not identify an infectious cause, and Borrelia serology was negative. No CSF culture result is supplied.'),
+ ('medications','record',True,'During that admission she received intravenous dexamethasone for nine days.'),
+ ('tests','record',False,'Repeat CSF contained 130 cells/µL and protein 46.1 mg/dL.'),
+ ('timecourse','record',True,'She improved and was discharged after 12 days on 11 March 2026.'),
+ ('presenting_symptoms','patient',True,'Persistent headache and photophobia led to further emergency visits.'),
+ ('presenting_symptoms','patient',True,'On 14 March she was readmitted with severe orthostatic headache, upper-limb tremor and dizziness.'),
+ ('tests','record',False,'Examination recorded neck stiffness and a positive Kernig sign.'),
+ ('tests','record',True,'Brain MRI was normal.'),
+ ('tests','record',False,'Spinal MRI showed L3–L4 and L4–L5 disc herniation with possible nerve-root compression.'),
+ ('tests','record',True,'Repeat CSF contained 178 cells/µL, 97.7% lymphocytes, and protein 36.6 mg/dL.')],
+ 'Symptoms can be elicited from the patient and the existing investigations from fixed reports.',
+ 'Only the initial snapshot is used in both arms. No antibody result, later outcome or invented report-arrival time is released.')
+
+add('N05','I have had diarrhoea for a long time and have also become breathless and tired.',[
+ ('presenting_symptoms','patient',True,'watery diarrhoea three to four times daily for a year, with upper-abdominal discomfort and distal numbness.'),
+ ('medical_history','record',False,'Previous gastrointestinal assessment identified bile reflux gastritis and a colonic lesion that was removed; histology showed a sessile serrated lesion with dysplasia.'),
+ ('timecourse','patient',True,'Diarrhoea persisted.'),
+ ('timecourse','patient',True,'Over the preceding six months he developed exertional breathlessness, fatigue and a 10 kg weight loss.'),
+ ('tests','record',True,'At the initial examination, blood pressure was 80/46 mmHg and heart rate 52 beats/min.'),
+ ('tests','record',False,'Initial NT-proBNP was 887 pg/mL, high-sensitivity troponin T 23.9 ng/L, creatinine 1.3 mg/dL and eGFR 62.7 mL/min/1.73 m².'),
+ ('tests','record',True,'No updated vital signs are supplied for the later investigation-review point.'),
+ ('tests','record',True,'Echocardiography showed symmetric left-ventricular wall thickening, septal thickness 14.1 mm, LVEF 36%, grade-II diastolic dysfunction and relative apical sparing on strain.'),
+ ('tests','record',True,'Cardiac MRI showed diffuse wall thickening, high native myocardial T1, extracellular volume 49.85%–52.47%, and diffuse subendocardial late gadolinium enhancement involving the left ventricle and interatrial septum.'),
+ ('tests','record',True,'Serum/urine immunofixation and serum free-light-chain testing found no monoclonal gammopathy.'),
+ ('tests','record',True,'Alpha-galactosidase A activity was 1.70 µmol/L/h (laboratory reference >2.0); GLA sequencing found no pathogenic variant. Plasma lyso-Gb3 was not measured.'),
+ ('tests','record',True,'Technetium-PYP scintigraphy showed planar grade-1 myocardial uptake and a heart-to-contralateral-lung ratio >1.42; acquisition timing and additional technical details are not supplied here.')],
+ 'Symptoms can be discussed in the first person while technical findings remain fixed reports.',
+ 'The review point is retained; historical low vital signs are not presented as current. Final tissue/genetic findings and outcomes remain hidden.')
+
+opening_ids={
+ 'C01':[],'C02':['C02_F01'],'C03':['C03_F01'],
+ 'C04':['C04_F01'],'C05':['C05_F02'],'N02':[],
+ 'N04_INITIAL':[],'N05':[]}
+for c in CASES:c['opening_fact_ids']=opening_ids[c['case_id']]
+
+excluded=[
+ {'case':'N01','reason':'The retained task is primarily numerical/chronological interpretation of chemotherapy records; converting it to symptom interviewing would replace the task.'},
+ {'case':'N03','reason':'The patient has impaired consciousness (GCS 10); not suitable for an unrestricted first-person interview.'},
+ {'case':'N06','reason':'Retrospective ICU record audit, not patient-reported history.'},
+ {'case':'L01 / L02','reason':'The designed tasks concern cutoff-dependent laboratory records; retain their record-review controls.'},
+ {'case':'U01_SEVERE / U01_RESPONSIVE','reason':'Immediate first-aid tasks. Do not delay essential actions to turn them into symptom-elicitation puzzles.'},
+ {'case':'E01 / E02 / P01 / P02 variants','reason':'Their patient backgrounds are already represented by C02 / C03 / C04 / C05; not counted as extra patients.'}]
+phrases={'C01': ['I have rheumatoid arthritis.', 'I take methotrexate and use NSAIDs intermittently.', 'My ankles are swollen, my face is puffy in the morning, and my urine is frothy.', 'My breathing is normal.', 'The furosemide I started recently has not helped.'], 'C02': ['I am a young adult and have recently been unsteady when walking.', 'About a year ago, I had trouble with my speech.', 'Some months ago, I had painful blurred vision in one eye and urinary symptoms.', 'Those earlier symptoms resolved.', 'My current unsteadiness became worse after a hot bath.'], 'C03': ['I have persistent diarrhoea.', 'The diarrhoea followed travel.', 'There is blood, urgency and cramping.', 'Antibiotics have helped little.', 'My back is stiff in the mornings.', 'Previously, I had painful lesions on my shins.'], 'C04': ['I feel light-headed on standing and have had brief collapses.', 'This happened after my blood pressure medicine dose was increased.', 'I have previously had a heart attack.', 'I live alone.'], 'C05': ['I am a young woman pursuing a modelling career.'], 'N02': ['I usually wake around 07:00–08:00 and feel normal afterwards.', 'I have lost about 5 kg and have less energy and more difficulty concentrating.', 'I have no history of diabetes.', 'I take irbesartan for high blood pressure.', 'I was diagnosed with moderate obstructive sleep apnoea one month ago, and it has not been treated.'], 'N04_INITIAL': ['I initially had five days of low-grade fever and severe headache.', 'The headache and sensitivity to light persisted, and I returned to emergency care.', 'I was readmitted on 14 March with a severe headache when upright, tremor in my arms and dizziness.'], 'N05': ['I have had watery diarrhoea three to four times a day for a year, with upper-abdominal discomfort and distal numbness.', 'The diarrhoea persisted.', 'Over the preceding six months, I developed breathlessness with activity, fatigue and a 10 kg weight loss.']}
+for c in CASES:
+ patient=[f for f in c['facts'] if f['channel']=='patient']
+ assert len(patient)==len(phrases[c['case_id']]),c['case_id']
+ for f,text in zip(patient,phrases[c['case_id']]):f['patient_text']=text
+
+protocol={'prepared_at':datetime.now(timezone.utc).isoformat(),'version':'patient-agent-v2-bounded-speech',
+ 'instruction_adaptation':'Remove result-specific hints from final task wording where needed, identically in both matched arms. Original task wording is retained in each case. The interview agent is not shown the final clinical task before asking questions.',
+ 'purpose':'Compare full-information static answers with question-driven information acquisition, not a test proving removal of training contamination.',
+ 'answer_model':'arc:lite','patient_model':'arc:lite','judge_model':'arc:apex','reference_status':'draft',
+ 'maximum_question_turns':6,'minimum_question_turns':0,'topics':TOPICS,
+ 'routing':'The doctor returns a natural-language question plus at most two standard, case-independent topic tags. The controller releases only matching fixed facts. Tags and actual questions are saved for inspection; this is assisted routing, not a validated unrestricted natural-language matcher.',
+ 'surface_policy':'Fixed, source-checked first-person sentences. The patient LLM may order only the permitted IDs; the controller renders the frozen sentences and no other clinical text. If layout JSON fails twice, use the source order and record the fallback. Free paraphrasing was rejected after the separately archived C02 preflight added unsupported negatives and changed chronology.',
+ 'patient_boundary':'The patient LLM receives only the opening, current question, and permitted patient-reportable facts; it never receives unasked facts, source title, rubric, reference, diagnosis or outcomes. Existing report/collateral excerpts are delivered verbatim by the controller, separately from patient speech.',
+ 'unknown_policy':'Unspecified facts remain unavailable. Never turn an absent source field into a negative or normal finding.',
+ 'coverage_policy':'Fact IDs mark released information. Coverage targets are researcher-prepared information groups, not clinician-approved mandatory points. Count a target only when its complete quoted content has been supplied; an opening may reveal part of a group. Report unelicited groups as not fully obtained, not wholly unknown. Released does not mean correctly used in the final answer.',
+ 'premature_conclusion_policy':'Record the first tentative hypothesis and any explicit established/confirmed diagnostic claim. A claim requiring unprovided evidence is flagged for clinical review, not automatically declared misdiagnosis.',
+ 'comparison':'New matched static and interactive final answers use the same snapshot, final task, word-count rule, models and selected original rubric anchors. Static sees all fixed facts at the start; interactive sees only elicited facts. No total score or causal claim of reduced memorisation.',
+ 'word_count':'Retain headings, remove Markdown markers, whitespace count, hyphenated terms count once; no added tolerance. Give the deterministic count to D7c.',
+ 'scoring':'Shared final-answer criteria plus task-specific summary/audience/safety items. Separately grade the complete dialogue for context seeking, uncertainty and patient-facing communication. Unselected items remain unassessed.',
+ 'repeats':'One successful visible output per operation; save failed technical attempts, at most two attempts per operation. Do not regenerate clinically weak or overlength answers.',
+ 'cases':CASES,'excluded':excluded}
+path=ROOT/'protocol.json'
+assert not path.exists(),'Do not overwrite a frozen protocol.'
+path.write_text(json.dumps(protocol,ensure_ascii=False,indent=2)+'\n')
+(ROOT/'protocol.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest()+'\n')
+print(json.dumps({'cases':[c['case_id'] for c in CASES], 'facts':sum(len(c['facts']) for c in CASES),
+ 'planned_final_ratings':2*sum(len(c['final_criteria']) for c in CASES),
+ 'planned_dialogue_ratings':sum(len(c['dialogue_criteria']) for c in CASES)},ensure_ascii=False,indent=2))

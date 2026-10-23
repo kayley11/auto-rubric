@@ -1,0 +1,57 @@
+{
+  "id": "N02.patient.02",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T13:15:08.145016+00:00",
+      "timeout_seconds": 90,
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Arrange the permitted fixed patient statements into a natural answer to the current question. You may ONLY choose their order. Include each supplied fact ID exactly once. Do not write medical prose, add a fact, omit an ID, or change a statement. Return only JSON: {\"utterance_order\":[\"exact supplied fact IDs\"]}. The controller, not you, will render the fixed first-person sentences."
+          },
+          {
+            "role": "user",
+            "content": "{\"current_question\": \"When during the night do these episodes typically occur — early after falling asleep or later? How long does each episode last? Also, has the weight loss been gradual over weeks or more sudden, and have you noticed any change in appetite, fever, or other symptoms alongside it?\", \"permitted_statements\": [{\"id\": \"N02_F04\", \"text\": \"I usually wake around 07:00–08:00 and feel normal afterwards.\"}]}"
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a939c947b314f150",
+        "model": "arc:lite",
+        "created": 1792761308,
+        "usage": {
+          "prompt_tokens": 223,
+          "total_tokens": 433,
+          "completion_tokens": 210,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 195
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"utterance_order\":[\"N02_F04\"]}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 0.96,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "utterance_order": [
+      "N02_F04"
+    ]
+  }
+}

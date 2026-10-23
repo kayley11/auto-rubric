@@ -1,0 +1,88 @@
+{
+  "id": "C04.doctor.04",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:59:12.317520+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nI feel light-headed when I stand up and have had brief collapses.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you describe what happens during these episodes of light-headedness or collapse? For example, do you lose consciousness completely, how long does it last, and do you notice anything else like a racing heart, chest tightness, sweating, or nausea before or during the episode?\", \"topics\": [\"presenting_symptoms\"], \"assessment\": {\"summary\": \"Patient reports orthostatic light-headedness and brief collapses; characterisation of episodes and associated features needed to narrow the differential.\", \"certainty\": \"uncertain\", \"working\": \"Orthostatic intolerance with possible syncope; aetiology not yet established.\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I feel light-headed on standing and have had brief collapses.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"When did this start, and how often are the episodes happening now? Have you noticed anything that makes them more likely to occur, such as standing up quickly, being in a warm room, or after eating?\", \"topics\": [\"timecourse\"], \"assessment\": {\"summary\": \"Orthostatic light-headedness with brief collapses; onset timing, frequency, and triggers not yet established.\", \"certainty\": \"uncertain\", \"working\": \"Orthostatic intolerance with possible syncope; aetiology not yet established.\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Simulator: No further patient-reported information is supplied for this question; this is not a negative finding.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Do you have any other medical conditions, and are you currently taking any regular medicines? If so, which ones?\", \"topics\": [\"medical_history\", \"medications\"], \"assessment\": {\"summary\": \"Orthostatic light-headedness with brief collapses; onset timing and triggers not yet established. No medical history or medication information obtained yet.\", \"certainty\": \"uncertain\", \"working\": \"Orthostatic intolerance with possible syncope; aetiology not yet established.\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I have previously had a heart attack. This happened after my blood pressure medicine dose was increased.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-a020f49fbf0b7b39",
+        "model": "arc:lite",
+        "created": 1792756752,
+        "usage": {
+          "prompt_tokens": 948,
+          "total_tokens": 1296,
+          "completion_tokens": 348,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 188
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Are you still taking that blood pressure medicine now, and are you on any other regular medicines? Also, did you have any procedures or further treatment after the heart attack, such as a stent or bypass?\", \"topics\": [\"medications\", \"medical_history\"], \"assessment\": {\"summary\": \"Orthostatic light-headedness with brief collapses in a patient with a prior myocardial infarction temporally related to a blood pressure medicine dose increase. Current medication use and post-MI management not yet established.\", \"certainty\": \"uncertain\", \"working\": \"Orthostatic intolerance with possible syncope; prior MI and antihypertensive use raise concern for medication-related hypotension or underlying cardiac cause.\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 1.46,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Are you still taking that blood pressure medicine now, and are you on any other regular medicines? Also, did you have any procedures or further treatment after the heart attack, such as a stent or bypass?",
+    "topics": [
+      "medications",
+      "medical_history"
+    ],
+    "assessment": {
+      "summary": "Orthostatic light-headedness with brief collapses in a patient with a prior myocardial infarction temporally related to a blood pressure medicine dose increase. Current medication use and post-MI management not yet established.",
+      "certainty": "uncertain",
+      "working": "Orthostatic intolerance with possible syncope; prior MI and antihypertensive use raise concern for medication-related hypotension or underlying cardiac cause."
+    }
+  }
+}

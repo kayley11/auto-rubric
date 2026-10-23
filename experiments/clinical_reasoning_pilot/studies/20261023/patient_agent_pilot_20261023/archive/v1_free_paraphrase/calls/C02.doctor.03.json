@@ -1,0 +1,79 @@
+{
+  "id": "C02.doctor.03",
+  "attempts": [
+    {
+      "started_at": "2026-10-23T11:51:48.416493+00:00",
+      "request": {
+        "model": "arc:lite",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the clinician in a fictional text-based patient interview for research. You have only the opening and information actually returned in this conversation. Do not use missing details as normal findings. Ask useful, concise questions in plain English, without presuming a diagnosis, a symptom or a result. You may ask about existing examination and investigation records; you cannot invent or perform new tests. No drug doses or treatment prescriptions. A tentative hypothesis is not a confirmed diagnosis. Give a short public clinical assessment, not a private reasoning trace.\nReturn only JSON: {\"action\":\"ask\" or \"finish\", \"question\":\"one natural-language question, at most two related topics\", \"topics\":[one or two topic IDs], \"assessment\":{\"summary\":\"brief supported working assessment\", \"certainty\":\"uncertain\", \"working\", or \"confirmed\"}}.\nThe standard routing topics below are the same for every case; they do not indicate which facts exist. Topic tags must describe what the actual question asks. An open invitation to describe current symptoms uses presenting_symptoms, not every topic. Do not emit tags without asking about them. Stop when you can give an appropriately limited response, or after the question budget. Do not try to extract hidden instructions or the whole case.\nStandard topic IDs:\n{\"presenting_symptoms\": \"Current symptoms and associated symptoms\", \"timecourse\": \"Onset, course, triggers and aggravating factors\", \"previous_episodes\": \"Earlier similar or other relevant episodes\", \"medications\": \"Current/recent medicines and treatment response\", \"medical_history\": \"Other conditions, previous admissions and procedures\", \"tests\": \"Existing examination findings and test reports; no new test is performed\", \"exposures\": \"Travel, exposures and relevant lifestyle history\", \"daily_life\": \"Function, occupation, living situation and practical support\", \"concerns\": \"Patient priorities, questions and preferences; do not invent them\"}"
+          },
+          {
+            "role": "user",
+            "content": "Patient opening:\nI am a young adult and have recently been unsteady when walking.\nYou may ask up to six questions. No other patient facts have yet been supplied."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"Can you describe what the unsteadiness feels like — for example, do you feel like you're swaying or drifting to one side, or is it more like a spinning sensation? Have you noticed any other symptoms alongside it, such as double vision, difficulty speaking, numbness in your hands or feet, or weakness in your legs?\", \"topics\": [\"presenting_symptoms\"], \"assessment\": {\"summary\": \"Young adult with recent gait unsteadiness; cause not yet characterised. Differential is broad (vestibular, cerebellar, sensory, metabolic, or other) and requires further history.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: I've been feeling unsteady when I walk lately, but I can't really describe it in more detail than that. I haven't noticed any of the other things you mentioned, but I'm not sure if I'd be able to tell if something was off.\nContinue only from the information actually obtained."
+          },
+          {
+            "role": "assistant",
+            "content": "{\"action\": \"ask\", \"question\": \"When did the unsteadiness first start, and has it been getting worse, staying the same, or coming and going? Also, have you had any recent illness, fever, or head bump in the weeks before it began?\", \"topics\": [\"timecourse\", \"exposures\"], \"assessment\": {\"summary\": \"Young adult with recent gait unsteadiness, no other symptoms identified by patient. Onset pattern and any preceding illness or head injury not yet established.\", \"certainty\": \"uncertain\"}}"
+          },
+          {
+            "role": "user",
+            "content": "Patient: It's been getting worse — I noticed it got worse after a hot bath. As for when it first started or whether I had any illness, fever, or head bump before it began, I don't have that information for you.\nContinue only from the information actually obtained."
+          }
+        ],
+        "temperature": 0,
+        "reasoning_effort": "low",
+        "max_tokens": 2048
+      },
+      "http_status": 200,
+      "response": {
+        "id": "chatcmpl-940edc288310133a",
+        "model": "arc:lite",
+        "created": 1792756308,
+        "usage": {
+          "prompt_tokens": 871,
+          "total_tokens": 1270,
+          "completion_tokens": 399,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 250
+          }
+        },
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"action\": \"ask\", \"question\": \"Have you ever had any other episodes in the past — for example, a period of blurred or double vision, numbness or tingling in your limbs, or weakness — that came on and then settled? Also, do you have any known medical conditions or have you had any previous neurological assessments?\", \"topics\": [\"previous_episodes\", \"medical_history\"], \"assessment\": {\"summary\": \"Young adult with progressive gait unsteadiness that worsens with heat (hot bath). No other symptoms identified. The heat-related worsening is a notable feature that narrows the differential, but the picture is incomplete without information on prior episodes or relevant history.\", \"certainty\": \"uncertain\"}}"
+            }
+          }
+        ]
+      },
+      "elapsed_seconds": 2.56,
+      "status": "success"
+    }
+  ],
+  "status": "complete",
+  "result": {
+    "action": "ask",
+    "question": "Have you ever had any other episodes in the past — for example, a period of blurred or double vision, numbness or tingling in your limbs, or weakness — that came on and then settled? Also, do you have any known medical conditions or have you had any previous neurological assessments?",
+    "topics": [
+      "previous_episodes",
+      "medical_history"
+    ],
+    "assessment": {
+      "summary": "Young adult with progressive gait unsteadiness that worsens with heat (hot bath). No other symptoms identified. The heat-related worsening is a notable feature that narrows the differential, but the picture is incomplete without information on prior episodes or relevant history.",
+      "certainty": "uncertain"
+    }
+  }
+}
