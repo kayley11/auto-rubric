@@ -30,7 +30,7 @@ From the configured project directory:
 - `smoke` verifies the grading pipeline using fixed mock responses. Its score is a deployment test, not a model judgment.
 - `grade` evaluates the sample using the configured KCL model and saves a JSON report in `local/results/`.
 
-AutoRubric is a Python evaluation library. This deployment provides a command-line runner; there is no web server to start.
+AutoRubric is a Python evaluation library. This deployment provides a command-line runner and a local clinical evaluation interface. Run `./run-ui.sh` to open the interface at `http://127.0.0.1:8765`; see [the UI guide](arena/README.md). The UI uses `arc:lite` for answers and `arc:apex` for judging by default, separately from the sample CLI model below.
 
 ## Current configuration
 

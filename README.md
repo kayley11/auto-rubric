@@ -1,10 +1,12 @@
 # auto rubric
 
-An English command-line deployment of [AutoRubric](https://github.com/delip/autorubric), a Python library for evaluating text against weighted criteria with an LLM judge.
+An English local deployment of [AutoRubric](https://github.com/delip/autorubric), with a command-line runner and a clinical evaluation interface.
 
 This repository builds on **AutoRubric v1.5.3** and provides a ready-to-configure runner for the **KCL OpenAI-compatible API**. The default model is `arc:nexus`. Commands, samples, and requested grading explanations are in English.
 
 The [clinical reasoning experiments](experiments/clinical_reasoning_pilot/README.md) include the original rubric pilot, six new cases, separate MELD checks and the latest eight-case comparison across three models. Start with the [three short English reports and complete results](experiments/clinical_reasoning_pilot/studies/20261023/README.md). Saved answers, item scores, judge explanations and earlier comparison rounds are included; clinical references remain provisional.
+
+The [clinical workspace](arena/README.md) supports original or proposed D3a/D5c rules, 24 saved interviews, evidence checks, cross-model comparison, human review and TXT/JSON/CSV export. After setup, run `./run-ui.sh` and open **http://127.0.0.1:8765**. See the [24 October validation and complete example output](arena/validation/20261024/README.md). New private case records and API credentials remain local; the shared research snapshots are included. Clinical references and candidate information requirements await Josh’s confirmation.
 
 ## Quick start
 
@@ -55,6 +57,7 @@ Rubrics support AutoRubric YAML or JSON. Text files use UTF-8, and `--query-file
 | `setup.sh` | Install dependencies and create a local configuration template |
 | `run.sh` | Run configuration checks, offline verification, or live grading |
 | `local/run.py` | English grading runner |
+| `run-ui.sh`, `arena/` | Local clinical evaluation UI, model connection and human review |
 | `local/.env.example` | KCL connection settings with a blank API key |
 | `local/rubric.yaml` | Sample weighted rubric |
 | `local/query.txt`, `local/answer.txt` | Sample question and answer |
