@@ -31,6 +31,8 @@ The calls reported **10,171 tokens** and **13.13 seconds** of API request time. 
 
 The byte-preserved [study snapshot](../../study-data/) contains the existing 24 interviews and their original/proposed scores. The live check above is a separate result. New private evaluations, API keys, dependencies and generated builds are excluded from Git.
 
+All 24 source interviews and the eight prepared case inputs already appear in the repository’s [previous public commit](https://github.com/kayley11/auto-rubric/commit/ec870cdfccb6aae7b487ace659614ca8d15ae994). The validation reuses its N02 interview and answer; it adds model-generated scoring, not new patient records.
+
 ## Interface
 
 ![Scoring rule selection](screenshots/rule-selection.png)
