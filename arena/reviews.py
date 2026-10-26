@@ -24,7 +24,7 @@ class Reviews:
         return max(self.history(kind, target), key=lambda r: r["saved_at"], default=None)
 
     def history(self, kind, target):
-        records = [json.loads(p.read_text()) for p in self.root.glob("*.json")]
+        records = [json.loads(p.read_text(encoding="utf-8")) for p in self.root.glob("*.json")]
         matching = [r for r in records if r["kind"] == kind and r["target"] == target]
         return sorted(matching, key=lambda r: r["saved_at"])
 
@@ -38,7 +38,9 @@ class Reviews:
         }
         path = self.root / (record["id"] + ".json")
         temporary = path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+        temporary.write_text(
+            json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
         temporary.replace(path)
         return record
 

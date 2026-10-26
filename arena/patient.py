@@ -14,7 +14,7 @@ import study
 
 @lru_cache(maxsize=1)
 def library():
-    return json.loads((study.STUDY_ROOT / "live-cases.json").read_text())
+    return json.loads((study.STUDY_ROOT / "live-cases.json").read_text(encoding="utf-8"))
 
 
 def case(case_id):

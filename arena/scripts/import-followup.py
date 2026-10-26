@@ -184,7 +184,9 @@ def build(source, destination):
     for name, raw in outputs.items():
         (destination / name).write_bytes(raw)
     for name, value in (("followup.json", latest), ("live-cases.json", live)):
-        (destination / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+        (destination / name).write_text(
+            json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
     for path, digest in hashes.items():
         assert hashlib.sha256((source / path).read_bytes()).hexdigest() == digest
     return {

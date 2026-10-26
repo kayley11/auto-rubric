@@ -11,7 +11,7 @@ import study
 
 @lru_cache(maxsize=1)
 def followup():
-    return json.loads((study.STUDY_ROOT / "followup.json").read_text())
+    return json.loads((study.STUDY_ROOT / "followup.json").read_text(encoding="utf-8"))
 
 
 def token(source):

@@ -21,6 +21,8 @@ The local workspace now connects the latest results, their evidence and the revi
 - Form tests used the name **UI validation (test)** in a separate local validation directory. No clinical decisions or human grades were entered in the main workspace.
 - All **11 pre-existing local runs**, the committed historical study snapshot, **34 historical output files** and **three follow-up output files** passed preservation/integrity checks.
 
+The 26 October sync check passed **950 tests**, including 69 workspace tests. GitHub's Windows/Python 3.11 check exposed a locale-dependent decoding error; case imports and review files now explicitly use UTF-8. A regression test simulates a cp1252 default and verifies unchanged case text and a Unicode reviewer-name round trip. Archived experiment outputs are unchanged.
+
 ## Real interface run
 
 N04 was run through the patient-interview interface with **arc:lite** as clinician and **arc:apex** as judge. It completed six questions and one final answer, followed by **D5c = 2** and **D3a = 5**. The D5c explanation identified missing readmission-report and targeted infection requests. The D3a explanation credited the synthesis of information actually obtained.

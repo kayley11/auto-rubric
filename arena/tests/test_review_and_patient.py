@@ -29,6 +29,42 @@ def packet():
     return evidence.followup_packet("n04-fresh-arc-lite")
 
 
+def test_case_files_and_review_text_do_not_depend_on_system_locale(tmp_path, monkeypatch):
+    """Reproduce a Windows cp1252 default without changing any archived source bytes."""
+    read, write = Path.read_text, Path.write_text
+
+    def locale_read(path, encoding=None, errors=None):
+        return read(path, encoding=encoding or "cp1252", errors=errors)
+
+    def locale_write(path, data, encoding=None, errors=None, newline=None):
+        return write(path, data, encoding=encoding or "cp1252", errors=errors, newline=newline)
+
+    expected_cases = json.loads((study.STUDY_ROOT / "live-cases.json").read_bytes())
+    expected_followup = json.loads((study.STUDY_ROOT / "followup.json").read_bytes())
+    patient.library.cache_clear()
+    evidence.followup.cache_clear()
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, "read_text", locale_read)
+        patch.setattr(Path, "write_text", locale_write)
+        assert patient.library() == expected_cases
+        assert evidence.followup() == expected_followup
+        store, p = Reviews(tmp_path), packet()
+        reviewer = "UI validation (test) · 中文"
+        store.save_rating(
+            p,
+            {
+                "reviewer": reviewer,
+                "items": {
+                    "D3a": {
+                        "score": "Indeterminate",
+                        "note": "Encoding test only — no clinical rating.",
+                    }
+                },
+            },
+        )
+        assert store.rating(p)["reviewer"] == reviewer
+
+
 def test_followup_scores_and_downloads_preserve_actual_repeated_results():
     records = evidence.followup()["records"]
     assert len(records) == 6
