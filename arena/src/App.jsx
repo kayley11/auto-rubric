@@ -24,13 +24,21 @@ import {
 } from "lucide-react";
 import "./app.css";
 import { Study } from "./Study";
+import { Review } from "./Review";
+import { PatientInterview } from "./PatientInterview";
+import { exposure } from "./StudyTools";
 import {
   EvaluationEvidence,
   blankInterview,
   revisedId,
 } from "./EvaluationEvidence";
 
-const running = (r) => r && ["generating", "scoring"].includes(r.status);
+const running = (r) =>
+  r && ["generating", "scoring", "interviewing"].includes(r.status);
+const currentView = () =>
+  ["study", "review", "patient"].find((v) =>
+    window.location.hash.startsWith(`#${v}`),
+  ) || "evaluation";
 function answerWordCount(answer, task) {
   const narrative = task.includes("JSON is outside the narrative word limit")
     ? answer.split("NUMERIC_SUMMARY:", 1)[0]
@@ -68,6 +76,7 @@ const sample = {
     "Provisional points: explain the relevance of heat-related worsening without treating it as diagnostic. Consider alternative explanations for imbalance. Distinguish known facts from missing neurological history and examination. Request information that would help discriminate the possibilities. Do not assume unreported history is normal.",
 };
 const labels = {
+  interviewing: "Interviewing",
   generating: "Generating",
   answer_ready: "Answer ready",
   scoring: "Scoring",
@@ -139,9 +148,8 @@ function Anchors({ item }) {
 }
 
 export function App() {
-  const [view, setView] = useState(() =>
-    window.location.hash.startsWith("#study") ? "study" : "evaluation",
-  );
+  const [view, setView] = useState(currentView);
+  const [patientRun, setPatientRun] = useState(null);
   const [config, setConfig] = useState(null),
     [form, setForm] = useState(empty),
     [run, setRun] = useState(null);
@@ -186,17 +194,14 @@ export function App() {
       (!form.history_required || form.history.trim());
 
   useEffect(() => {
-    const update = () =>
-      setView(
-        window.location.hash.startsWith("#study") ? "study" : "evaluation",
-      );
+    const update = () => setView(currentView());
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
   function navigate(next) {
     setView(next);
     setSidebar(false);
-    window.location.hash = next === "study" ? "study" : "evaluate";
+    window.location.hash = next === "evaluation" ? "evaluate" : next;
     window.scrollTo({ top: 0 });
   }
 
@@ -222,7 +227,7 @@ export function App() {
           ...(draft || {}),
         });
         setSelectedCase(draft?.case_id || "");
-        if (c.active_run) openRun(c.active_run);
+        if (c.active_run && currentView() !== "review") openRun(c.active_run);
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -253,7 +258,11 @@ export function App() {
   useEffect(() => {
     if (!hideScores && run)
       Object.keys(run.grades || {}).forEach((id) => seen.current.add(id));
-  }, [hideScores, run]);
+    if (run?.review_id && view === "evaluation") {
+      exposure(run.review_id, "identity");
+      if (!hideScores && hasGrades) exposure(run.review_id, "machine");
+    }
+  }, [hideScores, run, view]);
   useEffect(() => {
     const esc = (e) => {
       if (e.key === "Escape") {
@@ -321,6 +330,11 @@ export function App() {
   async function openRun(id) {
     try {
       const next = await api(`/api/runs/${id}`);
+      if (next.input.evaluation_mode === "patient") {
+        setPatientRun(next);
+        navigate("patient");
+        return;
+      }
       navigate("evaluation");
       setRun(next);
       setForm({ ...empty, ...next.input });
@@ -330,6 +344,19 @@ export function App() {
       setSaved(false);
       seen.current = new Set();
       setSidebar(false);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  function useData(data) {
+    newCase(false);
+    setForm({ ...empty, ...data, evaluation_mode: "written" });
+    setMode("paste");
+    setPreset("Custom");
+  }
+  async function refreshHistory() {
+    try {
+      setHistory(await api("/api/runs"));
     } catch (e) {
       setError(e.message);
     }
@@ -465,65 +492,96 @@ export function App() {
         >
           <Columns3 size={17} />
           <span>
-            Interview study<small>8 cases · 3 models</small>
+            Interview study<small>Latest & historical results</small>
           </span>
         </button>
-        <div className="history-heading">
-          <History size={14} /> Recent evaluations
-        </div>
-        <label className="search">
-          <Search size={15} />
-          <input
-            aria-label="Search evaluations"
-            placeholder="Search cases"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-        <div className="history-list">
-          {history
-            .filter((h) => h.title.toLowerCase().includes(search.toLowerCase()))
-            .map((h) => (
-              <button
-                key={h.id}
-                disabled={busy}
-                onClick={() => openRun(h.id)}
-                className={`history-item ${view === "evaluation" && run?.id === h.id ? "active" : ""}`}
-              >
-                <MessageSquare size={15} />
-                <span>
-                  <strong>{h.title}</strong>
-                  <small>
-                    {labels[h.status] || h.status} · {h.graded}/{h.total} items
-                  </small>
-                </span>
+        <button
+          className={`study-nav ${view === "review" ? "active" : ""}`}
+          aria-current={view === "review" ? "page" : undefined}
+          onClick={() => navigate("review")}
+        >
+          <CheckCheck size={17} />
+          <span>
+            Review first<small>Results hidden until rated</small>
+          </span>
+        </button>
+        <button
+          className={`study-nav ${view === "patient" ? "active" : ""}`}
+          aria-current={view === "patient" ? "page" : undefined}
+          onClick={() => {
+            setPatientRun(null);
+            navigate("patient");
+          }}
+        >
+          <MessageSquare size={17} />
+          <span>
+            Patient interview<small>Ask up to six questions</small>
+          </span>
+        </button>
+        {view !== "review" && (
+          <>
+            <div className="history-heading">
+              <History size={14} /> Recent evaluations
+            </div>
+            <label className="search">
+              <Search size={15} />
+              <input
+                aria-label="Search evaluations"
+                placeholder="Search cases"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+            <div className="history-list">
+              {history
+                .filter((h) =>
+                  h.title.toLowerCase().includes(search.toLowerCase()),
+                )
+                .map((h) => (
+                  <button
+                    key={h.id}
+                    disabled={busy}
+                    onClick={() => openRun(h.id)}
+                    className={`history-item ${view === "evaluation" && run?.id === h.id ? "active" : ""}`}
+                  >
+                    <MessageSquare size={15} />
+                    <span>
+                      <strong>{h.title}</strong>
+                      <small>
+                        {h.purpose ? "UI validation · " : ""}
+                        {labels[h.status] || h.status} · {h.graded}/{h.total}{" "}
+                        items
+                      </small>
+                    </span>
+                  </button>
+                ))}
+              {!history.length && (
+                <p className="history-empty">
+                  Your saved evaluations
+                  <br />
+                  will appear here.
+                </p>
+              )}
+            </div>
+            <div className="sidebar-bottom">
+              <button onClick={() => setDialog("rubric")}>
+                <BookOpen size={16} /> Josh’s rubric <span>22 items</span>
               </button>
-            ))}
-          {!history.length && (
-            <p className="history-empty">
-              Your saved evaluations
-              <br />
-              will appear here.
-            </p>
-          )}
-        </div>
-        <div className="sidebar-bottom">
-          <button onClick={() => setDialog("rubric")}>
-            <BookOpen size={16} /> Josh’s rubric <span>22 items</span>
-          </button>
-          <button onClick={() => setDialog("settings")}>
-            <Settings2 size={16} /> Model settings
-          </button>
-          <p>
-            <span
-              className={`status-dot ${config?.settings.configured ? "ok" : ""}`}
-            />
-            {config?.settings.configured
-              ? "API configured"
-              : "Checking configuration"}
-          </p>
-          <small>Runs saved on this computer</small>
-        </div>
+              <button onClick={() => setDialog("settings")}>
+                <Settings2 size={16} /> Model settings
+              </button>
+              <p>
+                <span
+                  className={`status-dot ${config?.settings.configured ? "ok" : ""}`}
+                />
+                {config?.settings.configured
+                  ? "API configured"
+                  : "Checking configuration"}
+              </p>
+              <small>Runs saved on this computer</small>
+            </div>
+          </>
+        )}
       </aside>
       <div className="workspace" inert={dialog ? true : undefined}>
         <header className="topbar">
@@ -538,7 +596,11 @@ export function App() {
             <span>
               {view === "study"
                 ? "Saved interview study"
-                : "Clinical reasoning evaluation"}
+                : view === "review"
+                  ? "Independent review"
+                  : view === "patient"
+                    ? "Patient interview"
+                    : "Clinical reasoning evaluation"}
             </span>
           </div>
           <button className="subtle-button" onClick={() => setDialog("about")}>
@@ -546,7 +608,16 @@ export function App() {
           </button>
         </header>
         {view === "study" ? (
-          <Study onUseInterview={importInterview} />
+          <Study onUseInterview={importInterview} onUseData={useData} />
+        ) : view === "review" ? (
+          <Review />
+        ) : view === "patient" ? (
+          <PatientInterview
+            config={config}
+            initialRun={patientRun}
+            onSaved={refreshHistory}
+            onUseData={useData}
+          />
         ) : (
           <main>
             <div className="page-heading">
@@ -568,6 +639,29 @@ export function App() {
                     : "Original anchors"}
                 </span>
               </div>
+              {!run && (
+                <div
+                  className="mode-switch intake-switch"
+                  aria-label="Evaluation mode"
+                >
+                  <button className="active">Written case</button>
+                  <button
+                    onClick={() => {
+                      setPatientRun(null);
+                      navigate("patient");
+                    }}
+                  >
+                    Patient interview
+                  </button>
+                </div>
+              )}
+              {form.requirements_review?.reviewer && (
+                <p className="review-receipt">
+                  Checklist copied from decisions recorded by{" "}
+                  {form.requirements_review.reviewer}. Unconfirmed requirements
+                  remain candidates. This is a new evaluation.
+                </p>
+              )}
             </div>
             <nav className="steps" aria-label="Evaluation steps">
               <span className="current">
@@ -995,6 +1089,15 @@ export function App() {
                         <ChevronDown size={13} />
                       </summary>
                       <div>
+                        <a href={`/api/runs/${run.id}/summary`} download>
+                          Review summary
+                        </a>
+                        <a href={`/api/runs/${run.id}/blind`} download>
+                          Blank review sheet
+                        </a>
+                        <a href={`/api/runs/${run.id}/raw`} download>
+                          Full raw output
+                        </a>
                         {["txt", "json", "csv"].map((t) => (
                           <a key={t} href={`/api/runs/${run.id}/${t}`} download>
                             Download{" "}
@@ -1020,6 +1123,11 @@ export function App() {
                   </span>
                 </div>
                 <div className="review-toolbar">
+                  {run.review_id && (
+                    <a className="secondary" href={`#review/${run.review_id}`}>
+                      Independent review
+                    </a>
+                  )}
                   <button
                     className={`review-toggle ${reviewMode ? "active" : ""}`}
                     onClick={() => setReviewMode(!reviewMode)}

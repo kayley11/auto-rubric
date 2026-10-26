@@ -7,6 +7,8 @@ import {
   ChevronDown,
   MessageSquare,
 } from "lucide-react";
+import { Followup } from "./Followup";
+import { Decisions, EvidenceTrail, ExportLinks, exposure } from "./StudyTools";
 
 const itemNames = { D5c: "Information seeking", D3a: "Problem representation" };
 const statusLabels = {
@@ -134,7 +136,49 @@ function Rule({ item, data, version }) {
   );
 }
 
-export function Study({ onUseInterview }) {
+export function Study({ onUseInterview, onUseData }) {
+  const historical = () =>
+    /^#study\/(?:history|[A-Z0-9_]+\/)/.test(window.location.hash);
+  const [history, setHistory] = useState(historical);
+  useEffect(() => {
+    const update = () => setHistory(historical());
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, []);
+  return (
+    <>
+      <div className="study-batch">
+        <label>
+          Study batch
+          <select
+            aria-label="Study batch"
+            value={history ? "history" : "followup"}
+            onChange={(e) => {
+              window.location.hash = `study/${e.target.value}`;
+            }}
+          >
+            <option value="followup">
+              25 Oct · corrected N04 and repeated grades
+            </option>
+            <option value="history">
+              23–24 Oct · eight cases, three models
+            </option>
+          </select>
+        </label>
+      </div>
+      {history ? (
+        <HistoricalStudy
+          onUseInterview={onUseInterview}
+          onUseData={onUseData}
+        />
+      ) : (
+        <Followup onUseData={onUseData} />
+      )}
+    </>
+  );
+}
+
+function HistoricalStudy({ onUseInterview, onUseData }) {
   const [data, setData] = useState(null);
   const [selection, setSelection] = useState(readSelection);
   const [record, setRecord] = useState(null);
@@ -144,6 +188,22 @@ export function Study({ onUseInterview }) {
   const [onlyMissing, setOnlyMissing] = useState(false);
   const [hideScores, setHideScores] = useState(false);
   const [focusTurn, setFocusTurn] = useState(null);
+  const reviewId = data?.interviews.find(
+    (r) => r.case_id === record?.case_id && r.model_slug === record?.model_slug,
+  )?.review_id;
+
+  useEffect(() => {
+    if (!data) return;
+    if (!selection && !hideScores)
+      data.interviews.forEach((r) => {
+        exposure(r.review_id, "machine");
+        exposure(r.review_id, "identity");
+      });
+    if (reviewId) {
+      exposure(reviewId, "identity");
+      if (tab === "answer" && !hideScores) exposure(reviewId, "machine");
+    }
+  }, [data, selection, reviewId, tab, hideScores]);
 
   useEffect(() => {
     let current = true;
@@ -198,7 +258,7 @@ export function Study({ onUseInterview }) {
         <button
           className="secondary"
           onClick={() => {
-            window.location.hash = "study";
+            window.location.hash = "study/history";
             setError("");
           }}
         >
@@ -224,7 +284,7 @@ export function Study({ onUseInterview }) {
         <button
           className="back-link"
           onClick={() => {
-            window.location.hash = "study";
+            window.location.hash = "study/history";
           }}
         >
           <ArrowLeft size={15} />
@@ -459,7 +519,18 @@ export function Study({ onUseInterview }) {
             >
               Use in new evaluation
             </button>
+            {reviewId && (
+              <a className="secondary" href={`#review/${reviewId}`}>
+                Review without machine results
+              </a>
+            )}
           </div>
+          {reviewId && (
+            <ExportLinks
+              id={reviewId}
+              raw={fileUrl(`case-${record.case_id}.txt`)}
+            />
+          )}
           <section className="study-opening">
             <span className="mini-label">
               PATIENT OPENING · GIVEN TO THE MODEL
@@ -496,6 +567,12 @@ export function Study({ onUseInterview }) {
 
           {tab === "evidence" && (
             <section className="study-section">
+              <EvidenceTrail
+                requirements={selectedCase.requirements}
+                turns={record.turns}
+                grades={[record.scores.D5c]}
+                onTurn={showTurn}
+              />
               <div className="study-section-heading">
                 <div>
                   <h2>What reached the model?</h2>
@@ -796,6 +873,7 @@ export function Study({ onUseInterview }) {
 
           {tab === "rules" && (
             <section className="study-section">
+              {reviewId && <Decisions id={reviewId} onUseData={onUseData} />}
               <h2>
                 Candidate requirements ·{" "}
                 {record.case_id.replace("_INITIAL", "")}

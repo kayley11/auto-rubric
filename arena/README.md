@@ -31,7 +31,15 @@ This version runs on this computer and binds only to `127.0.0.1`. It does not in
 
 ### Saved interview study
 
-Open **Interview study** in the sidebar to compare the eight cases and three answering models. The 24 interviews, 131 question–reply turns and final answers are the saved, corrected records from 23 October. The comparison can display either original grades or the exploratory D3a/D5c regrades from 24 October. A score change reflects the scoring conditions, not a new answer. **Use in new evaluation** copies an interview for a separate run; it never replaces these historical scores.
+**Interview study** opens the corrected 25 October N04 follow-up: three models, saved versus fresh interviews, three grades per item. For example, the fresh lite D5c results are **2, 2, 5**, with all three explanations retained. Availability controls are listed separately. Select **Study batch → 23–24 Oct** for the original eight-case comparison: 24 interviews and 131 question–reply turns, with original and exploratory revised scores. A score change on an unchanged answer reflects scoring conditions, not new model behaviour.
+
+Open a record to follow **requirement → question → returned evidence → judgement**. **Clinical decisions** records essential/helpful/not-needed status, acceptable alternatives, deadline, reviewer and reason. Decisions are saved separately and do not overwrite the source. **Copy reviewed checklist to new evaluation** applies confirmed changes only; remaining requirements stay candidates. Reference comments never become automatic clinical approval.
+
+**Review first** opens anonymous answers without machine grades, judge explanations or model names. Save D3a using only received evidence, then open examiner-only requirements, records and eligible notes for D5c. Save both ratings before revealing the machine comparison. Previous exposure can be declared and is retained. Each save creates a new local review record; earlier saves remain available in raw exports. Historical machine grades retain their original scoring inputs; new review sheets use clarified source availability.
+
+**Patient interview** runs any of the eight prepared cases with the corrected fixed-fact controller. Select the clinician model, judge and original/proposed rules. The clinician chooses up to six questions; the patient model orders permitted statements, and the controller returns their unchanged text. Examinations and investigations keep their original admission context and are not spoken as patient testimony. JSON output is enforced for question and fact-order calls. Stop/resume preserves completed turns; unavailable information remains unknown. After the final answer, inspect obtained/missing facts and select **Score D3a and D5c**. All visible responses, failed attempts and usage are saved.
+
+**Review summary** exports case, task, actual conversation, answer, item explanations and any saved human decisions. **Blank review sheet** excludes machine results and model identity. **Full raw output** retains the complete saved record; the N04 study download preserves the research output unchanged. The [25 October validation](validation/20261025-ui/README.md) records the tested workflows and real N04 validation run.
 
 ### New evaluations with the proposed rules
 
@@ -41,6 +49,10 @@ Use **Reuse a saved interview → Load interview & answer** to load any of the 2
 
 - **D3a** receives the starting information, actual conversation, stated task, decision point and final answer. It does not receive hidden inventory, draft references, the candidate checklist or assessment notes. Missing an unasked fact does not automatically lower the synthesis score.
 - **D5c** receives the executed requests and replies, eligible saved notes and the frozen candidate checklist. Each candidate states its rationale, acceptable alternatives and deadline. A note can explain a request but cannot make one; unavailable information and simulator failures do not invalidate an adequate request. Explicit final questions are separate from earlier requests and have no imagined replies.
+
+New evaluations use `availability-clarified-20261025`: answering-model names and previous audit verdicts are excluded from imported judge inputs. D5c receives factual record availability separately from reviewer notes. A report absent from the selected materials is unavailable; it is labelled a simulator error only when the evidence establishes that a matching selected report should have been returned. Only actual numbered final questions are included; general final-answer prose is excluded. The evidence version is saved separately from Josh’s unchanged rule version. Old saved-run retries retain their earlier evidence method, including `clean-evidence-20261025`.
+
+`patient_matching.py` supplies admission-context and specific-report routing corrections for research replay and future interviews. A discharge-medication request does not receive inpatient-treatment records, and a treatment-response question does not release unasked initial symptoms. It does not rewrite saved study transcripts.
 
 Clinical references and candidate requirements remain **awaiting Josh’s confirmation**. The proposed scoring is exploratory under the declared checklist. The version, rubric snapshot, candidate list, input fingerprint and actual grading payloads are saved with the run and included in exports. Changing the version or interview evidence requires a new evaluation; retries use the saved rubric snapshot. Existing files are not migrated or rescored automatically.
 

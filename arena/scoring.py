@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 from copy import deepcopy
 
 from study import ORIGINAL_VERSION, dataset, interview
@@ -18,6 +19,9 @@ REVISED_VERSION = {
 }
 VERSIONS = [ORIGINAL_VERSION, REVISED_VERSION]
 PENDING = "Researcher candidate; awaiting Josh’s confirmation"
+CLEAN_EVIDENCE_ID = "clean-evidence-20261025"
+EVIDENCE_ID = "availability-clarified-20261025"
+LEGACY_EVIDENCE_ID = "website-evidence-20261024"
 RESULT_STATUSES = {"scored", "cannot_assess", "not_applicable", "indeterminate"}
 REVISED_SYSTEM = (
     "Evaluate ONE criterion using its complete supplied definition and anchors. "
@@ -77,6 +81,9 @@ def text_field(value, name, limit=40000):
 
 
 def validate_evidence(data, selected, revised):
+    evidence_version = data.get("evidence_version", EVIDENCE_ID)
+    if evidence_version not in {EVIDENCE_ID, CLEAN_EVIDENCE_ID, LEGACY_EVIDENCE_ID}:
+        raise ValueError("Unrecognised grading evidence version.")
     record = data.get("interview", {})
     if not isinstance(record, dict):
         raise ValueError("The interview must contain actual questions and replies.")
@@ -105,6 +112,9 @@ def validate_evidence(data, selected, revised):
         "closing_notes": text_field(record.get("closing_notes", ""), "Closing notes", 10000),
         "reviewer_context": text_field(
             record.get("reviewer_context", ""), "Reviewer-only context", 50000
+        ),
+        "availability_context": text_field(
+            record.get("availability_context", ""), "Factual record availability", 50000
         ),
         "turns": [],
     }
@@ -161,6 +171,7 @@ def validate_evidence(data, selected, revised):
         "requirements": frozen,
         "requirements_status": PENDING,
         "interview_source": source,
+        "evidence_version": evidence_version,
     }
 
 
@@ -188,7 +199,7 @@ def transcript(record, notes=False):
     return "\n\n".join(parts) or "No questions are recorded."
 
 
-def revised_query(data, cid):
+def legacy_revised_query(data, cid):
     record = data["interview"]
     query = (
         f"Information actually supplied at the start:\n{data['facts']}"
@@ -237,6 +248,143 @@ def revised_query(data, cid):
     return query
 
 
+def final_questions(answer):
+    """Exact numbered questions, never recommendations reconstructed as requests."""
+    return "\n".join(
+        line for line in answer.splitlines() if "?" in line and re.match(r"^\s*\d+[.)]", line)
+    )
+
+
+def revised_query(data, cid):
+    if data.get("evidence_version", LEGACY_EVIDENCE_ID) == LEGACY_EVIDENCE_ID:
+        return legacy_revised_query(data, cid)
+    record = data["interview"]
+    query = (
+        f"Information actually supplied at the start:\n{data['facts']}"
+        f"\n\nOriginal task:\n{data['task']}"
+    )
+    if data["history"]:
+        query += "\n\nEarlier conversation actually supplied:\n" + data["history"]
+    query += (
+        f"\n\nDecision point: {record['decision_point']}"
+        f"\nAllowed questions: {record['max_questions']}. "
+        f"Transcript complete: {record['complete']}."
+    )
+    if cid == "D3a":
+        return (
+            query
+            + "\nSynthesis scope: "
+            + record["synthesis_scope"]
+            + "\n\nActual requests and information returned before the final answer:\n"
+            + transcript(record)
+            + "\n\nAssess the final answer using only this received evidence. "
+            "No hidden inventory, checklist, reference or assessment notes are supplied. "
+            "Use Indeterminate if necessary assessment evidence cannot be established."
+        )
+    query += (
+        "\n\nCandidate requirements — awaiting Josh’s confirmation; frozen assumptions:\n"
+        + json.dumps(data["requirements"], ensure_ascii=False, indent=2)
+        + "\n\nAssessment notes were prospectively allowed: "
+        + str(record["notes_allowed"])
+        + "\nEvidence window: executed questions and eligible assessment notes. "
+        "Notes may justify a request but never constitute making it. "
+        "General final-answer prose and recommendations are excluded. "
+        "Numbered final questions below are actual questions with no collected replies; "
+        "credit them only when the declared deadline permits. An incomplete transcript "
+        "does not establish that an unrecorded request was missed."
+    )
+    questions = final_questions(data["answer"])
+    if questions:
+        query += "\n\nExact final questions AFTER the interview; no replies:\n" + questions
+    if record["availability_context"]:
+        query += (
+            "\n\nSelected record inventory and factual availability (not received evidence "
+            "and not extra essential requirements):\n" + record["availability_context"]
+        )
+    if data.get("evidence_version") == EVIDENCE_ID:
+        query += (
+            "\n\nAvailability classification: a requested report absent from the selected "
+            "materials is unavailable, not evidence of a simulator error, a negative result "
+            "or a test never being performed. Call a missing return a simulator error only "
+            "when the supplied record context establishes that the matching selected record "
+            "existed and the adequate request should have returned it. Keep unclear routing "
+            "or ambiguous admission scope unresolved rather than assuming a malfunction. "
+            "Credit an adequate request whether its result is unavailable or a confirmed "
+            "simulator error prevented its return. Cite the actual availability evidence."
+        )
+    return query
+
+
+def revised_submission(data, cid):
+    if cid != "D5c":
+        return data["answer"]
+    record = data["interview"]
+    result = "Executed interview and eligible assessment notes:\n" + transcript(
+        record, notes=record["notes_allowed"]
+    )
+    if data.get("evidence_version", LEGACY_EVIDENCE_ID) == LEGACY_EVIDENCE_ID:
+        result = (
+            "Executed interview and assessment notes:\n"
+            + transcript(record, notes=record["notes_allowed"])
+            + "\n\nFinal answer AFTER the interview (recommendations are not "
+            "earlier requests; explicit final questions have no replies):\n" + data["answer"]
+        )
+    return result
+
+
+def availability_context(saved):
+    """Factual context only: never import model IDs or previous request verdicts."""
+    inventory = [
+        {k: f.get(k) for k in ("id", "topic", "channel", "period", "context", "text")}
+        for f in saved["examiner_only_inventory"]
+    ]
+    context = "Selected record inventory (not all returned):\n" + json.dumps(
+        inventory, ensure_ascii=False, indent=2
+    )
+    if saved["case_id"] == "N04_INITIAL":
+        context += (
+            "\nSelected-material availability: first-admission CT and microbiology "
+            "records are included. First-admission MRI and a formal discharge "
+            "diagnosis/prescription are not included. Readmission MRI/CSF are separate "
+            "records and cannot replace first-admission records."
+        )
+        for index, turn in enumerate(saved["turns"]):
+            if "infection tests done on that admission" in turn["question"] and index:
+                previous = saved["turns"][index - 1]["question"]
+                returned = {f["id"] for f in turn["fixed_records"]}
+                if "N04_INITIAL_F05" in returned:
+                    continue
+                context += (
+                    f"\nOffline routing check at Q{index + 1}: the preceding question "
+                    f"was {json.dumps(previous)}. Resolving 'that admission' to the "
+                    "first admission returns the selected microbiology record. "
+                    "The saved reply did not contain that record. This check does not "
+                    "alter the saved transcript or final answer."
+                )
+    if saved["case_id"] == "N05":
+        context += (
+            "\nSelected-material availability: the GLA/enzyme record is not a TTR "
+            "result. TTR, later tissue/genetic confirmations and current vital signs "
+            "are not provided at this decision point. Unavailable is not negative."
+        )
+    return context
+
+
+def candidate_requirements(case):
+    """Copy the clinical candidates without the historical model-specific audit aside."""
+    result = deepcopy(case["requirements"])
+    historical_aside = (
+        "Apex Q3 follows an explicit first-admission discussion: treat its unreturned "
+        "record as a simulator context-handling problem, not failure to ask. "
+    )
+    for requirement in result:
+        if requirement["id"] == "N04.infection":
+            requirement["acceptable_requests_or_alternatives"] = requirement[
+                "acceptable_requests_or_alternatives"
+            ].replace(historical_aside, "")
+    return result
+
+
 def imported_input(case_id, model_slug):
     """Copy evidence, never historical grades, into a separately saved evaluation."""
     saved = interview(case_id, model_slug)
@@ -259,18 +407,6 @@ def imported_input(case_id, model_slug):
                 "feedback": turn.get("feedback", ""),
             }
         )
-    inventory = [
-        {k: f.get(k) for k in ("id", "topic", "channel", "period", "context", "text")}
-        for f in saved["examiner_only_inventory"]
-    ]
-    context = "Selected record inventory (not all returned):\n" + json.dumps(
-        inventory, ensure_ascii=False, indent=2
-    )
-    # Keep the previously audited request/availability distinction, including N04's parser failure.
-    context += (
-        "\n\nSaved availability audit (technical observations, not clinical necessity):\n"
-        + json.dumps(saved["fact_checks"], ensure_ascii=False, indent=2)
-    )
     return {
         "title": f"{case_id} — {case['name']} · {saved['model']}",
         "case_id": case_id,
@@ -290,7 +426,8 @@ def imported_input(case_id, model_slug):
         ),
         "criteria": ["D5c", "D3a"],
         "rules_version": REVISED_ID,
-        "requirements": deepcopy(case["requirements"]),
+        "evidence_version": EVIDENCE_ID,
+        "requirements": candidate_requirements(case),
         "requirements_status": PENDING,
         "interview_source": {
             "case_id": case_id,
@@ -314,6 +451,7 @@ def imported_input(case_id, model_slug):
             "closing_notes": json.dumps(saved["closing_assessment"], ensure_ascii=False, indent=2)
             if saved["closing_assessment"]
             else "",
-            "reviewer_context": context,
+            "reviewer_context": "",
+            "availability_context": availability_context(saved),
         },
     }

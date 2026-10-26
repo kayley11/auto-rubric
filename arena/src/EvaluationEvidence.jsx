@@ -12,6 +12,7 @@ export const blankInterview = () => ({
     "Use the stated task to determine whether synthesis is in scope.",
   closing_notes: "",
   reviewer_context: "",
+  availability_context: "",
 });
 
 export function EvaluationEvidence({
@@ -370,19 +371,32 @@ export function EvaluationEvidence({
       </details>
       <details className="evidence-group">
         <summary>
-          Reviewer-only availability notes <span>Proposed D5c only</span>
+          Record availability <span>Proposed D5c only</span>
           <ChevronDown size={14} />
         </summary>
         <label className="field">
-          Known record availability and simulator issues
+          Selected records and factual simulator observations
           <textarea
             className="reviewer-context"
             disabled={frozen}
-            value={record.reviewer_context}
-            onChange={(e) => update("reviewer_context", e.target.value)}
-            placeholder="For example: an adequate request was made but the simulator failed to return the record. These notes are not sent to D3a or the answering model."
+            value={record.availability_context}
+            onChange={(e) => update("availability_context", e.target.value)}
+            placeholder="List available or unavailable records and what was actually returned. Exclude model names, previous scores and audit verdicts. This information is sent only to D5c."
           />
         </label>
+        <p className="muted">
+          D5c uses the executed questions and eligible assessment notes.
+          Numbered final questions count only when their deadline permits;
+          general final recommendations do not count as requests. Model identity
+          and previous audit verdicts are excluded from imported grading inputs.
+        </p>
+        {record.reviewer_context && (
+          <label className="field">
+            Historical reviewer notes (kept for reference; excluded from new
+            grading)
+            <textarea disabled value={record.reviewer_context} readOnly />
+          </label>
+        )}
       </details>
     </section>
   );

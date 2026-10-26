@@ -75,11 +75,11 @@ def test_hidden_material_and_notes_are_excluded_from_d3a_and_generation():
         assert data["interview"]["turns"][0]["question"] in visible
     query = judge_query(data, "D5c")
     assert "HIDDEN_CHECKLIST_SENTINEL" in query
-    assert "HIDDEN_INVENTORY_SENTINEL" in query
-    assert "PRIVATE_TO_ASSESSMENT_NOTES_SENTINEL" in query
+    assert "HIDDEN_INVENTORY_SENTINEL" not in query
+    assert "PRIVATE_TO_ASSESSMENT_NOTES_SENTINEL" in scoring.revised_submission(data, "D5c")
     assert "HIDDEN_REFERENCE_SENTINEL" not in query
     data["interview"]["notes_allowed"] = False
-    assert "PRIVATE_TO_ASSESSMENT_NOTES_SENTINEL" not in judge_query(data, "D5c")
+    assert "PRIVATE_TO_ASSESSMENT_NOTES_SENTINEL" not in scoring.revised_submission(data, "D5c")
 
 
 def test_proposed_anchors_and_original_intermediate_scores_stay_separate():
@@ -113,6 +113,7 @@ def test_actual_autorubric_adapter_uses_proposed_evidence_and_all_labels(
 ):
     data = sample()
     data["interview"]["reviewer_context"] = "REVIEWER_ONLY_SENTINEL"
+    data["interview"]["availability_context"] = "FACTUAL_AVAILABILITY_SENTINEL"
     data["reference"] = "REFERENCE_NOT_FOR_NEW_ITEMS"
     payloads = []
 
@@ -157,10 +158,69 @@ def test_actual_autorubric_adapter_uses_proposed_evidence_and_all_labels(
     assert not result["unanchored"]
     payload = json.dumps(payloads[0])
     assert "REFERENCE_NOT_FOR_NEW_ITEMS" not in payload
-    assert ("REVIEWER_ONLY_SENTINEL" in payload) == (cid == "D5c")
+    assert "REVIEWER_ONLY_SENTINEL" not in payload
+    assert ("FACTUAL_AVAILABILITY_SENTINEL" in payload) == (cid == "D5c")
     assert ("Candidate requirements" in capture["evidence_query"]) == (cid == "D5c")
     assert capture["rules_version"] == scoring.REVISED_ID
-    assert "actual request" in capture["evidence_query"]
+    assert "actual request" in capture["evidence_query"] + capture["submission"]
+
+
+def test_clean_inputs_blind_identity_and_omit_prior_request_verdicts():
+    for row in study.dataset()["interviews"]:
+        data = validate_input(scoring.imported_input(row["case_id"], row["model_slug"]))
+        evidence = judge_query(data, "D5c") + scoring.revised_submission(data, "D5c")
+        assert all(model not in evidence for model in study.dataset()["models"])
+        assert "not_returned_no_targeted_request_identified" not in evidence
+        assert "Saved availability audit" not in evidence
+        assert data["interview_source"]["source_sha256"] == row["source_sha256"]
+        assert data["evidence_version"] == scoring.EVIDENCE_ID
+
+
+def test_clean_final_evidence_window_and_legacy_retry_are_separate():
+    data = sample()
+    data["answer"] = "FINAL_PROSE_NOT_A_REQUEST\n1. What concerns you most?"
+    data["interview"]["reviewer_context"] = "HISTORICAL_AUDIT_SENTINEL"
+    assert "FINAL_PROSE_NOT_A_REQUEST" not in scoring.revised_submission(data, "D5c")
+    assert "1. What concerns you most?" in judge_query(data, "D5c")
+    assert "FINAL_PROSE_NOT_A_REQUEST" == scoring.revised_submission(data, "D3a").splitlines()[0]
+    data.pop("evidence_version")  # Old saved runs predate the clean evidence method.
+    assert "FINAL_PROSE_NOT_A_REQUEST" in scoring.revised_submission(data, "D5c")
+    assert "HISTORICAL_AUDIT_SENTINEL" in judge_query(data, "D5c")
+
+
+def test_availability_clarification_is_versioned_and_does_not_change_old_queries():
+    data = sample()
+    assert "Availability classification:" in judge_query(data, "D5c")
+    assert "Availability classification:" not in judge_query(data, "D3a")
+    data["evidence_version"] = scoring.CLEAN_EVIDENCE_ID
+    assert "Availability classification:" not in judge_query(data, "D5c")
+    assert validate_input(data)["evidence_version"] == scoring.CLEAN_EVIDENCE_ID
+
+
+def test_correctly_returned_n04_record_has_no_historical_missing_return_claim():
+    saved = deepcopy(study.interview("N04_INITIAL", "arc-apex"))
+    assert "The saved reply did not contain that record" in scoring.availability_context(saved)
+    record = next(f for f in saved["examiner_only_inventory"] if f["id"] == "N04_INITIAL_F05")
+    saved["turns"][2]["fixed_records"].append(record)
+    context = scoring.availability_context(saved)
+    assert "The saved reply did not contain that record" not in context
+    assert "First-admission MRI" in context
+
+
+def test_n04_requirements_do_not_tell_judge_what_a_specific_model_requested():
+    data = validate_input(scoring.imported_input("N04_INITIAL", "arc-apex"))
+    requirement = next(r for r in data["requirements"] if r["id"] == "N04.infection")
+    assert "Apex Q3" not in requirement["acceptable_requests_or_alternatives"]
+    assert "treat its unreturned record" not in judge_query(data, "D5c")
+    assert requirement["level"] == "essential"
+    assert "clinically clear admission" in requirement["acceptable_requests_or_alternatives"]
+    original = next(c for c in study.dataset()["cases"] if c["id"] == "N04_INITIAL")
+    assert (
+        "Apex Q3"
+        in next(r for r in original["requirements"] if r["id"] == "N04.infection")[
+            "acceptable_requests_or_alternatives"
+        ]
+    )
 
 
 def test_missing_records_and_incomplete_requirements_do_not_become_low_scores():
@@ -242,3 +302,17 @@ def test_generation_cannot_silently_switch_rule_version_or_interview(tmp_path):
     altered["requirements"][0]["level"] = "helpful"
     with pytest.raises(ValueError, match="interview evidence"):
         app.start("evaluate", altered, result["id"])
+
+
+def test_old_generated_run_requires_new_run_for_clean_evidence_method(tmp_path):
+    app = Application(
+        tmp_path, Settings("offline", "https://offline.invalid/v1"), OfflineProvider()
+    )
+    generated = wait(app, app.start("generate", sample()))
+    saved = app.load(generated["id"])
+    saved["input"].pop("evidence_version")
+    app.save(saved)
+    before = app.path(saved["id"]).read_bytes()
+    with pytest.raises(ValueError, match="interview evidence"):
+        app.start("evaluate", generated["input"], saved["id"])
+    assert app.path(saved["id"]).read_bytes() == before

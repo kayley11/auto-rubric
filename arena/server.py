@@ -15,6 +15,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+import evidence
+import exports
+import patient
 from engine import (
     APP_ROOT,
     CRITERIA,
@@ -31,7 +34,9 @@ from engine import (
     usage_totals,
     validate_input,
 )
+from reviews import Reviews
 from scoring import (
+    LEGACY_EVIDENCE_ID,
     RESULT_STATUSES,
     VERSIONS,
     fingerprint,
@@ -54,6 +59,8 @@ class BusyError(ValueError):
 
 
 class Application:
+    now = staticmethod(now)
+
     def __init__(self, directory, settings=None, provider=None):
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
@@ -63,10 +70,11 @@ class Application:
         self.job_lock = threading.Lock()
         self.stop = threading.Event()
         self.active_id = None
+        self.reviews = Reviews(self.directory / "_reviews")
         # A restart must never leave the UI claiming an old request is still running.
         for path in self.directory.glob("*.json"):
             run = json.loads(path.read_text(encoding="utf-8"))
-            if run.get("status") in {"generating", "scoring"}:
+            if run.get("status") in {"generating", "scoring", "interviewing"}:
                 run.update(
                     status="interrupted",
                     message="The server restarted. Saved results are retained.",
@@ -101,6 +109,10 @@ class Application:
         run.setdefault("rubric_version", deepcopy(ORIGINAL_VERSION))
         run["usage"] = usage_totals(run)
         run["safety"] = safety_status(run.get("grades", {}))
+        if run["input"].get("answer") and {"D3a", "D5c"} & set(run["input"].get("criteria", [])):
+            run["review_id"] = evidence.run_packet(run)["id"]
+            run["fact_coverage"] = evidence.patient_coverage(run)
+        run.pop("patient_case_snapshot", None)
         return run
 
     def list_runs(self):
@@ -118,6 +130,7 @@ class Application:
                     ),
                     "total": len(r["input"]["criteria"]),
                     "rubric_version": r.get("rubric_version", ORIGINAL_VERSION),
+                    "purpose": r.get("purpose", ""),
                 }
                 for r in items
             ],
@@ -126,19 +139,34 @@ class Application:
         )
 
     def start(self, action, body, run_id=None):
-        if action not in {"generate", "evaluate", "retry"}:
+        if action not in {"generate", "evaluate", "retry", "interview"}:
             raise ValueError("Unknown action.")
         if not self.job_lock.acquire(blocking=False):
             raise BusyError("A model job is already running. Let it finish or stop it first.")
         try:
             if action == "retry":
                 run = self.load(run_id)
-                if not run["input"]["answer"]:
+                if run.get("error"):
+                    run.setdefault("previous_errors", []).append(
+                        {"at": now(), "error": run.pop("error")}
+                    )
+                if not run["input"]["answer"] and run["input"].get("evaluation_mode") == "patient":
+                    action = "interview"
+                elif not run["input"]["answer"]:
                     action = "generate"
                 else:
                     action = "evaluate"
             else:
-                data = validate_input(body)
+                if action == "interview":
+                    if run_id:
+                        raise ValueError("Start a new prepared interview.")
+                    body = patient.prepared(
+                        body.get("case_id"),
+                        body.get("answer_model", "arc:lite"),
+                        body.get("judge_model", "arc:apex"),
+                        body.get("rules_version", VERSIONS[1]["id"]),
+                    )
+                data = validate_input(body, planned_interview=action == "interview")
                 if action == "evaluate" and not data["answer"]:
                     raise ValueError("Generate or paste an answer before evaluating it.")
                 if run_id:
@@ -155,11 +183,16 @@ class Application:
                         "task",
                         "history",
                         "rules_version",
+                        "evidence_version",
                         "interview",
                         "requirements",
                         "interview_source",
+                        "evaluation_mode",
+                        "requirements_review",
                     )
-                    previous = validate_input(run["input"])
+                    previous_input = deepcopy(run["input"])
+                    previous_input.setdefault("evidence_version", LEGACY_EVIDENCE_ID)
+                    previous = validate_input(previous_input)
                     if any(data[k] != previous[k] for k in immutable):
                         raise ValueError(
                             "The case, scoring version or interview evidence has changed. "
@@ -171,6 +204,7 @@ class Application:
                 else:
                     snapshot = rubric_snapshot(RUBRIC, data["rules_version"])
                     settings = self.settings.public()
+                    settings["evidence_version"] = data["evidence_version"]
                     if data["rules_version"] != "original":
                         settings["rubric_sha256"] = fingerprint(snapshot)
                     settings["option_order_by_item"] = {
@@ -189,20 +223,44 @@ class Application:
                         "rubric": snapshot,
                         "rubric_version": version_info(data["rules_version"]),
                         "settings": settings,
-                        "answer_source": "generated" if action == "generate" else "pasted",
+                        "answer_source": "generated"
+                        if action in {"generate", "interview"}
+                        else "pasted",
                         "grades": {},
                         "generation_attempts": [],
                         "review": {"items": {}},
                     }
+                    if action == "interview":
+                        run["patient_case_snapshot"] = patient.case(data["case_id"])
+                        run["patient_protocol"] = {
+                            k: deepcopy(patient.library()[k])
+                            for k in (
+                                "version",
+                                "prompts",
+                                "topics",
+                                "patient_model",
+                                "maximum_questions",
+                            )
+                        }
+                        run["patient_protocol"]["routing_sha256"] = patient.routing_hash()
+                        run["patient_protocol"]["json_mode"] = "json_object"
             run["input_sha256"] = fingerprint(run["input"])
             if not self.settings.api_key:
                 raise ValueError(
                     "Add OPENAI_API_KEY to the repository .env file, then restart the app."
                 )
             run.update(
-                status="generating" if action == "generate" else "scoring",
+                status="interviewing"
+                if action == "interview"
+                else "generating"
+                if action == "generate"
+                else "scoring",
                 error=None,
-                message="Generating answer…" if action == "generate" else "Starting item scoring…",
+                message="Starting the patient interview…"
+                if action == "interview"
+                else "Generating answer…"
+                if action == "generate"
+                else "Starting item scoring…",
                 current_item=None,
             )
             self.stop.clear()
@@ -217,12 +275,16 @@ class Application:
     def work(self, run_id, action):
         try:
             run = self.load(run_id)
+            if action == "interview":
+                patient.run_interview(self, run)
+                return
             if action == "generate":
                 capture = {"started_at": now()}
                 try:
                     answer = run_sync(self.provider.generate(run["input"], capture))
                     run["input"]["answer"] = answer
                     run["generated_answer"] = answer
+                    run["input_sha256"] = fingerprint(run["input"])
                     run.update(
                         status="answer_ready", message="Answer ready. Review it, then evaluate."
                     )
@@ -395,10 +457,145 @@ class Handler(BaseHTTPRequestHandler):
                             (APP_ROOT / "case-library.json").read_text(encoding="utf-8")
                         )["cases"],
                         "active_run": self.app.active_id,
+                        "patient_cases": patient.catalogue(),
                     },
                 )
             if path == "/api/study" and not mutation:
-                return self.send(200, study_summary())
+                summary = study_summary()
+                for row in summary["interviews"]:
+                    row["review_id"] = evidence.token(
+                        f"history/{row['case_id']}/{row['model_slug']}"
+                    )
+                return self.send(200, summary)
+            if path == "/api/followup" and not mutation:
+                data = evidence.followup()
+                return self.send(
+                    200,
+                    {
+                        k: data[k]
+                        for k in (
+                            "id",
+                            "date",
+                            "title",
+                            "rules_version",
+                            "evidence_version",
+                            "judge",
+                            "models",
+                            "reference_status",
+                            "controls",
+                        )
+                    }
+                    | {
+                        "records": [
+                            {
+                                k: p[k]
+                                for k in (
+                                    "id",
+                                    "source_id",
+                                    "arm",
+                                    "model",
+                                    "name",
+                                    "scores",
+                                    "observation",
+                                )
+                            }
+                            for p in [evidence.followup_packet(r["id"]) for r in data["records"]]
+                        ]
+                    },
+                )
+            if path == "/api/review" and not mutation:
+                return self.send(200, evidence.review_catalogue(self.app))
+            match = re.fullmatch(
+                r"/api/(evidence|review|requirements)/([a-f0-9]{24})(?:/([A-Za-z0-9-]+))?", path
+            )
+            if match:
+                resource, identifier, action = match.groups()
+                packet = evidence.get_packet(identifier, self.app)
+                if resource == "evidence" and not mutation:
+                    if action == "reviewed-input":
+                        review = self.app.reviews.requirements(packet)
+                        record = review["review"]
+                        if not record or not any(
+                            r["status"] == "confirmed" for r in record["decisions"].values()
+                        ):
+                            raise ValueError(
+                                "Save a confirmed requirement decision before copying it."
+                            )
+                        data = deepcopy(packet["data"])
+                        requirements = []
+                        for req in data.get("requirements", []):
+                            decision = record["decisions"].get(req["id"], {})
+                            if decision.get("status") == "confirmed":
+                                if decision["level"] == "not_needed":
+                                    continue
+                                req.update(
+                                    level=decision["level"],
+                                    acceptable_requests_or_alternatives=decision["alternatives"],
+                                    deadline=decision["deadline"],
+                                )
+                            requirements.append(req)
+                        if not requirements and "D5c" in data["criteria"]:
+                            raise ValueError(
+                                "No information requirements remain. Start a separate "
+                                "evaluation and explicitly deselect D5c if it is out of "
+                                "scope."
+                            )
+                        data["requirements"] = requirements
+                        data["requirements_review"] = {
+                            k: record[k] for k in ("id", "reviewer", "saved_at")
+                        } | {"profile_id": review["profile_id"]}
+                        return self.send(200, validate_input(data))
+                    if action in {"summary", "blind"}:
+                        decisions = (
+                            self.app.reviews.requirements(packet)["review"]
+                            if action == "summary"
+                            else None
+                        )
+                        return self.send(
+                            200,
+                            exports.summary(
+                                packet,
+                                blind=action == "blind",
+                                decisions=decisions,
+                                rating=self.app.reviews.rating(packet)
+                                if action == "summary"
+                                else None,
+                            ),
+                            "text/markdown; charset=utf-8",
+                            f"case-{packet['case_id'] or 'review'}-{action}.md",
+                        )
+                    if not action:
+                        return self.send(200, packet)
+                if resource == "requirements":
+                    if mutation and not action:
+                        return self.send(
+                            200, self.app.reviews.save_requirements(packet, self.body())
+                        )
+                    if not mutation and not action:
+                        return self.send(200, self.app.reviews.requirements(packet))
+                if resource == "review":
+                    if mutation and action == "rating":
+                        return self.send(200, self.app.reviews.save_rating(packet, self.body()))
+                    if mutation and action == "reveal":
+                        self.body()
+                        return self.send(200, self.app.reviews.reveal(packet))
+                    if not mutation and action in {None, "D3a", "D5c"}:
+                        rating = self.app.reviews.rating(packet)
+                        item = action or ("D3a" if "D3a" in packet["rules"] else "D5c")
+                        if item not in packet["rules"]:
+                            raise ValueError("This criterion is not selected for the saved answer.")
+                        if (
+                            item == "D5c"
+                            and "D3a" in packet["rules"]
+                            and (not rating or "D3a" not in rating.get("items", {}))
+                        ):
+                            raise ValueError(
+                                "Save the D3a rating before opening examiner-only evidence."
+                            )
+                        return self.send(
+                            200, evidence.blind_packet(packet, item) | {"review": rating}
+                        )
+                raise FileNotFoundError("Review route not found.")
             match = re.fullmatch(
                 r"/api/study/(interviews|source|evaluation-input)/([A-Z0-9_]+)/([a-z-]+)", path
             )
@@ -417,7 +614,12 @@ class Handler(BaseHTTPRequestHandler):
             if match and not mutation:
                 filename = match.group(1)
                 mime = mimetypes.guess_type(filename)[0] or "text/plain"
-                return self.send(200, study_output(filename), mime + "; charset=utf-8", filename)
+                raw = (
+                    evidence.output(filename)
+                    if filename.startswith("followup-")
+                    else study_output(filename)
+                )
+                return self.send(200, raw, mime + "; charset=utf-8", filename)
             if path == "/api/runs":
                 if not mutation:
                     return self.send(200, self.app.list_runs())
@@ -434,6 +636,39 @@ class Handler(BaseHTTPRequestHandler):
                         return self.send(200, self.app.save_review(run_id, body))
                     if action == "stop":
                         return self.send(200, self.app.stop_job(run_id))
+                elif action in {"raw", "summary", "blind"}:
+                    run = self.app.load(run_id)
+                    packet = evidence.run_packet(run)
+                    output = (
+                        exports.raw_run(
+                            {
+                                **run,
+                                "independent_review_history": self.app.reviews.history(
+                                    "rating", packet["id"]
+                                ),
+                                "requirement_review_history": self.app.reviews.history(
+                                    "requirements", self.app.reviews.profile_key(packet)
+                                ),
+                            }
+                        )
+                        if action == "raw"
+                        else exports.summary(
+                            packet,
+                            blind=action == "blind",
+                            decisions=self.app.reviews.requirements(packet)["review"]
+                            if action == "summary"
+                            else None,
+                            rating=self.app.reviews.rating(packet) if action == "summary" else None,
+                        )
+                    )
+                    return self.send(
+                        200,
+                        output,
+                        "text/plain; charset=utf-8"
+                        if action == "raw"
+                        else "text/markdown; charset=utf-8",
+                        f"autorubric-{run_id[:8]}-{action}.{'txt' if action == 'raw' else 'md'}",
+                    )
                 elif action in {"txt", "csv", "json"}:
                     run = self.app.public_run(run_id)
                     output = {

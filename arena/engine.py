@@ -30,6 +30,7 @@ from scoring import (
     REVISED_ID,
     REVISED_SYSTEM,
     revised_query,
+    revised_submission,
     rubric_snapshot,
     transcript,
     validate_evidence,
@@ -183,7 +184,7 @@ def redact(value, key=""):
     return value
 
 
-def validate_input(data):
+def validate_input(data, *, planned_interview=False):
     result = {}
     limits = {
         "title": 160,
@@ -214,10 +215,25 @@ def validate_input(data):
         raise ValueError("Select at least one recognised rubric item.")
     result["criteria"] = list(dict.fromkeys(selected))
     result["rules_version"] = data.get("rules_version", "original")
+    result["evaluation_mode"] = data.get("evaluation_mode", "written")
+    if result["evaluation_mode"] not in {"written", "patient"}:
+        raise ValueError("Choose a written case or prepared patient interview.")
     version_info(result["rules_version"])
     result.update(
-        validate_evidence(data, result["criteria"], result["rules_version"] == REVISED_ID)
+        validate_evidence(
+            data,
+            result["criteria"],
+            result["rules_version"] == REVISED_ID and not planned_interview,
+        )
     )
+    provenance = data.get("requirements_review", {})
+    if not isinstance(provenance, dict):
+        raise ValueError("Invalid requirements-review provenance.")
+    result["requirements_review"] = {
+        k: scoring_text
+        for k in ("id", "reviewer", "saved_at", "profile_id")
+        if isinstance((scoring_text := provenance.get(k)), str) and len(scoring_text) <= 200
+    }
     for key, default in (("answer_model", "arc:lite"), ("judge_model", "arc:apex")):
         value = data.get(key, default)
         if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9:._/-]{1,100}", value):
@@ -463,19 +479,14 @@ class Provider:
                     "determine a grade."
                 )
             capture["rules_version"] = data.get("rules_version", "original")
+            capture["evidence_version"] = data.get("evidence_version", "website-evidence-20261024")
             capture["criterion"] = make_criterion(cid, data).model_dump(mode="json")
             capture["evidence_query"] = query
             # D5c grades the executed requests/notes. Final-answer text is explicitly separate,
             # so a recommendation cannot silently become an earlier request.
             submission = data["answer"]
             if revised and cid == "D5c":
-                submission = (
-                    "Executed interview and assessment notes:\n"
-                    + transcript(data["interview"], notes=data["interview"]["notes_allowed"])
-                    + "\n\nFinal answer AFTER the interview (recommendations are not "
-                    "earlier requests; explicit final questions have no replies):\n"
-                    + data["answer"]
-                )
+                submission = revised_submission(data, cid)
             capture["submission"] = submission
             report = await Rubric([make_criterion(cid, data)]).grade(
                 submission,
@@ -553,6 +564,7 @@ def plain_text(run):
         "",
         data["title"],
         "SCORING RULES: " + run.get("rubric_version", {}).get("label", "Original rubric"),
+        "EVIDENCE METHOD: " + data.get("evidence_version", "website-evidence-20261024"),
         "",
         "CASE FACTS",
         data["facts"],
@@ -576,9 +588,14 @@ def plain_text(run):
         if record.get("reviewer_context"):
             lines += [
                 "",
-                "REVIEWER-ONLY AVAILABILITY CONTEXT — "
-                "NOT SENT TO PROPOSED D3a OR ANSWER GENERATION",
+                "REVIEWER NOTES — NOT SENT TO CLEAN-EVIDENCE GRADING OR ANSWER GENERATION",
                 record["reviewer_context"],
+            ]
+        if record.get("availability_context"):
+            lines += [
+                "",
+                "FACTUAL RECORD AVAILABILITY — PROPOSED D5c ONLY",
+                record["availability_context"],
             ]
     if data.get("requirements"):
         lines += [
