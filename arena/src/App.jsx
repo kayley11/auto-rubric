@@ -26,7 +26,7 @@ import "./app.css";
 import { Study } from "./Study";
 import { Review } from "./Review";
 import { PatientInterview } from "./PatientInterview";
-import { exposure } from "./StudyTools";
+import { ExportMenu, exposure } from "./StudyTools";
 import {
   EvaluationEvidence,
   blankInterview,
@@ -619,26 +619,15 @@ export function App() {
             onUseData={useData}
           />
         ) : (
-          <main>
+          <main className={`evaluation-page ${run ? "saved-evaluation" : ""}`}>
             <div className="page-heading">
               <span className="eyebrow">JOSH’S RUBRIC · AUTORUBRIC</span>
-              <h1>{run ? form.title : "Evaluate clinical reasoning."}</h1>
+              <h1>{run ? form.title : "Evaluate a clinical case."}</h1>
               <p>
                 {run
                   ? "Case, saved answer and item-by-item assessment."
-                  : "Start with a case. Generate an answer or bring your own."}
+                  : "Choose a case or paste your own. Then generate or paste an answer."}
               </p>
-              <div className="version-row">
-                <span className="version-tag">
-                  <BookOpen size={13} />{" "}
-                  {activeVersion?.label || "Original rubric"}
-                </span>
-                <span>
-                  {revised
-                    ? "Proposed D3a / D5c · other items unchanged"
-                    : "Original anchors"}
-                </span>
-              </div>
               {!run && (
                 <div
                   className="mode-switch intake-switch"
@@ -699,43 +688,6 @@ export function App() {
                 restart the app.
               </div>
             )}
-            <section
-              className="rule-selection"
-              aria-label="Scoring rule version"
-            >
-              <label className="field">
-                Scoring rules
-                <select
-                  aria-label="Scoring rules"
-                  disabled={frozen || busy}
-                  value={form.rules_version || "original"}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      rules_version: e.target.value,
-                      ...(e.target.value === revisedId
-                        ? { reference_status: f.reference ? "draft" : "none" }
-                        : {}),
-                    }))
-                  }
-                >
-                  {(
-                    config?.rule_versions || [
-                      { id: "original", label: "Original rubric" },
-                    ]
-                  ).map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <p>
-                {revised
-                  ? "New D3a assesses the received evidence and final synthesis. New D5c assesses actual information requests against a frozen candidate checklist. Clinical references and requirements await Josh’s confirmation."
-                  : "Uses the original anchors. Choose Josh’s proposed version to assess D3a and D5c with the revised evidence rules."}
-              </p>
-            </section>
             <div
               className={`input-layout ${form.answer || run || mode === "paste" ? "with-answer" : ""}`}
             >
@@ -767,10 +719,6 @@ export function App() {
                         Earlier pilot — Gait imbalance after a hot bath
                       </option>
                     </select>
-                    <small>
-                      Loads the input, draft reference and task-specific rubric
-                      items. References await clinical review.
-                    </small>
                   </label>
                 )}
                 {form.history_required && (
@@ -783,16 +731,6 @@ export function App() {
                   </p>
                 )}
                 <label className="field">
-                  Case name <span className="optional">optional</span>
-                  <input
-                    disabled={frozen}
-                    value={form.title}
-                    placeholder="A short name for this evaluation"
-                    onChange={(e) => change("title", e.target.value)}
-                    maxLength={160}
-                  />
-                </label>
-                <label className="field">
                   {revised
                     ? "Information actually available at the start"
                     : "Case facts"}
@@ -804,21 +742,33 @@ export function App() {
                     onChange={(e) => change("facts", e.target.value)}
                   />
                 </label>
-                <label className="field">
-                  What should the model do?
-                  <textarea
-                    disabled={frozen}
-                    className="task-text"
-                    value={form.task}
-                    onChange={(e) => change("task", e.target.value)}
-                    placeholder="Specify the audience, question and response format."
-                  />
-                </label>
                 <details className="extra-context">
                   <summary>
-                    Conversation, source & reference points{" "}
+                    <span>
+                      Task & reference <small>{form.task.split(". ")[0]}</small>
+                    </span>
                     <ChevronDown size={14} />
                   </summary>
+                  <label className="field">
+                    What should the model do?
+                    <textarea
+                      disabled={frozen}
+                      className="task-text"
+                      value={form.task}
+                      onChange={(e) => change("task", e.target.value)}
+                      placeholder="Specify the audience, question and response format."
+                    />
+                  </label>
+                  <label className="field">
+                    Case name <span className="optional">optional</span>
+                    <input
+                      disabled={frozen}
+                      value={form.title}
+                      placeholder="A short name for this evaluation"
+                      onChange={(e) => change("title", e.target.value)}
+                      maxLength={160}
+                    />
+                  </label>
                   <label className="field">
                     Earlier conversation{" "}
                     <span className="optional">optional</span>
@@ -940,24 +890,96 @@ export function App() {
               />
             )}
             <section className="action-panel">
-              <div className="action-top">
-                <div>
-                  <h2>Evaluation settings</h2>
-                  <p>
-                    Choose the items that this task can actually demonstrate.
-                  </p>
+              <details className="evaluation-options">
+                <summary>
+                  <Settings2 size={15} /> Settings
+                  <span>
+                    {activeVersion?.label || "Original rubric"} ·{" "}
+                    {form.criteria.length} items · {form.answer_model} /{" "}
+                    {form.judge_model}
+                  </span>
+                  <ChevronDown size={15} />
+                </summary>
+                <div className="evaluation-options-body">
+                  <section
+                    className="rule-selection"
+                    aria-label="Scoring rule version"
+                  >
+                    <label className="field">
+                      Scoring rules
+                      <select
+                        aria-label="Scoring rules"
+                        disabled={frozen || busy}
+                        value={form.rules_version || "original"}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            rules_version: e.target.value,
+                            ...(e.target.value === revisedId
+                              ? {
+                                  reference_status: f.reference
+                                    ? "draft"
+                                    : "none",
+                                }
+                              : {}),
+                          }))
+                        }
+                      >
+                        {(
+                          config?.rule_versions || [
+                            { id: "original", label: "Original rubric" },
+                          ]
+                        ).map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {v.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <p>
+                      {revised
+                        ? "New D3a assesses the received evidence and final synthesis. New D5c assesses actual information requests against a frozen candidate checklist. Clinical references and requirements await Josh’s confirmation."
+                        : "Uses the original anchors. Choose Josh’s proposed version to assess D3a and D5c with the revised evidence rules."}
+                    </p>
+                  </section>
+                  <div className="action-top">
+                    <div>
+                      <h2>Evaluation settings</h2>
+                      <p>
+                        Choose the items that this task can actually
+                        demonstrate.
+                      </p>
+                    </div>
+                    <button
+                      className="subtle-button"
+                      onClick={() => setDialog("criteria")}
+                      disabled={hasGrades || busy}
+                    >
+                      <BookOpen size={15} />
+                      {form.criteria.length}{" "}
+                      {form.criteria.length === 1
+                        ? "rubric item"
+                        : "rubric items"}{" "}
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
+                  <div className="model-summary">
+                    <span>
+                      Answer <b>{form.answer_model}</b>
+                    </span>
+                    <span>
+                      Judge <b>{form.judge_model}</b>
+                    </span>
+                    <button
+                      aria-label="Change model settings"
+                      disabled={hasGrades || busy}
+                      onClick={() => setDialog("settings")}
+                    >
+                      <Settings2 size={15} />
+                    </button>
+                  </div>
                 </div>
-                <button
-                  className="subtle-button"
-                  onClick={() => setDialog("criteria")}
-                  disabled={hasGrades || busy}
-                >
-                  <BookOpen size={15} />
-                  {form.criteria.length}{" "}
-                  {form.criteria.length === 1 ? "rubric item" : "rubric items"}{" "}
-                  <ChevronDown size={14} />
-                </button>
-              </div>
+              </details>
               <div className="controls-row">
                 {!run && (
                   <div className="segmented" aria-label="Answer source">
@@ -975,21 +997,6 @@ export function App() {
                     </button>
                   </div>
                 )}
-                <div className="model-summary">
-                  <span>
-                    Answer <b>{form.answer_model}</b>
-                  </span>
-                  <span>
-                    Judge <b>{form.judge_model}</b>
-                  </span>
-                  <button
-                    aria-label="Change model settings"
-                    disabled={hasGrades || busy}
-                    onClick={() => setDialog("settings")}
-                  >
-                    <Settings2 size={15} />
-                  </button>
-                </div>
                 <div className="primary-action">
                   {busy ? (
                     <button className="primary" disabled>
@@ -1014,10 +1021,10 @@ export function App() {
                     <button className="secondary" onClick={() => newCase(true)}>
                       <Plus size={16} /> Use as new evaluation
                     </button>
-                  ) : form.answer.trim() && (mode === "paste" || run) ? (
+                  ) : mode === "paste" || (run && form.answer.trim()) ? (
                     <button
                       className="primary"
-                      disabled={!valid}
+                      disabled={!valid || !form.answer.trim()}
                       onClick={() => start("evaluate")}
                     >
                       Evaluate answer <ArrowRight size={17} />
@@ -1080,32 +1087,26 @@ export function App() {
                     </p>
                   </div>
                   <div className="result-actions">
-                    <button className="secondary" onClick={plainText}>
-                      <FileText size={15} /> Plain text
-                    </button>
-                    <details className="export-menu">
-                      <summary className="secondary">
-                        <ArrowDownToLine size={15} /> Export{" "}
-                        <ChevronDown size={13} />
-                      </summary>
-                      <div>
-                        <a href={`/api/runs/${run.id}/summary`} download>
-                          Review summary
+                    <ExportMenu>
+                      <button type="button" onClick={plainText}>
+                        Open plain text
+                      </button>
+                      <a href={`/api/runs/${run.id}/summary`} download>
+                        Review summary
+                      </a>
+                      <a href={`/api/runs/${run.id}/blind`} download>
+                        Blank review sheet
+                      </a>
+                      <a href={`/api/runs/${run.id}/raw`} download>
+                        Full raw output
+                      </a>
+                      {["txt", "json", "csv"].map((t) => (
+                        <a key={t} href={`/api/runs/${run.id}/${t}`} download>
+                          Download{" "}
+                          {t === "txt" ? "plain text" : t.toUpperCase()}
                         </a>
-                        <a href={`/api/runs/${run.id}/blind`} download>
-                          Blank review sheet
-                        </a>
-                        <a href={`/api/runs/${run.id}/raw`} download>
-                          Full raw output
-                        </a>
-                        {["txt", "json", "csv"].map((t) => (
-                          <a key={t} href={`/api/runs/${run.id}/${t}`} download>
-                            Download{" "}
-                            {t === "txt" ? "plain text" : t.toUpperCase()}
-                          </a>
-                        ))}
-                      </div>
-                    </details>
+                      ))}
+                    </ExportMenu>
                   </div>
                 </div>
                 <div className="result-meta">
@@ -1124,15 +1125,18 @@ export function App() {
                 </div>
                 <div className="review-toolbar">
                   {run.review_id && (
-                    <a className="secondary" href={`#review/${run.review_id}`}>
-                      Independent review
+                    <a className="primary" href={`#review/${run.review_id}`}>
+                      Review this answer
                     </a>
                   )}
                   <button
-                    className={`review-toggle ${reviewMode ? "active" : ""}`}
+                    className={`${run.review_id ? "review-toggle" : "primary"} ${reviewMode ? "active" : ""}`}
                     onClick={() => setReviewMode(!reviewMode)}
                   >
-                    <CheckCheck size={16} /> Human review
+                    <CheckCheck size={16} />{" "}
+                    {run.review_id
+                      ? "Rate alongside results"
+                      : "Review this answer"}
                   </button>
                   <label className="checkbox-label">
                     <input

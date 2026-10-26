@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { LoaderCircle, Square } from "lucide-react";
+import { ChevronDown, LoaderCircle, Square } from "lucide-react";
 import {
   Decisions,
   EvidenceTrail,
+  ExportLinks,
   RuleView,
   TurnView,
   VersionLine,
@@ -99,20 +100,26 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
           requested. Up to six questions.
         </p>
       </div>
-      <VersionLine
-        rules={
-          (run?.rubric_version?.id || version) === "original"
-            ? "Original rubric"
-            : "Josh’s proposal · 24 Oct"
-        }
-        evidence="Corrected fixed-fact routing · 25 Oct"
-        batch={run ? "New saved interview" : "Eight prepared cases"}
-      />
-      <p className="study-note">
-        References and information requirements await Josh’s confirmation. This
-        mode tests information seeking; it does not establish whether a model
-        has seen a source case before.
-      </p>
+      <details className="study-disclosure run-details">
+        <summary>
+          How this interview works{" "}
+          <span>Fixed case facts · six-question limit</span>
+        </summary>
+        <VersionLine
+          rules={
+            (run?.rubric_version?.id || version) === "original"
+              ? "Original rubric"
+              : "Josh’s proposal · 24 Oct"
+          }
+          evidence="Corrected fixed-fact routing · 25 Oct"
+          batch={run ? "New saved interview" : "Eight prepared cases"}
+        />
+        <p className="study-note">
+          References and information requirements await Josh’s confirmation.
+          This mode tests information seeking; it does not establish whether a
+          model has seen a source case before.
+        </p>
+      </details>
       {error && (
         <p className="error-banner" role="alert">
           {error}
@@ -140,44 +147,58 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
                 ))}
               </select>
             </label>
-            <label className="field">
-              Scoring rules
-              <select
-                value={version}
-                disabled={busy}
-                onChange={(e) => setVersion(e.target.value)}
-              >
-                <option value="original">Original rubric</option>
-                <option value={revisedId}>
-                  Josh’s proposed D3a / D5c · 24 Oct
-                </option>
-              </select>
-            </label>
-            <label className="field">
-              Clinician model
-              <select
-                value={model}
-                disabled={busy}
-                onChange={(e) => setModel(e.target.value)}
-              >
-                {["arc:lite", "arc:chat", "arc:apex"].map((m) => (
-                  <option key={m}>{m}</option>
-                ))}
-              </select>
-            </label>
-            <label className="field">
-              Judge model
-              <select
-                value={judge}
-                disabled={busy}
-                onChange={(e) => setJudge(e.target.value)}
-              >
-                {["arc:apex", "arc:chat", "arc:lite"].map((m) => (
-                  <option key={m}>{m}</option>
-                ))}
-              </select>
-            </label>
           </div>
+          <details className="evaluation-options interview-options">
+            <summary>
+              <span>Settings</span>
+              <span>
+                {version === "original"
+                  ? "Original rubric"
+                  : "Josh’s proposed D3a / D5c"}{" "}
+                · {model} / {judge}
+              </span>
+              <ChevronDown size={15} />
+            </summary>
+            <div className="decision-grid">
+              <label className="field">
+                Scoring rules
+                <select
+                  value={version}
+                  disabled={busy}
+                  onChange={(e) => setVersion(e.target.value)}
+                >
+                  <option value="original">Original rubric</option>
+                  <option value={revisedId}>
+                    Josh’s proposed D3a / D5c · 24 Oct
+                  </option>
+                </select>
+              </label>
+              <label className="field">
+                Clinician model
+                <select
+                  value={model}
+                  disabled={busy}
+                  onChange={(e) => setModel(e.target.value)}
+                >
+                  {["arc:lite", "arc:chat", "arc:apex"].map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                Judge model
+                <select
+                  value={judge}
+                  disabled={busy}
+                  onChange={(e) => setJudge(e.target.value)}
+                >
+                  {["arc:apex", "arc:chat", "arc:lite"].map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </details>
           <section className="study-opening">
             <h2>What the clinician sees at the start</h2>
             <pre>{selected?.common_information}</pre>
@@ -258,41 +279,17 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
             </div>
           )}
           {data.answer && (
-            <div className="result-actions patient-exports">
+            <div className="study-toolbar review-actions patient-exports">
               {run.review_id && (
-                <a className="secondary" href={`#review/${run.review_id}`}>
-                  Review before seeing scores
+                <a className="primary" href={`#review/${run.review_id}`}>
+                  Review this case
                 </a>
               )}
-              <a
-                className="secondary"
-                href={`/api/runs/${run.id}/summary`}
-                onClick={() => {
-                  exposure(run.review_id, "machine");
-                  exposure(run.review_id, "identity");
-                }}
-                download
-              >
-                Review summary
-              </a>
-              <a
-                className="secondary"
-                href={`/api/runs/${run.id}/blind`}
-                download
-              >
-                Blank review sheet
-              </a>
-              <a
-                className="secondary"
-                href={`/api/runs/${run.id}/raw`}
-                onClick={() => {
-                  exposure(run.review_id, "machine");
-                  exposure(run.review_id, "identity");
-                }}
-                download
-              >
-                Full raw output
-              </a>
+              <ExportLinks
+                id={run.review_id}
+                base={`/api/runs/${run.id}`}
+                raw={`/api/runs/${run.id}/raw`}
+              />
             </div>
           )}
           <nav className="study-tabs" aria-label="Patient interview sections">
@@ -413,11 +410,10 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
                 return (
                   <article className="decision-card" key={cid}>
                     <h3>
-                      {cid} ·{" "}
                       {cid === "D3a"
                         ? "Problem representation"
                         : "Information seeking"}{" "}
-                      · {grade?.label || "Not scored yet"}
+                      ({cid}) · {grade?.label || "Not scored yet"}
                     </h3>
                     <RuleView cid={cid} rule={rule} />
                     <p>{grade?.reason || grade?.error}</p>

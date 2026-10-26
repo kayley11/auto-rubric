@@ -10,10 +10,10 @@ From the repository root:
 
 Open **http://127.0.0.1:8765**. The launcher builds the interface and starts the Python server. It uses the existing `.venv` and repository `.env`; on a fresh checkout, run `./setup.sh` first. Node.js and npm are needed to build the interface. `./run-ui.sh --port 8766` selects another port.
 
-1. Enter case facts and task instructions, or use **Load a prepared case** for N01–N06. N04 includes an initial task and two follow-ups; N05 reviews multisystem investigations, and N06 audits a treatment timeline. The earlier pilot example is also available. Prepared cases load their own rubric selection and a reference marked **Draft — awaiting clinical review**.
+1. Enter case facts, or use **Load a prepared case** for N01–N06. N04 includes an initial task and two follow-ups; N05 reviews multisystem investigations, and N06 audits a treatment timeline. The earlier pilot example is also available. Prepared cases load their own rubric selection and a reference marked **Draft — awaiting Josh’s confirmation**. Open **Task & reference** to edit the task, case name, earlier conversation and reference points.
 2. Generate an answer, or select **Paste answer**. Generated answers can be edited before evaluation.
-3. Select the relevant rubric items and evaluate. Each item makes one sequential model request.
-4. Open **Human review** to add grades and comments. **Plain text** shows the saved output; **Export** downloads TXT, JSON or CSV.
+3. Open **Settings** to choose the scoring rules, relevant rubric items and models, then evaluate. The active version remains visible while settings are collapsed. Each item makes one sequential model request.
+4. Use **Review this case/answer** for human review. Where available, the independent workflow keeps machine results hidden; **Rate alongside results** retains the inline rating form. **Export** groups the review summary, blank sheet, full raw output and available legacy formats. In written evaluations, **Export → Open plain text** previews the saved output.
 
 Default models are `arc:lite` for answers and `arc:apex` for judging, through the existing OpenAI-compatible endpoint. Choose another configured model in **Model settings**. Optional server overrides: `ARENA_ANSWER_MODEL`, `ARENA_JUDGE_MODEL`, `ARENA_TIMEOUT` (120 seconds) and `ARENA_MAX_TOKENS` (8192).
 
@@ -39,11 +39,11 @@ Open a record to follow **requirement → question → returned evidence → jud
 
 **Patient interview** runs any of the eight prepared cases with the corrected fixed-fact controller. Select the clinician model, judge and original/proposed rules. The clinician chooses up to six questions; the patient model orders permitted statements, and the controller returns their unchanged text. Examinations and investigations keep their original admission context and are not spoken as patient testimony. JSON output is enforced for question and fact-order calls. Stop/resume preserves completed turns; unavailable information remains unknown. After the final answer, inspect obtained/missing facts and select **Score D3a and D5c**. All visible responses, failed attempts and usage are saved.
 
-**Review summary** exports case, task, actual conversation, answer, item explanations and any saved human decisions. **Blank review sheet** excludes machine results and model identity. **Full raw output** retains the complete saved record; the N04 study download preserves the research output unchanged. The [25 October validation](validation/20261025-ui/README.md) records the tested workflows and real N04 validation run.
+**Review summary** exports case, task, actual conversation, answer, item explanations and any saved human decisions. **Blank review sheet** excludes machine results and model identity. **Full raw output** retains the complete saved record; the N04 study download preserves the research output unchanged. The [26 October interface validation](validation/20261026-ui/README.md) records the case-first layout, named results and grouped review/export controls. The [25 October validation](validation/20261025-ui/README.md) retains the earlier tested workflows and real N04 validation run.
 
 ### New evaluations with the proposed rules
 
-Choose **Scoring rules → Josh’s proposed D3a / D5c**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
+Open **Settings → Scoring rules → Josh’s proposed D3a / D5c**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
 
 Use **Reuse a saved interview → Load interview & answer** to load any of the 24 records, or enter your own actual requests and replies. Keep patient replies, returned records, pre-reply assessment notes and simulator feedback separate. Mark whether the transcript is complete and whether assessment notes were specified by the task. An incomplete transcript is not silently treated as a model failure.
 
@@ -60,7 +60,7 @@ The [24 October validation](validation/20261024/README.md) includes the actual N
 
 Each interview has an evidence check, the full conversation, the unchanged answer with old/new explanations, and the candidate requirements and scoring guides. “Not requested”, “unavailable in source” and “asked but not returned” are separate observations, not automatic clinical errors. The case inventory includes reviewer-only facts; revised D3a used only the evidence actually received. Candidate essentials, alternatives and deadlines remain subject to Josh’s review.
 
-**Full plain text**, **Full case output**, **Source JSON** and **Scores CSV** download the saved outputs. Their bytes are checked against the import manifest. Raw files retain their original wording and pre-run metadata, including the author-rule snapshot’s preparation status. Browsing this study makes no model calls and does not write to the original runs.
+**Export** contains the saved full raw text, case outputs, **Source JSON** and **Scores CSV** where applicable. Their bytes are checked against the import manifest. Raw files retain their original wording and pre-run metadata, including the author-rule snapshot’s preparation status. Browsing this study makes no model calls and does not write to the original runs.
 
 The study is self-contained in `arena/study-data/`; the running website does not depend on neighbouring research folders. To refresh that copy from the frozen research files, explicitly supply their location:
 

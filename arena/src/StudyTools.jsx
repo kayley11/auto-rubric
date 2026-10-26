@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BookOpen, ChevronDown, Download } from "lucide-react";
 
 export async function request(path, body) {
@@ -239,31 +239,62 @@ export function TurnView({
   );
 }
 
-export function ExportLinks({ id, raw }) {
+export function ExportMenu({ children }) {
+  const menu = useRef(null);
+  useEffect(() => {
+    const close = (event) => {
+      if (!menu.current?.contains(event.target))
+        menu.current?.removeAttribute("open");
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, []);
+  return (
+    <details
+      className="export-menu"
+      ref={menu}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          menu.current.removeAttribute("open");
+          menu.current.querySelector("summary").focus();
+        }
+      }}
+    >
+      <summary className="secondary">
+        <Download size={15} /> Export <ChevronDown size={14} />
+      </summary>
+      <div onClick={() => menu.current.removeAttribute("open")}>{children}</div>
+    </details>
+  );
+}
+
+export function ExportLinks({
+  id,
+  raw,
+  base = `/api/evidence/${id}`,
+  children,
+}) {
   const mark = () => {
-    exposure(id, "machine");
-    exposure(id, "identity");
+    if (id) {
+      exposure(id, "machine");
+      exposure(id, "identity");
+    }
   };
   return (
-    <div className="result-actions">
-      <a
-        className="secondary"
-        href={`/api/evidence/${id}/summary`}
-        onClick={mark}
-        download
-      >
-        <Download size={14} />
+    <ExportMenu>
+      <a href={`${base}/summary`} onClick={mark} download>
         Review summary
       </a>
-      <a className="secondary" href={`/api/evidence/${id}/blind`} download>
+      <a href={`${base}/blind`} download>
         Blank review sheet
       </a>
       {raw && (
-        <a className="secondary" href={raw} onClick={mark} download>
+        <a href={raw} onClick={mark} download>
           Full raw output
         </a>
       )}
-    </div>
+      {children}
+    </ExportMenu>
   );
 }
 

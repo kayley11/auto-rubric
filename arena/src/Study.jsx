@@ -8,7 +8,13 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Followup } from "./Followup";
-import { Decisions, EvidenceTrail, ExportLinks, exposure } from "./StudyTools";
+import {
+  Decisions,
+  EvidenceTrail,
+  ExportLinks,
+  ExportMenu,
+  exposure,
+} from "./StudyTools";
 
 const itemNames = { D5c: "Information seeking", D3a: "Problem representation" };
 const statusLabels = {
@@ -87,7 +93,7 @@ function Rule({ item, data, version }) {
     <details className="study-disclosure">
       <summary>
         <BookOpen size={15} />
-        {item} · {itemNames[item]}
+        {itemNames[item]} ({item})
         <ChevronDown size={15} />
       </summary>
       {rules.definition && <p>{rules.definition}</p>}
@@ -304,22 +310,70 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
             : "Compare what each model asked, what it received and how its answer was scored."}
         </p>
       </div>
-      <div className="study-meta">
-        <span>24 saved interviews</span>
-        <span>Up to 6 questions</span>
-        <span>Judge: {data.judge}</span>
-        <span className="version-tag">
-          <BookOpen size={13} />
-          {currentRules}
-        </span>
-      </div>
-      <p className="study-note">
-        Candidate essentials for the revision await Josh’s review. Interviews
-        and answers are unchanged; these are saved results.
-      </p>
+      <details className="study-disclosure run-details">
+        <summary>
+          Study details <span>{currentRules}</span>
+        </summary>
+        <div className="study-meta">
+          <span>24 saved interviews</span>
+          <span>Up to 6 questions</span>
+          <span>Judge: {data.judge}</span>
+          <span className="version-tag">
+            <BookOpen size={13} />
+            {currentRules}
+          </span>
+        </div>
+        <p className="study-note">
+          Candidate essentials for the revision await Josh’s review. Interviews
+          and answers are unchanged; these are saved results.
+        </p>
+      </details>
 
       {!selection ? (
         <>
+          <section
+            className="study-highlights"
+            aria-label="Examples worth checking"
+          >
+            <h2>Main findings under the proposed rules</h2>
+            <div>
+              <button onClick={() => open("N02", "arc:lite")}>
+                <b>N02 · A missed request</b>
+                <p>
+                  Lite and chat did not request glucose; apex did at question 6.
+                  Information seeking: 2 / 2 / 5. Problem representation: 5 / 5
+                  / 5.
+                </p>
+                <span>
+                  Compare requests and uncertainty
+                  <ArrowRight size={14} />
+                </span>
+              </button>
+              <button onClick={() => open("C05", "arc:chat")}>
+                <b>C05 · A claim without a reply</b>
+                <p>
+                  Chat asked about provocation but received no details, then
+                  wrote “unprovoked”. Information seeking: 5; problem
+                  representation: 4.
+                </p>
+                <span>
+                  Read the answer and its evidence
+                  <ArrowRight size={14} />
+                </span>
+              </button>
+              <button onClick={() => open("N04_INITIAL", "arc:apex")}>
+                <b>N04 · A simulator mismatch</b>
+                <p>
+                  Apex asked about infection results; the simulator did not
+                  return them. That request was credited in regrading.
+                </p>
+                <span>
+                  Separate requests from returned records
+                  <ArrowRight size={14} />
+                </span>
+              </button>
+            </div>
+          </section>
           <div className="study-toolbar">
             <div className="segmented" aria-label="Scoring rule version">
               <button
@@ -337,10 +391,14 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                 Original rubric
               </button>
             </div>
-            <div className="result-actions">
-              <Download name="scores.csv">Scores CSV</Download>
-              <Download name="all-output.txt">Full plain text</Download>
-            </div>
+            <ExportMenu>
+              <Download name="scores.csv" className="">
+                Scores CSV
+              </Download>
+              <Download name="all-output.txt" className="">
+                Full raw plain text
+              </Download>
+            </ExportMenu>
           </div>
           <p className="comparison-legend">
             <b>D5c</b> Information seeking <span>·</span> <b>D3a</b> Problem
@@ -363,7 +421,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                   {data.models.map((model) => (
                     <th scope="col" key={model}>
                       {model}
-                      <span>D5c · D3a</span>
+                      <span>Information seeking · Problem representation</span>
                     </th>
                   ))}
                 </tr>
@@ -395,7 +453,9 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                             <span className="compare-grades">
                               {["D5c", "D3a"].map((item) => (
                                 <span key={item}>
-                                  <small>{item}</small>
+                                  <small>
+                                    {itemNames[item]} ({item})
+                                  </small>
                                   <strong>
                                     {interview.scores[item][key] ?? "—"}
                                   </strong>
@@ -419,47 +479,6 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
             Scroll sideways to see all three models.
           </p>
           <p className="study-note">{data.comparison_note}</p>
-          <section
-            className="study-highlights"
-            aria-label="Examples worth checking"
-          >
-            <h2>Three differences to inspect</h2>
-            <div>
-              <button onClick={() => open("N02", "arc:lite")}>
-                <b>N02 · A missed request</b>
-                <p>
-                  Lite and chat did not request glucose; apex did at question 6.
-                  Revised D5c: 2 / 2 / 5. D3a: 5 / 5 / 5.
-                </p>
-                <span>
-                  Compare requests and uncertainty
-                  <ArrowRight size={14} />
-                </span>
-              </button>
-              <button onClick={() => open("C05", "arc:chat")}>
-                <b>C05 · A claim without a reply</b>
-                <p>
-                  Chat asked about provocation but received no details, then
-                  wrote “unprovoked”. Revised D5c: 5; D3a: 4.
-                </p>
-                <span>
-                  Read the answer and its evidence
-                  <ArrowRight size={14} />
-                </span>
-              </button>
-              <button onClick={() => open("N04_INITIAL", "arc:apex")}>
-                <b>N04 · A simulator mismatch</b>
-                <p>
-                  Apex asked about infection results; the simulator did not
-                  return them. That request was credited in regrading.
-                </p>
-                <span>
-                  Separate requests from returned records
-                  <ArrowRight size={14} />
-                </span>
-              </button>
-            </div>
-          </section>
           <details className="study-disclosure">
             <summary>
               <BookOpen size={15} />
@@ -481,38 +500,18 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
         <p role="status">Loading interview…</p>
       ) : (
         <>
-          <div className="study-toolbar detail-toolbar">
-            <label>
-              Case
-              <select
-                aria-label="Study case"
-                value={record.case_id}
-                onChange={(e) => open(e.target.value, record.model)}
-              >
-                {data.cases.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.id.replace("_INITIAL", "")} — {c.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Answering model
-              <select
-                aria-label="Study answering model"
-                value={record.model}
-                onChange={(e) => open(record.case_id, e.target.value)}
-              >
-                {data.models.map((m) => (
-                  <option key={m}>{m}</option>
-                ))}
-              </select>
-            </label>
-            <Download name={`case-${record.case_id}.txt`}>
-              Full case output
-            </Download>
+          <p className="result-finding">
+            <b>Interview finding</b>
+            {record.request_observation}
+          </p>
+          <div className="study-toolbar review-actions">
+            {reviewId && (
+              <a className="primary" href={`#review/${reviewId}`}>
+                Review this case
+              </a>
+            )}
             <button
-              className="primary"
+              className="secondary"
               onClick={() =>
                 onUseInterview(`${record.case_id}/${record.model_slug}`)
               }
@@ -520,17 +519,52 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
               Use in new evaluation
             </button>
             {reviewId && (
-              <a className="secondary" href={`#review/${reviewId}`}>
-                Review without machine results
-              </a>
+              <ExportLinks
+                id={reviewId}
+                raw={fileUrl(`case-${record.case_id}.txt`)}
+              >
+                <a href={record.source_download} download>
+                  Source JSON
+                </a>
+                <Download name="all-output.txt" className="">
+                  All saved visible outputs
+                </Download>
+              </ExportLinks>
             )}
           </div>
-          {reviewId && (
-            <ExportLinks
-              id={reviewId}
-              raw={fileUrl(`case-${record.case_id}.txt`)}
-            />
-          )}
+          <details className="study-disclosure switch-interview">
+            <summary>
+              Change case or model <span>{record.model}</span>
+            </summary>
+            <div className="study-toolbar detail-toolbar">
+              <label>
+                Case
+                <select
+                  aria-label="Study case"
+                  value={record.case_id}
+                  onChange={(e) => open(e.target.value, record.model)}
+                >
+                  {data.cases.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.id.replace("_INITIAL", "")} — {c.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Answering model
+                <select
+                  aria-label="Study answering model"
+                  value={record.model}
+                  onChange={(e) => open(record.case_id, e.target.value)}
+                >
+                  {data.models.map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </details>
           <section className="study-opening">
             <span className="mini-label">
               PATIENT OPENING · GIVEN TO THE MODEL
@@ -687,10 +721,6 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                     separately.
                   </p>
                 </div>
-                <a className="secondary" href={record.source_download} download>
-                  <ArrowDownToLine size={14} />
-                  Source JSON
-                </a>
               </div>
               <div className="interview-turns">
                 {record.turns.map((turn) => (
@@ -961,9 +991,6 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
           MELD is a separate source-text similarity check and is not included in
           these rubric scores.
         </span>
-        <Download name="all-output.txt" className="text-button">
-          All saved visible outputs
-        </Download>
       </footer>
     </main>
   );

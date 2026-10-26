@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
   Decisions,
   ExportLinks,
+  ExportMenu,
   RuleView,
   TurnView,
   VersionLine,
@@ -104,32 +105,62 @@ export function Followup({ onUseData }) {
         <h1>
           {record
             ? `${record.model} · ${record.arm === "fresh" ? "Corrected interview" : "Saved interview"}`
-            : "What changed after the fixes?"}
+            : "Recurrent headache: model comparison"}
         </h1>
         <p>
           A 36-year-old woman with recurrent headache after a recent admission.
           Same case, six-question limit and arc:apex judge.
         </p>
       </div>
-      <VersionLine batch={record ? record.batch : "Saved and corrected N04"} />
+      <details className="study-disclosure run-details">
+        <summary>
+          Scoring & run details <span>Josh’s proposed rules · 24 Oct</span>
+        </summary>
+        <VersionLine
+          batch={record ? record.batch : "Saved and corrected N04"}
+        />
+      </details>
       <p className="study-note">
-        Clinical references and essential-information requirements remain
-        candidates awaiting Josh’s confirmation.
+        References and essential requirements await Josh’s confirmation.
       </p>
       {!selected ? (
         <>
+          <section className="study-section followup-finding">
+            <span className="mini-label">MAIN FINDING</span>
+            <h2>Information-seeking scores varied: 2, 2, 5.</h2>
+            <p>
+              Three calls to the same judge, using the same saved lite
+              interview, disagreed on whether a general CSF-results request met
+              the infection-information requirement. It returned cell count and
+              protein, without PCR/culture/serology.
+            </p>
+            <p>
+              Problem representation (D3a) received 5 in every repeat for all
+              three models, before and after the return fixes.
+            </p>
+            <button
+              className="secondary"
+              onClick={() =>
+                open(
+                  data.records.find(
+                    (r) => r.arm === "fresh" && r.model === "arc:lite",
+                  ).id,
+                )
+              }
+            >
+              Read the exact question and replies
+            </button>
+          </section>
           <div className="study-toolbar">
             <p>
               Three repeated grades for each fixed answer and interview. These
               are related trajectories from one patient case.
             </p>
-            <a
-              className="secondary"
-              href="/api/study/files/followup-output.txt"
-              download
-            >
-              Full raw output
-            </a>
+            <ExportMenu>
+              <a href="/api/study/files/followup-output.txt" download>
+                Full raw output
+              </a>
+            </ExportMenu>
           </div>
           <div
             className="comparison-wrap"
@@ -164,12 +195,14 @@ export function Followup({ onUseData }) {
                             onClick={() => open(row.id)}
                             aria-label={`Inspect ${model} ${arm === "fresh" ? "corrected" : "saved"} N04 interview`}
                           >
-                            <span className="repeat-line">
-                              <b>D5c</b> {repeats(row.scores.D5c)}
-                            </span>
-                            <span className="repeat-line">
-                              <b>D3a</b> {repeats(row.scores.D3a)}
-                            </span>
+                            {["D5c", "D3a"].map((cid) => (
+                              <span className="repeat-line" key={cid}>
+                                <b>
+                                  {items[cid]} <small>({cid})</small>
+                                </b>
+                                <strong>{repeats(row.scores[cid])}</strong>
+                              </span>
+                            ))}
                             <span className="compare-observation">
                               {row.observation}
                             </span>
@@ -186,27 +219,6 @@ export function Followup({ onUseData }) {
               </tbody>
             </table>
           </div>
-          <section className="study-section followup-finding">
-            <h2>Why lite received 2, 2 and 5</h2>
-            <p>
-              Its prior-CSF question returned cell count and protein, without
-              PCR/culture/serology. Two calls treated infection seeking as
-              unmet; the third accepted the CSF request as equivalent. The
-              actual grading input was identical within the three repeats.
-            </p>
-            <button
-              className="secondary"
-              onClick={() =>
-                open(
-                  data.records.find(
-                    (r) => r.arm === "fresh" && r.model === "arc:lite",
-                  ).id,
-                )
-              }
-            >
-              Read the exact question and replies
-            </button>
-          </section>
           <section className="study-section">
             <h2>Separate availability checks</h2>
             <p>
@@ -243,26 +255,29 @@ export function Followup({ onUseData }) {
         <p role="status">Loading interview…</p>
       ) : (
         <>
-          <div className="study-toolbar">
+          <p className="result-finding">
+            <b>Interview finding</b>
+            {record.observation}
+          </p>
+          <div className="study-toolbar review-actions">
+            <a className="primary" href={`#review/${record.id}`}>
+              Review this case
+            </a>
             <button className="secondary" onClick={copy}>
               Use as new evaluation
             </button>
-            <a className="secondary" href={`#review/${record.id}`}>
-              Review without machine results
-            </a>
             <ExportLinks
               id={record.id}
               raw="/api/study/files/followup-output.txt"
             />
           </div>
-          <section className="study-opening">
-            <span className="mini-label">INFORMATION AT THE START</span>
+          <details className="study-disclosure case-context">
+            <summary>Case information & task</summary>
+            <h3>Information at the start</h3>
             <pre>{record.data.facts}</pre>
-            <details>
-              <summary>Original task</summary>
-              <pre>{record.data.task}</pre>
-            </details>
-          </section>
+            <h3>Original task</h3>
+            <pre>{record.data.task}</pre>
+          </details>
           <nav className="study-tabs" aria-label="Follow-up sections">
             {[
               ["evidence", "Evidence & requirements"],
@@ -375,7 +390,7 @@ export function Followup({ onUseData }) {
               {Object.entries(record.scores).map(([cid, grades]) => (
                 <section key={cid}>
                   <h2>
-                    {cid} · {items[cid]} · {repeats(grades)}
+                    {items[cid]} ({cid}) · {repeats(grades)}
                   </h2>
                   <RuleView cid={cid} rule={record.rules[cid]} />
                   {grades.map((g) => {

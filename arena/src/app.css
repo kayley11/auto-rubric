@@ -744,19 +744,24 @@ main {
   top: calc(100% + 6px);
   background: white;
   z-index: 5;
-  width: 169px;
+  width: 225px;
+  max-width: calc(100vw - 40px);
   box-shadow: 0 8px 30px #17203315;
   border: 1px solid var(--line);
   padding: 5px;
   border-radius: 8px;
 }
-.export-menu a {
+.export-menu a,
+.export-menu > div > button {
   display: block;
+  width: 100%;
+  text-align: left;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: 13px;
   border-radius: 4px;
 }
-.export-menu a:hover {
+.export-menu a:hover,
+.export-menu > div > button:hover {
   background: #e8eef5;
 }
 .result-meta {
@@ -1738,8 +1743,9 @@ main {
 }
 .compare-grades {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
 }
 .compare-observation {
   display: block;
@@ -1753,9 +1759,10 @@ main {
   display: flex;
   align-items: baseline;
   gap: 7px;
+  justify-content: space-between;
 }
 .compare-grades small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .compare-grades strong {
@@ -2579,15 +2586,26 @@ main {
   width: 43%;
 }
 .repeat-line {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
   margin-bottom: 7px;
   font-size: 15px;
   color: #172033;
 }
 .repeat-line b {
-  font-size: 11px;
-  margin-right: 10px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--muted);
+}
+.repeat-line small {
+  font-size: inherit;
+}
+.repeat-line strong {
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .followup-finding,
 .blind-rating,
@@ -2820,5 +2838,183 @@ main {
   }
   .review-progress {
     align-items: start;
+  }
+}
+
+/* Keep the case and the next action ahead of optional configuration. */
+.evaluation-page {
+  padding-top: 24px;
+}
+.evaluation-page:not(.saved-evaluation) .page-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 18px;
+  align-items: center;
+}
+.evaluation-page:not(.saved-evaluation) .page-heading > .eyebrow {
+  display: none;
+}
+.evaluation-page:not(.saved-evaluation) .page-heading h1,
+.evaluation-page:not(.saved-evaluation) .page-heading > p {
+  grid-column: 1;
+}
+.evaluation-page:not(.saved-evaluation) .intake-switch {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  margin: 0;
+}
+.evaluation-page .page-heading h1 {
+  margin: 7px 0;
+  font-size: 28px;
+}
+.evaluation-page .intake-switch {
+  margin-top: 14px;
+}
+.evaluation-page .steps {
+  margin: 18px 0;
+}
+.evaluation-page .case-panel {
+  padding: 20px 24px;
+  border-color: #c3ccd7;
+}
+.evaluation-page .panel-heading {
+  margin-bottom: 14px;
+}
+.evaluation-page .case-library {
+  margin-bottom: 14px;
+}
+.evaluation-page .case-text {
+  min-height: 128px;
+}
+.evaluation-page .extra-context > summary {
+  font-size: 13px;
+}
+.extra-context > summary span {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+  align-items: baseline;
+}
+.extra-context > summary small {
+  font-size: 12px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 45ch;
+}
+.evaluation-page .action-panel {
+  padding-top: 12px;
+}
+.evaluation-options {
+  border-bottom: 1px solid var(--line);
+}
+.evaluation-options > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 0;
+  font-size: 13px;
+}
+.evaluation-options > summary > span:not(:first-child) {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: auto;
+  text-align: right;
+}
+.evaluation-options-body {
+  padding: 12px 0;
+}
+.evaluation-options-body .rule-selection {
+  margin: 0 0 16px;
+}
+.evaluation-options-body .action-top {
+  margin-bottom: 12px;
+}
+.evaluation-options-body .model-summary {
+  font-size: 13px;
+}
+.evaluation-page .controls-row {
+  border: 0;
+  padding: 16px 0 8px;
+}
+.run-details {
+  padding: 10px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.run-details > summary > span,
+.switch-interview > summary > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: auto;
+  text-align: right;
+}
+.run-details[open] > .study-meta,
+.run-details[open] > .version-line {
+  margin-top: 12px;
+}
+.result-finding {
+  margin-top: 16px;
+  padding: 15px 18px;
+  border-left: 3px solid var(--accent);
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.result-finding > b {
+  display: block;
+  margin-bottom: 4px;
+}
+.review-actions {
+  justify-content: flex-start;
+}
+.study-toolbar > .export-menu,
+.review-actions > .export-menu {
+  margin-left: auto;
+}
+.review-toolbar {
+  flex-wrap: wrap;
+}
+.followup-finding h2 {
+  margin-top: 5px;
+  max-width: 60ch;
+}
+.followup-finding .secondary {
+  margin-top: 14px;
+}
+.interview-options {
+  margin-bottom: 18px;
+}
+.patient-setup > .decision-grid {
+  grid-template-columns: 1fr;
+}
+.interview-options[open] > .decision-grid {
+  margin-top: 12px;
+}
+@media (max-width: 700px) {
+  .evaluation-page:not(.saved-evaluation) .page-heading {
+    display: block;
+  }
+  .evaluation-page:not(.saved-evaluation) .intake-switch {
+    margin-top: 12px;
+  }
+  .evaluation-page .case-panel {
+    padding: 17px;
+  }
+  .evaluation-options > summary,
+  .run-details > summary,
+  .switch-interview > summary {
+    flex-wrap: wrap;
+  }
+  .evaluation-options > summary > span:not(:first-child),
+  .run-details > summary > span {
+    text-align: left;
+    margin-left: 0;
+  }
+  .extra-context > summary small {
+    max-width: 24ch;
   }
 }
