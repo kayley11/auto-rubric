@@ -59,7 +59,7 @@ export function EvaluationEvidence({
       <div className="panel-heading">
         <h2>Interview evidence & candidate requirements</h2>
         <span className="pending-tag">
-          Requirements await Josh’s confirmation
+          Requirements are awaiting confirmation
         </span>
       </div>
       <p className="evidence-intro">
@@ -346,7 +346,7 @@ export function EvaluationEvidence({
               />
             </label>
             <p className="helper">
-              Requirement ID: {r.id} · Awaiting Josh’s confirmation
+              Requirement ID: {r.id} · awaiting confirmation
             </p>
             {!frozen && (
               <button

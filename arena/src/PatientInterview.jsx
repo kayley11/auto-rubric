@@ -109,13 +109,13 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
           rules={
             (run?.rubric_version?.id || version) === "original"
               ? "Original rubric"
-              : "Josh’s proposal · 24 Oct"
+              : "Proposed rules · 24 Oct"
           }
           evidence="Corrected fixed-fact routing · 25 Oct"
           batch={run ? "New saved interview" : "Eight prepared cases"}
         />
         <p className="study-note">
-          References and information requirements await Josh’s confirmation.
+          References and information requirements are awaiting confirmation.
           This mode tests information seeking; it does not establish whether a
           model has seen a source case before.
         </p>
@@ -154,7 +154,7 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
               <span>
                 {version === "original"
                   ? "Original rubric"
-                  : "Josh’s proposed D3a / D5c"}{" "}
+                  : "Proposed D3a / D5c · awaiting confirmation"}{" "}
                 · {model} / {judge}
               </span>
               <ChevronDown size={15} />
@@ -169,7 +169,7 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
                 >
                   <option value="original">Original rubric</option>
                   <option value={revisedId}>
-                    Josh’s proposed D3a / D5c · 24 Oct
+                    Proposed D3a / D5c · awaiting confirmation · 24 Oct
                   </option>
                 </select>
               </label>

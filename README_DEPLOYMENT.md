@@ -1,4 +1,8 @@
-# AutoRubric local deployment
+# AutoRubric deployment
+
+The [public clinical workspace](https://auto-rubric.kayley1026lzt.chatgpt.site) uses Sites for the interface and a protected connection to the existing Python backend. Saved results are public; generation, scoring and review saving require an account and the host computer online. See the [hosting guide](arena/hosting/README.md), [中文使用说明](arena/hosting/USAGE_CN.md) and [verified deployment outputs](arena/validation/20261026-public/README.md). Clinical references and candidate information requirements remain **awaiting confirmation**.
+
+The sections below describe installing and running a local copy. A GitHub clone does not include the deployed site's accounts or connection secrets.
 
 This project is based on **AutoRubric v1.5.3**. The setup script creates an isolated Python 3.12 environment in `.venv` using dependencies pinned by the official `uv.lock`.
 

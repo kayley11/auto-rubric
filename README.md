@@ -6,7 +6,11 @@ This repository builds on **AutoRubric v1.5.3** and provides a ready-to-configur
 
 The [clinical reasoning experiments](experiments/clinical_reasoning_pilot/README.md) include the original rubric pilot, six new cases, separate MELD checks and the latest eight-case comparison across three models. Start with the [three short English reports and complete results](experiments/clinical_reasoning_pilot/studies/20261023/README.md). Saved answers, item scores, judge explanations and earlier comparison rounds are included; clinical references remain provisional.
 
-The [clinical workspace](arena/README.md) supports original or proposed D3a/D5c rules, eight fixed-fact patient interviews, evidence checks, clinical-decision records, independent human review and export. The study page includes the 25 October N04 follow-up and repeated scores alongside the original 24-interview comparison. After setup, run `./run-ui.sh` and open **http://127.0.0.1:8765**. The homepage puts case input first, settings expand on demand, results show criterion names and main findings, and human review is the main action with downloads grouped under Export. See the [26 October interface update and validation](arena/validation/20261026-ui/README.md); the [25 October validation and complete outputs](arena/validation/20261025-ui/README.md) and [24 October validation](arena/validation/20261024/README.md) are retained. New private case records and API credentials remain local; the shared research snapshots are included. Clinical references and candidate information requirements await Josh’s confirmation.
+Public website: **[AutoRubric clinical workspace](https://auto-rubric.kayley1026lzt.chatgpt.site)**. Saved results are public; generation, scoring and review saving require an authorised account. The Python backend runs on the host computer, so live evaluations need that computer and its tunnel online. No paid hosting service was opened. See the [public deployment and access guide](arena/hosting/README.md), [中文使用说明](arena/hosting/USAGE_CN.md), and [deployment validation with complete outputs](arena/validation/20261026-public/README.md). API keys and access passwords are not included in this repository.
+
+The [clinical workspace](arena/README.md) supports original or proposed D3a/D5c rules, eight fixed-fact patient interviews, evidence checks, independent human review and export. The study includes the 25 October N04 follow-up and repeated scores alongside the original 24-interview comparison. Case input comes first; settings expand on demand; results show criterion names and main findings. Clinical references and candidate information requirements remain **awaiting confirmation**. Historical outputs and internal version IDs are preserved; public display labels use generic wording.
+
+For local use, run `./run-ui.sh` after setup and open **http://127.0.0.1:8765**. The [26 October interface validation](arena/validation/20261026-ui/README.md), [25 October complete outputs](arena/validation/20261025-ui/README.md) and [24 October validation](arena/validation/20261024/README.md) remain available. New private evaluations stay local and are not automatically added to the public study.
 
 ## Quick start
 
@@ -58,6 +62,8 @@ Rubrics support AutoRubric YAML or JSON. Text files use UTF-8, and `--query-file
 | `run.sh` | Run configuration checks, offline verification, or live grading |
 | `local/run.py` | English grading runner |
 | `run-ui.sh`, `arena/` | Local clinical evaluation UI, model connection and human review |
+| `arena/hosting/` | Public Site gateway, deployment preparation and usage guides |
+| `arena/validation/20261026-public/` | Public deployment checks and complete non-secret validation outputs |
 | `local/.env.example` | KCL connection settings with a blank API key |
 | `local/rubric.yaml` | Sample weighted rubric |
 | `local/query.txt`, `local/answer.txt` | Sample question and answer |

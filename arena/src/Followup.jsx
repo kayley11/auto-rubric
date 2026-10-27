@@ -114,14 +114,14 @@ export function Followup({ onUseData }) {
       </div>
       <details className="study-disclosure run-details">
         <summary>
-          Scoring & run details <span>Josh’s proposed rules · 24 Oct</span>
+          Scoring & run details <span>Proposed rules · 24 Oct</span>
         </summary>
         <VersionLine
           batch={record ? record.batch : "Saved and corrected N04"}
         />
       </details>
       <p className="study-note">
-        References and essential requirements await Josh’s confirmation.
+        References and essential requirements are awaiting confirmation.
       </p>
       {!selected ? (
         <>

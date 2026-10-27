@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { displayData, displayText } from "./presentation.mjs";
+import { requestSignIn } from "./AccessControl";
 import { BookOpen, ChevronDown, Download } from "lucide-react";
 
 export async function request(path, body) {
@@ -13,9 +15,12 @@ export async function request(path, body) {
         },
   );
   const value = await response.json();
+  requestSignIn(response);
   if (!response.ok)
-    throw new Error(value.error || "The request could not be completed.");
-  return value;
+    throw new Error(
+      displayText(value.error || "The request could not be completed."),
+    );
+  return displayData(value);
 }
 
 export function exposure(id, kind) {
@@ -78,7 +83,7 @@ export function RuleView({ cid, rule }) {
 }
 
 export function VersionLine({
-  rules = "Josh’s proposal · 24 Oct",
+  rules = "Proposed rules · 24 Oct",
   evidence = "Cleaned inputs · 25 Oct",
   batch,
 }) {
@@ -402,7 +407,7 @@ export function Decisions({ id, onUseData }) {
               setForm({ ...form, reviewer: e.target.value });
             }}
             required
-            placeholder="Name or initials"
+            placeholder="Reviewer ID, e.g. R01"
           />
         </label>
         {data.profile.requirements.map((req) => {

@@ -69,7 +69,7 @@ class Reviews:
     def save_requirements(self, packet, body):
         reviewer = text(body.get("reviewer", ""), "Reviewer", 150)
         if not reviewer:
-            raise ValueError("Enter the reviewer’s name or initials.")
+            raise ValueError("Enter a reviewer ID.")
         decisions = body.get("decisions", {})
         if not isinstance(decisions, dict):
             raise ValueError("Invalid clinical decisions.")
@@ -134,7 +134,7 @@ class Reviews:
     def save_rating(self, packet, body):
         reviewer = text(body.get("reviewer", ""), "Reviewer", 150)
         if not reviewer:
-            raise ValueError("Enter the reviewer’s name or initials.")
+            raise ValueError("Enter a reviewer ID.")
         previous = self.rating(packet) or {}
         items = deepcopy(previous.get("items", {}))
         submitted = body.get("items", {})

@@ -257,7 +257,7 @@ export function Review() {
                   required
                   value={reviewer}
                   onChange={(e) => setReviewer(e.target.value)}
-                  placeholder="Name or initials"
+                  placeholder="Reviewer ID, e.g. R01"
                 />
               </label>
               <label className="field">

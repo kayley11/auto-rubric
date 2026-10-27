@@ -11,6 +11,24 @@ env:
   LITELLM_LOCAL_MODEL_COST_MAP: "True"
 
 jobs:
+  workspace:
+    name: Clinical workspace
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: arena
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: arena/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:sites
+      - run: node --test tests/hosting-worker.test.mjs tests/presentation.test.mjs
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

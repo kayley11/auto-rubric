@@ -23,6 +23,8 @@ import {
   X,
 } from "lucide-react";
 import "./app.css";
+import { AccessControl, requestSignIn } from "./AccessControl";
+import { displayData, displayText } from "./presentation.mjs";
 import { Study } from "./Study";
 import { Review } from "./Review";
 import { PatientInterview } from "./PatientInterview";
@@ -98,8 +100,9 @@ async function api(path, body) {
         },
   );
   const data = await r.json();
-  if (!r.ok) throw new Error(data.error || "The request failed.");
-  return data;
+  requestSignIn(r);
+  if (!r.ok) throw new Error(displayText(data.error || "The request failed."));
+  return displayData(data);
 }
 function IconButton({ label, children, ...props }) {
   return (
@@ -212,8 +215,8 @@ export function App() {
         setHistory(h);
         let draft;
         try {
-          draft = JSON.parse(
-            localStorage.getItem("autorubric-draft") || "null",
+          draft = displayData(
+            JSON.parse(localStorage.getItem("autorubric-draft") || "null"),
           );
         } catch {
           /* Start clean. */
@@ -447,7 +450,7 @@ export function App() {
       Object.keys(run.grades || {}).forEach((cid) => seen.current.add(cid));
       const r = await fetch(`/api/runs/${run.id}/txt`);
       if (!r.ok) throw new Error("Could not load the saved output.");
-      setPlain(await r.text());
+      setPlain(displayText(await r.text()));
       setDialog("plain");
     } catch (e) {
       setError(e.message);
@@ -565,7 +568,7 @@ export function App() {
             </div>
             <div className="sidebar-bottom">
               <button onClick={() => setDialog("rubric")}>
-                <BookOpen size={16} /> Josh’s rubric <span>22 items</span>
+                <BookOpen size={16} /> Clinical rubric <span>22 items</span>
               </button>
               <button onClick={() => setDialog("settings")}>
                 <Settings2 size={16} /> Model settings
@@ -574,11 +577,17 @@ export function App() {
                 <span
                   className={`status-dot ${config?.settings.configured ? "ok" : ""}`}
                 />
-                {config?.settings.configured
-                  ? "API configured"
-                  : "Checking configuration"}
+                {config?.access?.online === false
+                  ? "Saved study available"
+                  : config?.settings.configured
+                    ? "API configured"
+                    : "Checking configuration"}
               </p>
-              <small>Runs saved on this computer</small>
+              <small>
+                {config?.access?.hosted
+                  ? "Member evaluations are private"
+                  : "Runs saved on this computer"}
+              </small>
             </div>
           </>
         )}
@@ -603,9 +612,15 @@ export function App() {
                     : "Clinical reasoning evaluation"}
             </span>
           </div>
-          <button className="subtle-button" onClick={() => setDialog("about")}>
-            <CircleHelp size={16} /> How it works
-          </button>
+          <div>
+            <AccessControl access={config?.access} />
+            <button
+              className="subtle-button"
+              onClick={() => setDialog("about")}
+            >
+              <CircleHelp size={16} /> How it works
+            </button>
+          </div>
         </header>
         {view === "study" ? (
           <Study onUseInterview={importInterview} onUseData={useData} />
@@ -621,7 +636,7 @@ export function App() {
         ) : (
           <main className={`evaluation-page ${run ? "saved-evaluation" : ""}`}>
             <div className="page-heading">
-              <span className="eyebrow">JOSH’S RUBRIC · AUTORUBRIC</span>
+              <span className="eyebrow">CLINICAL REASONING · AUTORUBRIC</span>
               <h1>{run ? form.title : "Evaluate a clinical case."}</h1>
               <p>
                 {run
@@ -682,12 +697,21 @@ export function App() {
                 </IconButton>
               </div>
             )}
-            {config && !config.settings.configured && (
-              <div className="notice">
-                Add your API key to the existing repository .env file, then
-                restart the app.
-              </div>
+            {config?.access?.online === false && (
+              <p className="error-banner">
+                The host computer is offline. Saved study results remain
+                available; new evaluations and review saving will resume when it
+                is online.
+              </p>
             )}
+            {config &&
+              !config.settings.configured &&
+              !config.access?.hosted && (
+                <div className="notice">
+                  Add your API key to the existing repository .env file, then
+                  restart the app.
+                </div>
+              )}
             <div
               className={`input-layout ${form.answer || run || mode === "paste" ? "with-answer" : ""}`}
             >
@@ -808,7 +832,7 @@ export function App() {
                       }
                     >
                       <option value="draft">
-                        Draft — awaiting Josh’s confirmation
+                        Draft — awaiting confirmation
                       </option>
                       <option value="clinician_checked">
                         Clinician checked
@@ -938,8 +962,8 @@ export function App() {
                     </label>
                     <p>
                       {revised
-                        ? "New D3a assesses the received evidence and final synthesis. New D5c assesses actual information requests against a frozen candidate checklist. Clinical references and requirements await Josh’s confirmation."
-                        : "Uses the original anchors. Choose Josh’s proposed version to assess D3a and D5c with the revised evidence rules."}
+                        ? "New D3a assesses the received evidence and final synthesis. New D5c assesses actual information requests against a frozen candidate checklist. Clinical references and requirements are awaiting confirmation."
+                        : "Uses the original anchors. Choose the proposed version to assess D3a and D5c with the revised evidence rules."}
                     </p>
                   </section>
                   <div className="action-top">
@@ -1153,7 +1177,7 @@ export function App() {
                       Reviewer
                       <input
                         value={review.reviewer || ""}
-                        placeholder="Name or initials"
+                        placeholder="Reviewer ID, e.g. R01"
                         onChange={(e) => {
                           setReview({ ...review, reviewer: e.target.value });
                           setSaved(false);
@@ -1321,7 +1345,7 @@ export function App() {
                   : dialog === "settings"
                     ? "Model settings"
                     : dialog === "rubric"
-                      ? "Josh’s rubric"
+                      ? "Clinical rubric"
                       : "How it works"
             }
             className={`modal ${dialog === "plain" || dialog === "rubric" ? "wide" : ""}`}
@@ -1335,7 +1359,7 @@ export function App() {
                     : dialog === "settings"
                       ? "Model settings"
                       : dialog === "rubric"
-                        ? "Josh’s clinical reasoning rubric"
+                        ? "Clinical reasoning rubric"
                         : "How it works"}
               </h2>
               <IconButton
@@ -1359,10 +1383,11 @@ export function App() {
                     history.
                   </li>
                   <li>
-                    <b>Evaluate with Josh’s rubric.</b> AutoRubric asks the
-                    judge to assess each selected item separately with the saved
-                    rule version. Proposed D3a uses received evidence; proposed
-                    D5c uses actual requests and candidate requirements.
+                    <b>Evaluate with the clinical rubric.</b> AutoRubric asks
+                    the judge to assess each selected item separately with the
+                    saved rule version. Proposed D3a uses received evidence;
+                    proposed D5c uses actual requests and candidate
+                    requirements.
                   </li>
                   <li>
                     <b>Review and export.</b> Read the reasons, add human
@@ -1374,6 +1399,13 @@ export function App() {
                   selected item uses one API request. Failed requests can be
                   retried without regenerating the answer.
                 </p>
+                {config?.access?.hosted && (
+                  <p>
+                    Saved study results are public. Sign in to generate, score
+                    or save a review. Public downloads remove historical name
+                    labels; the original archives are retained locally.
+                  </p>
+                )}
               </div>
             )}
             {dialog === "settings" && (
@@ -1508,7 +1540,7 @@ export function App() {
                 <p className="dialog-intro">
                   {activeVersion?.label || "Original rubric"}.{" "}
                   {revised
-                    ? "Josh’s proposed rules replace D3a and D5c, with all five anchors supplied. Other items retain their original descriptions."
+                    ? "Proposed rules replace D3a and D5c, with all five anchors supplied. Other items retain their original descriptions."
                     : "Missing intermediate descriptors are left missing."}{" "}
                   Safety Fail is flagged when an assessed D6a or D6b score is 1
                   or 2.

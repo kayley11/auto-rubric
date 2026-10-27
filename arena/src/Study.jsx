@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { displayData, displayText } from "./presentation.mjs";
 import {
   ArrowLeft,
   ArrowRight,
@@ -42,14 +43,16 @@ async function get(path) {
   const value = await response.json();
   if (!response.ok)
     throw new Error(value.error || "Could not load the saved study.");
-  return value;
+  return displayData(value);
 }
 function readSelection() {
   const match = window.location.hash.match(/^#study\/([A-Z0-9_]+)\/([a-z-]+)$/);
   return match ? { caseId: match[1], model: match[2] } : null;
 }
 function text(value) {
-  return typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  return displayText(
+    typeof value === "string" ? value : JSON.stringify(value, null, 2),
+  );
 }
 function SavedAnswer({ value }) {
   return (
@@ -282,7 +285,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
   const currentRules = selection
     ? "Original + proposed revision"
     : version === "revised"
-      ? "Josh’s proposed revision · 24 Oct 2026"
+      ? "Proposed revision · 24 Oct 2026"
       : "Original rubric";
   return (
     <main className="study">
@@ -324,8 +327,8 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
           </span>
         </div>
         <p className="study-note">
-          Candidate essentials for the revision await Josh’s review. Interviews
-          and answers are unchanged; these are saved results.
+          Candidate essentials for the revision are awaiting confirmation.
+          Interviews and answers are unchanged; these are saved results.
         </p>
       </details>
 
@@ -803,8 +806,8 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                 <div>
                   <h2>Same answer, two scoring conditions</h2>
                   <p>
-                    New grades use Josh’s proposed anchors and the frozen
-                    candidate requirements.
+                    New grades use the proposed anchors and the frozen candidate
+                    requirements.
                   </p>
                 </div>
                 <label className="checkbox-label">
@@ -911,7 +914,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
               <p className="study-note">
                 These requirements were fixed before exploratory regrading.
                 Their clinical necessity and acceptable alternatives await
-                Josh’s review.
+                confirmation.
               </p>
               <div className="requirement-list">
                 {selectedCase.requirements.map((r) => (
@@ -936,7 +939,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                 ))}
               </div>
               <h2 className="study-subheading">
-                Josh’s proposed rules · used for the new grades
+                Proposed rules · used for the new grades
               </h2>
               {["D5c", "D3a"].map((item) => (
                 <Rule key={item} item={item} data={data} version="revised" />

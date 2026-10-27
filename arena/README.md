@@ -1,6 +1,8 @@
 # AutoRubric clinical workspace
 
-A local interface for entering a case, generating or pasting an answer, and evaluating it with Josh’s original rubric or his proposed D3a/D5c revision.
+An interface for entering a case, generating or pasting an answer, and evaluating it with the original rubric or the proposed D3a/D5c revision.
+
+Public website: **https://auto-rubric.kayley1026lzt.chatgpt.site**. Saved results are public; generating, scoring and saving reviews require an authorised account and the host backend online. See the [public hosting guide](hosting/README.md), [中文使用说明](hosting/USAGE_CN.md) and [deployment checks with complete outputs](validation/20261026-public/README.md). The local workflow below remains available.
 
 From the repository root:
 
@@ -8,9 +10,9 @@ From the repository root:
 ./run-ui.sh
 ```
 
-Open **http://127.0.0.1:8765**. The launcher builds the interface and starts the Python server. It uses the existing `.venv` and repository `.env`; on a fresh checkout, run `./setup.sh` first. Node.js and npm are needed to build the interface. `./run-ui.sh --port 8766` selects another port.
+Open **http://127.0.0.1:8765**. The launcher builds the interface and starts the Python server. It uses the existing `.venv` and repository `.env`; on a fresh checkout, run `./setup.sh` first. Node.js and npm are needed to build the interface. `./run-ui.sh --port 8767` selects another port; the current public backend uses loopback port 8766.
 
-1. Enter case facts, or use **Load a prepared case** for N01–N06. N04 includes an initial task and two follow-ups; N05 reviews multisystem investigations, and N06 audits a treatment timeline. The earlier pilot example is also available. Prepared cases load their own rubric selection and a reference marked **Draft — awaiting Josh’s confirmation**. Open **Task & reference** to edit the task, case name, earlier conversation and reference points.
+1. Enter case facts, or use **Load a prepared case** for N01–N06. N04 includes an initial task and two follow-ups; N05 reviews multisystem investigations, and N06 audits a treatment timeline. The earlier pilot example is also available. Prepared cases load their own rubric selection and a reference marked **Draft — awaiting confirmation**. Open **Task & reference** to edit the task, case name, earlier conversation and reference points.
 2. Generate an answer, or select **Paste answer**. Generated answers can be edited before evaluation.
 3. Open **Settings** to choose the scoring rules, relevant rubric items and models, then evaluate. The active version remains visible while settings are collapsed. Each item makes one sequential model request.
 4. Use **Review this case/answer** for human review. Where available, the independent workflow keeps machine results hidden; **Rate alongside results** retains the inline rating form. **Export** groups the review summary, blank sheet, full raw output and available legacy formats. In written evaluations, **Export → Open plain text** previews the saved output.
@@ -27,7 +29,7 @@ N04’s prepared evidence and neutral follow-ups reuse one fixed saved initial i
 
 Failed or interrupted scoring resumes without regenerating the answer or replacing completed grades. Input changes after scoring require a new evaluation. Human grades are saved separately; the record notes whether machine scores had already been shown. Hiding previously viewed results does not make a review independent.
 
-This version runs on this computer and binds only to `127.0.0.1`. It does not include public hosting or shared accounts. Clinical reference points and author-dependent rubric choices can be checked in the review fields. The static Sites scaffold is unused by the Python backend; publishing the frontend alone would not enable model calls.
+The original `server.py` entry point stays local and binds to `127.0.0.1`. Public hosting uses the separate `public_server.py` entry point, member accounts and a protected tunnel; the Sites gateway also serves a public study snapshot during backend downtime. Account configuration, private evaluations and API keys remain local. The original local Sites scaffold is preserved; the live proxy is maintained separately in `hosting/worker.js`.
 
 ### Saved interview study
 
@@ -43,7 +45,7 @@ Open a record to follow **requirement → question → returned evidence → jud
 
 ### New evaluations with the proposed rules
 
-Open **Settings → Scoring rules → Josh’s proposed D3a / D5c**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
+Open **Settings → Scoring rules → Proposed D3a / D5c · awaiting confirmation**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
 
 Use **Reuse a saved interview → Load interview & answer** to load any of the 24 records, or enter your own actual requests and replies. Keep patient replies, returned records, pre-reply assessment notes and simulator feedback separate. Mark whether the transcript is complete and whether assessment notes were specified by the task. An incomplete transcript is not silently treated as a model failure.
 
@@ -54,13 +56,13 @@ New evaluations use `availability-clarified-20261025`: answering-model names and
 
 `patient_matching.py` supplies admission-context and specific-report routing corrections for research replay and future interviews. A discharge-medication request does not receive inpatient-treatment records, and a treatment-response question does not release unasked initial symptoms. It does not rewrite saved study transcripts.
 
-Clinical references and candidate requirements remain **awaiting Josh’s confirmation**. The proposed scoring is exploratory under the declared checklist. The version, rubric snapshot, candidate list, input fingerprint and actual grading payloads are saved with the run and included in exports. Changing the version or interview evidence requires a new evaluation; retries use the saved rubric snapshot. Existing files are not migrated or rescored automatically.
+Clinical references and candidate requirements remain **awaiting confirmation**. The proposed scoring is exploratory under the declared checklist. The version, rubric snapshot, candidate list, input fingerprint and actual grading payloads are saved with the run and included in exports. Changing the version or interview evidence requires a new evaluation; retries use the saved rubric snapshot. Existing files are not migrated or rescored automatically.
 
 The [24 October validation](validation/20261024/README.md) includes the actual N02 scoring run, full inputs and visible outputs, technical checks and interface screenshots. It is separate from the preserved study results.
 
-Each interview has an evidence check, the full conversation, the unchanged answer with old/new explanations, and the candidate requirements and scoring guides. “Not requested”, “unavailable in source” and “asked but not returned” are separate observations, not automatic clinical errors. The case inventory includes reviewer-only facts; revised D3a used only the evidence actually received. Candidate essentials, alternatives and deadlines remain subject to Josh’s review.
+Each interview has an evidence check, the full conversation, the unchanged answer with old/new explanations, and the candidate requirements and scoring guides. “Not requested”, “unavailable in source” and “asked but not returned” are separate observations, not automatic clinical errors. The case inventory includes reviewer-only facts; revised D3a used only the evidence actually received. Candidate essentials, alternatives and deadlines remain **awaiting confirmation**.
 
-**Export** contains the saved full raw text, case outputs, **Source JSON** and **Scores CSV** where applicable. Their bytes are checked against the import manifest. Raw files retain their original wording and pre-run metadata, including the author-rule snapshot’s preparation status. Browsing this study makes no model calls and does not write to the original runs.
+**Export** contains the saved full raw text, case outputs, **Source JSON** and **Scores CSV** where applicable. Original archives are checked against the import manifest and retain their original wording and pre-run metadata. The public backend produces display copies with historical name labels removed; it does not rewrite those archives. Browsing this study makes no model calls and does not write to the original runs.
 
 The study is self-contained in `arena/study-data/`; the running website does not depend on neighbouring research folders. To refresh that copy from the frozen research files, explicitly supply their location:
 
