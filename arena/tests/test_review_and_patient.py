@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import evidence
 import exports
 import patient
+import reviews as review_module
 import scoring
 import study
 from engine import Settings, judge_query, validate_input
@@ -138,6 +139,42 @@ def test_independent_ratings_preserve_order_exposure_and_each_save(tmp_path):
     body["items"] = {"D3a": {"score": "5", "note": "Cannot overwrite."}}
     with pytest.raises(ValueError, match="preserved"):
         store.save_rating(p, body)
+
+
+def test_review_save_order_survives_identical_timestamps_and_reload(tmp_path, monkeypatch):
+    original_datetime = review_module.datetime
+
+    class CoarseClock:
+        @staticmethod
+        def now(zone):
+            return original_datetime(2026, 10, 27, tzinfo=zone)
+
+    monkeypatch.setattr(review_module, "datetime", CoarseClock)
+    p = packet()
+    legacy = {
+        "id": "legacy",
+        "kind": "rating",
+        "target": p["id"],
+        "saved_at": "2026-10-28T00:00:00+00:00",
+        "items": {},
+    }
+    legacy_path = tmp_path / "legacy.json"
+    legacy_path.write_text(json.dumps(legacy), encoding="utf-8")
+    legacy_bytes = legacy_path.read_bytes()
+    store = Reviews(tmp_path)
+    body = {"reviewer": "R01", "items": {"D3a": {"score": "Indeterminate", "note": "Test only."}}}
+    first = store.save_rating(p, body)
+    first_bytes = (tmp_path / (first["id"] + ".json")).read_bytes()
+    body["items"] = {"D5c": {"score": "Indeterminate", "note": "Test only."}}
+    second = store.save_rating(p, body)
+    assert first["saved_at"] == second["saved_at"]
+    assert first["sequence"] == 1 and second["sequence"] == 2
+    reloaded = Reviews(tmp_path)
+    assert reloaded.rating(p)["id"] == second["id"]
+    assert reloaded.reveal(p)["rating"]["items"]["D5c"]["score"] == "Indeterminate"
+    assert [r.get("sequence", 0) for r in reloaded.history("rating", p["id"])] == [0, 1, 2, 3]
+    assert legacy_path.read_bytes() == legacy_bytes
+    assert (tmp_path / (first["id"] + ".json")).read_bytes() == first_bytes
 
 
 def test_requirement_review_is_separate_from_source_and_shared_across_models(tmp_path):

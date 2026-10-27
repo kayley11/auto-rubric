@@ -2,6 +2,7 @@
 
 import json
 import re
+import threading
 import uuid
 from copy import deepcopy
 from datetime import UTC, datetime
@@ -19,30 +20,38 @@ class Reviews:
     def __init__(self, root):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
+        self._append_lock = threading.RLock()
 
     def latest(self, kind, target):
-        return max(self.history(kind, target), key=lambda r: r["saved_at"], default=None)
+        records = self.history(kind, target)
+        return records[-1] if records else None
 
     def history(self, kind, target):
         records = [json.loads(p.read_text(encoding="utf-8")) for p in self.root.glob("*.json")]
         matching = [r for r in records if r["kind"] == kind and r["target"] == target]
-        return sorted(matching, key=lambda r: r["saved_at"])
+        return sorted(matching, key=lambda r: (r.get("sequence", 0), r["saved_at"]))
 
     def append(self, kind, target, value):
-        record = {
-            **value,
-            "id": uuid.uuid4().hex,
-            "kind": kind,
-            "target": target,
-            "saved_at": datetime.now(UTC).isoformat(),
-        }
-        path = self.root / (record["id"] + ".json")
-        temporary = path.with_suffix(".tmp")
-        temporary.write_text(
-            json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-        )
-        temporary.replace(path)
-        return record
+        with self._append_lock:
+            previous = self.history(kind, target)
+            sequence = max((r.get("sequence", 0) for r in previous), default=0) + 1
+            record = {
+                **value,
+                "id": uuid.uuid4().hex,
+                "kind": kind,
+                "target": target,
+                # A coarse clock can give multiple saves the same timestamp.
+                # Order new records explicitly; do not alter old files or times.
+                "sequence": sequence,
+                "saved_at": datetime.now(UTC).isoformat(),
+            }
+            path = self.root / (record["id"] + ".json")
+            temporary = path.with_suffix(".tmp")
+            temporary.write_text(
+                json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+            )
+            temporary.replace(path)
+            return record
 
     def profile_key(self, packet):
         data = packet["data"]

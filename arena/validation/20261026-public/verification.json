@@ -81,5 +81,29 @@
     "clinical_data_and_scores_changed": false,
     "accounts_and_runtime_secrets_changed": false,
     "new_model_calls": 0
+  },
+  "review_order_followup": {
+    "date": "2026-10-27",
+    "triggering_ci": "https://github.com/kayley11/auto-rubric/actions/runs/40429979519",
+    "observed_failure": "Windows: two review saves with identical timestamps could select an earlier record.",
+    "fix": "Append-only per-target sequence for new records; legacy files and timestamps preserved.",
+    "application_tests": 79,
+    "targeted_regression_tests": 2,
+    "same_timestamp_and_store_reload": "passed",
+    "legacy_review_bytes_unchanged": "passed",
+    "live_backend_restart_and_retained_session": {
+      "purpose": "Backend maintenance and retained-session outage check; no model calls or clinical ratings.",
+      "authenticated_before_restart": true,
+      "offline_config_uses_snapshot": true,
+      "public_study_with_retained_session_during_outage": 200,
+      "private_history_not_exposed_in_snapshot": true,
+      "private_run_during_outage": 503,
+      "same_session_valid_after_restart": true,
+      "private_run_available_after_restart": 200
+    },
+    "new_model_calls": 0,
+    "clinical_data_scores_and_references_changed": false,
+    "complete_repository_tests": 960,
+    "real_api_disabled_during_tests": true
   }
 }

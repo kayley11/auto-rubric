@@ -49,3 +49,11 @@ Clinical references and candidate information requirements are still **awaiting 
 A retained login cookie previously sent public-study reads to the offline backend and blocked browsing. Version 2 now falls back only to routes present in the public snapshot, including the empty public run list needed to open the interface. Private run URLs still return 503 during an outage, and no writes are accepted. Private records are retained locally and reappear after reconnection.
 
 The gateway’s six tests and the five presentation tests passed; [complete test output](offline-cookie-tests.txt) is retained. This check simulates the backend outage without interrupting the live server. No clinical data, scores, accounts or secrets changed, and no new model calls were made. The first GitHub sync passed all 11 CI jobs; the added CI job also checks future frontend builds and gateway tests.
+
+## Review save order — 27 October
+
+The follow-up CI exposed an intermittent Windows failure: two review saves could have identical timestamps, causing the reader to choose the earlier record. New review records now have a per-target save sequence; the reader uses that order. Existing files and their timestamps are not rewritten. A regression test fixes the clock, reloads the store and checks that both ratings remain available, while legacy files stay byte-identical. All 79 application tests passed locally; [targeted test output](review-order-tests.txt) is retained.
+
+The idle protected backend was restarted to apply this change. During the restart, an authenticated session could still read all 24 public interviews; a private run returned 503. After recovery, the same session could read the saved private run again. [Check results](review-order-and-outage-check.json) contain no session tokens or passwords. No new model calls or clinical ratings were made.
+
+The complete repository suite also passed: **960 tests**, with real API access disabled for the test process. [Complete test output](full-application-tests.txt) is retained.
