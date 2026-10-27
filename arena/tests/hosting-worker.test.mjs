@@ -6,6 +6,7 @@ const origin = "https://arena.example.test";
 const snapshot = {
   "/api/config": { file: "config.body", content_type: "application/json" },
   "/api/study": { file: "study.body", content_type: "application/json" },
+  "/api/runs": { file: "runs.body", content_type: "application/json" },
 };
 function environment(extra = {}) {
   return {
@@ -20,6 +21,7 @@ function environment(extra = {}) {
           return Response.json({ access: { online: false } });
         if (url.pathname === "/_public/study.body")
           return Response.json({ interviews: 24 });
+        if (url.pathname === "/_public/runs.body") return Response.json([]);
         return new Response("not found", { status: 404 });
       },
     },
@@ -72,6 +74,32 @@ test("offline writes fail clearly, private runs never fall back to public snapsh
     environment(),
   );
   assert.equal((await config.json()).access.online, false);
+});
+
+test("a retained login cookie does not block public study browsing during an outage", async () => {
+  const headers = { Cookie: "arena_session=previously-issued-session" };
+  const config = await worker.fetch(
+    new Request(origin + "/api/config", { headers }),
+    environment(),
+  );
+  assert.equal((await config.json()).access.online, false);
+  const study = await worker.fetch(
+    new Request(origin + "/api/study", { headers }),
+    environment(),
+  );
+  assert.equal(study.status, 200);
+  assert.deepEqual(await study.json(), { interviews: 24 });
+  const runs = await worker.fetch(
+    new Request(origin + "/api/runs", { headers }),
+    environment(),
+  );
+  assert.deepEqual(await runs.json(), []);
+  assert.equal(runs.headers.get("X-Arena-Snapshot"), "1");
+  const privateRun = await worker.fetch(
+    new Request(origin + "/api/runs/private-id", { headers }),
+    environment(),
+  );
+  assert.equal(privateRun.status, 503);
 });
 
 test("proxy sets its own bridge header and forwards only the application session", async () => {

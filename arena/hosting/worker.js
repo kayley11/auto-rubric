@@ -123,11 +123,14 @@ export async function handle(request, env) {
       try {
         return await backend(request, env);
       } catch {
-        if (
-          request.method === "POST" ||
-          (member && url.pathname !== "/api/config")
-        )
+        if (request.method === "POST")
           return json({ error: offlineMessage }, 503);
+        if (member) {
+          const saved = await snapshot(request, env, url.pathname);
+          return saved.status === 404
+            ? json({ error: offlineMessage }, 503)
+            : saved;
+        }
       }
     }
     return snapshot(request, env, url.pathname);
