@@ -1,0 +1,466 @@
+{
+  "subject_key": "earlier33__CAND21__kcl-chat",
+  "case_key": "earlier33__CAND21",
+  "case_id": "CAND21",
+  "cohort": "earlier33",
+  "answer_model": "kcl-chat",
+  "answer_model_label": "arc:chat / Qwen3.8-Flash-Next",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-chat/CAND21.json",
+  "source_answer_sha256": "84d2f7ca600510834c31521fc3fb9759c89f9250fc6407008f0e9d1147296779",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND21",
+    "model": "arc:chat",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What symptoms are present now, and have there been recent infections, travel, sick contacts, or environmental exposures?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD has one month of worsening breathlessness after cough and wheeze, failed outpatient treatment, and now requires supplemental oxygen at admission. This suggests acute-on-chronic respiratory compromise, with infective COPD exacerbation plausible but other causes not yet excluded.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What symptoms are present now, and have there been recent infections, travel, sick contacts, or environmental exposures?",
+          "topics": [
+            "presenting_symptoms",
+            "exposures"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD has one month of worsening breathlessness after cough and wheeze, failed outpatient treatment, and now requires supplemental oxygen at admission. This suggests acute-on-chronic respiratory compromise, with infective COPD exacerbation plausible but other causes not yet excluded.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.respiratory_course",
+            "channel": "patient",
+            "text": "My breathing has worsened over about a month. It began with cough and wheeze; later I developed fever, chills and general weakness.",
+            "source_location": "omag190: L131-L132",
+            "match": "symptom|breath|cough|wheez|fever|onset|duration|chronolog|timeline",
+            "period": "presentation"
+          },
+          {
+            "id": "21.admission_respiratory_status",
+            "channel": "record",
+            "text": "At admission she had hypoxaemic respiratory failure requiring 2 L/min oxygen by nasal cannula. Examination found diffuse basal crackles, minimal late expiratory wheeze and poor air movement. No numerical saturation or arterial blood gas is supplied in the saved presentation paragraph.",
+            "source_location": "omag190: L132-L133",
+            "match": "oxygen|satur|hypox|vital|examin|crackl|air movement|respiratory fail|blood gas|severity",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: recent infections; travel; sick contacts. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.respiratory_course",
+              "request_span": "What symptoms are present now"
+            },
+            {
+              "id": "21.admission_respiratory_status",
+              "request_span": "What symptoms are present now"
+            },
+            {
+              "id": "21.other_exposures",
+              "request_span": "environmental exposures"
+            }
+          ],
+          "unanswered_spans": [
+            "recent infections",
+            "travel",
+            "sick contacts"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What medications has she been taking recently, including any steroids or antibiotics, and does she have any other medical conditions or history of immunosuppression?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD presents with one month of progressive breathlessness, fever, chills, and weakness, now requiring 2 L/min oxygen. Examination shows diffuse basal crackles with poor air movement, which is somewhat atypical for a simple COPD exacerbation and raises concern for superimposed infection, atypical/opportunistic pneumonia, or other parenchymal process. The subacute course with systemic symptoms warrants broadening the differential beyond routine infective exacerbation.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What medications has she been taking recently, including any steroids or antibiotics, and does she have any other medical conditions or history of immunosuppression?",
+          "topics": [
+            "medications",
+            "medical_history"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD presents with one month of progressive breathlessness, fever, chills, and weakness, now requiring 2 L/min oxygen. Examination shows diffuse basal crackles with poor air movement, which is somewhat atypical for a simple COPD exacerbation and raises concern for superimposed infection, atypical/opportunistic pneumonia, or other parenchymal process. The subacute course with systemic symptoms warrants broadening the differential beyond routine infective exacerbation.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.outpatient_treatment",
+            "channel": "patient",
+            "text": "For presumed COPD exacerbation I received two courses of steroids; the second was combined with ten days of doxycycline. I did not improve clinically.",
+            "source_location": "omag190: L132",
+            "match": "treat|steroid|antibiot|doxycycl|response|improv|course|medic",
+            "period": "presentation"
+          },
+          {
+            "id": "21.background",
+            "channel": "record",
+            "text": "The recorded background includes COPD and gastro-oesophageal reflux disease.",
+            "source_location": "omag190: L131",
+            "match": "background|past|history|copd|reflux|comorbid",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.outpatient_treatment",
+              "request_span": "medications has she been taking recently, including any steroids or antibiotics"
+            },
+            {
+              "id": "21.background",
+              "request_span": "other medical conditions"
+            },
+            {
+              "id": "21.other_exposures",
+              "request_span": "history of immunosuppression"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Can you review the current admission CT chest report and routine blood/biochemistry results?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD and GERD has one month of progressive breathlessness, cough, wheeze, fever, chills, and weakness, now with hypoxaemic respiratory failure requiring 2 L/min oxygen. She failed two steroid courses and doxycycline. Admission examination shows diffuse basal crackles, poor air movement, and minimal wheeze, which is not fully explained by a simple COPD exacerbation and raises concern for superimposed pneumonia, atypical or opportunistic infection, or another parenchymal process. Current CT and routine laboratory data are needed to refine the differential and assess severity.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Can you review the current admission CT chest report and routine blood/biochemistry results?",
+          "topics": [
+            "ct_imaging",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD and GERD has one month of progressive breathlessness, cough, wheeze, fever, chills, and weakness, now with hypoxaemic respiratory failure requiring 2 L/min oxygen. She failed two steroid courses and doxycycline. Admission examination shows diffuse basal crackles, poor air movement, and minimal wheeze, which is not fully explained by a simple COPD exacerbation and raises concern for superimposed pneumonia, atypical or opportunistic infection, or another parenchymal process. Current CT and routine laboratory data are needed to refine the differential and assess severity.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.early_investigations",
+            "channel": "record",
+            "text": "White-cell count was reported as 18,000 and procalcitonin negative. COVID-19 and influenza tests were negative. Early chest CT showed extensive bilateral ground-glass opacities. The later serological results and BAL are outside this early packet.",
+            "source_location": "omag190: L132-L133; omag190: L140",
+            "match": "blood test|laborator|white|procalcitonin|viral|covid|influenza|imag|ct|scan|x.ray|ground.glass|infect|antibod|lavage|bal",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.early_investigations",
+              "request_span": "current admission CT chest report and routine blood/biochemistry results"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Does she have any exposure to birds, mould, dust, or occupational inhalants, and what are her recorded vital signs at admission (temperature, respiratory rate, heart rate)?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. This pattern—subacute course, bilateral GGOs, negative procalcitonin, and treatment failure—argues against typical bacterial pneumonia and raises concern for opportunistic infection (particularly given recent steroid exposure), hypersensitivity pneumonitis, organising pneumonia, or another interstitial/inflammatory process. Environmental exposures and vital signs would help narrow the differential and gauge severity.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Does she have any exposure to birds, mould, dust, or occupational inhalants, and what are her recorded vital signs at admission (temperature, respiratory rate, heart rate)?",
+          "topics": [
+            "exposures",
+            "vital_signs"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. This pattern—subacute course, bilateral GGOs, negative procalcitonin, and treatment failure—argues against typical bacterial pneumonia and raises concern for opportunistic infection (particularly given recent steroid exposure), hypersensitivity pneumonitis, organising pneumonia, or another interstitial/inflammatory process. Environmental exposures and vital signs would help narrow the differential and gauge severity.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.other_exposures",
+            "channel": "patient",
+            "text": "No relevant occupational or environmental exposure, medication-related pulmonary risk factor, diabetes or other known cause of immunocompromise was reported. Details beyond those documented categories are not supplied.",
+            "source_location": "omag190: L131",
+            "match": "occupat|environment|work|dust|fume|medic|drug|immunocomprom|immunosupp|diabet|exposure",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: recorded vital signs at admission (temperature, respiratory rate, heart rate). Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.other_exposures",
+              "request_span": "exposure to birds, mould, dust, or occupational inhalants"
+            }
+          ],
+          "unanswered_spans": [
+            "recorded vital signs at admission (temperature, respiratory rate, heart rate)"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "What is her smoking history (pack-years, current or former), and does she have any joint pain, skin rash, Raynaud's phenomenon, or other features suggesting connective tissue disease?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. No environmental exposures or known immunocompromise reported. The combination of subacute course, bilateral GGOs, negative procalcitonin, leukocytosis, and treatment failure argues against typical bacterial pneumonia. Cryptogenic organising pneumonia, atypical/opportunistic infection (despite no formal immunocompromise, recent steroids are a consideration), or an autoimmune/interstitial process remain in the differential. Smoking history and autoimmune features would help further narrow the possibilities.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is her smoking history (pack-years, current or former), and does she have any joint pain, skin rash, Raynaud's phenomenon, or other features suggesting connective tissue disease?",
+          "topics": [
+            "exposures",
+            "medical_history"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. No environmental exposures or known immunocompromise reported. The combination of subacute course, bilateral GGOs, negative procalcitonin, leukocytosis, and treatment failure argues against typical bacterial pneumonia. Cryptogenic organising pneumonia, atypical/opportunistic infection (despite no formal immunocompromise, recent steroids are a consideration), or an autoimmune/interstitial process remain in the differential. Smoking history and autoimmune features would help further narrow the possibilities.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.smoking_and_vaping",
+            "channel": "patient",
+            "text": "I smoke tobacco daily. I recently resumed vaping after having stopped seven years earlier.",
+            "source_location": "omag190: L131",
+            "match": "smok|vape|vaping|e.cig|inhal|tobacco|exposure",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: joint pain, skin rash, Raynaud's phenomenon, or other features suggesting connective tissue disease. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.smoking_and_vaping",
+              "request_span": "smoking history (pack-years, current or former)"
+            }
+          ],
+          "unanswered_spans": [
+            "joint pain, skin rash, Raynaud's phenomenon, or other features suggesting connective tissue disease"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 6,
+        "question": "When did she resume vaping relative to the onset of her respiratory symptoms, and does she use any other inhaled substances, supplements, or non-prescription products?",
+        "assessment": {
+          "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. No environmental or occupational exposures or known immunocompromise reported. She smokes tobacco daily and recently resumed vaping after seven years off. The subacute course, bilateral GGOs, negative procalcitonin, leukocytosis, and antibiotic/steroid failure argue against typical bacterial pneumonia. E-cigarette/vaping-associated lung injury, cryptogenic organising pneumonia, and atypical infection remain key considerations. The temporal relationship between vaping resumption and symptom onset is critical for narrowing the differential.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "When did she resume vaping relative to the onset of her respiratory symptoms, and does she use any other inhaled substances, supplements, or non-prescription products?",
+          "topics": [
+            "timecourse",
+            "exposures"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "A 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, fever, chills, and weakness, now with hypoxaemic respiratory failure on 2 L/min oxygen. CT shows extensive bilateral ground-glass opacities. WCC is 18,000 but procalcitonin is negative, and she failed two steroid courses and doxycycline. No environmental or occupational exposures or known immunocompromise reported. She smokes tobacco daily and recently resumed vaping after seven years off. The subacute course, bilateral GGOs, negative procalcitonin, leukocytosis, and antibiotic/steroid failure argue against typical bacterial pneumonia. E-cigarette/vaping-associated lung injury, cryptogenic organising pneumonia, and atypical infection remain key considerations. The temporal relationship between vaping resumption and symptom onset is critical for narrowing the differential.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "21.smoking_and_vaping",
+            "channel": "patient",
+            "text": "I smoke tobacco daily. I recently resumed vaping after having stopped seven years earlier.",
+            "source_location": "omag190: L131",
+            "match": "smok|vape|vaping|e.cig|inhal|tobacco|exposure",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: does she use any other inhaled substances, supplements, or non-prescription products. Do not infer unreported values, results or the performance of a test. Previously returned: 21.smoking_and_vaping. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "21.smoking_and_vaping",
+              "request_span": "resume vaping relative to the onset of her respiratory symptoms"
+            }
+          ],
+          "unanswered_spans": [
+            "does she use any other inhaled substances, supplements, or non-prescription products"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T16:27:13.349783+00:00",
+    "final_answer": "## Clinical Problem\n\nA 65-year-old woman with COPD and GERD presents with one month of progressive breathlessness, cough, wheeze, fever, chills, and weakness, now requiring 2 L/min nasal-cannula oxygen. She failed two steroid courses and doxycycline without clinical improvement. Examination shows diffuse basal crackles, poor air movement, and minimal wheeze. CT reveals extensive bilateral ground-glass opacities. WCC is 18,000 with negative procalcitonin; COVID-19 and influenza are negative. She smokes daily and recently resumed vaping after seven years off. No environmental, occupational, or known immunocompromising exposures were reported.\n\n## Prioritised Explanations\n\n1. Vaping-associated lung injury: temporal proximity of vaping resumption to symptom onset, bilateral GGOs, negative procalcitonin, and failure of antibiotics and steroids support this. Uncertainty: exact temporal relationship to symptom onset was not clarified.\n\n2. Cryptogenic organising pneumonia: subacute course, bilateral GGOs, leukocytosis with negative procalcitonin, and steroid/antibiotic failure are consistent. Uncertainty: no BAL or biopsy yet available.\n\n3. Atypical or opportunistic infection: recent steroid courses may confer partial immunosuppression despite no formal immunocompromise. Uncertainty: no BAL or serology yet returned.\n\n## Next Actions\n\nObtain BAL with microbiology and cytology; consider autoimmune serology; clarify exact vaping-to-symptom timeline; monitor oxygenation trend and escalate if deteriorating.",
+    "word_count": {
+      "words": 188,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "interview_finished": true,
+    "finished_at": "2026-10-29T16:28:38.488633+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D1.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission accurately reflects all supplied evidence: demographics, COPD/GERD background, one-month progression with fever/chills/weakness, 2 L/min oxygen requirement, basal crackles, failed two steroid courses plus doxycycline, WCC 18,000 with negative procalcitonin, negative COVID-19/influenza, bilateral ground-glass opacities on early CT, daily smoking and recently resumed vaping, and absence of reported occupational/environmental exposures (Q1–Q6). It does not invent values, import later BAL/serology/ventilation results, or assert unsupplied vitals. Each differential is framed with explicit uncertainty, and next actions (BAL, serology, timeline clarification, monitoring/escalation) are proportionate and consistent with the reference. Two minor issues keep it from a 5: it cites 'temporal proximity of vaping resumption to symptom onset' as supporting evidence even though Q6 established the timing was never clarified (though the submission itself flags this uncertainty in the same item), and 'recent steroid courses may confer partial immunosuppression' is a plausible but loosely supported inference. These are clinically inconsequential and would not mislead, matching the Score 4 anchor of accuracy throughout with claims consistent with the vignette, while the explicit uncertainty acknowledgment alone does not fully meet the Score 5 operationalisation given the slight overstatement of the vaping-temporality clue."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The clinician-facing synthesis (explicitly requested by the task) accurately integrates all evidence actually supplied: subacute progression after cough/wheeze, fever and chills, hypoxaemia on 2 L/min, diffuse basal crackles with poor air movement, failure of two steroid courses plus doxycycline, WCC 18,000 with negative procalcitonin, negative COVID-19/influenza, extensive bilateral ground-glass opacities, and recently resumed vaping. It prioritises plausible explanations (vaping-associated lung injury, COP/organising pneumonia, atypical/opportunistic infection) with evidence-linked reasoning and explicit uncertainty qualification: it flags that the vaping-to-symptom timeline was not clarified (Q6 returned no new timeline detail), that BAL and serology are pending, and that recent steroids may confer partial immunosuppression without claiming immunocompromise. Next actions are proportionate and grounded (BAL, serology, timeline clarification, oxygenation monitoring). No available defining feature is distorted or omitted, no unjustified diagnostic closure occurs, and the consequential unresolved gaps are clearly stated. This meets the Score 5 anchor: a focused synthesis highlighting discriminating features, guiding hypothesis generation, and making the unresolved gaps explicit."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D3b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission builds a breadth-appropriate, prioritised differential from the actual early evidence (Q1–Q6): vaping-associated lung injury, cryptogenic organising pneumonia, and atypical/opportunistic infection, each with cited supporting findings (bilateral ground-glass opacities from Q3, leukocytosis with negative procalcitonin, steroid/doxycycline failure from Q2) and stated uncertainties. It appropriately keeps infection as a dangerous mimic despite negative viral tests and procalcitonin, and does not import later BAL/serology results. However, it falls short of the top anchor: discriminating findings between the alternatives are not fully developed (e.g., no explicit reasoning distinguishing COP vs infection, and the vaping timeline is acknowledged as unclarified rather than resolved), and some plausible cardiopulmonary alternatives (e.g., cardiogenic oedema in a 65-year-old with COPD/GERD) are not considered. Prioritisation is clinically plausible and evidence-based but with incomplete discriminating support, matching Score 4."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D3d.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission gives a broadly plausible causal account (vaping-associated injury, COP/organising pneumonia, atypical infection) tied to real evidence: bilateral ground-glass opacities, leukocytosis with negative procalcitonin, negative viral tests, failure of steroids and doxycycline (Q2, Q3). However, it overstates what the case can establish: vaping-to-symptom 'temporal proximity' is cited as supporting evidence even though Q6 explicitly failed to clarify the timing relative to symptom onset, and the submission itself concedes this was 'not clarified'. Using an unestablished temporal link as affirmative support is an important qualification error. The claim that recent steroid courses 'may confer partial immunosuppression' is hedged acceptably, and limitations (no BAL/serology yet) are stated. This sits between anchors 3 and 4; the unsupported temporal-proximity claim caps it at 3."
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly distinguishes the relative standing of its conclusions: vaping-associated injury is prioritised as most supported, COP/organising pneumonia and atypical/opportunistic infection are framed as consistent-but-unconfirmed alternatives. For each it names the specific source of uncertainty (unclarified vaping-to-symptom timing, absent BAL/biopsy, pending serology), rather than hedging generically. It also separates what is known (CT findings, WCC 18,000, negative procalcitonin and viral tests, treatment failure) from what is unresolved, calibrating each claim to the actual evidence without over-asserting causation. Its next actions (BAL with microbiology/cytology, autoimmune serology, clarifying the vaping timeline) directly target the named uncertainties, satisfying the Score 5 anchor of identifying the next step needed to reduce uncertainty."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All three essential requirements were met through targeted, well-timed requests. R2 (clinical course and prior treatment response) was addressed in Q1 (symptoms, duration) and Q2 (steroid/antibiotic courses and response). R3 (oxygenation/severity and chest/infection investigations) was addressed in Q3 (admission CT and routine labs, returning bilateral ground-glass opacities, WCC, procalcitonin, COVID/influenza testing) and Q4 (vital signs; unreturned but a valid request). R1 (exposure history with timing) was pursued across Q1, Q4, Q5 and Q6, including smoking/vaping history and the temporally critical vaping-resumption question. Requests were proportionate and discriminating, progressively narrowed by emerging findings (e.g., moving to CTD features and vaping timing after GGOs and negative procalcitonin), and each assessment note clearly explained how the requested information would refine the differential. Unreturned items (vitals, CTD features, other inhaled substances) reflect simulator limits, not acquisition failures. Minor repetition in Q6 does not materially limit the assessment."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND21.D6a.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "The submission recognises seriousness (hypoxaemic respiratory failure on 2 L/min oxygen, failed treatment, extensive bilateral ground-glass opacities) and its 'Next Actions' state 'monitor oxygenation trend and escalate if deteriorating'. However, this is a vague conditional: no escalation pathway (respiratory team, critical care, higher-level care), no timing, no monitoring frequency, and no current urgency despite an existing oxygen requirement. The case-specific key explicitly expects active inpatient assessment with oxygen, repeated monitoring, and prompt respiratory/critical-care escalation if support needs increase. The submission therefore recognises a serious situation but does not recommend an appropriate, clear escalation pathway, matching Score 2 rather than 3 or 4."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

@@ -4,6 +4,20 @@ An interface for entering a case, generating or pasting an answer, and evaluatin
 
 Public website: **https://auto-rubric.kayley1026lzt.chatgpt.site**. Saved results are public; generating, scoring and saving reviews require an authorised account and the host backend online. See the [public hosting guide](hosting/README.md), [中文使用说明](hosting/USAGE_CN.md) and [deployment checks with complete outputs](validation/20261026-public/README.md). The local workflow below remains available.
 
+**Latest saved results:** Case review defaults to **Full rubric · 4 Nov 2026**, covering all 22 main items for 345 complete saved answers across 78 tasks. Numerical scores, N/A, Cannot assess and No answer cells open their specific explanation. **Earlier selected items** retains the previous grading condition. The [complete research archive](study-data/full-rubric-20261104/README.md) and [website verification](validation/20261104-full-rubric/README.md) are included in this checkout. Candidate clinical requirements remain **awaiting confirmation**.
+
+The homepage, **New evaluation**, has two entry points: **Paste a case** and **Import cases**. Rubric, scoring version, answering models and scoring model are selected first. One or multiple answering models can be chosen. The rubric catalogue currently contains the clinical reasoning rubric; scoring revisions remain separate from rubric identity. CSV/JSON/JSONL imports are previewed before any model call. Results use one row per case and one column per answering model, with item scores and a short quoted finding. Provided answers are scored once in a separate column. Shared settings are fixed when the batch starts; pause/resume continues saved runs. References and candidate requirements remain **awaiting confirmation**.
+
+**Case review → select a case → click a score** opens the saved answer, rubric anchors, judge explanation, interview record and plain-text/JSON output. The table retains the original five models and adds available **Qwen3.8 27B** results from a separately identified run; missing results remain explicit. Historical materials open in an online reader, with downloads available separately. **Review first** remains the independent-rating workflow. Historical interview studies remain available from each case. Patient interview creation is not exposed in the current website.
+
+The comparison reads public display copies from `public/model-comparison/`. An optional ignored `.data/comparison-source.json` lets the protected local backend read newly saved study files; the page refreshes every 30 seconds. When that backend is unavailable, the public site uses its deployment snapshot and labels it accordingly. Reading results never starts a model request. To refresh the portable copy and register a local study source explicitly:
+
+```bash
+.venv/bin/python arena/comparison.py --run-dir /absolute/path/to/five_model_33_cases_20261029 --register-live
+```
+
+Only whitelisted inputs, visible answers, assessment notes and grade explanations are exported. API envelopes, credentials and account metadata remain local. The five-model study uses its frozen selected manuscript items; it does not replace the live evaluation's original/proposed rule choices.
+
 From the repository root:
 
 ```bash
@@ -12,12 +26,12 @@ From the repository root:
 
 Open **http://127.0.0.1:8765**. The launcher builds the interface and starts the Python server. It uses the existing `.venv` and repository `.env`; on a fresh checkout, run `./setup.sh` first. Node.js and npm are needed to build the interface. `./run-ui.sh --port 8767` selects another port; the current public backend uses loopback port 8766.
 
-1. Enter case facts, or use **Load a prepared case** for N01–N06. N04 includes an initial task and two follow-ups; N05 reviews multisystem investigations, and N06 audits a treatment timeline. The earlier pilot example is also available. Prepared cases load their own rubric selection and a reference marked **Draft — awaiting confirmation**. Open **Task & reference** to edit the task, case name, earlier conversation and reference points.
-2. Generate an answer, or select **Paste answer**. Generated answers can be edited before evaluation.
-3. Open **Settings** to choose the scoring rules, relevant rubric items and models, then evaluate. The active version remains visible while settings are collapsed. Each item makes one sequential model request.
-4. Use **Review this case/answer** for human review. Where available, the independent workflow keeps machine results hidden; **Rate alongside results** retains the inline rating form. **Export** groups the review summary, blank sheet, full raw output and available legacy formats. In written evaluations, **Export → Open plain text** previews the saved output.
+1. Select **Paste a case**, choose the rubric, scoring version and one or more answering models, then enter the case facts and task. Reference points and earlier conversation are optional disclosures.
+2. With one model, generate an answer, optionally edit it, then score it. With multiple models, choose **Compare selected models** and confirm **Generate & compare**. Alternatively, paste an existing answer and score it once.
+3. For a file of cases, use **Import cases**, preview the rows, then start. The comparison table preserves case numbers and opens the saved answer, full item explanations, rubric and plain-text/JSON output on click. The grouped Export menu provides the comparison CSV and complete JSON results.
+4. **Review first** accepts one or more saved answers. Rate each answer separately; the explicit D3a/D5c steps preserve their evidence boundaries. Automatic scores and identities are revealed after all selected ratings are saved. The final table compares **Your rating** with **AutoRubric score** for the same answer and scoring version. **Case review** retains the full saved case library and historical results.
 
-Default models are `arc:lite` for answers and `arc:apex` for judging, through the existing OpenAI-compatible endpoint. Choose another configured model in **Model settings**. Optional server overrides: `ARENA_ANSWER_MODEL`, `ARENA_JUDGE_MODEL`, `ARENA_TIMEOUT` (120 seconds) and `ARENA_MAX_TOKENS` (8192).
+Default models are `arc:lite` for answers and `arc:apex` for judging, through the existing OpenAI-compatible endpoint. Choose configured answering and scoring models in **Rubric & models**. Optional server overrides: `ARENA_ANSWER_MODEL`, `ARENA_JUDGE_MODEL`, `ARENA_TIMEOUT` (120 seconds) and `ARENA_MAX_TOKENS` (8192).
 
 The answer model receives case facts, the task and any actual conversation supplied. It does not receive the candidate checklist, reviewer-only inventory or reference points. The original judge receives the saved answer, one original rubric item and any reference points; the proposed items use the separate evidence windows described below. Requests, visible responses, available token usage, timings, rubric snapshot and reviews are retained in `arena/.data/runs/`, which Git ignores. Credentials remain on the server.
 
@@ -39,13 +53,13 @@ Open a record to follow **requirement → question → returned evidence → jud
 
 **Review first** opens anonymous answers without machine grades, judge explanations or model names. Save D3a using only received evidence, then open examiner-only requirements, records and eligible notes for D5c. Save both ratings before revealing the machine comparison. Previous exposure can be declared and is retained. Each save creates a new local review record; earlier saves remain available in raw exports. Historical machine grades retain their original scoring inputs; new review sheets use clarified source availability.
 
-**Patient interview** runs any of the eight prepared cases with the corrected fixed-fact controller. Select the clinician model, judge and original/proposed rules. The clinician chooses up to six questions; the patient model orders permitted statements, and the controller returns their unchanged text. Examinations and investigations keep their original admission context and are not spoken as patient testimony. JSON output is enforced for question and fact-order calls. Stop/resume preserves completed turns; unavailable information remains unknown. After the final answer, inspect obtained/missing facts and select **Score D3a and D5c**. All visible responses, failed attempts and usage are saved.
+**Historical patient interviews** retain the prepared fixed-fact controller, six-question limit, complete transcripts and original scoring outputs. Their study and evidence views remain readable. Creating new patient-mode runs is currently not exposed in the website; no historical records are removed.
 
 **Review summary** exports case, task, actual conversation, answer, item explanations and any saved human decisions. **Blank review sheet** excludes machine results and model identity. **Full raw output** retains the complete saved record; the N04 study download preserves the research output unchanged. The [26 October interface validation](validation/20261026-ui/README.md) records the case-first layout, named results and grouped review/export controls. The [25 October validation](validation/20261025-ui/README.md) retains the earlier tested workflows and real N04 validation run.
 
 ### New evaluations with the proposed rules
 
-Open **Settings → Scoring rules → Proposed D3a / D5c · awaiting confirmation**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
+Choose the available revised scoring version in **Rubric & models → Scoring version**. Only these two items change; all other items retain their original anchors. Both revised items include all five score descriptions, so 2 and 4 are no longer unanchored grades. **Not applicable** and **Indeterminate** remain distinct from numeric scores and transport errors.
 
 Use **Reuse a saved interview → Load interview & answer** to load any of the 24 records, or enter your own actual requests and replies. Keep patient replies, returned records, pre-reply assessment notes and simulator feedback separate. Mark whether the transcript is complete and whether assessment notes were specified by the task. An incomplete transcript is not silently treated as a model failure.
 

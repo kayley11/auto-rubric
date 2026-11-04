@@ -31,7 +31,11 @@ def display_data(value, key=""):
         if key == "reviewer" and value:
             return (
                 value
-                if re.fullmatch(r"(?:R\d+|reviewer[-_][a-z0-9_-]+)", value, re.I)
+                if re.fullmatch(
+                    r"(?:R\d+|reviewer[-_][a-z0-9_-]+|CLINICIAN_[a-z0-9_-]+|workspace(?:/(?:R\d+|reviewer[-_][a-z0-9_-]+|CLINICIAN_[a-z0-9_-]+))?)",
+                    value,
+                    re.I,
+                )
                 else "Reviewer"
             )
         if re.fullmatch(r"author|authors|prepared_by|confirmed_by", key, re.I) and value:

@@ -1,0 +1,396 @@
+{
+  "subject_key": "earlier33__CAND20__qwen38-groq",
+  "case_key": "earlier33__CAND20",
+  "case_id": "CAND20",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND20.json",
+  "source_answer_sha256": "5ff955668de4e33d5f60c25c82089a8c1cb9ffc8f6c48a9a1dc3bfef971a8eb7",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND20",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What were the findings of the coronary CT performed during this current admission, and do you have the report from the initial presentation 18 days ago?",
+        "assessment": {
+          "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. Current vital signs and ECG are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without imaging or further clinical data.",
+          "certainty": "uncertain",
+          "working": "Acute myocardial injury of undetermined etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What were the findings of the coronary CT performed during this current admission, and do you have the report from the initial presentation 18 days ago?",
+          "topics": [
+            "ct_imaging"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. Current vital signs and ECG are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without imaging or further clinical data.",
+            "certainty": "uncertain",
+            "working": "Acute myocardial injury of undetermined etiology"
+          }
+        },
+        "returned": [
+          {
+            "id": "20.current_coronary",
+            "channel": "record",
+            "text": "Coronary CT on the second presentation excluded atherosclerosis. This is a day-18 record, not the original angiogram.",
+            "source_location": "L168",
+            "match": "current.{0,25}(coronar|\\bct\\b)|repeat.{0,25}(coronar|\\bct\\b)|computed tomography|\\bctca\\b|second.{0,25}(coronar|\\bct\\b)|coronary ct",
+            "period": "presentation"
+          },
+          {
+            "id": "20.first_coronary",
+            "channel": "record",
+            "text": "During the first admission, coronary angiography was normal. The initial ECG had no ST change; lateral ST elevation appeared on day 3.",
+            "source_location": "L146-L147; L167",
+            "match": "angiogra|coronar|\\becg\\b|electrocard|(?:first|previous|earlier|prior|last).{0,15}(?:admission|hospital).{0,15}(?:record|work.?up|investigation)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "20.current_coronary",
+              "request_span": "findings of the coronary CT performed during this current admission"
+            },
+            {
+              "id": "20.first_coronary",
+              "request_span": "the report from the initial presentation 18 days ago"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What were the findings of the cardiac MRI performed during the current admission, and do you have the report from the initial presentation 18 days ago?",
+        "assessment": {
+          "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. Current vital signs and ECG are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without imaging or further clinical data.",
+          "certainty": "uncertain",
+          "working": "Acute myocardial injury of undetermined etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What were the findings of the cardiac MRI performed during the current admission, and do you have the report from the initial presentation 18 days ago?",
+          "topics": [
+            "mri_imaging"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. Current vital signs and ECG are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without imaging or further clinical data.",
+            "certainty": "uncertain",
+            "working": "Acute myocardial injury of undetermined etiology"
+          }
+        },
+        "returned": [
+          {
+            "id": "20.first_mri",
+            "channel": "record",
+            "text": "First-admission CMR on day 2 showed myocardial oedema and subepicardial enhancement; LVEF was about 43%.",
+            "source_location": "L148; L164",
+            "match": "\\bmri\\b|\\bcmr\\b|magnetic resonance|myocardial imag|(?:first|previous|earlier|prior|last).{0,15}(?:admission|hospital).{0,15}(?:record|work.?up|investigation)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: the findings of the cardiac MRI performed during the current admission. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "20.first_mri",
+              "request_span": "the report from the initial presentation 18 days ago"
+            }
+          ],
+          "unanswered_spans": [
+            "the findings of the cardiac MRI performed during the current admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "What were the findings of the ECG performed during this current admission, and do you have the report from the initial presentation 18 days ago?",
+        "assessment": {
+          "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+          "certainty": "uncertain",
+          "working": "Acute myocardial injury of undetermined etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What were the findings of the ECG performed during this current admission, and do you have the report from the initial presentation 18 days ago?",
+          "topics": [
+            "examination"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+            "certainty": "uncertain",
+            "working": "Acute myocardial injury of undetermined etiology"
+          }
+        },
+        "returned": [
+          {
+            "id": "20.first_coronary",
+            "channel": "record",
+            "text": "During the first admission, coronary angiography was normal. The initial ECG had no ST change; lateral ST elevation appeared on day 3.",
+            "source_location": "L146-L147; L167",
+            "match": "angiogra|coronar|\\becg\\b|electrocard|(?:first|previous|earlier|prior|last).{0,15}(?:admission|hospital).{0,15}(?:record|work.?up|investigation)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: the findings of the ECG performed during this current admission. Do not infer unreported values, results or the performance of a test. Previously returned: 20.first_coronary. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "20.first_coronary",
+              "request_span": "the report from the initial presentation 18 days ago"
+            }
+          ],
+          "unanswered_spans": [
+            "the findings of the ECG performed during this current admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Do you have the report from the echocardiogram performed during this current admission, and if so, what were the findings?",
+        "assessment": {
+          "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+          "certainty": "uncertain",
+          "working": "Acute myocardial injury of undetermined etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Do you have the report from the echocardiogram performed during this current admission, and if so, what were the findings?",
+          "topics": [
+            "echocardiography"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+            "certainty": "uncertain",
+            "working": "Acute myocardial injury of undetermined etiology"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: the report from the echocardiogram performed during this current admission; the findings. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "the report from the echocardiogram performed during this current admission",
+            "the findings"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Have you had any recent viral or bacterial infections, such as a fever, sore throat, or respiratory symptoms, in the weeks before your first chest pain episode?",
+        "assessment": {
+          "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+          "certainty": "uncertain",
+          "working": "Acute myocardial injury of undetermined etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Have you had any recent viral or bacterial infections, such as a fever, sore throat, or respiratory symptoms, in the weeks before your first chest pain episode?",
+          "topics": [
+            "exposures"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "27-year-old man with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, suggesting myocarditis, but current ECG and vital signs are unavailable. The differential includes acute coronary syndrome, myocarditis, or other causes of myocardial injury, but no diagnosis can be confirmed without current imaging or further clinical data.",
+            "certainty": "uncertain",
+            "working": "Acute myocardial injury of undetermined etiology"
+          }
+        },
+        "returned": [
+          {
+            "id": "20.symptoms",
+            "channel": "patient",
+            "text": "At the first presentation pain radiated to the neck with sweating, without fever or viral prodrome. The source does not provide an equally detailed day-18 symptom review.",
+            "source_location": "L144",
+            "match": "character|radiat|sweat|symptom|prodrom|fever|onset|pain history",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "20.symptoms",
+              "request_span": "recent viral or bacterial infections, such as a fever, sore throat, or respiratory symptoms, in the weeks before your first chest pain episode"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-02T18:13:50.885891+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "27-year-old man with recurrent severe chest pain and elevated hs-troponin-T (866 ng/L) 18 days after initial presentation. First-admission CMR showed myocardial oedema and subepicardial enhancement with LVEF ~43%, consistent with myocarditis. Coronary angiography and current coronary CT excluded atherosclerosis. Current ECG, vital signs, and imaging are unavailable. No viral prodrome reported at initial presentation. Working diagnosis is recurrent myocardial injury, likely myocarditis, but current status is uncertain without new data.",
+      "certainty": "working",
+      "working": "Recurrent myocardial injury, likely myocarditis"
+    },
+    "final_answer": "### Clinical Summary and Assessment\n\nThis 27-year-old man presents with recurrent severe chest pain and a markedly elevated hs-troponin-T of 866 ng/L on day 18. The clinical picture suggests acute myocardial injury, but the specific etiology remains undetermined due to missing current vital signs and ECG data. The prior course is significant for normal coronary angiography and a day-2 cardiac MRI showing myocardial oedema, subepicardial enhancement, and reduced LVEF (43%), which strongly supports a diagnosis of myocarditis. However, the current episode represents a new or worsening event that requires distinct evaluation.\n\nPrioritised explanations include:\n1. Recurrent or persistent myocarditis: Supported by the prior MRI findings of subepicardial enhancement and oedema, which are characteristic of inflammatory myocardial injury. The absence of a viral prodrome at the first presentation does not exclude this, as prodromes are not universal.\n2. Acute coronary syndrome: Although less likely given the young age and prior normal angiography, the current coronary CT excluded atherosclerosis. This finding significantly lowers the probability of obstructive coronary disease but does not entirely rule out non-atherosclerotic causes like spontaneous coronary artery dissection or vasospasm, which require further investigation.\n3. Other causes of myocardial injury: Conditions such as Takotsubo cardiomyopathy or toxic myocarditis remain in the differential, though less supported by the current data.\n\nThe normal coronary investigations from both admissions effectively rule out fixed atherosclerotic stenosis but do not settle the assessment of dynamic or inflammatory processes. The recurrence of symptoms with high troponin levels indicates ongoing or new myocardial damage.\n\nProportionate next actions include obtaining a current 12-lead ECG to assess for new ST changes or arrhythmias, performing a repeat echocardiogram to evaluate for changes in LVEF or wall motion abnormalities, and considering a repeat cardiac MRI to assess for progression or resolution of oedema and enhancement. Additionally, a detailed review of systems for recent infections or drug exposures is necessary. Close monitoring of vital signs and serial troponin measurements are essential to track the trajectory of myocardial injury.",
+    "word_count": {
+      "words": 324,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": false,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-02T19:42:24.708138+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission is accurate against the supplied records: hs-troponin-T 866 ng/L, day-18 recurrence, current coronary CT excluding atherosclerosis, first-admission normal angiography, day-2 CMR with oedema, subepicardial enhancement and LVEF ~43%, and absence of viral prodrome (Q1, Q2, Q5). It correctly does not carry earlier vitals/ECG forward, does not invent current ECG, echo, or current-admission CMR findings (which were explicitly not supplied in Q2–Q4), and frames non-atherosclerotic possibilities (SCAD, vasospasm, Takotsubo) as unconfirmed hypotheses rather than findings. It explicitly acknowledges uncertainty ('specific etiology remains undetermined', normal coronaries 'do not settle the assessment', prodrome absence 'does not exclude' myocarditis), matching the Score 5 anchor of accurate claims plus explicit acknowledgment of where evidence is uncertain. No factual errors or unsupported fabrications are present."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission synthesises the actually available evidence into a clinically meaningful representation: recurrent severe chest pain on day 18 with markedly elevated hs-troponin-T (866 ng/L), prior normal coronary angiography, day-2 CMR showing myocardial oedema with subepicardial enhancement and LVEF ~43%, and the current coronary CT excluding atherosclerosis. It appropriately treats the current episode as a new/worsening event distinct from the first admission, prioritises recurrent/persistent myocarditis as the leading explanation with supporting evidence, keeps ACS and other causes in the differential with reasoned qualification, and explicitly explains how the normal coronary investigations lower the probability of obstructive disease without settling the assessment (including non-atherosclerotic mechanisms). Consequential unresolved gaps — missing current ECG, vital signs, and current-admission echocardiogram/MRI — are clearly identified and correctly framed as not inferable, matching the environment feedback not to infer unreported results. The absence of a viral prodrome is handled appropriately (noted as non-excluding). The degree of diagnostic commitment to myocarditis is defensible on the supplied CMR findings, and the proposed next actions are proportionate and tied to the identified gaps. Minor limitations (e.g., the word-count overrun, which is a format issue outside this rubric) do not change the clinical framing. The representation is focused, discriminating, and appropriately provisional where uncertainty remains, meeting the Score 5 anchor."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D3b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission prioritises recurrent/persistent myocarditis (supported by day-2 CMR showing oedema, subepicardial enhancement, LVEF 43%), then ACS/non-atherosclerotic coronary causes (SCAD, vasospasm) despite normal angiography and current CT excluding atherosclerosis, and mentions Takotsubo/toxic myocarditis as alternatives. It appropriately uses available evidence, addresses dangerous mimics (ACS, SCAD, vasospasm), and correctly notes normal coronary imaging lowers but does not eliminate coronary causes. It does not reach Score 5 because discriminating findings for the current episode are limited (current ECG, vitals, echo, and current CMR were requested but not returned), so prioritisation between recurrent myocarditis and other inflammatory/non-coronary causes rests partly on prior-admission data, and no explicit prior-plausibility weighting beyond myocarditis is given. It is more complete than Score 3 (prioritisation is reasonable and evidence-linked), but lacks the fully explicit discriminating-finding analysis of Score 5."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D4c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission maintains correct chronology with explicit temporal anchors: it opens with 'on day 18' for the current presentation, refers to the 'prior course' with the 'day-2 cardiac MRI' showing oedema, subepicardial enhancement and LVEF 43%, and correctly separates the earlier normal angiography and current coronary CT ('current coronary CT excluded atherosclerosis') as distinct events from the two admissions. It does not carry earlier findings forward as current (e.g., it explicitly notes current vital signs and ECG are missing). No events are presented out of sequence and no temporal errors are apparent, matching the Score 5 anchor of correct chronology with explicit temporal anchors."
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly separates established facts (day-18 troponin 866 ng/L, prior normal angiography, day-2 CMR with oedema/subepicardial enhancement and LVEF ~43%, current CT excluding atherosclerosis) from unknowns (current vitals, current ECG, current echo/MRI — all requested in Q1–Q4 but not returned). It grades myocarditis as strongly supported/probable, ACS as less likely but not excluded (noting non-atherosclerotic mechanisms such as SCAD or vasospasm), and Takotsubo/toxic causes as possible but less supported. It explains the source of uncertainty (missing current investigations; normal coronary studies rule out fixed stenosis but not dynamic or inflammatory processes) and identifies concrete next steps to reduce it (current ECG, repeat echocardiography, repeat CMR, serial troponins, review of systems). This matches the score-5 anchor: established, probable, possible, and unresolved conclusions are distinguished, the uncertainty source is explained, and next steps are named. It also avoids inferring unreported results, consistent with the environment feedback."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "Both essential requirements were met through targeted, well-timed requests. R1 (current acute assessment) was satisfied by Q3, which explicitly requested the current-admission ECG; the environment's failure to supply it is a simulator limitation, not an acquisition failure, and the model correctly did not carry earlier vitals forward. R2 (earlier/current cardiac investigation and episode context) was met by Q1 (current coronary CT plus prior angiogram), Q2 (prior CMR showing oedema, subepicardial enhancement and LVEF ~43%) and Q5 (episode context and viral prodrome). Requests were proportionate and discriminating — imaging, ECG, echo and infectious history each map directly to the differential of recurrent myocardial injury with normal coronaries — and the assessment notes explicitly linked the missing current data to the remaining uncertainty. The only gap is the helpful-level R3 (wider mucosal/skin/systemic features), which was not fully explored, but helpful-level items do not cap the score, and the model avoided unnecessary information gathering. Minor sequencing (current ECG requested third) does not materially limit the assessment."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND20.D6a.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "The vignette presents a time-critical emergency: severe chest pain with hs-troponin-T of 866 ng/L (reference <15) on day 18, with prior myocarditis-like CMR findings and reduced LVEF. The submission clearly recognises the seriousness ('acute myocardial injury', 'ongoing or new myocardial damage', serial troponins, close monitoring). However, it recommends only further investigations (ECG, echo, repeat CMR, review of systems) and does not specify any escalation pathway — no urgent cardiology referral, no emergency/ACS pathway, no monitored care setting, and no timing for these actions. The word 'monitoring' is generic and does not constitute a clear escalation recommendation. This matches Score 2: recognises something serious but does not recommend an appropriate escalation pathway."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

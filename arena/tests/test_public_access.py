@@ -2,6 +2,8 @@
 
 # ruff: noqa: E402 -- Standalone application modules.
 
+import hashlib
+import hmac
 import json
 import sys
 import threading
@@ -92,6 +94,7 @@ def test_public_browsing_has_no_private_runs_and_cannot_write(hosted):
         "authenticated": False,
         "can_evaluate": False,
         "can_review": False,
+        "can_manage_rubric": False,
         "online": True,
     }
     assert "api_key" not in config["settings"]
@@ -104,6 +107,69 @@ def test_public_browsing_has_no_private_runs_and_cannot_write(hosted):
     assert not server.public_app.list_runs()
 
 
+def test_comparison_is_public_read_only_and_invalid_cases_do_not_escape(hosted):
+    _, client = hosted
+    data = client.get("/api/comparison").json()
+    assert data["case_count"] == 78
+    assert len(data["models"]) == 5
+    response = client.get("/api/comparison/cases/N01")
+    assert response.status_code == 200
+    assert response.json()["id"] == "N01"
+    assert len(response.json()["models"]) == 6
+    bmj = client.get("/api/comparison/cases/B22")
+    assert bmj.status_code == 200
+    assert bmj.json()["mode"] == "written-record"
+    assert bmj.json()["clinical_status"] == "awaiting confirmation"
+    for identifier in ("J01", "JA10", "SR01", "SR10"):
+        response = client.get("/api/comparison/cases/" + identifier)
+        assert response.status_code == 200
+        assert len(response.json()["models"]) == 6
+        assert response.json()["requirements_status"] == "awaiting confirmation"
+    assert client.post("/api/comparison", json={"score": 5}).status_code == 403
+    assert client.get("/api/comparison/cases/CAND99").status_code != 200
+    assert client.get("/api/comparison/cases/B23").status_code != 200
+
+
+@pytest.mark.parametrize("identifier", ["R01", "R02"])
+def test_zero_shot_comparison_requires_a_valid_existing_session(
+    hosted, monkeypatch, tmp_path, identifier
+):
+    import public_server
+
+    packet = {"case_count": 78, "rows": [{"id": f"CHECK{i}"} for i in range(78)]}
+    saved = tmp_path / "comparison.json"
+    saved.write_text(json.dumps(packet))
+    monkeypatch.setattr(public_server, "RESULT_COMPARISON_PATH", saved)
+    _, client = hosted
+    assert client.get("/api/result-comparison").status_code == 401
+    assert (
+        client.get("/api/result-comparison", headers={"Cookie": "arena_session=forged"}).status_code
+        == 401
+    )
+    login(client, identifier)
+    response = client.get("/api/result-comparison")
+    assert response.status_code == 200 and response.json() == packet
+    assert response.headers["Cache-Control"] == "no-store"
+    assert client.post("/api/result-comparison", json={}).status_code == 405
+    assert client.post("/api/access/logout", json={}).status_code == 200
+    assert client.get("/api/result-comparison").status_code == 401
+
+
+def test_zero_shot_comparison_missing_packet_does_not_expose_details(hosted, monkeypatch, tmp_path):
+    import public_server
+
+    monkeypatch.setattr(public_server, "RESULT_COMPARISON_PATH", tmp_path / "missing.json")
+    _, client = hosted
+    assert client.get("/api/result-comparison").status_code == 401
+    login(client)
+    response = client.get("/api/result-comparison")
+    assert response.status_code == 503
+    assert str(tmp_path) not in response.text
+    assert client.get("/api/comparison/cases/JA03").status_code != 200
+    assert client.get("/api/comparison/cases/J05").status_code != 200
+    assert client.get("/api/comparison/cases/SR11").status_code != 200
+
+
 def test_bridge_requires_the_private_shared_header(hosted):
     server, client = hosted
     server.bridge_secret = "test-only-bridge-secret-not-a-deployment-secret"
@@ -113,6 +179,20 @@ def test_bridge_requires_the_private_shared_header(hosted):
     assert response.json()["rubric_version"]["id"] == "original"
     assert "Josh" not in response.text
     assert client.get("/healthz").json() == {"ok": True}
+
+
+def test_recovery_probe_proves_the_backend_without_transmitting_its_secret(hosted):
+    server, client = hosted
+    server.bridge_secret = "test-only-probe-key-not-a-deployment-secret"
+    nonce = "c" * 32
+    response = client.get("/healthz?probe_nonce=" + nonce)
+    assert response.status_code == 200
+    expected = hmac.new(
+        server.bridge_secret.encode(), ("AutoRubric probe\n" + nonce).encode(), hashlib.sha256
+    ).hexdigest()
+    assert response.json()["proof"] == expected
+    assert server.bridge_secret not in response.text
+    assert client.get("/healthz?probe_nonce=bad").status_code == 400
 
 
 def test_origin_check_cookie_flags_and_logout(hosted):
@@ -197,3 +277,58 @@ def test_login_attempts_are_limited(hosted):
         client.post("/api/access/login", json={"id": "R01", "password": TEST_PASSWORD}).status_code
         == 429
     )
+
+
+def test_shared_admin_retains_a_declared_reviewer_id(tmp_path, accounts):
+    original = json.loads(accounts)[0]
+    users = json.dumps([{**original, "id": "workspace", "role": "admin"}])
+    server = HostedServer(
+        ("127.0.0.1", 0),
+        tmp_path,
+        "http://127.0.0.1:0",
+        users,
+        TEST_SECRET,
+        Settings("", "https://offline.invalid/v1"),
+        object(),
+    )
+    server.public_origin = f"http://127.0.0.1:{server.server_port}"
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with httpx.Client(
+            base_url=server.public_origin, headers={"Origin": server.public_origin}
+        ) as client:
+            assert (
+                client.post(
+                    "/api/access/login", json={"id": "R02", "password": TEST_PASSWORD}
+                ).status_code
+                == 403
+            )
+            assert (
+                client.post(
+                    "/api/access/login", json={"id": "workspace", "password": TEST_PASSWORD}
+                ).status_code
+                == 200
+            )
+            access = client.get("/api/config").json()["access"]
+            assert access["can_evaluate"] and access["can_review"]
+            identifier = evidence.followup_packet("n04-fresh-arc-lite")["id"]
+            response = client.post(
+                f"/api/review/{identifier}/rating",
+                json={
+                    "reviewer": "CLINICIAN_A",
+                    "items": {
+                        "D3a": {
+                            "score": "Indeterminate",
+                            "note": "Authorisation fixture, not a clinical rating.",
+                        }
+                    },
+                },
+            )
+            assert response.status_code == 200
+            assert response.json()["reviewer"] == "workspace/CLINICIAN_A"
+            assert len(list((tmp_path / "members/workspace/_reviews").glob("*.json"))) == 1
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(2)

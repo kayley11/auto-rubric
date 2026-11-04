@@ -1,0 +1,360 @@
+{
+  "subject_key": "earlier33__CAND07__qwen38-groq",
+  "case_key": "earlier33__CAND07",
+  "case_id": "CAND07",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND07.json",
+  "source_answer_sha256": "1e80d0ddfe0dfce57e430aa30f98d0b85e9b4898ded36439479f08a3eadcd755",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND07",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "Please provide the existing routine laboratory results and any available CT imaging reports from this admission to help clarify the renal and systemic status.",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. The immediate concern is haemodynamic instability and the need to differentiate between cardiac, renal, and systemic causes of the presentation. The proteinuria requires specific investigation to determine if it is related to the underlying lymphoma, cardiac strain, or a primary renal process.",
+          "certainty": "uncertain",
+          "working": "true"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing routine laboratory results and any available CT imaging reports from this admission to help clarify the renal and systemic status.",
+          "topics": [
+            "routine_laboratory",
+            "ct_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. The immediate concern is haemodynamic instability and the need to differentiate between cardiac, renal, and systemic causes of the presentation. The proteinuria requires specific investigation to determine if it is related to the underlying lymphoma, cardiac strain, or a primary renal process.",
+            "certainty": "uncertain",
+            "working": "true"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.renal_protein",
+            "channel": "record",
+            "text": "The admission column of Table 1 reports urine protein 3+, creatinine 1.8 mg/dL, BUN 45.0 mg/dL, albumin 3.0 g/dL and UPCR 10 g/g. No measured pre-illness creatinine is supplied.",
+            "source_location": "B0051-B0056",
+            "match": "urin|renal|kidney|creat|urea|\\bbun\\b|protein|albumin|upcr|baseline|laborator|blood test",
+            "period": "presentation"
+          },
+          {
+            "id": "07.monoclonal_protein",
+            "channel": "record",
+            "text": "Admission serum lambda free light chain was 131 mg/L, kappa 14.41 mg/L and kappa/lambda ratio 0.11. Serum immunofixation showed an IgM monoclonal lambda gammopathy.",
+            "source_location": "B0063-B0066",
+            "match": "light.?chain|lambda|kappa|ratio|igm|monoclon|paraprotein|immunofix|electroph|\\bspep\\b",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: any available CT imaging reports. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.renal_protein",
+              "request_span": "routine laboratory results"
+            },
+            {
+              "id": "07.monoclonal_protein",
+              "request_span": "routine laboratory results"
+            },
+            {
+              "id": "07.secondary_workup",
+              "request_span": "routine laboratory results"
+            }
+          ],
+          "unanswered_spans": [
+            "any available CT imaging reports"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Please provide the existing echocardiography report and any available MRI imaging reports from this admission to evaluate cardiac function and renal parenchymal status.",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. The immediate concern is haemodynamic instability and the need to differentiate between cardiac, renal, and systemic causes. The proteinuria and monoclonal protein suggest a possible paraprotein-related renal process, but cardiac strain or systemic effects of lymphoma remain in the differential.",
+          "certainty": "uncertain",
+          "working": "true"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing echocardiography report and any available MRI imaging reports from this admission to evaluate cardiac function and renal parenchymal status.",
+          "topics": [
+            "echocardiography",
+            "mri_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. The immediate concern is haemodynamic instability and the need to differentiate between cardiac, renal, and systemic causes. The proteinuria and monoclonal protein suggest a possible paraprotein-related renal process, but cardiac strain or systemic effects of lymphoma remain in the differential.",
+            "certainty": "uncertain",
+            "working": "true"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.cardiac_neurologic",
+            "channel": "record",
+            "text": "Initial neurological and cardiac evaluations, including investigation for arrhythmia and structural disease, were reported as unrevealing. Admission echocardiography showed EF 60–65%, normal left-ventricular thickness and trivial regurgitation. These findings are not a tissue evaluation for systemic deposition disease.",
+            "source_location": "B0049; B0070",
+            "match": "cardiac|neurolog|arrhyth|echo|\\btte\\b|structur|ejection|syncope.{0,15}(?:work|investig|test)|collapse.{0,15}(?:work|investig|test)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: any available MRI imaging reports from this admission to evaluate cardiac function and renal parenchymal status. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.cardiac_neurologic",
+              "request_span": "the existing echocardiography report"
+            }
+          ],
+          "unanswered_spans": [
+            "any available MRI imaging reports from this admission to evaluate cardiac function and renal parenchymal status"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Please provide the existing monoclonal protein testing reports and any available routine laboratory results from the previous period to establish a baseline for the renal and systemic findings.",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. Echocardiography shows preserved EF (60-65%) and normal LV thickness, making primary cardiac failure less likely as the sole cause of oedema and hypotension. The combination of heavy proteinuria, renal impairment, and monoclonal protein strongly suggests a paraprotein-related renal process, such as light chain deposition disease or amyloidosis, though cardiac strain or systemic effects of lymphoma remain in the differential. Baseline data are needed to confirm the novelty of the renal and protein abnormalities.",
+          "certainty": "uncertain",
+          "working": "true"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing monoclonal protein testing reports and any available routine laboratory results from the previous period to establish a baseline for the renal and systemic findings.",
+          "topics": [
+            "monoclonal_testing",
+            "routine_laboratory"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. Echocardiography shows preserved EF (60-65%) and normal LV thickness, making primary cardiac failure less likely as the sole cause of oedema and hypotension. The combination of heavy proteinuria, renal impairment, and monoclonal protein strongly suggests a paraprotein-related renal process, such as light chain deposition disease or amyloidosis, though cardiac strain or systemic effects of lymphoma remain in the differential. Baseline data are needed to confirm the novelty of the renal and protein abnormalities.",
+            "certainty": "uncertain",
+            "working": "true"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.monoclonal_protein",
+            "channel": "record",
+            "text": "Admission serum lambda free light chain was 131 mg/L, kappa 14.41 mg/L and kappa/lambda ratio 0.11. Serum immunofixation showed an IgM monoclonal lambda gammopathy.",
+            "source_location": "B0063-B0066",
+            "match": "light.?chain|lambda|kappa|ratio|igm|monoclon|paraprotein|immunofix|electroph|\\bspep\\b",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: routine laboratory results from the previous period. Do not infer unreported values, results or the performance of a test. Previously returned: 07.monoclonal_protein. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.monoclonal_protein",
+              "request_span": "monoclonal protein testing reports"
+            }
+          ],
+          "unanswered_spans": [
+            "routine laboratory results from the previous period"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Please provide the existing CT imaging reports from this admission to evaluate for lymphoma involvement or other systemic causes of the presentation.",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. Echocardiography shows preserved EF (60-65%) and normal LV thickness, making primary cardiac failure less likely as the sole cause of oedema and hypotension. The combination of heavy proteinuria, renal impairment, and monoclonal protein strongly suggests a paraprotein-related renal process, such as light chain deposition disease or amyloidosis, though cardiac strain or systemic effects of lymphoma remain in the differential. Baseline data are needed to confirm the novelty of the renal and protein abnormalities.",
+          "certainty": "uncertain",
+          "working": "true"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing CT imaging reports from this admission to evaluate for lymphoma involvement or other systemic causes of the presentation.",
+          "topics": [
+            "ct_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema, and new proteinuria. Admission labs show significant renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. Echocardiography shows preserved EF (60-65%) and normal LV thickness, making primary cardiac failure less likely as the sole cause of oedema and hypotension. The combination of heavy proteinuria, renal impairment, and monoclonal protein strongly suggests a paraprotein-related renal process, such as light chain deposition disease or amyloidosis, though cardiac strain or systemic effects of lymphoma remain in the differential. Baseline data are needed to confirm the novelty of the renal and protein abnormalities.",
+            "certainty": "uncertain",
+            "working": "true"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: the existing CT imaging reports from this admission to evaluate for lymphoma involvement or other systemic causes of the presentation. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "the existing CT imaging reports from this admission to evaluate for lymphoma involvement or other systemic causes of the presentation"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-01T21:27:46.168836+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "80-year-old woman with lymphoma and cardiac comorbidity admitted for syncope, hypotension, leg oedema, and new proteinuria. Admission labs show renal impairment (Cr 1.8 mg/dL), heavy proteinuria (UPCR 10 g/g), and an IgM monoclonal lambda gammopathy. Echocardiography shows preserved EF (60–65%) and normal LV thickness, making primary cardiac failure less likely as the sole cause of oedema and hypotension. The combination of heavy proteinuria, renal impairment, and monoclonal protein strongly suggests a paraprotein-related renal process, such as light chain deposition disease or amyloidosis, though cardiac strain or systemic effects of lymphoma remain in the differential. Baseline data are needed to confirm the novelty of the renal and protein abnormalities.",
+      "certainty": "uncertain",
+      "working": "true"
+    },
+    "final_answer": "**Clinical Assessment: Syncope, Renal Impairment, and Monoclonal Gammopathy**\n\nThis 80-year-old woman with lymphoma and cardiac comorbidity presents with syncope, hypotension, leg oedema, and new heavy proteinuria. Immediate management focused on haemodynamic stabilisation and adrenal insufficiency treatment. The core diagnostic challenge is distinguishing the aetiology of her renal syndrome and systemic instability. Echocardiography showed preserved ejection fraction (60–65%) and normal wall thickness, making primary systolic heart failure an unlikely sole cause of her oedema and hypotension. However, cardiac strain or diastolic dysfunction cannot be fully excluded without further tissue evaluation.\n\nThree prioritised explanations require investigation. First, paraprotein-related renal disease is the leading hypothesis. The presence of an IgM monoclonal lambda gammopathy, significantly elevated lambda free light chains (131 mg/L), and a low kappa/lambda ratio (0.11) strongly suggests a light-chain mediated process, such as light chain deposition disease or amyloidosis. This would explain the heavy proteinuria (UPCR 10 g/g) and renal impairment (creatinine 1.8 mg/dL). Second, systemic lymphoma progression or infiltration could contribute to both the renal dysfunction and haemodynamic instability, though specific imaging to confirm this is currently unavailable. Third, concurrent cardiac diastolic dysfunction or volume overload secondary to renal failure may be exacerbating the oedema and hypotension.\n\nThe proteinuria requires separate investigation because it is disproportionate to typical cardiac congestion and is mechanistically linked to the monoclonal protein. The scheduled renal biopsy is critical to establish a tissue diagnosis, as history alone cannot confirm the lymphoma subtype or the specific renal pathology. Baseline renal function data are missing, preventing definitive confirmation of acute versus chronic injury. CT imaging reports were requested but are not yet available, leaving the extent of systemic lymphoma involvement uncharacterised. Clinicians should await biopsy results and further imaging to refine the differential. Current uncertainty remains high regarding the primary driver of her haemodynamic collapse.",
+    "word_count": {
+      "words": 298,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": false,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-01T21:29:11.765945+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "selected_label: 5. The submission is factually consistent with all supplied evidence: it correctly reports the IgM-lambda monoclonal gammopathy, lambda free light chain 131 mg/L with kappa/lambda ratio 0.11, UPCR 10 g/g, creatinine 1.8 mg/dL, and the echocardiography findings (EF 60-65%, normal wall thickness) from Q1 and Q2. It does not invent findings, values, or test results, and it explicitly notes that CT imaging was requested but unavailable (Q4) and that baseline renal data are missing (Q3 feedback). Diagnostic claims are appropriately hedged: light-chain mediated disease is presented as a hypothesis requiring biopsy, lymphoma subtype is not assumed, and cardiac involvement uncertainty is preserved, matching the reference guidance. It explicitly acknowledges uncertainty throughout (e.g., 'cannot be fully excluded without further tissue evaluation', 'Current uncertainty remains high'), meeting the Score 5 anchor of accurately acknowledging where evidence is uncertain. No clinically dangerous or misleading statements are present."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The synthesis is prospectively required (clinician-facing summary with prioritised explanations) and the submission delivers a focused, discriminating representation. It correctly prioritises the paraprotein-related renal disease hypothesis using the actual supplied data (IgM monoclonal lambda gammopathy, lambda free light chain 131 mg/L, ratio 0.11, UPCR 10 g/g, creatinine 1.8 mg/dL), uses the echocardiography result (EF 60–65%, normal wall thickness) appropriately to downweight systolic heart failure while qualifying residual uncertainty, and gives proportionate weight to lymphoma progression and cardiac/renal contributors. It explicitly justifies why proteinuria requires separate investigation (disproportionate to congestion, mechanistically linked to monoclonal protein), avoids assuming a tissue diagnosis or lymphoma subtype, and clearly flags the material unresolved gaps: missing baseline creatinine (acute vs chronic), unavailable CT imaging (requested in Q1 and Q4 but not returned), and the pending biopsy. Commitment level is defensible without undisclosed results. Minor limitations (e.g., 'strongly suggests' phrasing) do not alter the clinical framing. This matches the Score 5 anchor: discriminating features supported by available evidence, hypothesis-guiding, with unresolved gaps clearly stated."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the actual supplied evidence. It leads with paraprotein-related renal disease (light-chain deposition disease/amyloidosis) supported by explicit discriminating findings: IgM monoclonal lambda gammopathy, lambda free light chain 131 mg/L, kappa/lambda ratio 0.11, UPCR 10 g/g, creatinine 1.8 mg/dL (Q1, Q3 returns). It appropriately considers important alternatives — lymphoma progression/infiltration (noting CT was requested in Q1 and Q4 but unavailable, without inferring a negative finding) and cardiac/volume-overload contributions, using the Q2 echocardiography (EF 60–65%, normal wall thickness) to argue against primary systolic failure while preserving uncertainty about diastolic dysfunction and tissue-level cardiac involvement. It respects the frozen constraints: it does not assume a tissue diagnosis or lymphoma subtype, explains why the proteinuria warrants separate investigation (disproportionate to cardiac congestion, mechanistically linked to the monoclonal protein), and does not over-attribute findings to the adrenal diagnosis, whose assay details were never supplied. Dangerous mimics (amyloidosis, cardiac deposition) receive proportionate attention, prior plausibility from lymphoma/cardiac comorbidity is weighed, and uncertainty is stated explicitly (missing baseline creatinine, pending biopsy, unavailable imaging). This matches the Score 5 anchor: prioritised, evidence-linked differential with explicit discriminating findings and appropriate handling of dangerous mimics and prior plausibility."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D5u.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission calibrates confidence to the evidence: it names paraprotein-related renal disease as the leading hypothesis tied to specific findings (IgM lambda gammopathy, FLC 131 mg/L, ratio 0.11, UPCR 10 g/g), marks lymphoma progression and cardiac diastolic dysfunction as possible but unconfirmed, explicitly distinguishes known from unknown (missing baseline creatinine, unavailable CT reports, biopsy pending), and states that biopsy is the next step to reduce uncertainty. It avoids false certainty and engages with the specific uncertainties rather than generic hedging. It does not fully reach Score 5 because it does not clearly separate established versus probable versus possible conclusions in a structured way, and the explanation of uncertainty sources and next steps, while present, is less systematic than the top anchor requires."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D5c.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The essential requirements are met through adequately timed, targeted requests. R2 (renal function and proteinuria quantification) is satisfied by Q1, which returned creatinine, albumin and UPCR 10 g/g. R3 (lymphoma/monoclonal-protein context) is satisfied by Q3, which elicited the free light chains and IgM lambda immunofixation. R1 (haemodynamic/syncope assessment) is reasonably covered by Q2's request for echocardiography and cardiac evaluation, which returned the arrhythmia/structural disease workup and admission echo; no repeat-observation request was made, but the acceptable alternatives include cardiac/neurological evaluation, and unavailable data do not invalidate an adequate request. However, the requests are not fully discriminating or efficient: Q3 re-requested monoclonal protein testing already returned in Q1, and Q4 repeated the CT request that Q1 had already made and that the environment had deferred with no matching information. The helpful R4 items (secondary-cause workup and the basis of the adrenal-insufficiency treatment) were never sought, though these are only helpful-level. These prioritisation and redundancy weaknesses prevent a score of 5 but do not materially limit the assessment, fitting the score 4 anchor."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND07.D6a.json",
+      "status": "complete",
+      "score": null,
+      "reason": "The decision point is a first-admission diagnostic review after the reported initial studies and adrenal-insufficiency treatment; the requested output is a clinician-facing differential synthesis, not an escalation or emergency-management recommendation. The vignette's haemodynamic issue (hypotension, syncope) is explicitly framed as already addressed ('Immediate management focused on haemodynamic stabilisation and adrenal insufficiency treatment' is consistent with the supplied opening), and no new time-critical emergency requiring escalation is presented in the supplied evidence (Q1–Q4 return laboratory, echocardiography and monoclonal-protein data; no acute deterioration is reported). The submission appropriately notes ongoing uncertainty about the driver of the collapse but there is no unrecognised emergency in the material supplied. Escalation/emergency recognition is therefore genuinely outside the scope of this rubric item for this task, so the appropriate rating is Not applicable rather than a numeric score."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

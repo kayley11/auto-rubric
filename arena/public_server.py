@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import hmac
 import json
 import os
+import re
 import signal
 import threading
 import time
 from http.cookies import SimpleCookie
 from http.server import ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from engine import Settings
 from public_access import (
@@ -26,6 +28,8 @@ from public_access import (
 )
 from public_presentation import display_data, display_text
 from server import Application, Handler
+
+RESULT_COMPARISON_PATH = Path(__file__).resolve().parent / ".data/result-comparison.json"
 
 
 class HostedServer(ThreadingHTTPServer):
@@ -55,10 +59,13 @@ class HostedServer(ThreadingHTTPServer):
         settings = settings or Settings.load()
         directory = Path(data_dir)
         self.public_app = Application(directory / "public-empty", settings, provider)
-        self.apps = {
-            identifier: Application(directory / "members" / identifier, settings, provider)
-            for identifier in self.users
-        }
+        workspaces = {}
+        self.apps = {}
+        for identifier, member in self.users.items():
+            space = member.get("workspace", identifier)
+            if space not in workspaces:
+                workspaces[space] = Application(directory / "members" / space, settings, provider)
+            self.apps[identifier] = workspaces[space]
         # Preserve the existing single-job restriction across member accounts.
         job_lock = threading.Lock()
         for app in self.apps.values():
@@ -102,6 +109,7 @@ class HostedHandler(Handler):
                     "authenticated": bool(member),
                     "can_evaluate": bool(member and member["role"] in {"admin", "evaluator"}),
                     "can_review": bool(member),
+                    "can_manage_rubric": bool(member and member["role"] == "admin"),
                     "online": True,
                 },
             }
@@ -152,6 +160,14 @@ class HostedHandler(Handler):
         member = self.member
         if mutation and not member:
             raise PermissionError("Sign in to generate, score or save a review.")
+        if path in {"/api/rubrics/manage", "/api/decisions"} or (
+            mutation and path.startswith("/api/requirements/")
+        ):
+            if not member or member["role"] != "admin":
+                raise PermissionError(
+                    "Higher-level decision access is required "
+                    "to change rubric rules or confirm requirements."
+                )
         if mutation and path.startswith("/api/runs"):
             is_review = path.endswith("/review")
             if not is_review and member["role"] not in {"admin", "evaluator"}:
@@ -164,15 +180,59 @@ class HostedHandler(Handler):
     def body(self):
         body = super().body()
         path = urlparse(self.path).path
+        if isinstance(body.get("case_submission"), dict):
+            body["case_submission"]["account_id"] = self.member["id"] if self.member else ""
         if self.member and (
             path.startswith(("/api/review/", "/api/requirements/")) or path.endswith("/review")
         ):
-            body["reviewer"] = self.member["id"]
+            identifier = self.member["id"]
+            if identifier == "workspace":
+                declared = body.get("reviewer", "")
+                if not isinstance(declared, str):
+                    raise ValueError("Enter a short reviewer ID.")
+                declared = declared.removeprefix("workspace/").strip()
+                if declared and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", declared):
+                    raise ValueError(
+                        "Use a reviewer ID with letters, digits, dots, underscores or hyphens."
+                    )
+                body["reviewer"] = f"workspace/{declared}" if declared else identifier
+            else:
+                body["reviewer"] = identifier
         return body
 
     def dispatch(self, mutation):
         path = urlparse(self.path).path
+        if path == "/api/result-comparison":
+            try:
+                self.guarded(mutation)
+                if mutation:
+                    return self.send(405, {"error": "Use GET."})
+                if not self.member:
+                    return self.send(
+                        401,
+                        {"error": "Sign in with your workspace account to view this comparison."},
+                    )
+                data = json.loads(RESULT_COMPARISON_PATH.read_text(encoding="utf-8"))
+                if data.get("case_count") != 78 or len(data.get("rows", [])) != 78:
+                    raise ValueError("The saved comparison is incomplete.")
+                return self.send(200, data)
+            except PermissionError as exc:
+                return self.send(403, {"error": str(exc)})
+            except (OSError, ValueError):
+                return self.send(
+                    503, {"error": "The saved comparison is unavailable. Please try again later."}
+                )
         if path == "/healthz" and not mutation:
+            nonce = parse_qs(urlparse(self.path).query).get("probe_nonce", [""])[0]
+            if nonce:
+                if not re.fullmatch(r"[a-f0-9]{32}", nonce) or not self.server.bridge_secret:
+                    return self.send(400, {"error": "Invalid recovery probe."})
+                proof = hmac.new(
+                    self.server.bridge_secret.encode(),
+                    ("AutoRubric probe\n" + nonce).encode(),
+                    hashlib.sha256,
+                ).hexdigest()
+                return self.send(200, {"ok": True, "proof": proof})
             return self.send(200, {"ok": True})
         if path in {"/api/access/login", "/api/access/logout"}:
             try:

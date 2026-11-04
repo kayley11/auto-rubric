@@ -2,9 +2,11 @@
 
 import hashlib
 import json
+import re
 from copy import deepcopy
 from functools import lru_cache
 
+import comparison
 import scoring
 import study
 
@@ -113,20 +115,30 @@ def run_packet(run):
     return {
         "id": token("run/" + run["id"] + "/" + scoring.fingerprint(data)),
         "source_id": "run/" + run["id"],
-        "batch": "Saved evaluation",
-        "case_id": data.get("case_id", ""),
+        "technical_check": bool(
+            re.fullmatch(
+                r"ui[-_\s]?validation|deployment[-_\s]?(?:check|validation)|interface[-_\s]?check",
+                run.get("purpose", ""),
+                re.I,
+            )
+            or re.match(r"^Deployment check(?:\s|[—–:-])", data.get("title", ""), re.I)
+        ),
+        "batch": "Submitted cases · " + data["comparison_id"][:8]
+        if data.get("comparison_id")
+        else "Saved evaluation",
+        "case_id": data.get("case_code") or data.get("case_id") or data.get("case_number", ""),
         "name": data["title"],
         "audience": "As specified in the task",
-        "model": data["answer_model"],
+        "model": (
+            "Provided answer · model not specified"
+            if run.get("answer_source") == "pasted" and not data.get("interview_source")
+            else data["answer_model"]
+        ),
         "data": data,
-        "scores": {
-            cid: [{"repeat": 1, **g}]
-            for cid, g in run.get("grades", {}).items()
-            if cid in {"D3a", "D5c"}
-        },
+        "scores": {cid: [{"repeat": 1, **g}] for cid, g in run.get("grades", {}).items()},
         "all_scores": {cid: [{"repeat": 1, **g}] for cid, g in run.get("grades", {}).items()},
         "inventory": deepcopy(run.get("patient_case_snapshot", {}).get("facts", [])),
-        "rules": {cid: r for cid, r in all_rules.items() if cid in {"D3a", "D5c"}},
+        "rules": all_rules,
         "all_rules": all_rules,
         "review_question": (
             "Confirm the case reference and information requirements, "
@@ -146,7 +158,7 @@ def packets(app=None):
             if (
                 run.get("status") not in {"generating", "scoring", "interviewing"}
                 and run["input"].get("answer")
-                and {"D3a", "D5c"} & set(run["input"].get("criteria", []))
+                and run["input"].get("criteria")
             ):
                 records.append(run_packet(run))
     return records
@@ -155,8 +167,97 @@ def packets(app=None):
 def get_packet(identifier, app=None):
     found = next((r for r in packets(app) if r["id"] == identifier), None)
     if not found:
+        found = next((r for r in published_packets() if r["id"] == identifier), None)
+    if not found:
         raise FileNotFoundError("Review record not found.")
     return found
+
+
+@lru_cache(maxsize=100)
+def _published_packets(path, stamp, size):
+    c = json.loads(path.read_text(encoding="utf-8"))
+    result = []
+    for m in c["models"]:
+        if not m.get("answer"):
+            continue
+        rules = {r["id"]: r for r in c["criteria"]}
+        facts = "\n\n".join(v for v in [c.get("initial_facts", ""), c.get("opening", "")] if v)
+        source_id = f"published/{c['id']}/{m['id']}/{m.get('study_id', c['study_id'])}"
+        data = {
+            "facts": facts,
+            "task": c["task"],
+            "history": "",
+            "answer": m["answer"],
+            "reference": c.get("reference", ""),
+            "requirements": c.get("requirements", []),
+            "rules_version": m.get("rule_version", c["rule_version"]),
+            "criteria": list(rules),
+            "judge_model": m.get("judge", c["judge"]),
+            "interview": {"turns": [], "decision_point": "Saved final answer", "closing_notes": ""},
+        }
+        # Preserve actual earlier dialogue as evidence, without exposing hidden inventory.
+        for t in m.get("turns", []):
+            returned = t.get("returned", [])
+            data["interview"]["turns"].append(
+                {
+                    "number": t["number"],
+                    "question": t["question"],
+                    "notes": json.dumps(t.get("assessment", {})),
+                    "reply": "\n".join(
+                        f.get("patient_text") or f.get("text", "")
+                        for f in returned
+                        if f.get("channel") == "patient"
+                    ),
+                    "records": "\n".join(
+                        (f.get("context", "") + ": " if f.get("context") else "")
+                        + (f.get("text") or f.get("patient_text", ""))
+                        for f in returned
+                        if f.get("channel") != "patient"
+                    ),
+                }
+            )
+        scores = {
+            s["item"]: [
+                {
+                    "repeat": 1,
+                    "score": s.get("score"),
+                    "label": s.get("label"),
+                    "status": s["status"],
+                    "reason": s.get("reason", ""),
+                }
+            ]
+            for s in m.get("scores", [])
+        }
+        result.append(
+            {
+                "id": token(source_id),
+                "source_id": source_id,
+                "batch": "Published case library",
+                "case_id": c["id"],
+                "name": c["title"],
+                "audience": c.get("audience", "As specified"),
+                "model": m["model_id"],
+                "data": data,
+                "rules": rules,
+                "all_rules": rules,
+                "scores": scores,
+                "all_scores": scores,
+                "inventory": [],
+                "review_question": "Rate the saved answer against its selected rubric items.",
+                "traces": [],
+            }
+        )
+    return result
+
+
+def published_packets():
+    result = []
+    for path in comparison.SNAPSHOTS.glob("*.json"):
+        if not comparison.CASE_ID.fullmatch(path.stem):
+            continue
+        stat = path.stat()
+        result.extend(_published_packets(path, stat.st_mtime_ns, stat.st_size))
+    return result
 
 
 def clinical_profile(packet):
@@ -197,8 +298,13 @@ def blind_packet(packet, criterion="D3a"):
         "decision_point": data["interview"]["decision_point"],
         "rules_version": data.get("rules_version", "original"),
         "evidence_version": data.get("evidence_version", scoring.LEGACY_EVIDENCE_ID),
-        "available_items": [cid for cid in ("D3a", "D5c") if cid in packet["rules"]],
+        "available_items": review_order(packet),
+        "item_names": {cid: r.get("name", cid) for cid, r in packet["rules"].items()},
     }
+    if packet["source_id"].startswith("run/"):
+        # Opaque key only: lets the browser record prior score exposure without
+        # disclosing the answering model or any automatic result.
+        result["run_id"] = packet["source_id"].split("/", 1)[1]
     if criterion == "D5c":
         result.update(
             requirements=data.get("requirements", []),
@@ -207,18 +313,36 @@ def blind_packet(packet, criterion="D3a"):
             closing_notes=data["interview"].get("closing_notes", ""),
             final_questions=scoring.final_questions(data["answer"]),
         )
+    if criterion != "D3a":
+        result["reference"] = data.get("reference", "")
     return result
+
+
+def review_order(packet):
+    return (
+        (["D3a"] if "D3a" in packet["rules"] else [])
+        + [cid for cid in packet["rules"] if cid not in {"D3a", "D5c"}]
+        + (["D5c"] if "D5c" in packet["rules"] else [])
+    )
 
 
 def anonymous_name(packet):
     return next(
         (c["name"] for c in study.dataset()["cases"] if c["id"] == packet["case_id"]),
-        "Clinical case",
+        "Submitted case " + packet["case_id"] if packet["case_id"] else "Clinical case",
     )
 
 
-def review_catalogue(app):
-    records = [p for p in packets(app) if not p["source_id"].startswith("followup/n04-old-")]
+def review_catalogue(app, advanced=False):
+    records = [
+        p
+        for p in packets(app)
+        if not p["source_id"].startswith("followup/n04-old-")
+        and not p.get("technical_check")
+        and (advanced or p["source_id"].startswith("run/"))
+    ]
+    if not advanced:
+        records += published_packets()
     groups = {}
     for p in records:
         groups.setdefault((p["batch"], p["case_id"]), []).append(p["id"])
@@ -228,13 +352,37 @@ def review_catalogue(app):
             "case_id": p["case_id"],
             "name": anonymous_name(p),
             "batch": p["batch"],
+            "summary": " ".join(p["data"]["facts"].split())[:180]
+            if p["source_id"].startswith("run/")
+            else "",
             "response": "Answer "
             + chr(65 + sorted(groups[p["batch"], p["case_id"]]).index(p["id"])),
-            "items": [cid for cid in ("D3a", "D5c") if cid in p["rules"]],
+            "items": review_order(p),
+            "item_names": {cid: r.get("name", cid) for cid, r in p["rules"].items()},
         }
         for p in records
     ]
     return sorted(queue, key=lambda row: (row["batch"], row["case_id"], row["response"]))
+
+
+def decision_catalogue(app):
+    """One entry per clinical reference/checklist, shared across model answers."""
+    profiles = {}
+    for p in packets(app) + published_packets():
+        if p.get("technical_check") or p["source_id"].startswith("followup/n04-old-"):
+            continue
+        key = app.reviews.profile_key(p)
+        profiles.setdefault(
+            key,
+            {
+                "id": p["id"],
+                "case_id": p["case_id"],
+                "name": p["name"],
+                "response": p["batch"],
+                "rules_version": p["data"].get("rules_version", "original"),
+            },
+        )
+    return sorted(profiles.values(), key=lambda r: (r["case_id"], r["name"]))
 
 
 def output(name):

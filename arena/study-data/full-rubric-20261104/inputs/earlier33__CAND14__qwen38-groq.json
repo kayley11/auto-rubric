@@ -1,0 +1,375 @@
+{
+  "subject_key": "earlier33__CAND14__qwen38-groq",
+  "case_key": "earlier33__CAND14",
+  "case_id": "CAND14",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND14.json",
+  "source_answer_sha256": "c20c31f4ae9a860a4776b5630714f7eab8c01c4acf3b2d79af1c8ea9a65dab7a",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND14",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What were the specific findings and pathology results from the liver surgery performed five months ago, and do you have the operative report or discharge summary available?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Cause of jaundice and fever is currently unknown; need surgical details to assess for complications like bile leak or stricture.",
+          "certainty": "uncertain",
+          "working": "Post-hepatectomy complication vs. new pathology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What were the specific findings and pathology results from the liver surgery performed five months ago, and do you have the operative report or discharge summary available?",
+          "topics": [
+            "medical_history"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Cause of jaundice and fever is currently unknown; need surgical details to assess for complications like bile leak or stricture.",
+            "certainty": "uncertain",
+            "working": "Post-hepatectomy complication vs. new pathology"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.prior_surgery_and_liver_history",
+            "channel": "record",
+            "text": "She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.",
+            "source_location": "biliary_obstruction-B0047",
+            "match": "surg|operat|hepatect|cholecyst|hepatitis|past|history|complic",
+            "period": "presentation"
+          },
+          {
+            "id": "14.unavailable_operation_and_outside_pathology",
+            "channel": "record",
+            "text": "The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury.",
+            "source_location": "biliary_obstruction-B0047; biliary_obstruction-B0068",
+            "match": "operat|surg.{0,20}(record|report|detail)|outside.{0,20}(record|pathol)|histolog|patholog|injur|anatom",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: or discharge summary available?. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.prior_surgery_and_liver_history",
+              "request_span": "specific findings and pathology results from the liver surgery performed five months ago"
+            },
+            {
+              "id": "14.unavailable_operation_and_outside_pathology",
+              "request_span": "specific findings and pathology results from the liver surgery performed five months ago"
+            }
+          ],
+          "unanswered_spans": [
+            "or discharge summary available?"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Do you have the pre-ERCP MRCP or CT imaging reports available for review?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Cause of jaundice and fever is currently unknown; need surgical details to assess for complications like bile leak or stricture.",
+          "certainty": "uncertain",
+          "working": "Post-hepatectomy complication vs. new pathology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Do you have the pre-ERCP MRCP or CT imaging reports available for review?",
+          "topics": [
+            "mri_imaging",
+            "ct_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Cause of jaundice and fever is currently unknown; need surgical details to assess for complications like bile leak or stricture.",
+            "certainty": "uncertain",
+            "working": "Post-hepatectomy complication vs. new pathology"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.biliary_imaging",
+            "channel": "record",
+            "text": "Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.",
+            "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0052",
+            "match": "imag|mrcp|ultrasound|sonogra|ct|duct|obstruct|stone|sludge",
+            "period": "presentation"
+          },
+          {
+            "id": "14.arterial_imaging",
+            "channel": "record",
+            "text": "The pre-ERCP contrast CT describes a patent hepatic artery supplying the remaining liver, without visible stenosis, occlusion or thrombosis. This is a large-vessel observation, not proof against every prior or localised ischaemic injury.",
+            "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0068",
+            "match": "arter|vascular|perfusion|ischaem|ischem|contrast|ct",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.biliary_imaging",
+              "request_span": "pre-ERCP MRCP or CT imaging reports"
+            },
+            {
+              "id": "14.arterial_imaging",
+              "request_span": "pre-ERCP MRCP or CT imaging reports"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Do you have the results of the blood tests performed during the current admission, specifically the liver function tests and inflammatory markers?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Imaging confirms biliary obstruction with sludge and ductal dilatation. Cause of fever and specific etiology of obstruction (e.g., stricture vs. stone vs. cholangitis) remain to be confirmed via labs and ERCP.",
+          "certainty": "working",
+          "working": "Biliary obstruction with superimposed cholangitis"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Do you have the results of the blood tests performed during the current admission, specifically the liver function tests and inflammatory markers?",
+          "topics": [
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-hepatectomy. Imaging confirms biliary obstruction with sludge and ductal dilatation. Cause of fever and specific etiology of obstruction (e.g., stricture vs. stone vs. cholangitis) remain to be confirmed via labs and ERCP.",
+            "certainty": "working",
+            "working": "Biliary obstruction with superimposed cholangitis"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.admission_liver_tests",
+            "channel": "record",
+            "text": "Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.",
+            "source_location": "biliary_obstruction-B0049",
+            "match": "bilirubin|liver|lft|cholesta|jaundice|blood test|laborator|albumin|inr|coag",
+            "period": "presentation"
+          },
+          {
+            "id": "14.inflammation_and_safety",
+            "channel": "record",
+            "text": "Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed.",
+            "source_location": "biliary_obstruction-B0048-B0049",
+            "match": "vital|severity|sepsis|infect|fever|inflamm|crp|procalcitonin|blood count|cbc|platelet|creat|renal|lactate|culture|blood test|laborator",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.admission_liver_tests",
+              "request_span": "liver function tests"
+            },
+            {
+              "id": "14.inflammation_and_safety",
+              "request_span": "inflammatory markers"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Do you have the operative report or pathology results from the ERCP performed during this admission, specifically regarding any removed material or stent placement?",
+        "assessment": {
+          "summary": "70-year-old woman with obstructive jaundice and cholangitis 5 months post-left hepatectomy. Imaging confirms biliary obstruction with sludge; labs show severe cholestasis and inflammation. Need ERCP details to confirm etiology (e.g., stricture vs. stone) and therapeutic intervention.",
+          "certainty": "working",
+          "working": "Biliary obstruction with superimposed cholangitis"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Do you have the operative report or pathology results from the ERCP performed during this admission, specifically regarding any removed material or stent placement?",
+          "topics": [
+            "tests"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with obstructive jaundice and cholangitis 5 months post-left hepatectomy. Imaging confirms biliary obstruction with sludge; labs show severe cholestasis and inflammation. Need ERCP details to confirm etiology (e.g., stricture vs. stone) and therapeutic intervention.",
+            "certainty": "working",
+            "working": "Biliary obstruction with superimposed cholangitis"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: operative report or pathology results from the ERCP performed during this admission; specifically regarding any removed material or stent placement. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "operative report or pathology results from the ERCP performed during this admission",
+            "specifically regarding any removed material or stent placement"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-02T11:57:07.137158+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever 5 months post-left hepatectomy. Imaging confirms biliary obstruction with sludge and ductal dilatation; labs show severe cholestasis and inflammation. Cause of fever and specific etiology of obstruction (e.g., stricture vs. stone vs. cholangitis) remain to be confirmed via labs and ERCP.",
+      "certainty": "working",
+      "working": "Biliary obstruction with superimposed cholangitis"
+    },
+    "final_answer": "**Clinical Assessment**\n\nThis 70-year-old woman presents with obstructive jaundice and cholangitis five months after left hepatectomy. The clinical picture is urgent, requiring immediate biliary decompression.\n\n**Prioritised Explanations**\n1. **Biliary Obstruction with Cholangitis:** Strongly supported by imaging showing 19 mm common bile duct dilatation, intrahepatic ductal dilation, and sludge-like material. Labs confirm severe cholestasis (bilirubin 234.0 μmol/L) and significant inflammation (CRP 188.60 mg/L, procalcitonin 9.49 ng/mL). The specific etiology of the obstruction (stricture vs. stone) remains unconfirmed.\n2. **Post-Surgical Biliary Stricture:** A plausible hypothesis given the recent hepatectomy. However, the original operative report is unavailable, and outside pathology showed only cirrhosis without neoplasia. We cannot definitively attribute the current injury to specific intraoperative vascular or biliary trauma due to missing surgical details.\n3. **New Pathology:** Less likely given the absence of definite neoplastic change in prior pathology, but cannot be entirely excluded without current tissue diagnosis.\n\n**Next Actions**\nImmediate ERCP is indicated for decompression and potential stent placement. Blood and bile cultures were not performed; obtaining them is critical for targeted antibiotic therapy. The pre-ERCP CT confirmed a patent hepatic artery, ruling out major vascular occlusion but not localised ischaemic injury.\n\n**Information Gaps**\nThe ERCP operative report and pathology of removed material are currently unavailable. This is a missing record, not a negative clinical finding. We must distinguish this administrative gap from a missed request. Until these results are available, the precise cause of obstruction remains uncertain. The previous operation’s role is limited by the lack of detailed surgical notes, preventing definitive attribution of the current biliary injury to specific intraoperative events.",
+    "word_count": {
+      "words": 258,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-02T13:05:45.288121+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All cited values match the supplied evidence exactly (Q2: 19 mm CBD, intrahepatic dilatation, sludge-like material, patent hepatic artery on CT; Q3: bilirubin 234.0 μmol/L, CRP 188.60 mg/L, procalcitonin 9.49 ng/mL; Q1: unavailable operative report, outside pathology showing chronic hepatitis/cirrhosis without definite neoplasia). The urgency assessment and recommendation for biliary drainage align with the provisional reference. The submission explicitly and repeatedly acknowledges uncertainty: etiology of obstruction unconfirmed, attribution to the prior operation limited by missing surgical detail, the unavailable ERCP report correctly framed as a missing record rather than a negative finding, and the patent hepatic artery correctly qualified as not excluding localised ischaemic injury. No fabricated findings, doses, or probabilities were identified. This matches the Score 5 anchor: accurate throughout and explicitly acknowledging where evidence is uncertain."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission provides a focused synthesis of the evidence actually received at the decision point: it frames the problem as obstructive jaundice with cholangitis five months after left hepatectomy, integrates the discriminating features (CBD 19 mm with sludge-like material, bilirubin 234 μmol/L, CRP 188.6, procalcitonin 9.49), and prioritises three explanations with appropriate evidence and uncertainty. It correctly qualifies the unresolved gap (stricture vs stone not yet established), limits attribution to the prior operation because the operative report is unavailable and outside pathology showed no neoplasia, distinguishes the unavailable ERCP record from a negative finding, and notes the patent hepatic artery as a large-vessel observation only. Diagnostic commitment is defensible without the ERCP/pathology results, and material uncertainty is clearly flagged. This matches the Score 5 anchor: discriminating features highlighted, hypothesis generation guided, and the unresolved gap that limits interpretation made explicit."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the actual evidence received: (1) biliary obstruction with cholangitis, supported by explicit discriminating findings (CBD 19 mm with sludge-like material, direct-predominant bilirubin 234.0, CRP 188.60, procalcitonin 9.49, high neutrophil fraction); (2) post-surgical biliary stricture, appropriately weighted against the unavailable operative report and the outside pathology showing cirrhosis without neoplasia; (3) tumour-related obstruction, correctly ranked lower based on the pathology evidence while acknowledging it is not fully excluded without tissue. Dangerous mimics receive proportionate attention: the patent hepatic artery on CT is used to exclude large-vessel occlusion while explicitly noting it does not exclude localised ischaemic injury, and the answer avoids over-attributing the illness to the prior operation given missing surgical detail. It distinguishes the unavailable ERCP record from a missed request, and it correctly notes cultures were not performed rather than inventing results. Prior plausibility is handled proportionately (five-month interval supports temporal association only). All three explanations are clinically plausible, appropriately prioritised, and supported by available discriminating evidence, meeting the Score 5 anchor."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D3d.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission's causal claims are supported by the received evidence: biliary obstruction with cholangitis is grounded in the duct dilatation (CBD 19 mm), sludge-like ductal material, direct-predominant hyperbilirubinaemia (234/182.4 μmol/L) and marked inflammation (CRP 188.60, procalcitonin 9.49). The post-surgical stricture hypothesis is appropriately framed as plausible but unconfirmed, with explicit limits on attributing the illness to the hepatectomy given the unavailable operative report (Q1) and non-specific outside pathology. Tumour is considered and correctly bounded by the pathology result. The patent hepatic artery finding is used accurately — ruling out large-vessel occlusion while noting it does not exclude localised ischaemic injury, matching the supplied caveat. Alternatives (stricture vs stone vs new pathology) are weighed, and the submission avoids asserting histology of the ductal material or a specific operative injury. It also correctly distinguishes the unavailable ERCP record from a negative finding. Causal claims are precise, alternatives considered, and no claim exceeds the evidence, meeting the Score 5 anchor."
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly stratifies conclusions by evidential strength: biliary obstruction with cholangitis is 'strongly supported' by named evidence (19 mm CBD, bilirubin 234.0, CRP 188.60, procalcitonin 9.49); post-surgical stricture is 'a plausible hypothesis' explicitly limited by the unavailable operative report; new pathology is 'less likely... cannot be entirely excluded'. It names the sources of uncertainty (missing surgical details, absent tissue diagnosis, unavailable ERCP report), correctly distinguishes an unavailable record from a negative finding, and identifies the next steps needed to reduce uncertainty (ERCP with decompression/stent, blood and bile cultures, awaiting removed-material pathology). It also appropriately qualifies the vascular imaging ('ruling out major vascular occlusion but not localised ischaemic injury'). This meets the Score 5 anchor: established, probable and possible conclusions are separated, the source of uncertainty is explained, and the resolving next steps are stated."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All three essential requirements are met by targeted, appropriately timed requests. R2 (previous operation/outside records) is satisfied by Q1, which explicitly asks for operative findings, pathology and operative report/discharge summary; the unavailability of the original operative report is a simulator limitation, not a model failure. R3 (biliary imaging) is satisfied by Q2, which requests the pre-ERCP MRCP/CT reports and yields duct dilatation and intraductal material. R1 (severity, inflammatory and organ-function evidence) is satisfied by Q3, which requests admission liver function tests and inflammatory markers, returning bilirubin, CRP, procalcitonin, blood count, creatinine and lactate. The requests are proportionate and discriminating, use only four of six turns, and each is accompanied by a public assessment note explaining how the information refines the working diagnosis (post-hepatectomy complication vs biliary obstruction with cholangitis). Q4 seeks ERCP details beyond the decision point but does not detract. No unnecessary information gathering is evident, and no essential requirement is missed or delayed."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND14.D6a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission opens by labelling the case an urgent problem ('obstructive jaundice and cholangitis... urgent, requiring immediate biliary decompression') and later states 'Immediate ERCP is indicated for decompression and potential stent placement.' The escalation is prominent, timely, and unambiguous: the correct pathway (urgent ERCP with decompression/stenting) is explicitly specified, matching the reference's requirement for prompt biliary drainage and specialist involvement. Urgency language is strong and not clinically consequential hedging; uncertainty is confined to the aetiology of obstruction, not to whether urgent drainage is needed. This meets the Score 5 anchor: timely escalation is prominent and unambiguous, with the appropriate care pathway (urgent ERCP) specified."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

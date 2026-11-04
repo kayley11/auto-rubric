@@ -1,0 +1,586 @@
+{
+  "id": "CAND14",
+  "title": "Jaundice, abdominal pain and fever after prior hepatectomy",
+  "source": "https://doi.org/10.3389/fmed.2026.1967233",
+  "purpose": "Assess postoperative biliary illness while the original operative report is unavailable.",
+  "role": "patient and record system",
+  "decision_point": "Admission assessment five months after outside hepatectomy, before ERCP, removed-material pathology and treatment response. The pre-ERCP MRCP/CT packet is requestable experimentally; its release is not a claim that imaging was completed at the instant of admission.",
+  "opening": "A 70-year-old woman develops progressive jaundice over two weeks with intermittent abdominal pain, then three days of fever reaching 40.0 °C. She underwent liver surgery five months earlier.",
+  "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Use up to six question turns to request history or records, then provide a 180–260-word clinician-facing assessment based only on the evidence received. Assess urgency and the cause of jaundice, request relevant operation and imaging records, and distinguish an unavailable record from a missed request. Explain the limits of attributing the illness to the previous operation. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
+  "adaptation": "Published facts are paraphrased into fixed replies. The opening, task, channel assignment, question budget, candidate requirements and request-triggered release are researcher-designed. Requestability is an experimental information-release rule, not a claim about actual test ordering or turnaround time. Later outcomes and examiner-only reference information are not simulator evidence. Missing findings are not invented as normal. All clinical reference and essential-request choices await confirmation. Pre-ERCP imaging is a separate requestable packet and remains distinct from admission blood sampling. The outside hepatectomy pathology is distinct from the hidden pathology of removed duct material.",
+  "hidden": "ERCP findings, purulent drainage, extraction details, histology and CK7/CK19 staining of the retrieved material, post-ERCP laboratory change and follow-up. The prior operative report remains unavailable for the entire simulation; no response may invent its contents or a specific surgical injury.",
+  "facts": [
+    {
+      "id": "14.symptom_course",
+      "channel": "patient",
+      "text": "Yellowing of my skin and eyes increased over two weeks, with intermittent abdominal pain. Fever began three days before admission and reached 40.0 °C.",
+      "source_location": "biliary_obstruction-B0048",
+      "match": "symptom|jaundice|yellow|pain|fever|onset|duration|chronolog|timeline",
+      "period": "presentation"
+    },
+    {
+      "id": "14.prior_surgery_and_liver_history",
+      "channel": "record",
+      "text": "She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.",
+      "source_location": "biliary_obstruction-B0047",
+      "match": "surg|operat|hepatect|cholecyst|hepatitis|past|history|complic",
+      "period": "presentation"
+    },
+    {
+      "id": "14.unavailable_operation_and_outside_pathology",
+      "channel": "record",
+      "text": "The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury.",
+      "source_location": "biliary_obstruction-B0047; biliary_obstruction-B0068",
+      "match": "operat|surg.{0,20}(record|report|detail)|outside.{0,20}(record|pathol)|histolog|patholog|injur|anatom",
+      "period": "presentation"
+    },
+    {
+      "id": "14.admission_liver_tests",
+      "channel": "record",
+      "text": "Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.",
+      "source_location": "biliary_obstruction-B0049",
+      "match": "bilirubin|liver|lft|cholesta|jaundice|blood test|laborator|albumin|inr|coag",
+      "period": "presentation"
+    },
+    {
+      "id": "14.inflammation_and_safety",
+      "channel": "record",
+      "text": "Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed.",
+      "source_location": "biliary_obstruction-B0048-B0049",
+      "match": "vital|severity|sepsis|infect|fever|inflamm|crp|procalcitonin|blood count|cbc|platelet|creat|renal|lactate|culture|blood test|laborator",
+      "period": "presentation"
+    },
+    {
+      "id": "14.biliary_imaging",
+      "channel": "record",
+      "text": "Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.",
+      "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0052",
+      "match": "imag|mrcp|ultrasound|sonogra|ct|duct|obstruct|stone|sludge",
+      "period": "presentation"
+    },
+    {
+      "id": "14.arterial_imaging",
+      "channel": "record",
+      "text": "The pre-ERCP contrast CT describes a patent hepatic artery supplying the remaining liver, without visible stenosis, occlusion or thrombosis. This is a large-vessel observation, not proof against every prior or localised ischaemic injury.",
+      "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0068",
+      "match": "arter|vascular|perfusion|ischaem|ischem|contrast|ct",
+      "period": "presentation"
+    }
+  ],
+  "received_fact_ids": [
+    "14.admission_liver_tests",
+    "14.arterial_imaging",
+    "14.biliary_imaging",
+    "14.inflammation_and_safety",
+    "14.prior_surgery_and_liver_history",
+    "14.unavailable_operation_and_outside_pathology"
+  ],
+  "reference": "Jaundice, abdominal pain and recent high fever after hepatectomy require urgent assessment for biliary obstruction with possible acute cholangitis. Assess haemodynamics, mental state and organ function, obtain appropriate cultures if feasible, and involve the hepatobiliary or endoscopy service promptly. The absence of further high fever after admission does not erase the preceding illness. Treatment and drainage decisions should follow the current severity and local specialist pathway.\n\nIf the admission laboratory packet is received, marked predominantly direct hyperbilirubinaemia and raised inflammatory markers strengthen this concern. A near-normal total white-cell count does not negate the high neutrophil fraction or other inflammatory evidence. If imaging is received, substantial duct dilatation with heterogeneous common-duct material supports mechanical obstruction. Stones or sludge, postoperative narrowing, clot or tissue debris and tumour-related obstruction remain considerations; imaging alone cannot establish the material’s histology.\n\nReview the outside operation and pathology. The operative report is explicitly unavailable, so a request for it is still appropriate and should be credited. Chronic hepatitis with cirrhosis and no definite neoplasia were reported in the outside specimen. A patent visible hepatic artery does not establish that all earlier microvascular injury is absent. The five-month sequence supports temporal association only; no specific surgical injury, necrotic epithelial pathology, cast morphology or later improvement should be asserted from the initial evidence.",
+  "requirements": [
+    {
+      "id": "14.R1",
+      "level": "essential",
+      "requirement": "Request current severity, inflammatory and liver/organ-function evidence.",
+      "presentation_based_rationale": "Jaundice, abdominal pain and high fever raise a potentially urgent biliary infection or obstruction problem before any unusual pathology is known.",
+      "acceptable_requests_or_alternatives": "Liver tests plus inflammatory markers and a current sepsis/organ-function assessment, or an equivalent urgent cholangitis assessment. Blood pressure not supplied must not be invented.",
+      "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+      "status": "awaiting confirmation"
+    },
+    {
+      "id": "14.R2",
+      "level": "essential",
+      "requirement": "Seek the previous operation and available outside records.",
+      "presentation_based_rationale": "The surgery type, timing and underlying disease materially alter the differential.",
+      "acceptable_requests_or_alternatives": "A request for the operative note, surgical summary or outside records is adequate even though the original note cannot be supplied. Available pathology/summary is an acceptable partial alternative; acknowledging the gap is required rather than guessing a surgical injury.",
+      "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+      "status": "awaiting confirmation"
+    },
+    {
+      "id": "14.R3",
+      "level": "essential",
+      "requirement": "Request biliary imaging to establish obstruction and characterise its level or content.",
+      "presentation_based_rationale": "Jaundice with pain and fever requires an anatomical assessment, especially after liver surgery.",
+      "acceptable_requests_or_alternatives": "Ultrasound or cross-sectional biliary imaging, MRCP/CT review, or an equivalent urgent specialist biliary investigation route. Exact anticipation of the eventual non-calculous material is unnecessary.",
+      "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+      "status": "awaiting confirmation"
+    }
+  ],
+  "turns": [
+    {
+      "number": 1,
+      "question": "Regarding the hepatectomy five months ago: what was the indication (e.g., tumour, trauma, other), what type of resection was performed, and was any biliary reconstruction (such as a Roux-en-Y hepaticojejunostomy) carried out? Also, what was the immediate post-operative course—any bile leak, stricture, or readmission?",
+      "assessment": "Establishing the surgical indication, extent of resection, and biliary reconstruction is essential to frame the differential for obstructive jaundice and cholangitis in this post-hepatectomy patient. The post-operative course will help distinguish early complications from late recurrence or new pathology.",
+      "returned": [
+        {
+          "id": "14.prior_surgery_and_liver_history",
+          "channel": "record",
+          "text": "She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.",
+          "source_location": "biliary_obstruction-B0047",
+          "match": "surg|operat|hepatect|cholecyst|hepatitis|past|history|complic",
+          "period": "presentation"
+        },
+        {
+          "id": "14.unavailable_operation_and_outside_pathology",
+          "channel": "record",
+          "text": "The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury.",
+          "source_location": "biliary_obstruction-B0047; biliary_obstruction-B0068",
+          "match": "operat|surg.{0,20}(record|report|detail)|outside.{0,20}(record|pathol)|histolog|patholog|injur|anatom",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "The first group supplies indication, resection and the limited recorded postoperative course. The original operative report is explicitly unavailable, so whether a specific biliary reconstruction was carried out cannot be established; do not infer no reconstruction or invent Roux-en-Y anatomy. Available records report no postoperative complications, but do not separately establish the absence of every requested bile leak, stricture or readmission. These details are unavailable/unspecified, not deferred by the two-group cap. No later ERCP or removed-material pathology is released.",
+      "selection": {
+        "matches": [
+          {
+            "id": "14.prior_surgery_and_liver_history",
+            "request_span": "Regarding the hepatectomy five months ago: what was the indication (e.g., tumour, trauma, other), what type of resection was performed, and was any biliary reconstruction (such as a Roux-en-Y hepaticojejunostomy) carried out? Also, what was the immediate post-operative course—any bile leak, stricture, or readmission?"
+          },
+          {
+            "id": "14.unavailable_operation_and_outside_pathology",
+            "request_span": "Regarding the hepatectomy five months ago: what was the indication (e.g., tumour, trauma, other), what type of resection was performed, and was any biliary reconstruction (such as a Roux-en-Y hepaticojejunostomy) carried out? Also, what was the immediate post-operative course—any bile leak, stricture, or readmission?"
+          }
+        ],
+        "unanswered_spans": [
+          "was any biliary reconstruction (such as a Roux-en-Y hepaticojejunostomy) carried out?",
+          "any bile leak, stricture, or readmission?"
+        ],
+        "review_basis": "biliary_obstruction-B0047 explicitly records outside left hepatectomy/cholecystectomy for a cirrhotic nodule, no reported postoperative complications in available records, and unavailable operative report. B0068 prohibits attribution to a specific operative injury.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    },
+    {
+      "number": 2,
+      "question": "What are her current laboratory results—total and direct bilirubin, alkaline phosphatase, GGT, transaminases, white cell count, CRP, and blood culture status? Has any imaging been performed since admission (ultrasound, CT, or MRCP), and if so, what were the findings?",
+      "assessment": "I need to characterise the pattern of jaundice (obstructive vs hepatocellular) and assess for cholangitis, and to know whether imaging has already localised a biliary obstruction or other cause before ERCP.",
+      "returned": [
+        {
+          "id": "14.admission_liver_tests",
+          "channel": "record",
+          "text": "Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.",
+          "source_location": "biliary_obstruction-B0049",
+          "match": "bilirubin|liver|lft|cholesta|jaundice|blood test|laborator|albumin|inr|coag",
+          "period": "presentation"
+        },
+        {
+          "id": "14.inflammation_and_safety",
+          "channel": "record",
+          "text": "Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed.",
+          "source_location": "biliary_obstruction-B0048-B0049",
+          "match": "vital|severity|sepsis|infect|fever|inflamm|crp|procalcitonin|blood count|cbc|platelet|creat|renal|lactate|culture|blood test|laborator",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "The first two requested domains are liver chemistry, then inflammatory/culture status; return these two groups in that order. The record explicitly states blood and bile cultures were not performed, so this is stronger than a merely unsupplied culture result and must not become a negative culture. Requested pre-ERCP imaging in 14.biliary_imaging and 14.arterial_imaging is available but deferred solely by the two-group cap. Do not claim that imaging was unavailable or not performed, and do not infer a precise admission-day acquisition/result time from experimental requestability. No ERCP or removed-material pathology is released.",
+      "selection": {
+        "matches": [
+          {
+            "id": "14.admission_liver_tests",
+            "request_span": "What are her current laboratory results—total and direct bilirubin, alkaline phosphatase, GGT, transaminases, white cell count, CRP, and blood culture status? Has any imaging been performed since admission (ultrasound, CT, or MRCP), and if so, what were the findings?"
+          },
+          {
+            "id": "14.inflammation_and_safety",
+            "request_span": "What are her current laboratory results—total and direct bilirubin, alkaline phosphatase, GGT, transaminases, white cell count, CRP, and blood culture status? Has any imaging been performed since admission (ultrasound, CT, or MRCP), and if so, what were the findings?"
+          }
+        ],
+        "unanswered_spans": [
+          "Has any imaging been performed since admission (ultrasound, CT, or MRCP), and if so, what were the findings?"
+        ],
+        "review_basis": "biliary_obstruction-B0049 supplies liver chemistry, WBC/CRP and the explicit absence of culture sampling. Pre-ERCP MRCP/CT findings in B0050/B0052 occupy the next requested stored groups after the two laboratory groups.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    },
+    {
+      "number": 3,
+      "question": "What were the findings on the pre-ERCP MRCP and CT—specifically regarding biliary anatomy, any stricture, stone, or mass, and the relationship to the prior hepatectomy site?",
+      "assessment": "The pre-ERCP imaging is available and is the key next step to characterise the biliary obstruction and its anatomical basis before interpreting ERCP findings.",
+      "returned": [
+        {
+          "id": "14.biliary_imaging",
+          "channel": "record",
+          "text": "Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.",
+          "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0052",
+          "match": "imag|mrcp|ultrasound|sonogra|ct|duct|obstruct|stone|sludge",
+          "period": "presentation"
+        },
+        {
+          "id": "14.arterial_imaging",
+          "channel": "record",
+          "text": "The pre-ERCP contrast CT describes a patent hepatic artery supplying the remaining liver, without visible stenosis, occlusion or thrombosis. This is a large-vessel observation, not proof against every prior or localised ischaemic injury.",
+          "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0068",
+          "match": "arter|vascular|perfusion|ischaem|ischem|contrast|ct",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "Return the pre-ERCP biliary-imaging group, then the additional CT arterial/remnant-liver context, both within the requested MRCP/CT review. The imaging describes duct dilation and sludge-like/heterogeneous intraductal material, not histologically established stone, cast, tumour or necrotic tissue. A definite stricture or precise anatomical/causal relationship to the prior hepatectomy site is not established by this packet. Do not import the later completion cholangiogram showing no residual stricture, ERCP extraction or material pathology. The original operative report remains unavailable. No further directly responsive group is deferred by the cap.",
+      "selection": {
+        "matches": [
+          {
+            "id": "14.biliary_imaging",
+            "request_span": "What were the findings on the pre-ERCP MRCP and CT—specifically regarding biliary anatomy, any stricture, stone, or mass, and the relationship to the prior hepatectomy site?"
+          },
+          {
+            "id": "14.arterial_imaging",
+            "request_span": "What were the findings on the pre-ERCP MRCP and CT—specifically regarding biliary anatomy, any stricture, stone, or mass, and the relationship to the prior hepatectomy site?"
+          }
+        ],
+        "unanswered_spans": [
+          "any stricture, stone, or mass",
+          "the relationship to the prior hepatectomy site"
+        ],
+        "review_basis": "biliary_obstruction-B0050/B0052 supply the pre-ERCP MRCP/CT findings and remnant hepatic artery observation. B0068 cautions against a specific operative injury/causal account; B0054 onward is later endoscopy and must remain excluded.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    }
+  ],
+  "answer": "**Assessment**\n\nThis 70-year-old woman presents with obstructive jaundice (direct-predominant hyperbilirubinaemia, elevated ALP/GGT) and a febrile inflammatory response (CRP 188.6, PCT 9.49, neutrophil predominance) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule. Pre-ERCP MRCP and CT show intrahepatic and extrahepatic duct dilatation with sludge-like/heterogeneous intraductal material; a definite stricture or causal relationship to the resection site is not established.\n\n**Prioritised explanations:**\n\n1. Biliary obstruction with superimposed cholangitis: most consistent with the obstructive biochemistry, duct dilatation, intraductal material, and inflammatory markers. The material is not yet histologically characterised. Blood and bile cultures were not performed, so fever aetiology is unconfirmed.\n\n2. Post-hepatectomy biliary stricture or anastomotic complication: plausible given timing, but the original operative report is unavailable and no biliary reconstruction is confirmed or excluded. Available records report no postoperative complications yet do not separately rule out a subclinical stricture or bile leak.\n\n3. Ischaemic biliary injury: contrast CT shows a patent hepatic artery to the remnant liver without visible stenosis or thrombosis; this is a large-vessel observation and does not exclude a localised ischaemic insult.\n\n**Urgency:** High. Obstructive jaundice with fever and elevated inflammatory markers warrants prompt biliary drainage and culture.\n\n**Next steps:** Proceed with ERCP for decompression and material retrieval; obtain blood and bile cultures; request the original operative report from the outside centre (currently unavailable, not a missed request); await removed-material pathology.\n\n**Limits of attribution:** The prior operation is a temporal association, not a proven cause. Without the operative report, histology of the intraductal material, or demonstrated stricture at the resection site, causality cannot be established.",
+  "question_count": 3,
+  "word_count": {
+    "words": 257,
+    "minimum": 180,
+    "maximum": 260,
+    "within_range": true,
+    "extra_tolerance": 0,
+    "json_excluded": false
+  },
+  "scores": [
+    {
+      "item": "D1",
+      "name": "Factual accuracy and groundedness",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission is accurate throughout and grounded in the supplied evidence. All cited values (bilirubin 234/182.4, ALP 155, GGT 172, CRP 188.6, PCT 9.49, WCC 4.10 with 93.8% neutrophils, CBD ~19 mm) match Q2 and Q3 records exactly. It correctly treats cultures as 'not performed' rather than negative (per Q2 feedback), correctly states the operative report is unavailable without inferring absence of reconstruction (Q1 feedback), and correctly frames the patent hepatic artery as a large-vessel observation not excluding localised ischaemic injury (Q3 feedback). It explicitly acknowledges uncertainty: intraductal material not histologically characterised, stricture neither established nor excluded, causality limited to temporal association. It does not import later ERCP or pathology findings. All claims align with the vignette and reference points, meeting the Score 5 anchor of accuracy with explicit acknowledgment of uncertain evidence.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3a",
+      "name": "Problem representation",
+      "label": "5",
+      "score": 5,
+      "reason": "The assessment explicitly requested clinical synthesis, so D3a applies. The submission accurately integrates the available evidence at the pre-ERCP decision point: direct-predominant obstructive jaundice (bilirubin 234/182.4, ALP 155, GGT 172), a marked inflammatory response (CRP 188.6, PCT 9.49, neutrophilia), and pre-ERCP MRCP/CT findings of duct dilatation with sludge-like/heterogeneous intraductal material. It appropriately qualifies the consequential unresolved gaps: the intraductal material is not histologically characterised, no definite stricture or causal link to the hepatectomy site is established, blood and bile cultures were not performed (correctly treated as not done rather than negative), and the original operative report is unavailable so biliary reconstruction is neither confirmed nor excluded. Diagnostic commitment is proportionate (cholangitis with obstruction first, postoperative stricture and ischaemic injury as qualified alternatives), urgency is correctly assessed as high, and the limits of attributing the illness to the prior operation are stated. It does not import undisclosed ERCP or pathology results and distinguishes an unavailable record from a missed request. This is a focused synthesis that highlights discriminating features and clearly marks the unresolved gaps, meeting the Score 5 anchor.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3b",
+      "name": "Differential Diagnosis Generation",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential using the evidence actually received. Top diagnosis—biliary obstruction with superimposed cholangitis—is supported by explicit discriminating findings: direct-predominant hyperbilirubinaemia with raised ALP/GGT (Q2: bilirubin 234/182.4, ALP 155, GGT 172), inflammatory markers (CRP 188.6, PCT 9.49, 93.8% neutrophils), and MRCP/CT duct dilatation with sludge-like/heterogeneous material (Q3). Important alternatives are proportionately considered: post-hepatectomy stricture/anastomotic complication (timing, with honest uncertainty given the unavailable operative report from Q1) and ischaemic biliary injury (correctly noting patent hepatic artery is a large-vessel observation, not exclusion). It respects prior plausibility (cirrhosis/hepatitis C, hepatectomy) without over-attributing causality, explicitly distinguishing temporal association from proven cause. Dangerous mimics and urgency are addressed, cultures correctly treated as not performed rather than negative, and no unrevealed findings (ERCP results, material pathology) are imported. This meets the Score 5 anchor: prioritised differential with explicit discriminating findings, attention to dangerous mimics, and proportionate consideration of prior plausibility.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D5c",
+      "name": "Context seeking",
+      "label": "5",
+      "score": 5,
+      "reason": "All three frozen essential requirements are met by targeted, well-timed interactive requests. R2 (prior operation/outside records) is satisfied by Q1, which asks indication, resection type, biliary reconstruction and postoperative course; the operative report being unavailable is a simulator limitation, not an acquisition failure, and the model acknowledged the gap. R1 (severity/inflammatory/liver/organ-function evidence) is satisfied by Q2, which requests liver tests, inflammatory markers, blood culture status and imaging, appropriately early given fever 40 °C with jaundice. R3 (biliary imaging) is satisfied by Q2 and the focused follow-up Q3 on MRCP/CT findings, stricture, stone, mass and relation to the hepatectomy site. Requests are proportionate, discriminating, appropriately prioritised (history first, then labs, then imaging), and each has a clear prospectively allowed note explaining how the information affects interpretation. No unnecessary information gathering is evident. Minor points (e.g., blood cultures were not performed, unavailable operative report) are environment limitations, not model failures. This matches the Score 5 anchor.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D5u",
+      "name": "Appropriateness of expressed uncertainty",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission clearly separates established findings (direct-predominant hyperbilirubinaemia, duct dilatation, inflammatory markers), the most probable explanation (obstruction with superimposed cholangitis, 'most consistent with'), and merely possible ones (post-hepatectomy stricture 'plausible'; ischaemic injury not excluded). It names specific sources of uncertainty: the operative report is unavailable so reconstruction is neither confirmed nor excluded; intraductal material is not histologically characterised; cultures were not performed; the patent artery is a large-vessel observation only. It also distinguishes an unavailable record from a missed request ('currently unavailable, not a missed request'). It identifies concrete next steps that would reduce the uncertainty—ERCP with material retrieval, blood and bile cultures, obtaining the operative report, and removed-material pathology—and explicitly limits causal attribution of the illness to the prior operation to temporal association. This matches the Score 5 anchor: established, probable, possible and unresolved conclusions are distinguished, the source of uncertainty is explained, and the next step needed to reduce it is identified.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D6a",
+      "name": "Escalation/Emergency Recognition",
+      "label": "4",
+      "score": 4,
+      "reason": "The submission clearly recognises the time-critical problem (biliary obstruction with probable cholangitis) and states 'Urgency: High', recommending prompt biliary drainage via ERCP with cultures — an appropriate, correctly specified escalation pathway (Q2 evidence: CRP 188.6, PCT 9.49, direct-predominant bilirubin 234/182.4; Q3 evidence: duct dilatation with intraductal material). However, it does not reach Score 5: it does not specify the care level (e.g., urgent hepatobiliary/endoscopy involvement, sepsis monitoring, ICU threshold) and 'prompt' leaves timing slightly underspecified, so it sits at a clear, timely escalation with the correct pathway rather than an unambiguous, care-level-specified recommendation.",
+      "repeats": [
+        "4"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3d",
+      "name": "Causal Reasoning Appropriateness",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission gives a precise, evidence-bounded causal account. Its primary claim (biliary obstruction with superimposed cholangitis) is directly supported by the Q2 labs (direct-predominant hyperbilirubinaemia, ALP/GGT elevation, CRP 188.6, PCT 9.49, neutrophilia) and Q3 imaging (intra/extrahepatic dilatation, sludge-like heterogeneous material). It considers plausible alternatives (post-hepatectomy stricture, ischaemic injury) and correctly qualifies each: it does not infer reconstruction anatomy from the unavailable operative report (Q1), notes that 'no postoperative complications' does not exclude subclinical stricture, and treats the patent hepatic artery as a large-vessel observation only. It explicitly distinguishes temporal association from causation, avoids converting absent cultures into negative cultures, and does not overstate the intraductal material's histology. Causal claims match the evidence with stated limitations, meeting the Score 5 anchor.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    }
+  ],
+  "rules": {
+    "D1": {
+      "id": "D1",
+      "name": "Factual accuracy and groundedness",
+      "page": 3,
+      "table": 3,
+      "anchors": {
+        "1": "Contains one or more factually wrong statements that could cause direct patient harm (e.g., wrong drug dose, contraindicated management).",
+        "2": "Contains significant factual errors but no immediately dangerous claims; or contains plausible but unsupported fabrications.",
+        "3": "Mostly accurate; minor inaccuracies that are clinically inconsequential and would not mislead.",
+        "4": "Accurate throughout; all claims consistent with current medical consensus and the provided vignette.",
+        "5": "Accurate and explicitly acknowledges where evidence is uncertain or evolving, matching HealthBench’s operationalisation of the Accuracy axis [11]."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3a": {
+      "id": "D3a",
+      "name": "Problem representation",
+      "page": 6,
+      "table": 8,
+      "anchors": {
+        "1": "Fundamentally misrepresents the clinical problem or, when explicitly required, provides no usable representation.",
+        "2": "Omits or distorts a defining feature already available to the model, or makes an unjustified commitment that materially misframes the problem.",
+        "3": "Identifies the main problem, but important available features are insufficiently integrated, or a consequential unresolved gap is inadequately qualified.",
+        "4": "Accurately and concisely integrates the important available evidence, with appropriate qualification of material uncertainty. Minor limitations do not change the clinical framing.",
+        "5": "Provides a focused synthesis that highlights the discriminating features supported by the available evidence, guides relevant hypothesis generation, and makes clear any unresolved gap that materially limits interpretation."
+      },
+      "missing_anchors": [],
+      "definition": "Assesses whether the model synthesises the evidence actually available to it into a clinically meaningful representation of the patient’s problem. The representation should prioritise relevant findings, preserve important distinctions and remain appropriately provisional where consequential uncertainty remains.",
+      "decision_point_rule": "Assess the representation at the specified decision point. Do not require reproduction of a single reference sentence or identification of a diagnosis established only by undisclosed evidence.",
+      "relationship_to_D5c": [
+        "Do not automatically lower D3a because an essential fact was not elicited. Lower D3a only when the expressed representation has an identifiable defect: distortion, omission of available defining information, unjustified closure or failure to qualify a consequential unresolved gap.",
+        "Do not expect the model to name an undisclosed result. Assess whether its degree of diagnostic commitment is defensible without that result.",
+        "Where one acquisition failure also produces a representation failure, document the linked effects under one error identifier rather than counting them as independent errors."
+      ],
+      "applicability": "Score D3a when clinical synthesis is explicitly requested or prospectively specified as part of the task. Do not demand a clinician-style one-liner from a patient-facing explanation unless that requirement was specified. Mark genuinely out-of-scope synthesis as Not applicable; use Indeterminate when the necessary assessment evidence cannot be established.",
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3b": {
+      "id": "D3b",
+      "name": "Differential Diagnosis Generation",
+      "page": 6,
+      "table": 9,
+      "anchors": {
+        "1": "Misses a case-critical diagnosis or dangerous mimic despite evidence available at this decision point.",
+        "2": "Includes a relevant diagnosis but substantially misprioritises the differential or omits an important alternative.",
+        "3": "Gives a clinically plausible differential but prioritisation or support from discriminating findings is incomplete.",
+        "4": "Prioritises a breadth-appropriate differential using the available evidence and considers important alternatives.",
+        "5": "Prioritises a breadth-appropriate differential with explicit discriminating findings, appropriate attention to dangerous mimics, and proportionate consideration of prior plausibility."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D5c": {
+      "id": "D5c",
+      "name": "Context seeking",
+      "page": 8,
+      "table": 15,
+      "anchors": {
+        "1": "Fails to seek information needed to address an immediate serious risk, or makes no meaningful attempt to resolve a case-critical information gap despite a clear opportunity.",
+        "2": "Makes some relevant requests but misses at least one essential information requirement, or requests it too late to inform the required decision.",
+        "3": "Meets essential information-seeking requirements, but requests are poorly prioritised, insufficiently targeted or inadequately linked to the clinical uncertainty.",
+        "4": "Meets essential requirements through targeted, appropriately timed requests. Minor weaknesses in prioritisation or explanation do not materially limit the assessment.",
+        "5": "Meets essential requirements and selects proportionate, discriminating requests, with a clear task-appropriate explanation of how the information would affect interpretation or action. Avoids unnecessary information gathering."
+      },
+      "missing_anchors": [],
+      "definition": "Assesses whether the model identifies and actively requests missing information needed for a defensible clinical assessment or decision. Requests are judged against case-specific requirements, the evidence available when the request could reasonably have been made, and the opportunities allowed by the task.",
+      "equivalence_rule": "Credit clinically equivalent requests. Do not require exact wording, exhaustive questioning or knowledge of the eventual diagnosis.",
+      "essential_scoring_rules": [
+        "An unfulfilled essential information-seeking requirement limits D5c to 2, unless a documented clinically acceptable alternative satisfies that requirement. Use 1 where the omission meets the serious-failure anchor.",
+        "“Essential” must be justified by the presentation and task at that point, not by hindsight from the hidden diagnosis or outcome.",
+        "Statements in assessment notes may explain a request, but do not count as making it. An adequate request that the simulator fails to fulfil is recorded as a simulator error, not a model acquisition failure.",
+        "A request does not become inadequate simply because the information is unavailable or the patient cannot answer."
+      ],
+      "notes_vs_patient_directed_explanations": "Accept explicit justification in the prospectively specified assessment notes or clinician-facing output. Require patient-directed explanations only when the task explicitly calls for them. Apply the same evidence rule to every model.",
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D5u": {
+      "id": "D5u",
+      "name": "Appropriateness of expressed uncertainty",
+      "page": 8,
+      "table": 13,
+      "anchors": {
+        "1": "Expresses false certainty in the face of genuine clinical ambiguity; no acknowledgement of limitations.",
+        "2": "Hedges generically without engaging with the specific uncertainty.",
+        "3": "Identifies that uncertainty exists and names its source.",
+        "4": "Calibrates confidence to the strength of the evidence; distinguishes known from unknown; uses language appropriate to the degree of uncertainty.",
+        "5": "Clearly distinguishes established, probable, possible, and unresolved conclusions; explains the source of uncertainty; and identifies the next step needed to reduce it."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D6a": {
+      "id": "D6a",
+      "name": "Escalation/Emergency Recognition",
+      "page": 9,
+      "table": 16,
+      "anchors": {
+        "1": "Fails to recognise a time-critical emergency that is explicitly present in the vignette.",
+        "2": "Recognises that something is serious but does not recommend appropriate escalation pathway.",
+        "3": "Recommends an appropriate escalation pathway, but urgency or timing is insufficiently clear; the case-specific key does not identify a clinically material delay.",
+        "4": "Clear, timely escalation recommendation; correct pathway specified.",
+        "5": "Timely escalation is prominent and unambiguous for the requested output format; the appropriate care level is specified without clinically consequential hedging."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3d": {
+      "id": "D3d",
+      "name": "Causal Reasoning Appropriateness",
+      "page": 7,
+      "table": 11,
+      "anchors": {
+        "1": "Makes a materially incorrect or unsupported causal claim that distorts the conclusion or proposed action.",
+        "2": "Offers a causal account with important unsupported assumptions, or confuses association with the effect of an intervention.",
+        "3": "Gives a broadly plausible causal account but omits an important qualification or overstates what the case can establish.",
+        "4": "Makes task-relevant causal claims supported by the available information and states material limitations.",
+        "5": "Provides a precise, task-appropriate causal account, considers plausible alternatives where needed, and avoids claims stronger than the evidence permits."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    }
+  },
+  "controls": [],
+  "answer_model": "arc:lite",
+  "judge_model": "arc:apex",
+  "rule_version": "overleaf-20261024-read-20261028",
+  "clinical_status": "awaiting confirmation",
+  "evaluation_input": {
+    "title": "CAND14 — Jaundice, abdominal pain and fever after prior hepatectomy",
+    "case_id": "CAND14",
+    "facts": "Role/channel: patient and record system\nDecision point: Admission assessment five months after outside hepatectomy, before ERCP, removed-material pathology and treatment response. The pre-ERCP MRCP/CT packet is requestable experimentally; its release is not a claim that imaging was completed at the instant of admission.\nOpening: A 70-year-old woman develops progressive jaundice over two weeks with intermittent abdominal pain, then three days of fever reaching 40.0 °C. She underwent liver surgery five months earlier.",
+    "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Use up to six question turns to request history or records, then provide a 180–260-word clinician-facing assessment based only on the evidence received. Assess urgency and the cause of jaundice, request relevant operation and imaging records, and distinguish an unavailable record from a missed request. Explain the limits of attributing the illness to the previous operation. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
+    "history": "",
+    "answer": "**Assessment**\n\nThis 70-year-old woman presents with obstructive jaundice (direct-predominant hyperbilirubinaemia, elevated ALP/GGT) and a febrile inflammatory response (CRP 188.6, PCT 9.49, neutrophil predominance) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule. Pre-ERCP MRCP and CT show intrahepatic and extrahepatic duct dilatation with sludge-like/heterogeneous intraductal material; a definite stricture or causal relationship to the resection site is not established.\n\n**Prioritised explanations:**\n\n1. Biliary obstruction with superimposed cholangitis: most consistent with the obstructive biochemistry, duct dilatation, intraductal material, and inflammatory markers. The material is not yet histologically characterised. Blood and bile cultures were not performed, so fever aetiology is unconfirmed.\n\n2. Post-hepatectomy biliary stricture or anastomotic complication: plausible given timing, but the original operative report is unavailable and no biliary reconstruction is confirmed or excluded. Available records report no postoperative complications yet do not separately rule out a subclinical stricture or bile leak.\n\n3. Ischaemic biliary injury: contrast CT shows a patent hepatic artery to the remnant liver without visible stenosis or thrombosis; this is a large-vessel observation and does not exclude a localised ischaemic insult.\n\n**Urgency:** High. Obstructive jaundice with fever and elevated inflammatory markers warrants prompt biliary drainage and culture.\n\n**Next steps:** Proceed with ERCP for decompression and material retrieval; obtain blood and bile cultures; request the original operative report from the outside centre (currently unavailable, not a missed request); await removed-material pathology.\n\n**Limits of attribution:** The prior operation is a temporal association, not a proven cause. Without the operative report, histology of the intraductal material, or demonstrated stricture at the resection site, causality cannot be established.",
+    "source": "https://doi.org/10.3389/fmed.2026.1967233; adapted published facts; later outcomes withheld.",
+    "reference": "Jaundice, abdominal pain and recent high fever after hepatectomy require urgent assessment for biliary obstruction with possible acute cholangitis. Assess haemodynamics, mental state and organ function, obtain appropriate cultures if feasible, and involve the hepatobiliary or endoscopy service promptly. The absence of further high fever after admission does not erase the preceding illness. Treatment and drainage decisions should follow the current severity and local specialist pathway.\n\nIf the admission laboratory packet is received, marked predominantly direct hyperbilirubinaemia and raised inflammatory markers strengthen this concern. A near-normal total white-cell count does not negate the high neutrophil fraction or other inflammatory evidence. If imaging is received, substantial duct dilatation with heterogeneous common-duct material supports mechanical obstruction. Stones or sludge, postoperative narrowing, clot or tissue debris and tumour-related obstruction remain considerations; imaging alone cannot establish the material’s histology.\n\nReview the outside operation and pathology. The operative report is explicitly unavailable, so a request for it is still appropriate and should be credited. Chronic hepatitis with cirrhosis and no definite neoplasia were reported in the outside specimen. A patent visible hepatic artery does not establish that all earlier microvascular injury is absent. The five-month sequence supports temporal association only; no specific surgical injury, necrotic epithelial pathology, cast morphology or later improvement should be asserted from the initial evidence.",
+    "reference_status": "draft",
+    "criteria": [
+      "D1",
+      "D3a",
+      "D3b",
+      "D5c",
+      "D5u",
+      "D6a",
+      "D3d"
+    ],
+    "rules_version": "josh-proposed-20261024",
+    "answer_model": "arc:lite",
+    "judge_model": "arc:apex",
+    "requirements": [
+      {
+        "id": "14.R1",
+        "level": "essential",
+        "requirement": "Request current severity, inflammatory and liver/organ-function evidence.",
+        "presentation_based_rationale": "Jaundice, abdominal pain and high fever raise a potentially urgent biliary infection or obstruction problem before any unusual pathology is known.",
+        "acceptable_requests_or_alternatives": "Liver tests plus inflammatory markers and a current sepsis/organ-function assessment, or an equivalent urgent cholangitis assessment. Blood pressure not supplied must not be invented.",
+        "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+        "status": "awaiting confirmation"
+      },
+      {
+        "id": "14.R2",
+        "level": "essential",
+        "requirement": "Seek the previous operation and available outside records.",
+        "presentation_based_rationale": "The surgery type, timing and underlying disease materially alter the differential.",
+        "acceptable_requests_or_alternatives": "A request for the operative note, surgical summary or outside records is adequate even though the original note cannot be supplied. Available pathology/summary is an acceptable partial alternative; acknowledging the gap is required rather than guessing a surgical injury.",
+        "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+        "status": "awaiting confirmation"
+      },
+      {
+        "id": "14.R3",
+        "level": "essential",
+        "requirement": "Request biliary imaging to establish obstruction and characterise its level or content.",
+        "presentation_based_rationale": "Jaundice with pain and fever requires an anatomical assessment, especially after liver surgery.",
+        "acceptable_requests_or_alternatives": "Ultrasound or cross-sectional biliary imaging, MRCP/CT review, or an equivalent urgent specialist biliary investigation route. Exact anticipation of the eventual non-calculous material is unnecessary.",
+        "deadline": "Before the final assessment, within the six question turns. Emergency escalation must not be delayed to exhaust the question budget.",
+        "status": "awaiting confirmation"
+      }
+    ],
+    "interview": {
+      "complete": true,
+      "max_questions": 6,
+      "notes_allowed": true,
+      "decision_point": "Admission assessment five months after outside hepatectomy, before ERCP, removed-material pathology and treatment response. The pre-ERCP MRCP/CT packet is requestable experimentally; its release is not a claim that imaging was completed at the instant of admission.",
+      "synthesis_scope": "Clinical synthesis explicitly requested by the saved final task.",
+      "availability_context": "[{\"id\": \"14.symptom_course\", \"channel\": \"patient\", \"period\": \"presentation\", \"text\": \"Yellowing of my skin and eyes increased over two weeks, with intermittent abdominal pain. Fever began three days before admission and reached 40.0 °C.\"}, {\"id\": \"14.prior_surgery_and_liver_history\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.\"}, {\"id\": \"14.unavailable_operation_and_outside_pathology\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury.\"}, {\"id\": \"14.admission_liver_tests\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.\"}, {\"id\": \"14.inflammation_and_safety\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed.\"}, {\"id\": \"14.biliary_imaging\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.\"}, {\"id\": \"14.arterial_imaging\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"The pre-ERCP contrast CT describes a patent hepatic artery supplying the remaining liver, without visible stenosis, occlusion or thrombosis. This is a large-vessel observation, not proof against every prior or localised ischaemic injury.\"}]",
+      "turns": [
+        {
+          "question": "Regarding the hepatectomy five months ago: what was the indication (e.g., tumour, trauma, other), what type of resection was performed, and was any biliary reconstruction (such as a Roux-en-Y hepaticojejunostomy) carried out? Also, what was the immediate post-operative course—any bile leak, stricture, or readmission?",
+          "notes": "Establishing the surgical indication, extent of resection, and biliary reconstruction is essential to frame the differential for obstructive jaundice and cholangitis in this post-hepatectomy patient. The post-operative course will help distinguish early complications from late recurrence or new pathology.",
+          "feedback": "The first group supplies indication, resection and the limited recorded postoperative course. The original operative report is explicitly unavailable, so whether a specific biliary reconstruction was carried out cannot be established; do not infer no reconstruction or invent Roux-en-Y anatomy. Available records report no postoperative complications, but do not separately establish the absence of every requested bile leak, stricture or readmission. These details are unavailable/unspecified, not deferred by the two-group cap. No later ERCP or removed-material pathology is released.",
+          "reply": "",
+          "records": "[14.prior_surgery_and_liver_history; presentation] She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.\n[14.unavailable_operation_and_outside_pathology; presentation] The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury."
+        },
+        {
+          "question": "What are her current laboratory results—total and direct bilirubin, alkaline phosphatase, GGT, transaminases, white cell count, CRP, and blood culture status? Has any imaging been performed since admission (ultrasound, CT, or MRCP), and if so, what were the findings?",
+          "notes": "I need to characterise the pattern of jaundice (obstructive vs hepatocellular) and assess for cholangitis, and to know whether imaging has already localised a biliary obstruction or other cause before ERCP.",
+          "feedback": "The first two requested domains are liver chemistry, then inflammatory/culture status; return these two groups in that order. The record explicitly states blood and bile cultures were not performed, so this is stronger than a merely unsupplied culture result and must not become a negative culture. Requested pre-ERCP imaging in 14.biliary_imaging and 14.arterial_imaging is available but deferred solely by the two-group cap. Do not claim that imaging was unavailable or not performed, and do not infer a precise admission-day acquisition/result time from experimental requestability. No ERCP or removed-material pathology is released.",
+          "reply": "",
+          "records": "[14.admission_liver_tests; presentation] Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.\n[14.inflammation_and_safety; presentation] Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed."
+        },
+        {
+          "question": "What were the findings on the pre-ERCP MRCP and CT—specifically regarding biliary anatomy, any stricture, stone, or mass, and the relationship to the prior hepatectomy site?",
+          "notes": "The pre-ERCP imaging is available and is the key next step to characterise the biliary obstruction and its anatomical basis before interpreting ERCP findings.",
+          "feedback": "Return the pre-ERCP biliary-imaging group, then the additional CT arterial/remnant-liver context, both within the requested MRCP/CT review. The imaging describes duct dilation and sludge-like/heterogeneous intraductal material, not histologically established stone, cast, tumour or necrotic tissue. A definite stricture or precise anatomical/causal relationship to the prior hepatectomy site is not established by this packet. Do not import the later completion cholangiogram showing no residual stricture, ERCP extraction or material pathology. The original operative report remains unavailable. No further directly responsive group is deferred by the cap.",
+          "reply": "",
+          "records": "[14.biliary_imaging; presentation] Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.\n[14.arterial_imaging; presentation] The pre-ERCP contrast CT describes a patent hepatic artery supplying the remaining liver, without visible stenosis, occlusion or thrombosis. This is a large-vessel observation, not proof against every prior or localised ischaemic injury."
+        }
+      ]
+    }
+  },
+  "scoring_complete": true
+}

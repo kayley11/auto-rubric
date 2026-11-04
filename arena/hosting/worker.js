@@ -11,6 +11,144 @@ function json(value, status = 200) {
   });
 }
 
+const registrationPath = "/api/host/connection";
+const leaseSeconds = 180;
+
+function tunnelOrigin(value) {
+  const url = new URL(value);
+  if (
+    url.protocol !== "https:" ||
+    !/^[a-z0-9-]+\.trycloudflare\.com$/.test(url.hostname) ||
+    url.username ||
+    url.password ||
+    url.port ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
+  )
+    throw new Error("Invalid connection address");
+  return url.origin;
+}
+
+async function connection(request, env) {
+  if (!env.DB || !env.ARENA_BRIDGE_SECRET)
+    return json({ error: "Automatic recovery is not configured." }, 503);
+  if (request.method === "GET")
+    return json({
+      supported: true,
+      server_time: Math.floor(Date.now() / 1000),
+    });
+  if (request.method !== "POST")
+    return json({ error: "Use GET or POST." }, 405);
+  if (Number(request.headers.get("Content-Length")) > 2048)
+    return json({ error: "Request is too large." }, 413);
+  const reader = request.body?.getReader();
+  const chunks = [];
+  let size = 0;
+  if (reader) {
+    for (;;) {
+      const part = await reader.read();
+      if (part.done) break;
+      size += part.value.byteLength;
+      if (size > 2048) {
+        await reader.cancel();
+        return json({ error: "Request is too large." }, 413);
+      }
+      chunks.push(part.value);
+    }
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  const body = new TextDecoder().decode(bytes);
+  const stamp = request.headers.get("X-Arena-Time") || "";
+  const signature = request.headers.get("X-Arena-Signature") || "";
+  const now = Math.floor(Date.now() / 1000);
+  if (
+    !/^\d{10}$/.test(stamp) ||
+    Math.abs(now - Number(stamp)) > 60 ||
+    !/^[a-f0-9]{64}$/.test(signature)
+  )
+    return json({ error: "Invalid recovery signature." }, 403);
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(env.ARENA_BRIDGE_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+  const valid = await crypto.subtle.verify(
+    "HMAC",
+    key,
+    Uint8Array.from(signature.match(/../g), (h) => parseInt(h, 16)),
+    encoder.encode(`POST\n${registrationPath}\n${stamp}\n${body}`),
+  );
+  if (!valid) return json({ error: "Invalid recovery signature." }, 403);
+  let data, address;
+  try {
+    data = JSON.parse(body);
+    address = tunnelOrigin(data.origin);
+    if (!/^[a-f0-9]{32}$/.test(data.registration_id)) throw new Error();
+  } catch {
+    return json({ error: "Invalid recovery details." }, 400);
+  }
+  const current = await env.DB.prepare(
+    "SELECT issued_at, registration_id FROM host_connection WHERE id = 1",
+  ).first();
+  if (
+    current &&
+    (current.issued_at > Number(stamp) ||
+      (current.issued_at === Number(stamp) &&
+        current.registration_id !== data.registration_id))
+  )
+    return json(
+      { error: "A newer connection update exists. Retry shortly." },
+      409,
+    );
+  // Verify the protected backend before replacing the previous connection.
+  try {
+    const nonce = crypto.randomUUID().replaceAll("-", "");
+    const check = await fetch(address + "/healthz?probe_nonce=" + nonce, {
+      redirect: "manual",
+      signal: AbortSignal.timeout(8000),
+    });
+    const reply = await check.json();
+    if (!check.ok || !/^[a-f0-9]{64}$/.test(reply.proof || ""))
+      throw new Error();
+    const proof = Uint8Array.from(reply.proof.match(/../g), (h) =>
+      parseInt(h, 16),
+    );
+    if (
+      !(await crypto.subtle.verify(
+        "HMAC",
+        key,
+        proof,
+        encoder.encode("AutoRubric probe\n" + nonce),
+      ))
+    )
+      throw new Error();
+  } catch {
+    return json({ error: "The protected backend is not reachable yet." }, 503);
+  }
+  const issued = Number(stamp),
+    expires = issued + leaseSeconds;
+  const saved = await env.DB.prepare(
+    "INSERT INTO host_connection (id, origin, issued_at, expires_at, registration_id) VALUES (1, ?1, ?2, ?3, ?4) ON CONFLICT(id) DO UPDATE SET origin = excluded.origin, issued_at = excluded.issued_at, expires_at = excluded.expires_at, registration_id = excluded.registration_id WHERE excluded.issued_at > host_connection.issued_at OR (excluded.issued_at = host_connection.issued_at AND excluded.registration_id = host_connection.registration_id)",
+  )
+    .bind(address, issued, expires, data.registration_id)
+    .run();
+  if (!saved.meta?.changes)
+    return json(
+      { error: "A newer connection update exists. Retry shortly." },
+      409,
+    );
+  return json({ registered: true, expires_at: expires });
+}
+
 function secured(response) {
   const result = new Response(response.body, response);
   result.headers.set("X-Content-Type-Options", "nosniff");
@@ -29,17 +167,17 @@ function secured(response) {
 }
 
 async function backend(request, env) {
-  if (!env.BACKEND_ORIGIN || !env.ARENA_BRIDGE_SECRET)
-    throw new Error("offline");
-  const target = new URL(env.BACKEND_ORIGIN);
-  if (
-    target.protocol !== "https:" ||
-    !target.hostname.endsWith(".trycloudflare.com") ||
-    target.username ||
-    target.password ||
-    target.pathname !== "/"
-  )
-    throw new Error("Invalid backend configuration");
+  if (!env.ARENA_BRIDGE_SECRET) throw new Error("offline");
+  let address = env.BACKEND_ORIGIN;
+  if (env.DB) {
+    const saved = await env.DB.prepare(
+      "SELECT origin, expires_at FROM host_connection WHERE id = 1",
+    ).first();
+    if (!saved || saved.expires_at <= Date.now() / 1000)
+      throw new Error("offline");
+    address = saved.origin;
+  }
+  const target = new URL(tunnelOrigin(address));
   const url = new URL(request.url);
   target.pathname = url.pathname;
   target.search = url.search;
@@ -103,6 +241,7 @@ async function snapshot(request, env, route) {
 
 export async function handle(request, env) {
   const url = new URL(request.url);
+  if (url.pathname === registrationPath) return connection(request, env);
   if (!["GET", "HEAD", "POST"].includes(request.method))
     return json({ error: "Method not allowed." }, 405);
   if (request.method === "POST" && request.headers.get("Origin") !== url.origin)
@@ -119,10 +258,36 @@ export async function handle(request, env) {
     const member = /(?:^|;\s*)arena_session=.+/.test(
       request.headers.get("Cookie") || "",
     );
-    if (request.method === "POST" || member || url.pathname === "/api/config") {
+    if (url.pathname === "/api/result-comparison") {
+      if (request.method !== "GET") return json({ error: "Use GET." }, 405);
+      if (!member)
+        return json({ error: "Sign in with your workspace account to view this comparison." }, 401);
       try {
         return await backend(request, env);
       } catch {
+        return json({ error: "The comparison needs the host computer online. Please retry shortly." }, 503);
+      }
+    }
+    const review = url.pathname === "/api/review" || /^\/api\/review\/[a-f0-9]{24}(?:\/[A-Za-z0-9-]+)?$/.test(url.pathname);
+    if (!member && url.pathname === "/api/cases/submitted" && request.method === "GET") return json([]);
+    const comparison =
+      url.pathname === "/api/comparison" ||
+      /^\/api\/comparison\/cases\/(?:C0[1-5]|N0[1-6]|CAND(?:0[1-9]|1[0-9]|2[0-2])|B(?:0[1-9]|1[0-9]|2[0-2])|J0[1-4]|JA(?:0[124-9]|10)|SR(?:0[1-9]|10))$/.test(
+        url.pathname,
+      );
+    if (
+      request.method === "POST" ||
+      member ||
+      url.pathname === "/api/config" ||
+      review ||
+      comparison
+    ) {
+      try {
+        const response = await backend(request, env);
+        // An older local backend may not yet have the new public read route.
+        if (!(comparison && !response.ok)) return response;
+      } catch {
+        if (review) return json({error: offlineMessage},503);
         if (request.method === "POST")
           return json({ error: offlineMessage }, 503);
         if (member) {

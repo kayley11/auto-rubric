@@ -1,0 +1,367 @@
+{
+  "subject_key": "earlier33__CAND03__kcl-chat",
+  "case_key": "earlier33__CAND03",
+  "case_id": "CAND03",
+  "cohort": "earlier33",
+  "answer_model": "kcl-chat",
+  "answer_model_label": "arc:chat / Qwen3.8-Flash-Next",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-chat/CAND03.json",
+  "source_answer_sha256": "169157d6a0981f5a8870161286f9f2693b76b023ddb8358d2e7fd93bd12ba61a",
+  "has_complete_answer": false,
+  "source_status": "interviewing",
+  "state": {
+    "case_id": "CAND03",
+    "model": "arc:chat",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What is her current medication regimen for Cushing's disease, including any glucocorticoid replacement or steroidogenesis inhibitors, and what were the examination findings on hospital assessment?",
+        "assessment": {
+          "summary": "Woman on long-term Cushing's disease treatment presenting with symptoms consistent with possible adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension) after a 20-mg oral hydrocortisone stress dose given by telephone advice. Immediate concern is adrenal crisis; need to clarify medication regimen and examination findings to assess severity and medication relationship.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is her current medication regimen for Cushing's disease, including any glucocorticoid replacement or steroidogenesis inhibitors, and what were the examination findings on hospital assessment?",
+          "topics": [
+            "medications",
+            "examination"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Woman on long-term Cushing's disease treatment presenting with symptoms consistent with possible adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension) after a 20-mg oral hydrocortisone stress dose given by telephone advice. Immediate concern is adrenal crisis; need to clarify medication regimen and examination findings to assess severity and medication relationship.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "03.previous_drugs",
+            "channel": "record",
+            "text": "Ketoconazole was ultimately stopped because hepatotoxicity recurred. Metyrapone was later used for 36 weeks and stopped because its study ended, despite biochemical control and good adherence. Osilodrostat was then begun at 2 mg twice daily.",
+            "source_location": "B0075",
+            "match": "previous.{0,20}(?:drug|medic|treat)|prior.{0,20}(?:drug|medic|treat)|ketocon|metyrap|hepat|treatment history|medic",
+            "period": "presentation"
+          },
+          {
+            "id": "03.stable_course",
+            "channel": "record",
+            "text": "The symptoms began two years after osilodrostat initiation while she was receiving a stable total dose of 4 mg daily, without recent dose escalation. Earlier treatment had produced substantial biochemical and clinical improvement.",
+            "source_location": "B0075; B0078; B0088",
+            "match": "osilodrostat|current.{0,15}(?:medic|drug|dose)|dose|duration|stable|escalat|titr|timing",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: examination findings on hospital assessment. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "03.previous_drugs",
+              "request_span": "current medication regimen for Cushing's disease, including any glucocorticoid replacement or steroidogenesis inhibitors"
+            },
+            {
+              "id": "03.stable_course",
+              "request_span": "current medication regimen for Cushing's disease, including any glucocorticoid replacement or steroidogenesis inhibitors"
+            }
+          ],
+          "unanswered_spans": [
+            "examination findings on hospital assessment"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What are her vital signs on hospital assessment, and were any blood samples (cortisol, ACTH, electrolytes) drawn before or after the 20-mg oral hydrocortisone dose?",
+        "assessment": {
+          "summary": "Woman on osilodrostat 4 mg daily (stable 2 years) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis, making iatrogenic adrenal insufficiency the leading concern even at a stable dose, as prior hypercortisolism may have suppressed the HPA axis. The 20-mg hydrocortisone stress dose suggests clinical suspicion of adrenal crisis. Need vital signs to gauge severity and timing of any bloods relative to hydrocortisone to interpret results.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are her vital signs on hospital assessment, and were any blood samples (cortisol, ACTH, electrolytes) drawn before or after the 20-mg oral hydrocortisone dose?",
+          "topics": [
+            "vital_signs",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Woman on osilodrostat 4 mg daily (stable 2 years) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis, making iatrogenic adrenal insufficiency the leading concern even at a stable dose, as prior hypercortisolism may have suppressed the HPA axis. The 20-mg hydrocortisone stress dose suggests clinical suspicion of adrenal crisis. Need vital signs to gauge severity and timing of any bloods relative to hydrocortisone to interpret results.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: vital signs on hospital assessment; were any blood samples (cortisol, ACTH, electrolytes) drawn before or after the 20-mg oral hydrocortisone dose. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "vital signs on hospital assessment",
+            "were any blood samples (cortisol, ACTH, electrolytes) drawn before or after the 20-mg oral hydrocortisone dose"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Were there any precipitating factors such as intercurrent illness, physiological stress, or missed osilodrostat doses before symptom onset, and has she had any prior episodes of adrenal insufficiency or similar presentations?",
+        "assessment": {
+          "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, good adherence) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior hypercortisolism likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve during stress. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Vital signs, examination findings, and endocrine test packet are not yet available at this decision point, limiting severity assessment and biochemical confirmation.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Were there any precipitating factors such as intercurrent illness, physiological stress, or missed osilodrostat doses before symptom onset, and has she had any prior episodes of adrenal insufficiency or similar presentations?",
+          "topics": [
+            "timecourse",
+            "previous_episodes"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, good adherence) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior hypercortisolism likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve during stress. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Vital signs, examination findings, and endocrine test packet are not yet available at this decision point, limiting severity assessment and biochemical confirmation.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "03.adherence",
+            "channel": "record",
+            "text": "Dosing errors were excluded in the report; documented treatment adherence since the previous visit was 98%.",
+            "source_location": "B0079",
+            "match": "adheren|compli|missed|overdose|dosing error|dose error|accidental",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: intercurrent illness, physiological stress; prior episodes of adrenal insufficiency or similar presentations. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "03.adherence",
+              "request_span": "missed osilodrostat doses before symptom onset"
+            }
+          ],
+          "unanswered_spans": [
+            "intercurrent illness, physiological stress",
+            "prior episodes of adrenal insufficiency or similar presentations"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Was she on any concurrent glucocorticoid replacement alongside osilodrostat (block-and-replace regimen), or was osilodrostat used as monotherapy with titration? Also, how many days elapsed between symptom onset and hospital assessment?",
+        "assessment": {
+          "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, 98% adherence, dosing errors excluded) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior Cushing's disease likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Vital signs, examination findings, and endocrine test packet are not yet available. Whether she was on concurrent glucocorticoid replacement is critical to interpretation.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Was she on any concurrent glucocorticoid replacement alongside osilodrostat (block-and-replace regimen), or was osilodrostat used as monotherapy with titration? Also, how many days elapsed between symptom onset and hospital assessment?",
+          "topics": [
+            "medications",
+            "timecourse"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, 98% adherence, dosing errors excluded) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior Cushing's disease likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Vital signs, examination findings, and endocrine test packet are not yet available. Whether she was on concurrent glucocorticoid replacement is critical to interpretation.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "03.actions_before_hospital",
+            "channel": "record",
+            "text": "She was advised to stop osilodrostat, take hydrocortisone 20 mg orally and attend the next morning. She took the advised actions, but symptoms persisted and hospital assessment followed. The source does not specify the interval between hydrocortisone and the subsequent cortisol sample.",
+            "source_location": "B0079",
+            "match": "hydrocort|steroid|action|advice|already|stopp|withhold|discontinu|medic|rescue|before.{0,20}(?:hospit|sample|test)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: Was she on any concurrent glucocorticoid replacement alongside osilodrostat (block-and-replace regimen), or was osilodrostat used as monotherapy with titration?. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "03.actions_before_hospital",
+              "request_span": "how many days elapsed between symptom onset and hospital assessment"
+            }
+          ],
+          "unanswered_spans": [
+            "Was she on any concurrent glucocorticoid replacement alongside osilodrostat (block-and-replace regimen), or was osilodrostat used as monotherapy with titration?"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Is there any documentation of her recent baseline cortisol or ACTH levels before this episode, and was osilodrostat prescribed as monotherapy without concurrent glucocorticoid replacement?",
+        "assessment": {
+          "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, 98% adherence) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior Cushing's disease likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Symptoms persisted despite hydrocortisone, which may indicate insufficient dose, too-short interval for response, or an alternative/additional diagnosis. Vital signs, examination findings, and endocrine test packet are not yet available. Whether she was on concurrent glucocorticoid replacement is critical to interpretation.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Is there any documentation of her recent baseline cortisol or ACTH levels before this episode, and was osilodrostat prescribed as monotherapy without concurrent glucocorticoid replacement?",
+          "topics": [
+            "routine_laboratory",
+            "medications"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "Woman on osilodrostat 4 mg daily (stable 2 years, 98% adherence) with symptoms classic for adrenal insufficiency (nausea, abdominal pain, myalgia, fatigue, hypotension). Osilodrostat inhibits cortisol synthesis; prior Cushing's disease likely suppressed the HPA axis, so even a stable dose can leave insufficient cortisol reserve. The 20-mg hydrocortisone stress dose reflects clinical suspicion of adrenal crisis. Symptoms persisted despite hydrocortisone, which may indicate insufficient dose, too-short interval for response, or an alternative/additional diagnosis. Vital signs, examination findings, and endocrine test packet are not yet available. Whether she was on concurrent glucocorticoid replacement is critical to interpretation.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: documentation of her recent baseline cortisol or ACTH levels before this episode; was osilodrostat prescribed as monotherapy without concurrent glucocorticoid replacement. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "documentation of her recent baseline cortisol or ACTH levels before this episode",
+            "was osilodrostat prescribed as monotherapy without concurrent glucocorticoid replacement"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "interviewing",
+    "started_at": "2026-10-29T15:42:29.882715+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D3b": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D6a": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D6b": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

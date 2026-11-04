@@ -104,7 +104,7 @@ def test_anonymous_synthesis_packet_excludes_examiner_and_machine_material():
 
 def test_review_queue_does_not_identify_models_or_scores(tmp_path):
     app = Application(tmp_path, Settings("", "https://offline.invalid/v1"), object())
-    queue = evidence.review_catalogue(app)
+    queue = evidence.review_catalogue(app, advanced=True)
     assert len(queue) == 27
     raw = json.dumps(queue)
     for hidden in ("arc:", "scores", "reason", "n04-fresh-arc-lite"):
@@ -387,7 +387,12 @@ def test_http_review_gates_decision_copy_and_exports(tmp_path):
             assert "attachment" in summary.headers["content-disposition"]
             blank = client.get(f"/api/evidence/{p['id']}/blind").text
             assert "Interface check only." not in blank and "arc:lite" not in blank
-            assert client.post(base + "/reveal", json={}).json()["model"] == "arc:lite"
+            revealed = client.post(base + "/reveal", json={}).json()
+            assert revealed["model"] == "arc:lite"
+            assert revealed["judge_model"] == "arc:apex"
+            assert "criteria" in revealed
+            assert revealed["rating"]["items"]["D3a"]["score"] == "Indeterminate"
+            assert "judge_model" not in unseen and "model" not in unseen
             requirement = p["data"]["requirements"][0]
             response = client.post(
                 f"/api/requirements/{p['id']}",

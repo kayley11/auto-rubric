@@ -152,9 +152,9 @@ class Reviews:
         for cid, row in submitted.items():
             if cid not in packet["rules"]:
                 raise ValueError("Criterion is outside this review.")
-            if cid == "D5c" and "D3a" in packet["rules"] and "D3a" not in items:
+            if cid != "D3a" and "D3a" in packet["rules"] and "D3a" not in items:
                 raise ValueError("Save D3a before opening examiner-only D5c evidence.")
-            if cid == "D3a" and "D5c" in items:
+            if cid == "D3a" and any(k != "D3a" for k in items):
                 raise ValueError(
                     "The initial synthesis rating is preserved after examiner evidence was opened."
                 )
@@ -208,6 +208,11 @@ class Reviews:
         )
         return {
             "model": packet["model"],
+            "judge_model": packet["data"].get("judge_model", "arc:apex"),
+            "rules_version": packet["data"].get("rules_version", "original"),
+            "case_id": packet["case_id"],
+            "name": packet["name"],
+            "criteria": {cid: rule.get("name", cid) for cid, rule in packet["rules"].items()},
             "scores": packet["scores"],
             "rating": record,
             "score_context": packet.get("score_context", ""),

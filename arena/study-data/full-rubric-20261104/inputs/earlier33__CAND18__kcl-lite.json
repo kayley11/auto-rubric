@@ -1,0 +1,361 @@
+{
+  "subject_key": "earlier33__CAND18__kcl-lite",
+  "case_key": "earlier33__CAND18",
+  "case_id": "CAND18",
+  "cohort": "earlier33",
+  "answer_model": "kcl-lite",
+  "answer_model_label": "arc:lite / Qwen3.8-27B",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-lite/CAND18.json",
+  "source_answer_sha256": "a61b61dbdc4bd160282fb04704b371cf8b4076a1db0f7ff04825c09ba3288ad9",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND18",
+    "model": "arc:lite",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "Can you describe where exactly the swelling is in your neck, whether it moves when you swallow, and whether you have had any fever, recent cold or flu, or any difficulty swallowing or breathing?",
+        "assessment": {
+          "summary": "35-year-old woman with four days of progressive painful left neck swelling; thyroid function normal; no acute airway compromise documented. Differential includes subacute thyroiditis, thyroid abscess, or other inflammatory/infective cause. Location and associated symptoms needed to narrow the differential.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Can you describe where exactly the swelling is in your neck, whether it moves when you swallow, and whether you have had any fever, recent cold or flu, or any difficulty swallowing or breathing?",
+          "topics": [
+            "presenting_symptoms",
+            "timecourse"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "35-year-old woman with four days of progressive painful left neck swelling; thyroid function normal; no acute airway compromise documented. Differential includes subacute thyroiditis, thyroid abscess, or other inflammatory/infective cause. Location and associated symptoms needed to narrow the differential.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "18.examination",
+            "channel": "record",
+            "text": "Blood pressure 98/65 mmHg, pulse 70/min and respiratory rate 17/min. The left anterior neck mass was soft, markedly tender and did not move with swallowing, without cervical lymphadenopathy; respiratory examination showed no acute airway compromise.",
+            "source_location": "L171-L172",
+            "match": "examin|vital|mass|palpat|blood pressure|respiratory rate|pulse|lymph",
+            "period": "presentation"
+          },
+          {
+            "id": "18.course",
+            "channel": "patient",
+            "text": "This is my first episode. Pain is severe, rated 9/10. There was no fever, recent respiratory illness, trauma or neck procedure.",
+            "source_location": "L167-L169",
+            "match": "onset|course|duration|pain|fever|trauma|procedure|infect|respiratory illness",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "18.examination",
+              "request_span": "where exactly the swelling is in your neck, whether it moves when you swallow"
+            },
+            {
+              "id": "18.course",
+              "request_span": "whether you have had any fever, recent cold or flu"
+            },
+            {
+              "id": "18.compression",
+              "request_span": "any difficulty swallowing or breathing"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Has any ultrasound or other imaging been done on your neck, and have you noticed any change in your voice or any skin redness or warmth over the swelling?",
+        "assessment": {
+          "summary": "Left anterior neck mass, soft, markedly tender, does not move with swallowing, no lymphadenopathy, no airway compromise. Normal thyroid function and non-movement with swallowing argue against a thyroid origin. Differential now favours a non-thyroidal cause such as an inflamed branchial cleft cyst, a deep soft-tissue abscess, or a vascular lesion. Slightly low BP (98/65) with normal pulse warrants monitoring but does not yet indicate haemodynamic compromise. Imaging is the key next step to define the nature and depth of the mass.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Has any ultrasound or other imaging been done on your neck, and have you noticed any change in your voice or any skin redness or warmth over the swelling?",
+          "topics": [
+            "tests",
+            "presenting_symptoms"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "Left anterior neck mass, soft, markedly tender, does not move with swallowing, no lymphadenopathy, no airway compromise. Normal thyroid function and non-movement with swallowing argue against a thyroid origin. Differential now favours a non-thyroidal cause such as an inflamed branchial cleft cyst, a deep soft-tissue abscess, or a vascular lesion. Slightly low BP (98/65) with normal pulse warrants monitoring but does not yet indicate haemodynamic compromise. Imaging is the key next step to define the nature and depth of the mass.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "18.compression",
+            "channel": "patient",
+            "text": "Both solids and liquids are hard to swallow. I become breathless with mild exertion and when lying flat. No voice change was reported.",
+            "source_location": "L168",
+            "match": "swallow|dysphag|breath|dyspn|voice|airway|compress|stridor|lie|lying|supine",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: Has any ultrasound or other imaging been done on your neck; any skin redness or warmth over the swelling. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "18.compression",
+              "request_span": "any change in your voice"
+            }
+          ],
+          "unanswered_spans": [
+            "Has any ultrasound or other imaging been done on your neck",
+            "any skin redness or warmth over the swelling"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Over these four days, has the difficulty swallowing and the breathlessness been getting progressively worse, and have you been able to keep up with eating and drinking, or have you had to stop?",
+        "assessment": {
+          "summary": "Left anterior neck mass, soft, tender, non-mobile with swallowing, no lymphadenopathy. Normal thyroid function. Compressive symptoms present: dysphagia to both solids and liquids, breathlessness with exertion and when supine. No fever, no voice change, no airway compromise documented. Slightly low BP (98/65) with normal pulse. Progressive course over four days. Differential includes deep soft-tissue abscess, inflamed branchial cleft cyst, or vascular lesion. Compressive symptoms warrant urgent imaging and close monitoring for airway deterioration.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Over these four days, has the difficulty swallowing and the breathlessness been getting progressively worse, and have you been able to keep up with eating and drinking, or have you had to stop?",
+          "topics": [
+            "timecourse",
+            "presenting_symptoms"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Left anterior neck mass, soft, tender, non-mobile with swallowing, no lymphadenopathy. Normal thyroid function. Compressive symptoms present: dysphagia to both solids and liquids, breathlessness with exertion and when supine. No fever, no voice change, no airway compromise documented. Slightly low BP (98/65) with normal pulse. Progressive course over four days. Differential includes deep soft-tissue abscess, inflamed branchial cleft cyst, or vascular lesion. Compressive symptoms warrant urgent imaging and close monitoring for airway deterioration.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: has the difficulty swallowing and the breathlessness been getting progressively worse; have you been able to keep up with eating and drinking, or have you had to stop. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "has the difficulty swallowing and the breathlessness been getting progressively worse",
+            "have you been able to keep up with eating and drinking, or have you had to stop"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Have you ever had a similar swelling in your neck before, or have you ever been told you have any congenital or structural abnormality in your neck?",
+        "assessment": {
+          "summary": "35-year-old woman with four days of progressive painful left anterior neck mass (soft, tender, non-mobile with swallowing, no lymphadenopathy). Normal thyroid function. Compressive symptoms present: dysphagia to solids and liquids, breathlessness with exertion and when supine. No fever, no voice change, no airway compromise documented. BP 98/65, pulse 70. No imaging performed to date. Differential includes deep soft-tissue abscess, inflamed branchial cleft cyst, or vascular lesion. Compressive symptoms and progressive course warrant urgent cross-sectional imaging (CT neck with contrast or ultrasound with Doppler) and close monitoring for airway deterioration. Oral intake status and trajectory of compressive symptoms remain unconfirmed.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Have you ever had a similar swelling in your neck before, or have you ever been told you have any congenital or structural abnormality in your neck?",
+          "topics": [
+            "previous_episodes"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "35-year-old woman with four days of progressive painful left anterior neck mass (soft, tender, non-mobile with swallowing, no lymphadenopathy). Normal thyroid function. Compressive symptoms present: dysphagia to solids and liquids, breathlessness with exertion and when supine. No fever, no voice change, no airway compromise documented. BP 98/65, pulse 70. No imaging performed to date. Differential includes deep soft-tissue abscess, inflamed branchial cleft cyst, or vascular lesion. Compressive symptoms and progressive course warrant urgent cross-sectional imaging (CT neck with contrast or ultrasound with Doppler) and close monitoring for airway deterioration. Oral intake status and trajectory of compressive symptoms remain unconfirmed.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "18.course",
+            "channel": "patient",
+            "text": "This is my first episode. Pain is severe, rated 9/10. There was no fever, recent respiratory illness, trauma or neck procedure.",
+            "source_location": "L167-L169",
+            "match": "onset|course|duration|pain|fever|trauma|procedure|infect|respiratory illness",
+            "period": "presentation"
+          },
+          {
+            "id": "18.background",
+            "channel": "patient",
+            "text": "No regular medicines, supplements, anticoagulants, prior medical/surgical disease or family thyroid disease were reported.",
+            "source_location": "L167; L170",
+            "match": "medic|drug|anticoag|blood thinner|supplement|history|family",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test. Previously returned: 18.course. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "18.course",
+              "request_span": "ever had a similar swelling in your neck before"
+            },
+            {
+              "id": "18.background",
+              "request_span": "ever been told you have any congenital or structural abnormality in your neck"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T16:21:31.680012+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "35-year-old woman with four days of progressive, severe (9/10) painful left anterior neck mass. Examination: soft, markedly tender, non-mobile with swallowing, no lymphadenopathy, no acute airway compromise. Normal thyroid function (TSH 2.73, fT4 16.4). Compressive symptoms present: dysphagia to solids and liquids, breathlessness with exertion and supine. No fever, no voice change, no trauma, no prior episodes. BP 98/65, pulse 70. No imaging performed to date. No regular medications or prior medical history. Working differential: (1) deep soft-tissue abscess or infected branchial cleft cyst – supported by tenderness, non-thyroidal location, compressive symptoms; absence of fever is atypical but does not exclude; (2) inflamed or haemorrhagic branchial cleft cyst – supported by first episode, anterior location, soft consistency; (3) vascular lesion (e.g., carotid body tumour with haemorrhage) – less likely given acute onset and tenderness but cannot be excluded without imaging. Uncertainty: trajectory of compressive symptoms and oral intake unconfirmed; no imaging to define depth, vascularity, or relationship to airway. Proportionate next steps: urgent cross-sectional imaging (contrast-enhanced CT neck or Doppler ultrasound) to characterise the mass and assess airway; close monitoring for deterioration in swallowing or respiratory status; surgical or ENT review if imaging confirms a drainable collection or vascular lesion. The documented absence of acute airway compromise is a snapshot; the presence of progressive dysphagia and positional breathlessness means deterioration is possible and warrants a low threshold for escalation.",
+      "certainty": "uncertain"
+    },
+    "final_answer": "## Clinical Problem\n\nA 35-year-old woman presents with four days of progressive, severe (9/10) painful left anterior neck swelling. The mass is soft, markedly tender, and does not move with swallowing. No cervical lymphadenopathy, fever, voice change, or acute airway compromise is documented. Thyroid function is normal. Compressive symptoms are present: dysphagia to both solids and liquids and breathlessness with mild exertion and when supine. Blood pressure is 98/65 mmHg with a normal pulse. No imaging has been performed.\n\n## Prioritised Explanations\n\n1. Deep soft-tissue abscess (e.g., parapharyngeal or deep neck space): progressive painful swelling with compressive symptoms and tenderness fits; absence of fever does not exclude early or contained infection. Uncertainty: no imaging or microbiological data available.\n2. Inflamed branchial cleft cyst: soft, tender, anterior neck mass in a young adult; first episode at 35 is atypical but possible. Uncertainty: no prior history of congenital neck abnormality was reported, and no imaging confirms a cystic structure.\n3. Vascular lesion (expanding haematoma or vascular malformation): soft, tender mass without trauma or anticoagulant use; less likely but cannot be excluded without imaging.\n\n## Next Information and Actions\n\nUrgent cross-sectional imaging (CT neck with contrast or ultrasound with Doppler) is the key next step to define the nature, depth, and relationship of the mass to the airway. Confirm the trajectory of compressive symptoms and oral intake status. Monitor for airway deterioration given progressive dysphagia and positional breathlessness; the current examination shows no acute compromise, but the risk of deterioration is real. Reassess blood pressure given the slightly low reading. No doses or specific treatment regimens are prescribed.",
+    "word_count": {
+      "words": 259,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-10-29T16:22:12.673346+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D1.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "The answer is largely clinically sound, but it contains unsupported fabrications. It states \"No imaging has been performed\" and \"no imaging confirms a cystic structure\", yet Q2's request about prior ultrasound/imaging received no supplied answer and the environment explicitly warned not to infer unreported results or test performance. Similarly, \"no prior history of congenital neck abnormality was reported\" goes beyond the Q4 evidence, which returned course and background groups but no answer about congenital abnormalities. These are plausible but unsupported claims rather than dangerous errors (no doses or contraindicated management are given), matching the Score 2 anchor for significant unsupported fabrications without immediately dangerous claims."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D3a.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission synthesises the actually available evidence into a clinically meaningful representation: it correctly prioritises the progressive severe left anterior neck swelling with documented compressive symptoms (dysphagia to solids and liquids, exertional and supine breathlessness from Q2), integrates the examination findings from Q1 (soft, markedly tender, non-moving with swallowing, no lymphadenopathy, no acute airway compromise), normal thyroid function, absence of fever/trauma/antecedent illness, and appropriately distinguishes the documented current examination from deterioration risk. The three differentials are defensible, prioritised, and each carries stated uncertainty, and the plan (urgent imaging, symptom trajectory, airway monitoring) follows from the representation. One identifiable defect: the statement 'No imaging has been performed' is an unjustified commitment — the Q2 imaging question received no supplied answer, and the environment explicitly forbids inferring unreported results. However, this does not materially misframe the problem, since urgent imaging is indicated regardless of prior imaging status, and the model elsewhere avoids inferring the unanswered items (skin redness/warmth, symptom trajectory). Under the D3a rule that a representation is only lowered for an identifiable defect that distorts or materially misframes, this is a minor limitation that does not change the clinical framing, consistent with anchor 4 rather than 5 (the imaging claim prevents a fully accurate, focused synthesis) or 3 (the main problem and important features are well integrated and material uncertainty is qualified)."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential for a progressive, severely tender left anterior neck mass with compressive symptoms: deep neck-space abscess, inflamed branchial cleft cyst, and vascular lesion. It uses the actual supplied evidence as discriminating findings — non-movement with swallowing (arguing against a thyroid origin), absence of fever explicitly noted as not excluding contained infection, absence of trauma/anticoagulants against haematoma, and first-episode age 35 noted as atypical for a congenital cyst. It attends to the dangerous mimic (deep space abscess threatening the airway) and distinguishes the documented stable airway examination from the real deterioration risk implied by Q2's dysphagia and positional breathlessness. Next actions (urgent contrast CT/Doppler ultrasound, symptom trajectory, airway monitoring) are proportionate and do not invent findings. Prioritisation and support are explicit and proportionate to prior plausibility, meeting the Score 5 anchor."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly separates established findings (documented normal exam, normal thyroid function, present compressive symptoms) from unconfirmed possibilities, ranks three differentials with explicit likelihood language ('fits', 'atypical but possible', 'less likely but cannot be excluded'), names the specific source of uncertainty for each (no imaging, no microbiology, no confirmatory history), distinguishes the currently stable airway examination from the real risk of deterioration, and identifies concrete next steps to reduce the uncertainty (urgent cross-sectional imaging, confirming symptom trajectory and intake). This meets the Score 5 anchor: established, probable, possible and unresolved conclusions are distinguished, the source of uncertainty is explained, and the next step needed to resolve it is stated."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D5c.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "R1 (compressive/airway symptoms) is satisfied: Q1 asks about difficulty swallowing and breathing, Q2 asks about voice change, and Q3 follows up on progression and oral intake. R3 (trauma/medication context) is also covered via Q1/Q4 and the returned background. However, essential R2 — requesting an appropriate structural assessment or imaging — is not fulfilled by an actual request. Q2 only asks whether imaging 'has been done' (a status enquiry), and no turn asks for an ultrasound or other structural neck evaluation to be performed. The assessment notes repeatedly recommend urgent imaging, but notes explain requests and do not count as making them. Because an essential information-seeking requirement is unmet before the final assessment, the score is capped at 2. It does not fall to 1 because the model made multiple relevant, well-targeted requests and there is no clear immediate serious-risk information gap left unaddressed despite opportunity."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D6a.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission recognises seriousness and compressive symptoms (dysphagia to solids and liquids, exertional and supine breathlessness) and requests urgent cross-sectional imaging, but it does not specify a clear escalation pathway or care level (e.g., same-day ENT/emergency assessment) with unambiguous timing. 'Urgent' imaging is mentioned, but where and how soon the patient should be assessed is insufficiently clear, and no explicit safety-netting or escalation instruction is given. The reference notes that appropriate urgency/pathway requires clinical confirmation and that no invented deterioration should be required, so a serious-failure score is not warranted. This matches anchor 3: an escalation-leaning recommendation with insufficiently clear urgency/timing and pathway."
+    },
+    "D6b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND18.D6b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission avoids any contraindicated treatment (it prescribes no doses or regimens, per the task constraint) and includes essential safety caveats: it explicitly separates the documented stable airway examination from the real risk of deterioration, recommends monitoring for airway compromise, and flags urgent imaging given compressive symptoms (dysphagia to solids and liquids, positional breathlessness). It proactively notes that absence of fever does not exclude deep infection and advises reassessing the low-normal blood pressure. However, it does not demonstrate absolute-versus-relative contraindication distinction or formal monitoring parameters (e.g., specific observation instructions), so it falls short of the Score 5 anchor. With no medications or comorbidities reported (Q4), no essential caveat was omitted, placing it above Score 2 and 3. Score 4 is the best fit."
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

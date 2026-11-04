@@ -1,0 +1,434 @@
+{
+  "subject_key": "earlier33__CAND01__kcl-lite",
+  "case_key": "earlier33__CAND01",
+  "case_id": "CAND01",
+  "cohort": "earlier33",
+  "answer_model": "kcl-lite",
+  "answer_model_label": "arc:lite / Qwen3.8-27B",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-lite/CAND01.json",
+  "source_answer_sha256": "84b8490a6fd2ed9634d472690e448e7166b3aaed2e9eeaa9a19cdf2ea24e6be1",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND01",
+    "model": "arc:lite",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "Over these five days, has he been vomiting, feeling confused, or breathing rapidly? Has any blood glucose or blood test been done yet?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Presentation is consistent with significant hyperglycaemia, but severity and metabolic status are not yet established. No examination findings, glucose values, or laboratory results are available. The acute onset and age raise concern for new-onset diabetes, but subtype cannot be determined without further evidence.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Over these five days, has he been vomiting, feeling confused, or breathing rapidly? Has any blood glucose or blood test been done yet?",
+          "topics": [
+            "presenting_symptoms",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Presentation is consistent with significant hyperglycaemia, but severity and metabolic status are not yet established. No examination findings, glucose values, or laboratory results are available. The acute onset and age raise concern for new-onset diabetes, but subtype cannot be determined without further evidence.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.examination",
+            "channel": "record",
+            "text": "Admission vital signs were described as normal, without Kussmaul breathing.",
+            "source_location": "B0057",
+            "match": "vital|examin|breath|blood pressure|heart rate|dehydrat",
+            "period": "presentation"
+          },
+          {
+            "id": "01.glucose",
+            "channel": "record",
+            "text": "Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%.",
+            "source_location": "B0065-B0067",
+            "match": "glucose|glycaem|glycem|hba1c|blood sugar|diabetes test|blood test|laborator",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: vomiting; feeling confused. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.examination",
+              "request_span": "breathing rapidly"
+            },
+            {
+              "id": "01.glucose",
+              "request_span": "blood glucose"
+            },
+            {
+              "id": "01.ketones",
+              "request_span": "blood test"
+            }
+          ],
+          "unanswered_spans": [
+            "vomiting",
+            "feeling confused"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Have any other blood tests been done yet, such as electrolytes, renal function, or ketones? Also, does he have any previous diagnosis of diabetes or a family history of diabetes?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Admission fasting glucose 13.99 mmol/L and HbA1c 10.8% confirm significant and sustained hyperglycaemia (HbA1c implies weeks to months of elevated glucose, not just five days). Vital signs normal and no Kussmaul breathing are reassuring against severe DKA, but ketone status and acid-base are not yet established. Subtype (type 1 vs type 2 vs other) cannot be determined without autoantibodies, C-peptide, or clinical context. No medication history or prior diagnosis is available to assess a medication-related cause.",
+          "certainty": "working"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Have any other blood tests been done yet, such as electrolytes, renal function, or ketones? Also, does he have any previous diagnosis of diabetes or a family history of diabetes?",
+          "topics": [
+            "routine_laboratory",
+            "medical_history"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Admission fasting glucose 13.99 mmol/L and HbA1c 10.8% confirm significant and sustained hyperglycaemia (HbA1c implies weeks to months of elevated glucose, not just five days). Vital signs normal and no Kussmaul breathing are reassuring against severe DKA, but ketone status and acid-base are not yet established. Subtype (type 1 vs type 2 vs other) cannot be determined without autoantibodies, C-peptide, or clinical context. No medication history or prior diagnosis is available to assess a medication-related cause.",
+            "certainty": "working"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.ketones",
+            "channel": "record",
+            "text": "Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied.",
+            "source_location": "B0076-B0080; B0098",
+            "match": "keton|acid|bicarbon|blood gas|\\bph\\b|electroly|metabolic|blood test|laborator",
+            "period": "presentation"
+          },
+          {
+            "id": "01.family",
+            "channel": "patient",
+            "text": "My grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.",
+            "source_location": "B0056",
+            "match": "family|relative|hereditar",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: renal function. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.ketones",
+              "request_span": "electrolytes, renal function, or ketones"
+            },
+            {
+              "id": "01.family",
+              "request_span": "family history of diabetes"
+            }
+          ],
+          "unanswered_spans": [
+            "renal function"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Is he currently taking any medications, or has he started or stopped any in the past few months—such as steroids, antipsychotics, or anything else?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Fasting glucose 13.99 mmol/L and HbA1c 10.8% confirm sustained hyperglycaemia. Beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, and bicarbonate 16.9 mmol/L indicate significant ketosis with mild metabolic acidosis, consistent with early or mild DKA, though no pH is available to confirm. Normal vitals and absence of Kussmaul breathing are reassuring against severe decompensation. Family history of type 2 diabetes in the grandfather's generation; no autoimmune history reported. Subtype and aetiology remain undetermined; medication history is not yet available.",
+          "certainty": "working"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Is he currently taking any medications, or has he started or stopped any in the past few months—such as steroids, antipsychotics, or anything else?",
+          "topics": [
+            "medications"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "28-year-old man with five days of polydipsia, polyuria, dry mouth and weight loss. Fasting glucose 13.99 mmol/L and HbA1c 10.8% confirm sustained hyperglycaemia. Beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, and bicarbonate 16.9 mmol/L indicate significant ketosis with mild metabolic acidosis, consistent with early or mild DKA, though no pH is available to confirm. Normal vitals and absence of Kussmaul breathing are reassuring against severe decompensation. Family history of type 2 diabetes in the grandfather's generation; no autoimmune history reported. Subtype and aetiology remain undetermined; medication history is not yet available.",
+            "certainty": "working"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.medication",
+            "channel": "patient",
+            "text": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+            "source_location": "B0056",
+            "match": "medic|drug|inject|weight.?loss treatment|weight.?reduction treatment|tirzepatide|supplement",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: such as steroids, antipsychotics, or anything else. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.medication",
+              "request_span": "currently taking any medications, or has he started or stopped any in the past few months"
+            }
+          ],
+          "unanswered_spans": [
+            "such as steroids, antipsychotics, or anything else"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "What was the reason for using tirzepatide—was it for weight loss, or had you previously been told you had diabetes or pre-diabetes? And roughly how much weight has he lost over the past few months, and over what time frame?",
+        "assessment": {
+          "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. HbA1c implies weeks to months of elevated glucose, predating the five-day symptomatic window. Tirzepatide use (unsupervised, up to 7.5 mg weekly) is noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a medication-related aetiology is unlikely, though the indication for use and weight trajectory remain relevant to distinguishing underlying diabetes from a drug-unmasking effect. Subtype and aetiology still undetermined.",
+          "certainty": "working"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What was the reason for using tirzepatide—was it for weight loss, or had you previously been told you had diabetes or pre-diabetes? And roughly how much weight has he lost over the past few months, and over what time frame?",
+          "topics": [
+            "medications",
+            "presenting_symptoms"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. HbA1c implies weeks to months of elevated glucose, predating the five-day symptomatic window. Tirzepatide use (unsupervised, up to 7.5 mg weekly) is noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a medication-related aetiology is unlikely, though the indication for use and weight trajectory remain relevant to distinguishing underlying diabetes from a drug-unmasking effect. Subtype and aetiology still undetermined.",
+            "certainty": "working"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.weight",
+            "channel": "patient",
+            "text": "I used tirzepatide for weight reduction, not for a previously diagnosed diabetes condition. My height was 180 cm; weight was 94 kg before treatment and 75 kg at admission.",
+            "source_location": "B0055-B0057",
+            "match": "weight|height|bmi|indication|reason",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.weight",
+              "request_span": "reason for using tirzepatide—was it for weight loss, or had you previously been told you had diabetes or pre-diabetes? And roughly how much weight has he lost over the past few months, and over what time frame"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Have any autoantibody tests (such as GAD or IA-2 antibodies) or a C-peptide level been done yet?",
+        "assessment": {
+          "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. Unsupervised tirzepatide use for weight loss (94→75 kg) is noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct medication-related aetiology is unlikely, though the available history cannot fully exclude that the drug unmasked pre-existing diabetes. Subtype remains undetermined without autoantibodies or C-peptide.",
+          "certainty": "working"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Have any autoantibody tests (such as GAD or IA-2 antibodies) or a C-peptide level been done yet?",
+          "topics": [
+            "routine_laboratory"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. Unsupervised tirzepatide use for weight loss (94→75 kg) is noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct medication-related aetiology is unlikely, though the available history cannot fully exclude that the drug unmasked pre-existing diabetes. Subtype remains undetermined without autoantibodies or C-peptide.",
+            "certainty": "working"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: Have any autoantibody tests (such as GAD or IA-2 antibodies) or a C-peptide level been done yet?. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "Have any autoantibody tests (such as GAD or IA-2 antibodies) or a C-peptide level been done yet?"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 6,
+        "question": "Is he currently able to drink and eat, and has any treatment such as insulin or fluid replacement been started since admission?",
+        "assessment": {
+          "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. Unsupervised tirzepatide use for weight loss (94→75 kg) noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct medication-related aetiology is unlikely, though the available history cannot fully exclude that the drug unmasked pre-existing diabetes. Family history of type 2 diabetes in the grandfather's generation; no autoimmune history reported. Subtype remains undetermined without autoantibodies or C-peptide, which are not available at this decision point.",
+          "certainty": "working"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Is he currently able to drink and eat, and has any treatment such as insulin or fluid replacement been started since admission?",
+          "topics": [
+            "presenting_symptoms",
+            "medications"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "28-year-old man with sustained hyperglycaemia (glucose 13.99, HbA1c 10.8%) and significant ketosis (β-OHB 4.44, urine ketones +++, bicarbonate 16.9) consistent with early DKA. Unsupervised tirzepatide use for weight loss (94→75 kg) noted; symptoms began ~4 weeks after last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct medication-related aetiology is unlikely, though the available history cannot fully exclude that the drug unmasked pre-existing diabetes. Family history of type 2 diabetes in the grandfather's generation; no autoimmune history reported. Subtype remains undetermined without autoantibodies or C-peptide, which are not available at this decision point.",
+            "certainty": "working"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: Is he currently able to drink and eat; has any treatment such as insulin or fluid replacement been started since admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "Is he currently able to drink and eat",
+            "has any treatment such as insulin or fluid replacement been started since admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T15:35:13.024817+00:00",
+    "final_answer": "**Clinical Problem**\n\nA 28-year-old man presents with five days of polydipsia, polyuria, dry mouth and weight loss. Admission fasting glucose is 13.99 mmol/L and HbA1c 10.8%, confirming sustained hyperglycaemia over weeks to months. Beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, and bicarbonate 16.9 mmol/L indicate significant ketosis with mild metabolic acidosis, consistent with early DKA. No arterial pH is available to confirm severity. Vital signs are normal and Kussmaul breathing is absent, which is reassuring against severe decompensation.\n\n**Prioritised Explanations**\n\n1. New-onset diabetes mellitus with early DKA. The biochemical profile supports this. Subtype (type 1, type 2, or other) cannot be determined without autoantibodies or C-peptide, which are not yet available.\n\n2. Type 2 diabetes presenting with DKA. Family history of type 2 diabetes in the grandfather's generation and absence of reported autoimmune history provide some support, but the patient's age and degree of ketosis are atypical. This remains a hypothesis pending further evidence.\n\n3. Medication-related aetiology. Tirzepatide was used unsupervised for weight loss (94 to 75 kg). Symptoms began approximately four weeks after the last dose, by which time the drug should be largely cleared. GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct causal role is unlikely. However, the available history cannot exclude that weight loss unmasked pre-existing beta-cell dysfunction.\n\n**Next Actions**\n\nObtain autoantibodies (GAD, IA-2) and C-peptide to determine subtype. Check renal function and potassium. Confirm acid-base status with arterial or venous blood gas. Initiate insulin and fluid replacement per DKA protocol. Assess oral intake and clinical trajectory.",
+    "word_count": {
+      "words": 252,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "interview_finished": true,
+    "finished_at": "2026-10-29T15:36:13.252822+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All factual claims are grounded in the supplied record: glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, normal vitals without Kussmaul breathing, family history, and the tirzepatide history (Q1–Q4). The interpretation of ketosis with mild acidosis without a measured pH is appropriately hedged ('No arterial pH is available to confirm severity'). The pharmacological claim that tirzepatide should be largely cleared ~4 weeks after the last dose and that GLP-1/GIP agonists are not a recognised cause of hyperglycaemia/DKA is consistent with medical consensus, and the answer explicitly avoids attributing causation from temporal association alone, matching the provisional reference. It does not invent unreported values (potassium, pH, renal function, autoantibodies are correctly stated as unavailable or requested). Uncertainty is explicitly acknowledged throughout (subtype undetermined pending autoantibodies/C-peptide, medication role framed as a hypothesis, weight-loss unmasking framed as not excludable). No inaccuracies identified; the answer is accurate and explicitly flags where evidence is uncertain, meeting the Score 5 anchor."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The synthesis is focused and clinically meaningful. It integrates the available evidence accurately: five days of polydipsia/polyuria/dry mouth with weight loss, fasting glucose 13.99 mmol/L and HbA1c 10.8% (sustained hyperglycaemia), beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, and normal vitals without Kussmaul breathing. It appropriately frames the problem as new-onset diabetes with early ketosis/mild acidosis, explicitly qualifying that no arterial pH is available to confirm severity. The three prioritised explanations are supported by cited evidence with proportionate uncertainty: subtype is left open pending autoantibodies/C-peptide (Q5 returned no data, correctly not inferred); the type 2 hypothesis is tied to family history (Q2) while noting atypical features; and the tirzepatide history (Q3–Q4) is handled defensibly—timing relative to last dose and the absence of a recognised hyperglycaemic mechanism make a direct causal role unlikely, while acknowledging that unmasked beta-cell dysfunction cannot be excluded. Next actions follow directly from documented gaps (potassium not supplied, renal function unanswered, no blood gas, treatment status unknown from Q6). No distortion, unjustified closure, or unqualified consequential gap is present; the representation meets the score-5 anchor of discriminating-feature synthesis with clear unresolved limits."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the actual evidence: new-onset diabetes with early DKA is ranked first and supported by explicit discriminating findings (glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, normal vitals and absent Kussmaul breathing). It appropriately defers subtype classification since autoantibodies/C-peptide were requested (Q5) but not returned, matching the instruction not to require a specific subtype before evidence. It considers important alternatives: type 2 diabetes (family history from Q2) and a medication-related cause from the tirzepatide history (Q3, Q4), correctly noting temporal association does not establish causation and that GLP-1/GIP agonists are not a recognised cause of DKA, while acknowledging weight loss could unmask beta-cell dysfunction. Dangerous mimics are addressed proportionately (severity uncertainty due to missing pH, absent severe decompensation signs), and prior plausibility is weighed (age, ketosis atypicality for type 2). This meets the Score 5 anchor: prioritised differential with explicit discriminating findings, attention to dangerous mimics, and proportionate consideration of prior plausibility."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D3d.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission gives a broadly plausible causal account: it correctly treats the biochemical data as establishing ketosis/early DKA, declines to assign a diabetes subtype pending autoantibodies/C-peptide (Q5 returned nothing), and appropriately notes that temporal association with tirzepatide does not establish causation. However, it overstates what the case can establish in two places: (1) 'by which time the drug should be largely cleared' is a pharmacokinetic claim not supported by any supplied information, and (2) 'GLP-1/GIP agonists are not a recognised cause of hyperglycaemia or DKA, so a direct causal role is unlikely' imports external class-effect knowledge rather than reasoning from the supplied history, despite the task's instruction to use only information actually supplied. These are important unsupported assumptions within an otherwise sound causal account that acknowledges alternatives (new-onset type 1, type 2 with family-history support, medication-related unmasking of beta-cell dysfunction). This matches Score 3: broadly plausible causal account with some overstatement of what the available evidence can establish, rather than Score 4's fully supported claims with stated material limitations."
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission distinguishes established findings (sustained hyperglycaemia, ketosis, mild acidosis), probable conclusions (early DKA), possible explanations (type 2 given family history, medication-related unmasking), and explicitly unresolved ones (subtype pending autoantibodies/C-peptide). It names the sources of uncertainty (no arterial pH, absent autoantibody/C-peptide/renal data, temporal association not establishing causation) and identifies the next steps needed to reduce each uncertainty (blood gas, autoantibodies/C-peptide, potassium/renal function). It correctly notes that tirzepatide is not a recognised cause of DKA and that drug clearance weakens a causal link, while acknowledging what the history cannot exclude. This matches the Score 5 anchor: established/probable/possible/unresolved conclusions are separated, uncertainty sources explained, and next steps to reduce uncertainty identified."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "Both essential requirements were met through well-timed, targeted requests. R1 (glucose and ketone/acid-base assessment) was requested in Q1 ('Has any blood glucose or blood test been done yet?') and Q2 ('electrolytes, renal function, or ketones'), yielding glucose, HbA1c, ketones and bicarbonate before the final assessment. R2 (medicine/weight-loss treatment exposure and timing) was requested in Q3 as a general medication history with timing, without guessing the agent, and appropriately followed up in Q4 for indication and weight trajectory. The helpful R3 (prior glycaemic evidence) was partially addressed via Q2 (previous diagnosis of diabetes) and Q4 (previously told of diabetes or pre-diabetes), though the specific prior glucose record was not directly elicited — a minor gap only. Requests were proportionate and discriminating: red-flag screening for DKA severity (Q1), metabolic labs (Q2), medication exposure (Q3), indication and weight (Q4), aetiological tests (Q5), and treatment status (Q6). Each public assessment note clearly linked the requested information to the clinical uncertainty (e.g., ketone status and acid-base, medication timing relative to symptom onset, subtype determination). No unnecessary information gathering was evident. This meets the score 5 anchor."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND01.D6a.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission recognises a serious, time-critical problem (early DKA with ketosis and bicarbonate 16.9 mmol/L) and recommends a correct management pathway (insulin and fluids per DKA protocol, blood gas, potassium/renal function). However, it does not clearly convey urgency or timing: there is no statement that this requires immediate/emergency-level treatment, no time frame for the blood gas or potassium check, and no escalation of care level. The reassuring framing ('normal vital signs... reassuring against severe decompensation') further blunts the urgency. This matches anchor 3: appropriate pathway recommended, but urgency or timing is insufficiently clear."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

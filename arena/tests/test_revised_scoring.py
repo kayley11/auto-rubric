@@ -58,6 +58,16 @@ def test_all_imports_preserve_actual_questions_replies_and_final_answers():
         assert "grades" not in data and "scores" not in data
 
 
+def test_rubric_catalogue_identity_and_comparison_metadata_are_validated():
+    data = sample()
+    data.update(rubric_id="clinical-reasoning", comparison_id="comparison-01", case_number="CASE-7")
+    checked = validate_input(data)
+    assert checked["case_number"] == "CASE-7"
+    assert checked["comparison_id"] == "comparison-01"
+    with pytest.raises(ValueError, match="catalogue"):
+        validate_input({**data, "rubric_id": "not-configured"})
+
+
 def test_hidden_material_and_notes_are_excluded_from_d3a_and_generation():
     data = sample()
     data["reference"] = "HIDDEN_REFERENCE_SENTINEL"
@@ -283,7 +293,7 @@ def test_saved_version_and_requirements_are_frozen_for_retries_and_exports(tmp_p
     assert provider.seen[-1]["_rubric_snapshot"] == snapshot
     assert result["rubric"] == snapshot
     assert len(provider.seen) == 3  # the completed non-numeric D5c was not retried
-    assert "awaiting Josh" in plain_text(result)
+    assert "awaiting confirmation" in plain_text(result)
     assert scoring.REVISED_ID in csv_text(result)
     assert "Indeterminate" in plain_text(result)
     assert "CANDIDATE REQUIREMENTS" in plain_text(result)
@@ -302,6 +312,39 @@ def test_generation_cannot_silently_switch_rule_version_or_interview(tmp_path):
     altered["requirements"][0]["level"] = "helpful"
     with pytest.raises(ValueError, match="interview evidence"):
         app.start("evaluate", altered, result["id"])
+
+
+def test_auto_codes_group_model_results_without_leaking_metadata_to_clinical_prompts(tmp_path):
+    app = Application(
+        tmp_path, Settings("offline", "https://offline.invalid/v1"), OfflineProvider()
+    )
+    base = sample()
+    base.update(
+        case_id="",
+        comparison_id="same-comparison",
+        case_number="row-1",
+        source="SOURCE_METADATA_SENTINEL",
+    )
+    runs = []
+    for model in ("arc:lite", "arc:apex"):
+        runs.append(wait(app, app.start("generate", {**base, "answer_model": model})))
+    code = runs[0]["input"]["case_code"]
+    assert code.startswith("CASE-") and len(code) == 15
+    assert runs[1]["input"]["case_code"] == code
+    changed = {**base, "case_number": "row-2"}
+    other = wait(app, app.start("generate", changed))
+    assert other["input"]["case_code"] != code
+    assert code in plain_text(runs[0])
+    assert code in csv_text(runs[0])
+    for visible in (
+        json.dumps(generation_messages(runs[0]["input"])),
+        judge_query(runs[0]["input"], "D3a"),
+        judge_query(runs[0]["input"], "D5c"),
+    ):
+        assert code not in visible
+        assert "SOURCE_METADATA_SENTINEL" not in visible
+    with pytest.raises(ValueError, match="case, scoring version"):
+        app.start("evaluate", {**runs[0]["input"], "case_code": "ANOTHER-CODE"}, runs[0]["id"])
 
 
 def test_old_generated_run_requires_new_run_for_clean_evidence_method(tmp_path):

@@ -1,0 +1,423 @@
+{
+  "subject_key": "earlier33__CAND07__kcl-lite",
+  "case_key": "earlier33__CAND07",
+  "case_id": "CAND07",
+  "cohort": "earlier33",
+  "answer_model": "kcl-lite",
+  "answer_model_label": "arc:lite / Qwen3.8-27B",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-lite/CAND07.json",
+  "source_answer_sha256": "a26278ab01aefce284df71ecfe32a7e036719ffc189a49d3d3b985e7fbd984a8",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND07",
+    "model": "arc:lite",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "Could you provide the routine laboratory results from this admission (electrolytes, renal function, full blood count, and any cortisol or ACTH measurements) and the physical examination findings, particularly regarding the cardiac examination and the degree of oedema?",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema and new proteinuria. Adrenal insufficiency has been identified and treated. The proteinuria requires separate investigation with a renal biopsy planned. The immediate differential includes adrenal crisis, cardiac decompensation, and a renal process (amyloid, lymphomatous infiltration, or other glomerular disease) that may be linked to the underlying lymphoma. Certainty is low pending review of actual values and examination findings.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Could you provide the routine laboratory results from this admission (electrolytes, renal function, full blood count, and any cortisol or ACTH measurements) and the physical examination findings, particularly regarding the cardiac examination and the degree of oedema?",
+          "topics": [
+            "routine_laboratory",
+            "examination"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema and new proteinuria. Adrenal insufficiency has been identified and treated. The proteinuria requires separate investigation with a renal biopsy planned. The immediate differential includes adrenal crisis, cardiac decompensation, and a renal process (amyloid, lymphomatous infiltration, or other glomerular disease) that may be linked to the underlying lymphoma. Certainty is low pending review of actual values and examination findings.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.renal_protein",
+            "channel": "record",
+            "text": "The admission column of Table 1 reports urine protein 3+, creatinine 1.8 mg/dL, BUN 45.0 mg/dL, albumin 3.0 g/dL and UPCR 10 g/g. No measured pre-illness creatinine is supplied.",
+            "source_location": "B0051-B0056",
+            "match": "urin|renal|kidney|creat|urea|\\bbun\\b|protein|albumin|upcr|baseline|laborator|blood test",
+            "period": "presentation"
+          },
+          {
+            "id": "07.cardiac_neurologic",
+            "channel": "record",
+            "text": "Initial neurological and cardiac evaluations, including investigation for arrhythmia and structural disease, were reported as unrevealing. Admission echocardiography showed EF 60–65%, normal left-ventricular thickness and trivial regurgitation. These findings are not a tissue evaluation for systemic deposition disease.",
+            "source_location": "B0049; B0070",
+            "match": "cardiac|neurolog|arrhyth|echo|\\btte\\b|structur|ejection|syncope.{0,15}(?:work|investig|test)|collapse.{0,15}(?:work|investig|test)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: electrolytes; full blood count; cortisol or ACTH measurements. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.renal_protein",
+              "request_span": "renal function"
+            },
+            {
+              "id": "07.cardiac_neurologic",
+              "request_span": "cardiac examination"
+            },
+            {
+              "id": "07.collapse_observations",
+              "request_span": "degree of oedema"
+            }
+          ],
+          "unanswered_spans": [
+            "electrolytes",
+            "full blood count",
+            "cortisol or ACTH measurements"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What is the known subtype of her lymphoma, and are there any existing monoclonal protein or immunofixation studies (serum or urine) from this admission or prior to it?",
+        "assessment": {
+          "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g, UPCR 3+). Adrenal insufficiency identified and treated. Echo is normal (EF 60–65%), arguing against cardiac decompensation as the primary driver of oedema. Renal function is impaired (Cr 1.8, BUN 45) with no pre-illness baseline. The nephrotic-range proteinuria in the context of lymphoma raises concern for AL amyloidosis, paraneoplastic glomerulopathy, or direct lymphomatous infiltration, but the lymphoma subtype and any monoclonal protein data are not yet established. Certainty remains low.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is the known subtype of her lymphoma, and are there any existing monoclonal protein or immunofixation studies (serum or urine) from this admission or prior to it?",
+          "topics": [
+            "medical_history",
+            "monoclonal_testing"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "80-year-old woman with lymphoma and cardiac comorbidity presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g, UPCR 3+). Adrenal insufficiency identified and treated. Echo is normal (EF 60–65%), arguing against cardiac decompensation as the primary driver of oedema. Renal function is impaired (Cr 1.8, BUN 45) with no pre-illness baseline. The nephrotic-range proteinuria in the context of lymphoma raises concern for AL amyloidosis, paraneoplastic glomerulopathy, or direct lymphomatous infiltration, but the lymphoma subtype and any monoclonal protein data are not yet established. Certainty remains low.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.background",
+            "channel": "record",
+            "text": "She had non-Hodgkin lymphoma previously treated with a rituximab-based regimen, heart failure with preserved ejection fraction, hypertension and coronary artery disease. The initial history does not establish a definitive lymphoma subclassification.",
+            "source_location": "B0049; B0077",
+            "match": "background|history|lymphoma|ritux|malignan|cancer|cardiac comorbid|heart failure|coronary|medic|previous treat",
+            "period": "presentation"
+          },
+          {
+            "id": "07.monoclonal_protein",
+            "channel": "record",
+            "text": "Admission serum lambda free light chain was 131 mg/L, kappa 14.41 mg/L and kappa/lambda ratio 0.11. Serum immunofixation showed an IgM monoclonal lambda gammopathy.",
+            "source_location": "B0063-B0066",
+            "match": "light.?chain|lambda|kappa|ratio|igm|monoclon|paraprotein|immunofix|electroph|\\bspep\\b",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: urine immunofixation. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.background",
+              "request_span": "known subtype of her lymphoma"
+            },
+            {
+              "id": "07.monoclonal_protein",
+              "request_span": "existing monoclonal protein or immunofixation studies (serum or urine) from this admission or prior to it"
+            }
+          ],
+          "unanswered_spans": [
+            "urine immunofixation"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Are there any existing CT reports from this admission, particularly showing the adrenal glands, and has any prior tissue sampling (such as a fat pad or bone marrow biopsy) been performed with a histology report available?",
+        "assessment": {
+          "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype not definitively established) and HFpEF presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo is normal (EF 60–65%, normal LV thickness), arguing against cardiac decompensation as the primary driver of oedema. Renal impairment (Cr 1.8, BUN 45) with no pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). This constellation—nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma—raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency (lymphomatous infiltration vs. other) remains unclarified. Certainty is low pending imaging and tissue data.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any existing CT reports from this admission, particularly showing the adrenal glands, and has any prior tissue sampling (such as a fat pad or bone marrow biopsy) been performed with a histology report available?",
+          "topics": [
+            "ct_imaging",
+            "tests"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype not definitively established) and HFpEF presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo is normal (EF 60–65%, normal LV thickness), arguing against cardiac decompensation as the primary driver of oedema. Renal impairment (Cr 1.8, BUN 45) with no pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). This constellation—nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma—raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency (lymphomatous infiltration vs. other) remains unclarified. Certainty is low pending imaging and tissue data.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.initial_plan",
+            "channel": "record",
+            "text": "The admission assessment was nephrotic syndrome of uncertain cause, and an outpatient renal biopsy was scheduled. Renal tissue and later marrow findings are not supplied at this decision point.",
+            "source_location": "B0049; B0074; B0077",
+            "match": "biops|tissue|histolog|patholog|renal plan|next investig|diagnostic plan|marrow",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: existing CT reports from this admission, particularly showing the adrenal glands. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.initial_plan",
+              "request_span": "prior tissue sampling (such as a fat pad or bone marrow biopsy) been performed with a histology report available"
+            }
+          ],
+          "unanswered_spans": [
+            "existing CT reports from this admission, particularly showing the adrenal glands"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "When was the lymphoma diagnosed and treated, and is it currently considered in remission or active? On examination, are there any other systemic findings such as hepatosplenomegaly, macroglossia, or peripheral neuropathy?",
+        "assessment": {
+          "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype unestablished) and HFpEF presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo normal (EF 60–65%, normal LV thickness), excluding cardiac decompensation as the primary driver. Renal impairment (Cr 1.8, BUN 45) without pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). The constellation of nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency remains unclarified. Lymphoma activity status and other systemic findings are not yet established. Certainty is low.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "When was the lymphoma diagnosed and treated, and is it currently considered in remission or active? On examination, are there any other systemic findings such as hepatosplenomegaly, macroglossia, or peripheral neuropathy?",
+          "topics": [
+            "medical_history",
+            "examination"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype unestablished) and HFpEF presenting with syncope, hypotension, leg oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo normal (EF 60–65%, normal LV thickness), excluding cardiac decompensation as the primary driver. Renal impairment (Cr 1.8, BUN 45) without pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). The constellation of nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency remains unclarified. Lymphoma activity status and other systemic findings are not yet established. Certainty is low.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "07.background",
+            "channel": "record",
+            "text": "She had non-Hodgkin lymphoma previously treated with a rituximab-based regimen, heart failure with preserved ejection fraction, hypertension and coronary artery disease. The initial history does not establish a definitive lymphoma subclassification.",
+            "source_location": "B0049; B0077",
+            "match": "background|history|lymphoma|ritux|malignan|cancer|cardiac comorbid|heart failure|coronary|medic|previous treat",
+            "period": "presentation"
+          },
+          {
+            "id": "07.collapse_observations",
+            "channel": "record",
+            "text": "The episode was preceded by progressive lightheadedness and tunnel vision, followed by brief loss of consciousness and rapid spontaneous recovery. Admission blood pressure was 86/58 mmHg. Examination showed significant bilateral lower-limb pitting oedema and generalised fatigue. No later/current repeat vital-sign values are supplied.",
+            "source_location": "B0049",
+            "match": "syncope|collapse|prodrom|lighthead|conscious|vital|blood pressure|haemodyn|hemodyn|examin|severity|oedema|edema",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: is it currently considered in remission or active; hepatosplenomegaly, macroglossia, or peripheral neuropathy. Do not infer unreported values, results or the performance of a test. Previously returned: 07.background. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "07.background",
+              "request_span": "lymphoma diagnosed and treated"
+            },
+            {
+              "id": "07.collapse_observations",
+              "request_span": "On examination, are there any other systemic findings"
+            }
+          ],
+          "unanswered_spans": [
+            "is it currently considered in remission or active",
+            "hepatosplenomegaly, macroglossia, or peripheral neuropathy"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Are there any existing MRI reports from this admission or prior to it, particularly of the adrenals, heart, or abdomen that might clarify the aetiology of the adrenal insufficiency or show evidence of systemic infiltration?",
+        "assessment": {
+          "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype unestablished) and HFpEF presenting with syncope, hypotension (86/58), bilateral pitting oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo normal (EF 60–65%), excluding cardiac decompensation as the primary driver. Renal impairment (Cr 1.8, BUN 45) without pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). The constellation of nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency (lymphomatous infiltration, amyloid deposition, or other) remains unclarified. Lymphoma activity status is unknown. Certainty is low pending imaging and tissue data.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any existing MRI reports from this admission or prior to it, particularly of the adrenals, heart, or abdomen that might clarify the aetiology of the adrenal insufficiency or show evidence of systemic infiltration?",
+          "topics": [
+            "mri_imaging"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype unestablished) and HFpEF presenting with syncope, hypotension (86/58), bilateral pitting oedema and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency identified and treated. Echo normal (EF 60–65%), excluding cardiac decompensation as the primary driver. Renal impairment (Cr 1.8, BUN 45) without pre-illness baseline. Serum immunofixation shows IgM monoclonal lambda gammopathy with markedly elevated lambda free light chains (131 mg/L, ratio 0.11). The constellation of nephrotic-range proteinuria, IgM lambda monoclonal protein, and lymphoma raises strong concern for AL amyloidosis or monoclonal gammopathy of renal significance, though tissue confirmation is pending. The aetiology of the adrenal insufficiency (lymphomatous infiltration, amyloid deposition, or other) remains unclarified. Lymphoma activity status is unknown. Certainty is low pending imaging and tissue data.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: existing MRI reports from this admission or prior to it, particularly of the adrenals, heart, or abdomen that might clarify the aetiology of the adrenal insufficiency or show evidence of systemic infiltration. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "existing MRI reports from this admission or prior to it, particularly of the adrenals, heart, or abdomen that might clarify the aetiology of the adrenal insufficiency or show evidence of systemic infiltration"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T15:55:08.463992+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "Assessment\n\nThis 80-year-old woman with non-Hodgkin lymphoma (rituximab-treated, subtype unestablished) and HFpEF presented with syncope, hypotension (86/58 mmHg), bilateral pitting oedema, and newly recognised nephrotic-range proteinuria (UPCR 10 g/g, urine protein 3+). Adrenal insufficiency was identified and treated during admission.\n\nThree prioritised explanations:\n\n1. AL amyloidosis or monoclonal gammopathy of renal significance (MGRS). The combination of nephrotic-range proteinuria, an IgM monoclonal lambda gammopathy on serum immunofixation, and markedly elevated lambda free light chains (131 mg/L, kappa/lambda ratio 0.11) in the setting of lymphoma is highly suggestive. Tissue confirmation (renal biopsy, scheduled outpatient) is pending and is the critical next step.\n\n2. Adrenal insufficiency of unclarified aetiology. The hypotension and syncope are consistent with adrenal crisis, but the underlying cause—lymphomatous infiltration, amyloid deposition, or another process—remains undetermined. No adrenal imaging or histology is available at this decision point.\n\n3. Cardiac decompensation is less likely as the primary driver: echocardiography showed preserved EF (60–65%), normal LV thickness, and only trivial regurgitation.\n\nRenal impairment (creatinine 1.8 mg/dL, BUN 45 mg/dL) lacks a pre-illness baseline, so the degree of acute versus chronic dysfunction is uncertain.\n\nNext steps: proceed with the scheduled renal biopsy for tissue diagnosis; clarify lymphoma activity status; consider adrenal imaging if not yet performed; and correlate renal histology with the monoclonal protein findings to distinguish AL amyloidosis from MGRS or other glomerular pathology.",
+      "certainty": "working"
+    },
+    "final_answer": "## Clinical Problem\n\nThis 80-year-old woman with rituximab-treated non-Hodgkin lymphoma (subtype unestablished) and HFpEF presented with syncope, hypotension (86/58 mmHg), bilateral pitting oedema, and nephrotic-range proteinuria (UPCR 10 g/g). Adrenal insufficiency was identified and treated. Normal echocardiography (EF 60–65%) argues against cardiac decompensation as the primary driver of oedema.\n\n## Prioritised Explanations\n\n1. **AL amyloidosis or monoclonal gammopathy of renal significance** — The combination of nephrotic-range proteinuria, IgM monoclonal lambda gammopathy, and markedly elevated lambda free light chains (131 mg/L, ratio 0.11) in the setting of lymphoma is highly concerning. Tissue confirmation is pending; the scheduled renal biopsy is the critical next step.\n\n2. **Adrenal insufficiency as the proximate cause of syncope and hypotension** — Identified and treated during this admission. The aetiology (lymphomatous infiltration, amyloid deposition, or other) remains unclarified; no adrenal imaging or tissue data are available.\n\n3. **Renal impairment of uncertain baseline** — Creatinine 1.8 mg/dL and BUN 45 mg/dL without a pre-illness reference. Whether this reflects acute-on-chronic injury, haemodynamic compromise, or intrinsic renal disease is undetermined.\n\n## Next Actions\n\nProceed with the scheduled renal biopsy. Obtain adrenal imaging to clarify the aetiology of insufficiency. Establish lymphoma activity status. Urine immunofixation and repeat free light chains should be reviewed at the four-week follow-up.",
+    "word_count": {
+      "words": 200,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-10-29T15:55:59.033911+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All stated values match the supplied record exactly: BP 86/58, UPCR 10 g/g, creatinine 1.8 mg/dL, BUN 45 mg/dL, lambda FLC 131 mg/L, kappa/lambda ratio 0.11, IgM monoclonal lambda gammopathy, EF 60–65%, and adrenal insufficiency treated per the opening. The submission avoids unsupported fabrications: it does not assert a lymphoma subtype, tissue diagnosis, hepatitis C, or adrenal aetiology, and correctly notes the absence of pre-illness creatinine, adrenal imaging, and urine immunofixation. The differential (AL amyloidosis/MGRS, adrenal insufficiency as proximate syncope cause, renal impairment of uncertain baseline) is consistent with the provisional reference and framed with appropriate uncertainty pending biopsy. Minor caveat: 'AL amyloidosis' is a hypothesis, not a stated diagnosis, and is explicitly flagged as requiring tissue confirmation. The submission explicitly acknowledges where evidence is uncertain (tissue type, adrenal aetiology, lymphoma activity, renal baseline), matching the Score 5 anchor."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission provides a focused, clinician-facing synthesis of the evidence actually supplied at this decision point. It correctly integrates the collapse (syncope with presyncopal features, BP 86/58), the nephrotic-range proteinuria (UPCR 10 g/g, albumin 3.0 g/dL, protein 3+), the IgM monoclonal lambda gammopathy with lambda free light chains 131 mg/L and ratio 0.11, the treated adrenal insufficiency, and the unrevealing cardiac workup (EF 60–65%) that appropriately argues against cardiac decompensation. It preserves key distinctions (lymphoma subtype unestablished, no tissue diagnosis assumed, renal impairment without a pre-illness baseline) and qualifies the consequential unresolved gaps (aetiology of adrenal insufficiency, pending biopsy). Prioritised explanations are defensible and evidence-linked, with proportionate next actions tied to the scheduled biopsy and follow-up. No available defining feature is distorted or omitted, and diagnostic commitment is appropriately provisional pending tissue data. This matches the Score 5 anchor: discriminating features highlighted, hypothesis generation guided, and unresolved gaps clearly stated."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D3b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the supplied evidence: nephrotic-range proteinuria (UPCR 10 g/g) with IgM-lambda monoclonal gammopathy and elevated lambda free light chains leading to AL amyloidosis/MGRS as the top diagnosis, adrenal insufficiency as the proximate cause of syncope/hypotension, and renal impairment with unknown baseline. It uses discriminating findings (normal EF arguing against cardiac decompensation, absence of pre-illness creatinine) and preserves required uncertainty (lymphoma subtype unestablished, biopsy pending, adrenal aetiology unclarified), consistent with the reference guidance. It does not reach Score 5 because it omits some important alternatives for nephrotic-range proteinuria in an 80-year-old (e.g., common glomerular diseases such as membranous nephropathy or diabetic/immune-mediated causes beyond a brief mention of 'other glomerular causes' in the reference), and does not explicitly address other dangerous mimics of syncope beyond the treated adrenal insufficiency. However, it clearly exceeds Score 3 by prioritising with explicit supporting evidence and appropriate attention to the clonal-protein process, so Score 4 is appropriate."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly separates established findings (nephrotic-range proteinuria, IgM-lambda gammopathy, treated adrenal insufficiency, unrevealing echocardiography) from unresolved ones (tissue type pending, adrenal aetiology unclarified, unknown creatinine baseline, lymphoma subtype unestablished). It calibrates confidence appropriately — 'highly concerning' for a clonal-protein-associated renal process while explicitly stating 'tissue confirmation is pending' — and names the sources of uncertainty (absent adrenal imaging/tissue data, no pre-illness reference). It identifies concrete next steps to reduce each uncertainty (renal biopsy, adrenal imaging, lymphoma activity status, urine immunofixation, repeat free light chains). This matches the Score 5 anchor: distinguishing established, probable and unresolved conclusions, explaining the uncertainty's source, and stating the next step needed to resolve it."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All essential requirements are met by targeted, well-timed requests. R2 (renal function/proteinuria quantification) is covered by Q1's request for routine labs and renal function, which returned creatinine 1.8, BUN 45, albumin 3.0 and UPCR 10 g/g. R3 (lymphoma/monoclonal-protein context) is directly covered by Q2, which elicited the IgM lambda monoclonal gammopathy and free light chains. R1 (haemodynamic/syncope assessment) is addressed by Q1's request for cardiac examination and oedema findings plus Q4's systemic examination enquiry; the collapse observations returned at Q4. R4 (helpful secondary-cause/adrenal evidence) is pursued proportionately via cortisol/ACTH in Q1, adrenal imaging and tissue sampling in Q3, and MRI in Q5. Requests were prioritised (labs and lymphoma context first, then aetiological clarification), appropriately timed within the six turns, and the public assessment notes explicitly link the requested information to the differential (e.g., how the monoclonal protein and echo findings shape the amyloid/MGRS vs cardiac differential). Unavailable results (CT/MRI, cortisol values) are simulator limitations, not acquisition failures. No unnecessary or redundant information gathering beyond reasonable breadth; the requests are proportionate and discriminating."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-lite/CAND07.D6a.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "The submission recognises clinically serious findings — admission syncope with hypotension (86/58 mmHg), nephrotic-range proteinuria (UPCR 10 g/g) and treated adrenal insufficiency — and correctly treats them as significant. However, it recommends no escalation or emergency-care pathway at all: its 'Next Actions' are diagnostic (proceed with scheduled outpatient renal biopsy, adrenal imaging, lymphoma status, urine immunofixation at four-week follow-up), with no statement about inpatient monitoring, haemodynamic stabilisation, or when/whom to escalate to. For an 80-year-old with ongoing hypotension and possible systemic amyloid/clonal disease, deferring work-up to a scheduled biopsy and four-week follow-up without any escalation guidance matches anchor 2: seriousness is recognised, but no appropriate escalation pathway is recommended. It does not reach score 3, since no timely escalation pathway with even partially specified urgency is proposed."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

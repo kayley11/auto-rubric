@@ -1,3 +1,4 @@
+import { backendName, modelOption } from "./modelIdentity.mjs";
 import { useEffect, useState } from "react";
 import { ChevronDown, LoaderCircle, Square } from "lucide-react";
 import {
@@ -58,6 +59,12 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
     }
   }, [run?.review_id, tab]);
   async function action(kind) {
+    if (config?.access?.hosted && !config.access.can_evaluate) {
+      if (!config.access.authenticated)
+        window.dispatchEvent(new Event("arena-sign-in"));
+      else setError("This account cannot run evaluations.");
+      return;
+    }
     setPending(true);
     setError("");
     try {
@@ -93,7 +100,11 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
     <main className="study patient-interview">
       <div className="page-heading study-heading">
         <span className="eyebrow">PATIENT INTERVIEW</span>
-        <h1>{selected?.name || "Ask, then assess."}</h1>
+        <h1>
+          {run
+            ? selected?.name || "Patient interview"
+            : "Start a patient interview."}
+        </h1>
         <p>
           The clinician model chooses what to ask. The patient replies using
           fixed case facts; clinical records are returned separately when
@@ -120,6 +131,12 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
           model has seen a source case before.
         </p>
       </details>
+      {config?.access?.online === false && (
+        <p className="notice">
+          The host is offline. You can read saved interviews; new interviews
+          will resume when it reconnects.
+        </p>
+      )}
       {error && (
         <p className="error-banner" role="alert">
           {error}
@@ -129,6 +146,24 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
         <p className="error-banner" role="alert">
           {run.error}
         </p>
+      )}
+      {!run && (
+        <section className="interview-intro">
+          <div>
+            <b>No conversation has started yet.</b>
+            <p>
+              Choose one of {cases.length || "the"} prepared cases. The model
+              will ask up to six questions, then write an answer for scoring.
+              New runs appear in Recent evaluations.
+            </p>
+          </div>
+          <a
+            className="secondary"
+            href={`#cases/${caseId?.replace("_INITIAL", "") || ""}`}
+          >
+            View saved interviews
+          </a>
+        </section>
       )}
       {!run && (
         <section className="patient-setup">
@@ -181,7 +216,9 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
                   onChange={(e) => setModel(e.target.value)}
                 >
                   {["arc:lite", "arc:chat", "arc:apex"].map((m) => (
-                    <option key={m}>{m}</option>
+                    <option key={m} value={m}>
+                      {modelOption(m)}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -193,7 +230,9 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
                   onChange={(e) => setJudge(e.target.value)}
                 >
                   {["arc:apex", "arc:chat", "arc:lite"].map((m) => (
-                    <option key={m}>{m}</option>
+                    <option key={m} value={m}>
+                      {modelOption(m)}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -210,10 +249,14 @@ export function PatientInterview({ config, initialRun, onSaved, onUseData }) {
           </section>
           <button
             className="primary"
-            disabled={busy || !config}
+            disabled={
+              busy || !config || !selected || config.access?.online === false
+            }
             onClick={() => action("interview")}
           >
-            Start patient interview
+            {config?.access?.hosted && !config.access.authenticated
+              ? "Sign in to start interview"
+              : "Start patient interview"}
           </button>
         </section>
       )}

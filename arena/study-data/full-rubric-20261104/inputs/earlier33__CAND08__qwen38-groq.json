@@ -1,0 +1,405 @@
+{
+  "subject_key": "earlier33__CAND08__qwen38-groq",
+  "case_key": "earlier33__CAND08",
+  "case_id": "CAND08",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND08.json",
+  "source_answer_sha256": "ebf64b94cceef907d46ca5f0c34ea1481549655976c8e54f1a554af52c7634ec",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND08",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What are the patient's current vital signs and the most recent routine laboratory results, including full blood count and renal function tests?",
+        "assessment": {
+          "summary": "23-year-old kidney transplant recipient with acute neurological deterioration (seizure, agitation) and systemic instability (severe anaemia, allograft dysfunction).",
+          "certainty": "uncertain",
+          "working": "Acute encephalopathy with multi-organ involvement in a transplant recipient."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are the patient's current vital signs and the most recent routine laboratory results, including full blood count and renal function tests?",
+          "topics": [
+            "vital_signs",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with acute neurological deterioration (seizure, agitation) and systemic instability (severe anaemia, allograft dysfunction).",
+            "certainty": "uncertain",
+            "working": "Acute encephalopathy with multi-organ involvement in a transplant recipient."
+          }
+        },
+        "returned": [
+          {
+            "id": "08.admission_examination",
+            "channel": "record",
+            "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+            "source_location": "BK_overlap-B0051, Day 0 vital-sign and examination sentences",
+            "match": "current|admission|day.?0|vital|examin|temperature|pulse|heart rate|respiratory rate|blood pressure|deliri|conscious|mental status|severity",
+            "period": "presentation"
+          },
+          {
+            "id": "08.haematology",
+            "channel": "record",
+            "text": "The initial work-up described anaemia, thrombocytopenia and schistocytes. Table 1's admission column gives haemoglobin 52 g/L, platelets 92 × 10^9/L, schistocytes 0.8%, haptoglobin 0.126 g/L and LDH 262 U/L.",
+            "source_location": "BK_overlap-B0051, initial-work-up sentence; BK_overlap-B0056, B0059-B0060, B0063, B0066, B0068",
+            "match": "ana?emi|ha?emoglob|platelet|schist|ha?emol|ha?emat|blood count|full blood|cbc|fbc|haptoglobin|ldh|microangiop|laborator|blood test",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "08.admission_examination",
+              "request_span": "current vital signs"
+            },
+            {
+              "id": "08.haematology",
+              "request_span": "full blood count"
+            },
+            {
+              "id": "08.allograft_function",
+              "request_span": "renal function tests"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What are the specific findings from the initial neurological examination and any existing brain imaging reports (CT or MRI) performed at admission?",
+        "assessment": {
+          "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+          "certainty": "uncertain",
+          "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are the specific findings from the initial neurological examination and any existing brain imaging reports (CT or MRI) performed at admission?",
+          "topics": [
+            "examination",
+            "ct_imaging"
+          ],
+          "record_period": "initial",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+            "certainty": "uncertain",
+            "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+          }
+        },
+        "returned": [
+          {
+            "id": "08.admission_examination",
+            "channel": "record",
+            "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+            "source_location": "BK_overlap-B0051, Day 0 vital-sign and examination sentences",
+            "match": "current|admission|day.?0|vital|examin|temperature|pulse|heart rate|respiratory rate|blood pressure|deliri|conscious|mental status|severity",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: any existing brain imaging reports (CT or MRI) performed at admission. Do not infer unreported values, results or the performance of a test. Previously returned: 08.admission_examination. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "08.admission_examination",
+              "request_span": "specific findings from the initial neurological examination"
+            }
+          ],
+          "unanswered_spans": [
+            "any existing brain imaging reports (CT or MRI) performed at admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "What are the specific findings from the initial neurological examination, and are there any existing brain imaging reports (CT or MRI) performed at admission?",
+        "assessment": {
+          "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+          "certainty": "uncertain",
+          "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are the specific findings from the initial neurological examination, and are there any existing brain imaging reports (CT or MRI) performed at admission?",
+          "topics": [
+            "examination",
+            "ct_imaging"
+          ],
+          "record_period": "initial",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+            "certainty": "uncertain",
+            "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: any existing brain imaging reports (CT or MRI) performed at admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "any existing brain imaging reports (CT or MRI) performed at admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "What are the patient's current immunosuppressive medications, and have there been any recent changes or missed doses?",
+        "assessment": {
+          "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+          "certainty": "uncertain",
+          "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are the patient's current immunosuppressive medications, and have there been any recent changes or missed doses?",
+          "topics": [
+            "medications"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+            "certainty": "uncertain",
+            "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+          }
+        },
+        "returned": [
+          {
+            "id": "08.transplant_medication",
+            "channel": "record",
+            "text": "She received a deceased-donor kidney transplant six years earlier for end-stage renal disease. The reported maintenance regimen before presentation was tacrolimus 1.5 mg twice daily, mycophenolate mofetil 360 mg twice daily and prednisone 8 mg daily.",
+            "source_location": "BK_overlap-B0051, opening maintenance-treatment sentences",
+            "match": "transplant|immunosuppress|medic|drug|tacrolimus|mycophenolate|predni|graft history",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: any recent changes or missed doses. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "08.transplant_medication",
+              "request_span": "current immunosuppressive medications"
+            }
+          ],
+          "unanswered_spans": [
+            "any recent changes or missed doses"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "What are the specific findings from the initial neurological examination, and are there any existing brain imaging reports (CT or MRI) performed at admission?",
+        "assessment": {
+          "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+          "certainty": "uncertain",
+          "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What are the specific findings from the initial neurological examination, and are there any existing brain imaging reports (CT or MRI) performed at admission?",
+          "topics": [
+            "examination",
+            "ct_imaging"
+          ],
+          "record_period": "initial",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+            "certainty": "uncertain",
+            "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+          }
+        },
+        "returned": [
+          {
+            "id": "08.admission_examination",
+            "channel": "record",
+            "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+            "source_location": "BK_overlap-B0051, Day 0 vital-sign and examination sentences",
+            "match": "current|admission|day.?0|vital|examin|temperature|pulse|heart rate|respiratory rate|blood pressure|deliri|conscious|mental status|severity",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: any existing brain imaging reports (CT or MRI) performed at admission. Do not infer unreported values, results or the performance of a test. Previously returned: 08.admission_examination. Repetition does not establish new information.",
+        "selection": {
+          "matches": [
+            {
+              "id": "08.admission_examination",
+              "request_span": "specific findings from the initial neurological examination"
+            }
+          ],
+          "unanswered_spans": [
+            "any existing brain imaging reports (CT or MRI) performed at admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-01T21:44:30.532774+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "23-year-old kidney transplant recipient with acute encephalopathy (seizure, delirium) and laboratory evidence of microangiopathic hemolytic anemia (schistocytes, low haptoglobin, high LDH) and thrombocytopenia. Allograft dysfunction is present. The combination suggests a thrombotic microangiopathy (TMA) such as TTP or HUS, or possibly rejection with secondary complications, but the specific neurological etiology is unconfirmed.",
+      "certainty": "uncertain",
+      "working": "Acute neurological deterioration secondary to systemic thrombotic microangiopathy or other transplant-related complication."
+    },
+    "final_answer": "**Clinical Problem Representation**\nThis 23-year-old kidney transplant recipient presents with acute encephalopathy, evidenced by a recent tonic-clonic seizure, worsening agitation, and delirium. Systemic instability is marked by severe microangiopathic haemolytic anaemia (haemoglobin 52 g/L, schistocytes 0.8%, low haptoglobin, elevated LDH), thrombocytopenia (92 × 10^9/L), and acute allograft dysfunction. Vital signs show mild hypertension (141/85 mmHg) and tachycardia (91/min). She is on tacrolimus, mycophenolate, and prednisone. The combination of neurological deterioration, haemolysis, and renal failure in a transplant recipient suggests a complex, multi-system process.\n\n**Prioritised Differential Diagnosis**\n1.  **Thrombotic Microangiopathy (TMA):** The triad of microangiopathic haemolytic anaemia, thrombocytopenia, and organ dysfunction (brain, kidney) strongly suggests TTP or HUS. Tacrolimus is a known risk factor for TMA. Uncertainty remains regarding the specific subtype and whether it is primary or drug-induced.\n2.  **Acute Allograft Rejection:** Acute dysfunction could indicate rejection, potentially complicated by systemic inflammation or secondary TMA. However, rejection alone does not typically cause severe haemolysis with schistocytes unless complicated by other factors.\n3.  **Infection or Metabolic Encephalopathy:** While less likely to explain the specific haematological profile, severe infection or metabolic derangement could contribute to delirium and seizures. This is a diagnosis of exclusion given the strong TMA markers.\n\n**Next Actions**\nUrgent neurological assessment and brain imaging (CT/MRI) are required to evaluate for stroke or encephalopathy. Immediate haematology and transplant nephrology consultation is critical to confirm TMA (e.g., ADAMTS13 activity) and guide plasma exchange or immunosuppression adjustment. Do not delay urgent care for diagnostic completion.",
+    "word_count": {
+      "words": 240,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-01T22:38:15.333013+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D1.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission is mostly accurate: all cited values (Hb 52 g/L, platelets 92 × 10^9/L, schistocytes 0.8%, haptoglobin 0.126 g/L, tacrolimus/MMF/prednisone regimen, vitals) match the supplied Q1 and Q4 evidence, and it appropriately avoids asserting unrequested facts such as imaging results or later virology. However, it describes LDH 262 U/L as 'elevated' when the supplied value is within the normal range — a minor factual inaccuracy. It also calls pulse 91/min 'tachycardia', a borderline characterisation. These errors are clinically inconsequential and do not mislead management; no dangerous or fabricated claims are present, but the LDH misstatement prevents a score of 4 or 5."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D3a.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission accurately integrates the available Day 0 evidence: delirium, seizure, severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, low haptoglobin, raised LDH), thrombocytopenia, acute allograft dysfunction, mild hypertension/tachycardia, and the tacrolimus-based regimen (Q1, Q4). It prioritises TMA as the leading explanation with appropriate uncertainty (subtype, drug-induced vs primary), includes rejection and infection/metabolic encephalopathy, avoids single-cause closure, and flags unresolved gaps (brain imaging not available, ADAMTS13 pending) with proportionate next actions. Minor limitations prevent a 5: it does not highlight the discriminating feature that normal temperature and only modest hypertension argue against severe hypertensive crisis, and the rejection hypothesis is somewhat thinly developed. No distortion, unjustified commitment, or failure to qualify consequential uncertainty is present, so it meets Score 4: accurate, concise integration of important available evidence with appropriate qualification of material uncertainty."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the Day 0 evidence: TMA/TTP-HUS as the leading diagnosis supported by explicit discriminating findings (haemoglobin 52 g/L, schistocytes 0.8%, low haptoglobin, elevated LDH, thrombocytopenia, allograft dysfunction), with tacrolimus as a recognised TMA risk factor giving proportionate prior plausibility. It includes important alternatives — acute rejection and infection/metabolic encephalopathy — acknowledging that rejection alone would not explain haemolysis and that infection is less likely but must be considered in an immunosuppressed patient. It addresses dangerous mimics by calling for urgent brain imaging and neurological review, and appropriately avoids demanding a single unifying diagnosis or later confirmatory tests (virology, complement, biopsy). Next actions are proportionate and urgent care is not delayed. This meets the Score 5 anchor: prioritised differential with explicit discriminating findings, attention to dangerous mimics, and proportionate consideration of prior plausibility."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D4c.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission presents events in a coherent, correct order (presentation, differential, next actions) with no out-of-sequence or contradictory chronology, so it exceeds the Score 1 anchor. However, it does not use explicit temporal anchors such as 'on Day 0 of admission' or 'six years post-transplant' when framing the findings; it simply states the patient 'presents with' findings and lists laboratory values without tying them to the admission timepoint. This fits the Score 3 anchor of minor sequencing adequacy without the explicit temporal anchoring required for Score 5."
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D5u.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission calibrates confidence reasonably well: it labels TMA as 'strongly suggested' by the triad of haemolysis, thrombocytopenia and organ dysfunction, explicitly states 'uncertainty remains regarding the specific subtype and whether it is primary or drug-induced', and treats infection/metabolic encephalopathy as a lower-ranked possibility rather than a certainty. It distinguishes the more-supported diagnosis from less-supported ones and identifies concrete next steps to reduce uncertainty (brain imaging, ADAMTS13 activity, specialist review). However, it does not fully separate established from unresolved conclusions — e.g., it asserts 'elevated LDH' when the supplied value (262 U/L) was not reported as elevated, and it does not acknowledge that no imaging results were available at this decision point. These gaps keep it short of the Score 5 anchor's clear four-way distinction (established/probable/possible/unresolved) with explicit sourcing of all uncertainties, but it clearly exceeds generic hedging (Score 2) and mere naming of uncertainty (Score 3). Score 4 is the best fit."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D5c.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "All three essential requirements were met by adequate, timely requests: R3 via Q1 (vitals, FBC, renal function, returning the haematology and admission data), R1 via Q2/Q3/Q5 (explicit request for the initial neurological examination and imaging — unfulfilled by the simulator, which is not a model failure), and R2 via Q4 (immunosuppressive regimen and recent changes, returning the tacrolimus-based maintenance list). However, prioritisation was poor: the same unproductive neurological/imaging request was repeated verbatim in Q2, Q3 and Q5, consuming three of five turns despite explicit environment feedback that no such information was supplied, while other discriminating Day-0 material (prodrome/infectious history, tacrolimus drug level, allograft function/creatinine, immune status) was never requested. This meets essential requirements but with poorly prioritised, insufficiently targeted requests, matching anchor 3 rather than 4."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND08.D6a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The vignette presents a time-critical emergency (post-transplant seizure, delirium, severe anaemia with schistocytes, acute allograft dysfunction), and the submission recognises it explicitly. In the 'Next Actions' section it gives a clear, timely escalation pathway: 'Urgent neurological assessment and brain imaging (CT/MRI)', 'Immediate haematology and transplant nephrology consultation is critical', and an unambiguous closing statement 'Do not delay urgent care for diagnostic completion', which mirrors the task instruction that urgent care must not wait. Urgency and timing are prominent and unambiguous, and the appropriate specialist care pathways (neurology, haematology, transplant nephrology) are specified without clinically consequential hedging. This meets the Score 5 anchor for the requested clinician-facing summary format."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

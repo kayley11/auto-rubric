@@ -1,3 +1,4 @@
+import { backendName } from "./modelIdentity.mjs";
 import { useEffect, useState } from "react";
 import { displayData, displayText } from "./presentation.mjs";
 import {
@@ -9,6 +10,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Followup } from "./Followup";
+import { NewCases } from "./NewCases";
 import {
   Decisions,
   EvidenceTrail,
@@ -146,11 +148,15 @@ function Rule({ item, data, version }) {
 }
 
 export function Study({ onUseInterview, onUseData }) {
-  const historical = () =>
-    /^#study\/(?:history|[A-Z0-9_]+\/)/.test(window.location.hash);
-  const [history, setHistory] = useState(historical);
+  const selectedBatch = () => {
+    if (/^#study\/(?:history|[A-Z0-9_]+\/)/.test(window.location.hash))
+      return "history";
+    if (window.location.hash.startsWith("#study/followup")) return "followup";
+    return "cases";
+  };
+  const [batch, setBatch] = useState(selectedBatch);
   useEffect(() => {
-    const update = () => setHistory(historical());
+    const update = () => setBatch(selectedBatch());
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
@@ -161,11 +167,12 @@ export function Study({ onUseInterview, onUseData }) {
           Study batch
           <select
             aria-label="Study batch"
-            value={history ? "history" : "followup"}
+            value={batch}
             onChange={(e) => {
               window.location.hash = `study/${e.target.value}`;
             }}
           >
+            <option value="cases">28–29 Oct · 22 new source-based cases</option>
             <option value="followup">
               25 Oct · corrected N04 and repeated grades
             </option>
@@ -175,7 +182,9 @@ export function Study({ onUseInterview, onUseData }) {
           </select>
         </label>
       </div>
-      {history ? (
+      {batch === "cases" ? (
+        <NewCases onUseData={onUseData} />
+      ) : batch === "history" ? (
         <HistoricalStudy
           onUseInterview={onUseInterview}
           onUseData={onUseData}
@@ -384,14 +393,14 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                 className={version === "revised" ? "selected" : ""}
                 onClick={() => setVersion("revised")}
               >
-                Proposed revision
+                Revised scores
               </button>
               <button
                 aria-pressed={version === "original"}
                 className={version === "original" ? "selected" : ""}
                 onClick={() => setVersion("original")}
               >
-                Original rubric
+                Original scores
               </button>
             </div>
             <ExportMenu>
@@ -403,6 +412,11 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
               </Download>
             </ExportMenu>
           </div>
+          <p className="saved-version-note">
+            These are two saved scoring versions for the same answers. Switching
+            versions does not run a new evaluation. The revision changes D3a and
+            D5c.
+          </p>
           <p className="comparison-legend">
             <b>D5c</b> Information seeking <span>·</span> <b>D3a</b> Problem
             representation
@@ -424,6 +438,9 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                   {data.models.map((model) => (
                     <th scope="col" key={model}>
                       {model}
+                      <small className="model-backend">
+                        {backendName(model)}
+                      </small>
                       <span>Information seeking · Problem representation</span>
                     </th>
                   ))}

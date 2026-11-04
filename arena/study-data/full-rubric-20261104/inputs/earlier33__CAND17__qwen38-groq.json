@@ -1,0 +1,345 @@
+{
+  "subject_key": "earlier33__CAND17__qwen38-groq",
+  "case_key": "earlier33__CAND17",
+  "case_id": "CAND17",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND17.json",
+  "source_answer_sha256": "c3bab65c497c79480894aadd308bfe726c8d2bf1abd52396e2ab2e1fc67e4b98",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND17",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What is the current blood glucose level, and do you have any existing records of recent glucose measurements or HbA1c results?",
+        "assessment": {
+          "summary": "Adult male with renal cancer presenting with acute fatigue, drowsiness, blurred vision, and vomiting. The combination of symptoms suggests a potential metabolic disturbance, such as hyperglycemia or electrolyte imbalance, but no specific values or diagnoses have been confirmed yet.",
+          "certainty": "uncertain",
+          "working": "Metabolic disturbance (e.g., hyperglycemia, electrolyte imbalance) in the context of renal cancer and possible immunotherapy."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is the current blood glucose level, and do you have any existing records of recent glucose measurements or HbA1c results?",
+          "topics": [
+            "glucose",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Adult male with renal cancer presenting with acute fatigue, drowsiness, blurred vision, and vomiting. The combination of symptoms suggests a potential metabolic disturbance, such as hyperglycemia or electrolyte imbalance, but no specific values or diagnoses have been confirmed yet.",
+            "certainty": "uncertain",
+            "working": "Metabolic disturbance (e.g., hyperglycemia, electrolyte imbalance) in the context of renal cancer and possible immunotherapy."
+          }
+        },
+        "returned": [
+          {
+            "id": "17.acute_metabolic_tests",
+            "channel": "record",
+            "text": "Admission glucose was 37.9 mmol/L, urine ketones 3+, pH 7.15, bicarbonate 9.8 mmol/L, base excess −17.6 mmol/L and lactate 4.6 mmol/L. Sodium was 128 mmol/L.",
+            "source_location": "pembrolizumab_DKA-B0051",
+            "match": "glucose|sugar|keton|acid|blood gas|bicarbon|\\bph\\b|electroly|sodium|metabolic|blood test|laborator",
+            "period": "presentation"
+          },
+          {
+            "id": "17.endocrine_background",
+            "channel": "record",
+            "text": "Hypothyroidism was detected during earlier sunitinib treatment; levothyroxine maintenance was 100 μg/day. No family history of diabetes was reported. The discussion reports no previous diabetes and a normal fasting glucose about two weeks before admission, without providing the numerical prior value in this text.",
+            "source_location": "pembrolizumab_DKA-B0048; pembrolizumab_DKA-B0053",
+            "match": "past|history|family|prior|previous|baseline|glucose.{0,15}before|thyroid|levothyrox|sunitinib",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "17.acute_metabolic_tests",
+              "request_span": "current blood glucose level"
+            },
+            {
+              "id": "17.endocrine_background",
+              "request_span": "recent glucose measurements"
+            },
+            {
+              "id": "17.glycaemic_and_islet_results",
+              "request_span": "HbA1c results"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What is the current immunotherapy regimen, and are there existing records of recent routine blood tests or CT imaging from the last month?",
+        "assessment": {
+          "summary": "Adult male with renal cancer presenting with acute fatigue, drowsiness, blurred vision, and vomiting. Admission labs confirm severe hyperglycemia (37.9 mmol/L) with high anion gap metabolic acidosis (pH 7.15, bicarbonate 9.8, base excess -17.6) and ketonuria, consistent with diabetic ketoacidosis. Hyponatremia (128 mmol/L) and elevated lactate (4.6 mmol/L) are present. History of sunitinib-induced hypothyroidism and no prior diabetes suggest a new-onset metabolic crisis, potentially related to immunotherapy or other factors.",
+          "certainty": "working",
+          "working": "Diabetic ketoacidosis in the context of renal cancer and possible immunotherapy, with new-onset hyperglycemia."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is the current immunotherapy regimen, and are there existing records of recent routine blood tests or CT imaging from the last month?",
+          "topics": [
+            "medications",
+            "routine_laboratory"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "Adult male with renal cancer presenting with acute fatigue, drowsiness, blurred vision, and vomiting. Admission labs confirm severe hyperglycemia (37.9 mmol/L) with high anion gap metabolic acidosis (pH 7.15, bicarbonate 9.8, base excess -17.6) and ketonuria, consistent with diabetic ketoacidosis. Hyponatremia (128 mmol/L) and elevated lactate (4.6 mmol/L) are present. History of sunitinib-induced hypothyroidism and no prior diabetes suggest a new-onset metabolic crisis, potentially related to immunotherapy or other factors.",
+            "certainty": "working",
+            "working": "Diabetic ketoacidosis in the context of renal cancer and possible immunotherapy, with new-onset hyperglycemia."
+          }
+        },
+        "returned": [
+          {
+            "id": "17.cancer_treatment",
+            "channel": "record",
+            "text": "Right radical nephrectomy in January 2019 confirmed clear-cell renal carcinoma. Pembrolizumab 200 mg IV every three weeks plus axitinib 5 mg twice daily began in April 2023 for suspected pulmonary metastases. He had completed 22 immunotherapy cycles by the acute presentation.",
+            "source_location": "pembrolizumab_DKA-B0048",
+            "match": "cancer|oncolog|medic|drug|treat|immunotherap|checkpoint|pembrolizumab|axitinib|cycle",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: recent routine blood tests or CT imaging from the last month. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "17.cancer_treatment",
+              "request_span": "current immunotherapy regimen"
+            }
+          ],
+          "unanswered_spans": [
+            "recent routine blood tests or CT imaging from the last month"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Are there existing records of routine blood tests or CT imaging from the last month?",
+        "assessment": {
+          "summary": "Adult male with renal cancer on pembrolizumab and axitinib presenting with DKA (glucose 37.9 mmol/L, pH 7.15, ketones 3+). History of sunitinib-induced hypothyroidism. No prior diabetes. Need recent baseline labs/imaging to assess for other causes or progression.",
+          "certainty": "working",
+          "working": "DKA likely related to immunotherapy or new-onset diabetes in context of renal cancer treatment."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there existing records of routine blood tests or CT imaging from the last month?",
+          "topics": [
+            "routine_laboratory",
+            "ct_imaging"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "Adult male with renal cancer on pembrolizumab and axitinib presenting with DKA (glucose 37.9 mmol/L, pH 7.15, ketones 3+). History of sunitinib-induced hypothyroidism. No prior diabetes. Need recent baseline labs/imaging to assess for other causes or progression.",
+            "certainty": "working",
+            "working": "DKA likely related to immunotherapy or new-onset diabetes in context of renal cancer treatment."
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: routine blood tests or CT imaging from the last month. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "routine blood tests or CT imaging from the last month"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Are there existing records of routine blood tests or CT imaging from the last month?",
+        "assessment": {
+          "summary": "Adult male with renal cancer on pembrolizumab and axitinib presenting with DKA (glucose 37.9 mmol/L, pH 7.15, ketones 3+). History of sunitinib-induced hypothyroidism. No prior diabetes. Need recent baseline labs/imaging to assess for other causes or progression.",
+          "certainty": "working",
+          "working": "DKA likely related to immunotherapy or new-onset diabetes in context of renal cancer treatment."
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there existing records of routine blood tests or CT imaging from the last month?",
+          "topics": [
+            "routine_laboratory",
+            "ct_imaging"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "Adult male with renal cancer on pembrolizumab and axitinib presenting with DKA (glucose 37.9 mmol/L, pH 7.15, ketones 3+). History of sunitinib-induced hypothyroidism. No prior diabetes. Need recent baseline labs/imaging to assess for other causes or progression.",
+            "certainty": "working",
+            "working": "DKA likely related to immunotherapy or new-onset diabetes in context of renal cancer treatment."
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: routine blood tests or CT imaging from the last month. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "routine blood tests or CT imaging from the last month"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-02T08:44:52.537919+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "Adult male with clear-cell renal carcinoma on pembrolizumab and axitinib presents with diabetic ketoacidosis (glucose 37.9 mmol/L, pH 7.15, ketones 3+). Prior sunitinib-induced hypothyroidism and no previous diabetes suggest new-onset metabolic crisis, potentially immunotherapy-related. Immediate management requires IV fluids, insulin, and electrolyte correction. Further investigation should include C-peptide, autoantibodies, and pancreatic imaging to distinguish autoimmune from other etiologies. Recent routine labs and CT imaging are unavailable, limiting baseline comparison. Close monitoring for hypoglycemia and electrolyte shifts is essential. Immunotherapy should be held pending endocrine evaluation. Multidisciplinary input from oncology and endocrinology is recommended to guide resumption of treatment.",
+      "certainty": "working",
+      "working": "DKA in context of immunotherapy, with new-onset hyperglycemia."
+    },
+    "final_answer": "**Clinical Assessment**\n\nThis adult male with clear-cell renal carcinoma presents with acute fatigue, drowsiness, blurred vision, and vomiting. Admission data confirms severe metabolic derangement: glucose 37.9 mmol/L, pH 7.15, bicarbonate 9.8 mmol/L, base excess −17.6 mmol/L, and 3+ urine ketones. This constellation indicates diabetic ketoacidosis (DKA) with a high anion gap metabolic acidosis. Concurrent hyponatremia (128 mmol/L) and elevated lactate (4.6 mmol/L) suggest significant volume depletion and tissue hypoperfusion. The patient has no prior diabetes history, with normal fasting glucose reported two weeks prior. He is currently receiving pembrolizumab and axitinib, having completed 22 cycles.\n\nPrioritised explanations include:\n1. Immune checkpoint inhibitor-induced diabetes mellitus: Pembrolizumab can cause rapid-onset insulin-dependent diabetes via autoimmune beta-cell destruction. The absence of prior diabetes and acute presentation align with this mechanism, though definitive cellular confirmation is pending.\n2. Axitinib-associated metabolic effects: While less common, tyrosine kinase inhibitors can impair glucose metabolism. However, the severity of ketoacidosis strongly favors an immune-mediated etiology over drug-induced insulin resistance alone.\n3. Occult infection or stress hyperglycemia: Infection can precipitate DKA in susceptible individuals. However, the lack of prior diabetes makes pure stress hyperglycemia less likely to cause such profound ketosis without an underlying insulin deficiency.\n\nImmediate actions must focus on stabilizing the metabolic crisis. Initiate aggressive intravenous fluid resuscitation to correct hypovolemia and hyponatremia. Start intravenous insulin therapy to resolve ketoacidosis, monitoring for cerebral edema given the drowsiness. Obtain urgent electrolytes, renal function, and blood cultures. Hold pembrolizumab and axitinib pending endocrine review. Consult endocrinology for potential permanent insulin dependence. Recent routine blood tests and CT imaging from the last month are unavailable; do not infer negative findings. Further investigation should include C-peptide levels and autoantibodies to confirm the etiology of insulin deficiency.",
+    "word_count": {
+      "words": 281,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": false,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-02T09:58:09.318593+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D1.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission is factually accurate throughout. All reported values (glucose 37.9 mmol/L, pH 7.15, bicarbonate 9.8, base excess −17.6, ketones 3+, sodium 128, lactate 4.6) match the evidence returned in Q1, and the treatment history (pembrolizumab/axitinib since April 2023, 22 cycles, nephrectomy 2019) matches Q2. The DKA diagnosis is correctly derived from the supplied metabolic packet, consistent with the provisional reference. Management recommendations (fluids, IV insulin, urgent electrolytes/renal function, senior/endocrine escalation, holding checkpoint inhibitor pending review) are safe and consensus-consistent, and it correctly avoids treating the unavailable recent bloods/CT as negative findings. Minor imprecisions keep it below 5: 'high anion gap' is inferred rather than directly supplied (though clinically implied by ketosis and low bicarbonate), 'tissue hypoperfusion' is an inference from lactate, and 'aggressive' fluid resuscitation is less precise than cautious protocol-based volume correction in DKA. These are clinically inconsequential and would not mislead. The submission does hedge some uncertainty ('definitive cellular confirmation is pending', 'less likely'), but does not explicitly frame evidence as uncertain or evolving in the manner required for the top anchor, so Score 4 is appropriate."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The assessment synthesises the actually available evidence into a focused problem representation: severe DKA (glucose 37.9, pH 7.15, bicarbonate 9.8, 3+ ketones) with hyponatraemia and elevated lactate in a patient with no prior diabetes and a normal fasting glucose two weeks earlier, on pembrolizumab after 22 cycles. It prioritises immune checkpoint inhibitor-induced diabetes as the leading explanation with supporting reasoning, offers defensible alternatives with appropriate uncertainty, and explicitly qualifies unresolved gaps (cellular mechanism unconfirmed, recent bloods/CT unavailable without inferring negative findings). The discriminating features are highlighted and hypothesis generation is guided, meeting the Score 5 anchor. Minor limitations (e.g., 'high anion gap' is inferred rather than reported, and the insulin-dependence remark is speculative) do not change the clinical framing."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises DKA as the immediate diagnosis, correctly supported by explicit discriminating evidence available at this decision point (glucose 37.9 mmol/L, pH 7.15, bicarbonate 9.8, base excess −17.6, 3+ ketones). It prioritises checkpoint-inhibitor-induced diabetes as the leading explanation, appropriately weighted against the pembrolizumab exposure (22 cycles) and the reported absence of prior diabetes with a normal fasting glucose two weeks earlier, and it considers alternatives (axitinib metabolic effects, occult infection/stress hyperglycaemia) with reasoning about why they are less likely. Dangerous mimics and precipitants are addressed (infection, hypoperfusion suggested by lactate 4.6 and hyponatraemia 128), and proportionate attention is given to prior plausibility. Minor imperfections exist — the anion gap is inferred rather than directly supplied, and the autoimmune beta-cell mechanism is stated more confidently than the evidence supports — but the differential is breadth-appropriate, correctly prioritised, and grounded in the supplied findings, meeting the Score 5 anchor."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly separates established findings (DKA with marked hyperglycaemia, ketonuria and severe acidosis, supported by Q1 results) from probable (checkpoint-inhibitor-induced diabetes, aligned with pembrolizumab exposure from Q2 and absence of prior diabetes), possible (axitinib metabolic effects, occult infection) and unresolved questions. It explains the sources of uncertainty explicitly: 'definitive cellular confirmation is pending', 'less likely... without an underlying insulin deficiency', and notes that recent bloods/CT are 'unavailable; do not infer negative findings', correctly handling the absent Q2–Q4 responses. It identifies concrete next steps to reduce uncertainty (C-peptide, autoantibodies, cultures, endocrine review). Confidence is calibrated to evidence strength throughout, meeting the score 5 anchor: distinguishing established, probable, possible and unresolved conclusions, explaining uncertainty sources, and naming investigations to resolve them."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D5c.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "R2 (treatment timeline and glycaemic/endocrine history) is met: Q1 sought prior glucose/HbA1c records and Q2 sought the immunotherapy regimen, returning the pembrolizumab/axitinib history and prior fasting glucose. However, R1 is only partially met: Q1 requested glucose (and HbA1c) but the model never requested ketones, acid-base status, or potassium/electrolytes — the acute safety data gap (potassium, renal function, blood ketones) was never targeted, despite these being explicitly flagged as essential for severity and treatment safety before the final assessment. The glucose request addresses the immediate metabolic danger, so this is not the serious-failure anchor of Score 1, but the missing essential potassium/ketone/acid-base request caps the item at 2. Q3 and Q4 repeated an already-unanswered non-essential request rather than filling this gap, showing poorly targeted use of the question budget."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D6a.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission clearly recognises the emergency: DKA is explicitly identified from the supplied glucose 37.9 mmol/L, pH 7.15, bicarbonate 9.8, 3+ ketones, with drowsiness and vomiting acknowledged. It recommends an escalation element — 'Consult endocrinology' and 'Hold pembrolizumab and axitinib pending endocrine review' — plus immediate fluids, insulin, and monitoring. However, the escalation pathway is incomplete and its urgency/timing is insufficiently clear: there is no recommendation to escalate to senior emergency, diabetes, or critical-care teams, no statement that this requires immediate monitored emergency treatment now, and no explicit timing for the endocrinology involvement (e.g., urgent/same-hour versus routine inpatient review). Phrases like 'Immediate actions must focus on stabilizing the metabolic crisis' convey seriousness, but the actual escalation instruction ('consult endocrinology for potential permanent insulin dependence') reads as a routine referral tied to later insulin questions rather than a timely emergency escalation. This matches Score 3: an appropriate escalation component is present, but urgency and timing are not made sufficiently explicit; it does not reach Score 4's clear, timely, correct-pathway escalation, and exceeds Score 2 because a concrete pathway (endocrine involvement plus acute management) is recommended."
+    },
+    "D6b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND17.D6b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission avoids any directly contraindicated treatment and proactively flags safety concerns unprompted. It identifies DKA with severe acidosis, hyponatremia (128 mmol/L) and elevated lactate, and explicitly warns against overly rapid correction of volume/sodium status and of cerebral edema risk given drowsiness during insulin therapy. It requests urgent electrolytes (covering potassium, which the reference packet flagged as essential before insulin/fluids), renal function and blood cultures, and specifies repeated monitoring (electrolytes, glucose, ketones, acid-base). It performs explicit contraindication checking by holding pembrolizumab and axitinib pending endocrine review, correctly treating checkpoint-inhibitor exposure as a reason to suspend rather than continue therapy. It also cautions against inferring negative findings from the unavailable recent bloods/CT (Q2–Q4 returned no data). These features meet the Score 5 anchor: risks flagged proactively, relevant caveats included, and monitoring requirements stated. No essential safety caveat given the comorbidities (hypothyroidism on levothyroxine, active immunotherapy) is omitted, and no treatment recommended is contraindicated by the vignette."
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

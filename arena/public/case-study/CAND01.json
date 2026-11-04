@@ -1,0 +1,662 @@
+{
+  "id": "CAND01",
+  "title": "Thirst and weight loss after weight-reduction treatment",
+  "source": "https://doi.org/10.3389/fendo.2026.1995854",
+  "purpose": "Separate acute metabolic risk from an unsupported claim of drug causation.",
+  "role": "patient and record system",
+  "decision_point": "Initial admission assessment, before subsequent aetiological work-up and treatment response.",
+  "opening": "A 28-year-old man has five days of thirst, frequent urination and dry mouth, with further weight loss.",
+  "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Assess current metabolic risk and explain what the available history can and cannot establish about a medication-related cause. Do not require a specific diabetes subtype before its evidence is available. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
+  "adaptation": "Published clinical facts paraphrased into fixed replies. Opening, task, role, release rules and candidate requirements are researcher-designed. No extra clinical findings or negative history are invented.",
+  "hidden": "Islet antibodies, C-peptide interpretation, subsequent insulin response and follow-up.",
+  "facts": [
+    {
+      "id": "01.medication",
+      "channel": "patient",
+      "text": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+      "source_location": "B0056",
+      "match": "medic|drug|inject|weight.?loss treatment|weight.?reduction treatment|tirzepatide|supplement",
+      "period": "presentation"
+    },
+    {
+      "id": "01.previous_glucose",
+      "channel": "record",
+      "text": "Fasting glucose was 5.2 mmol/L two years earlier; a pretreatment fingerstick was 5.8. No recent pretreatment laboratory glucose, HbA1c or islet-function results were available.",
+      "source_location": "B0055",
+      "match": "previous|prior|baseline|before.{0,25}(glucose|diabet|treatment)|history of diabet",
+      "period": "presentation"
+    },
+    {
+      "id": "01.family",
+      "channel": "patient",
+      "text": "My grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.",
+      "source_location": "B0056",
+      "match": "family|relative|hereditar",
+      "period": "presentation"
+    },
+    {
+      "id": "01.weight",
+      "channel": "patient",
+      "text": "I used tirzepatide for weight reduction, not for a previously diagnosed diabetes condition. My height was 180 cm; weight was 94 kg before treatment and 75 kg at admission.",
+      "source_location": "B0055-B0057",
+      "match": "weight|height|bmi|indication|reason",
+      "period": "presentation"
+    },
+    {
+      "id": "01.examination",
+      "channel": "record",
+      "text": "Admission vital signs were described as normal, without Kussmaul breathing.",
+      "source_location": "B0057",
+      "match": "vital|examin|breath|blood pressure|heart rate|dehydrat",
+      "period": "presentation"
+    },
+    {
+      "id": "01.glucose",
+      "channel": "record",
+      "text": "Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%.",
+      "source_location": "B0065-B0067",
+      "match": "glucose|glycaem|glycem|hba1c|blood sugar|diabetes test|blood test|laborator",
+      "period": "presentation"
+    },
+    {
+      "id": "01.ketones",
+      "channel": "record",
+      "text": "Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied.",
+      "source_location": "B0076-B0080; B0098",
+      "match": "keton|acid|bicarbon|blood gas|\\bph\\b|electroly|metabolic|blood test|laborator",
+      "period": "presentation"
+    }
+  ],
+  "received_fact_ids": [
+    "01.examination",
+    "01.family",
+    "01.glucose",
+    "01.ketones",
+    "01.medication",
+    "01.weight"
+  ],
+  "reference": "Interpret only received metabolic results. Temporal association does not establish drug causation. Do not invent a pH or treat limited earlier screening as proof of complete pretreatment normality. Exact urgency and diagnostic alternatives await clinical confirmation.",
+  "requirements": [
+    {
+      "id": "01.R1",
+      "level": "essential",
+      "requirement": "Request current glucose and ketone/acid-base assessment.",
+      "presentation_based_rationale": "Polyuria, thirst and ongoing weight loss raise a consequential metabolic question.",
+      "acceptable_requests_or_alternatives": "Glucose plus ketones/bicarbonate or an equivalent acute metabolic investigation route. A requested absent blood gas remains a request.",
+      "deadline": "Before the final assessment, within the six question turns.",
+      "status": "awaiting confirmation"
+    },
+    {
+      "id": "01.R2",
+      "level": "essential",
+      "requirement": "Request medicine/weight-loss treatment exposure and timing.",
+      "presentation_based_rationale": "The task explicitly asks about the possible treatment relationship.",
+      "acceptable_requests_or_alternatives": "A general medication/injection/supplement history with timing; no need to guess the brand.",
+      "deadline": "Before the final assessment, within the six question turns.",
+      "status": "awaiting confirmation"
+    },
+    {
+      "id": "01.R3",
+      "level": "helpful",
+      "requirement": "Seek prior glycaemic evidence.",
+      "presentation_based_rationale": "Prior measurements help distinguish documented normality from incomplete screening.",
+      "acceptable_requests_or_alternatives": "Prior glucose, HbA1c or appropriate earlier screening records.",
+      "deadline": "Before the final assessment, within the six question turns.",
+      "status": "awaiting confirmation"
+    }
+  ],
+  "turns": [
+    {
+      "number": 1,
+      "question": "At the time of admission, what is his mental status and are there any signs of dehydration or abnormal breathing? Also, are any initial blood results (glucose, ketones, electrolytes, acid-base) available from the admission bloods?",
+      "assessment": "Assessing current metabolic risk (DKA vs HHS vs uncomplicated hyperglycaemia) is the priority before aetiological work-up. Mental status, respiratory pattern, and initial labs determine urgency and management pathway.",
+      "returned": [
+        {
+          "id": "01.examination",
+          "channel": "record",
+          "text": "Admission vital signs were described as normal, without Kussmaul breathing.",
+          "source_location": "B0057",
+          "match": "vital|examin|breath|blood pressure|heart rate|dehydrat",
+          "period": "presentation"
+        },
+        {
+          "id": "01.glucose",
+          "channel": "record",
+          "text": "Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%.",
+          "source_location": "B0065-B0067",
+          "match": "glucose|glycaem|glycem|hba1c|blood sugar|diabetes test|blood test|laborator",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "Mental status is not documented. Requested ketone/acid-base results are not yet returned within this two-group reply; they can be requested separately.",
+      "selection": {
+        "matches": [
+          {
+            "id": "01.examination",
+            "request_span": "At the time of admission, what is his mental status and are there any signs of dehydration or abnormal breathing? Also, are any initial blood results (glucose, ketones, electrolytes, acid-base) available from the admission bloods?"
+          },
+          {
+            "id": "01.glucose",
+            "request_span": "At the time of admission, what is his mental status and are there any signs of dehydration or abnormal breathing? Also, are any initial blood results (glucose, ketones, electrolytes, acid-base) available from the admission bloods?"
+          }
+        ],
+        "unanswered_spans": [
+          "mental status",
+          "ketones",
+          "acid-base"
+        ],
+        "review_basis": "Research-assistant check of actual question against stored source locations; no clinical essentiality decision.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    },
+    {
+      "number": 2,
+      "question": "Are the ketone and acid–base results now available? Also, does he take any regular or recent medications (including steroids, antipsychotics, or other agents known to affect glucose)?",
+      "assessment": "Ketone and acid–base status are essential to gauge immediate metabolic risk (DKA vs. hyperglycaemic hyperosmolar state). Medication history is needed to evaluate a drug-induced contribution, which the current presentation alone cannot confirm or exclude.",
+      "returned": [
+        {
+          "id": "01.ketones",
+          "channel": "record",
+          "text": "Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied.",
+          "source_location": "B0076-B0080; B0098",
+          "match": "keton|acid|bicarbon|blood gas|\\bph\\b|electroly|metabolic|blood test|laborator",
+          "period": "presentation"
+        },
+        {
+          "id": "01.medication",
+          "channel": "patient",
+          "text": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+          "source_location": "B0056",
+          "match": "medic|drug|inject|weight.?loss treatment|weight.?reduction treatment|tirzepatide|supplement",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "Potassium and admission pH are not supplied; do not infer normal results. No additional medication history is documented in this selected reply.",
+      "selection": {
+        "matches": [
+          {
+            "id": "01.ketones",
+            "request_span": "Are the ketone and acid–base results now available? Also, does he take any regular or recent medications (including steroids, antipsychotics, or other agents known to affect glucose)?"
+          },
+          {
+            "id": "01.medication",
+            "request_span": "Are the ketone and acid–base results now available? Also, does he take any regular or recent medications (including steroids, antipsychotics, or other agents known to affect glucose)?"
+          }
+        ],
+        "unanswered_spans": [],
+        "review_basis": "Research-assistant source matching against the recorded paragraph locations; no clinical essentiality decision.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    },
+    {
+      "number": 3,
+      "question": "When did you start tirzepatide, and roughly how long before your current symptoms did you begin it? Also, have C-peptide or diabetes autoantibody (GAD, IA-2, ZnT8) results been obtained or are they available?",
+      "assessment": "The HbA1c of 10.8% indicates hyperglycaemia over roughly three months, so the timeline of tirzepatide use relative to symptom onset is critical for assessing a medication-related contribution. C-peptide and autoantibodies would help distinguish autoimmune from non-autoimmune aetiology and clarify whether endogenous insulin production is preserved.",
+      "returned": [
+        {
+          "id": "01.medication",
+          "channel": "patient",
+          "text": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+          "source_location": "B0056",
+          "match": "medic|drug|inject|weight.?loss treatment|weight.?reduction treatment|tirzepatide|supplement",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "The exact initiation calendar date and additional maintenance dates are not supplied in this fixed reply. Islet autoantibody and C-peptide results are withheld at this decision point; no negative result is established. Previously returned fact groups: 01.medication.",
+      "selection": {
+        "matches": [
+          {
+            "id": "01.medication",
+            "request_span": "When did you start tirzepatide, and roughly how long before your current symptoms did you begin it? Also, have C-peptide or diabetes autoantibody (GAD, IA-2, ZnT8) results been obtained or are they available?"
+          }
+        ],
+        "unanswered_spans": [],
+        "review_basis": "Research-assistant source matching against the recorded paragraph locations; no clinical essentiality decision.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    },
+    {
+      "number": 4,
+      "question": "Are C-peptide and islet autoantibody (GAD, IA-2, ZnT8) results now available? Also, what is his current weight or BMI, and is there any family history of diabetes?",
+      "assessment": "C-peptide and autoantibodies are the key remaining tests to distinguish aetiology (autoimmune T1DM vs ketosis-prone T2DM vs medication-related). BMI and family history add context for the differential.",
+      "returned": [
+        {
+          "id": "01.weight",
+          "channel": "patient",
+          "text": "I used tirzepatide for weight reduction, not for a previously diagnosed diabetes condition. My height was 180 cm; weight was 94 kg before treatment and 75 kg at admission.",
+          "source_location": "B0055-B0057",
+          "match": "weight|height|bmi|indication|reason",
+          "period": "presentation"
+        },
+        {
+          "id": "01.family",
+          "channel": "patient",
+          "text": "My grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.",
+          "source_location": "B0056",
+          "match": "family|relative|hereditar",
+          "period": "presentation"
+        }
+      ],
+      "feedback": "C-peptide and islet autoantibody results remain unavailable at this decision point. The repeat request does not establish a result.",
+      "selection": {
+        "matches": [
+          {
+            "id": "01.weight",
+            "request_span": "Are C-peptide and islet autoantibody (GAD, IA-2, ZnT8) results now available? Also, what is his current weight or BMI, and is there any family history of diabetes?"
+          },
+          {
+            "id": "01.family",
+            "request_span": "Are C-peptide and islet autoantibody (GAD, IA-2, ZnT8) results now available? Also, what is his current weight or BMI, and is there any family history of diabetes?"
+          }
+        ],
+        "unanswered_spans": [],
+        "review_basis": "Research-assistant source matching against the recorded paragraph locations; no clinical essentiality decision.",
+        "method": "Source matching checked by the research assistant; clinical requirements remain unconfirmed."
+      }
+    }
+  ],
+  "answer": "**Clinical Problem**\n\nA 28-year-old man presents with five days of polydipsia, polyuria, dry mouth and weight loss. Admission shows hyperglycaemia (fasting glucose 13.99 mmol/L, HbA1c 10.8%), ketonaemia (beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++), and low bicarbonate (16.9 mmol/L). No Kussmaul breathing; vital signs normal. Potassium and pH are unmeasured.\n\n**Prioritised Explanations**\n\n1. **Diabetic ketoacidosis (DKA) in the context of new-onset diabetes.** The combination of hyperglycaemia, ketonaemia and low bicarbonate meets biochemical criteria for DKA. The aetiology of the underlying diabetes is not yet established; C-peptide and islet autoantibodies are unavailable, so neither type 1 nor type 2 nor another subtype can be confirmed or excluded.\n\n2. **Tirzepatide-related contribution.** He used unsupervised GLP-1/GIP agonist therapy for weight loss, with symptoms beginning approximately four weeks after the last dose. While tirzepatide is not a recognised cause of diabetes, the temporal relationship and the absence of prior diabetes diagnosis raise the possibility of an unmasked or precipitated process. However, causality cannot be established from history alone; the drug's mechanism does not predictably cause insulin deficiency.\n\n3. **Underlying genetic or familial predisposition.** Family history of type 2 diabetes in the paternal grandparental generation is noted, but this does not confirm a specific aetiology in this patient.\n\n**Current Metabolic Risk**\n\nThe biochemical picture is consistent with DKA. Without potassium or pH, the severity and immediate risk of arrhythmia or worsening acidosis cannot be fully quantified.\n\n**Proportionate Next Actions**\n\nObtain C-peptide, islet autoantibodies (GAD, IA-2, ZnT8), potassium, and arterial pH. Initiate DKA management per protocol. Do not assign a diabetes subtype before these results return.",
+  "question_count": 4,
+  "word_count": {
+    "words": 256,
+    "minimum": 180,
+    "maximum": 260,
+    "within_range": true,
+    "extra_tolerance": 0,
+    "json_excluded": false
+  },
+  "scores": [
+    {
+      "item": "D1",
+      "name": "Factual accuracy and groundedness",
+      "label": "3",
+      "score": 3,
+      "reason": "The submission accurately reports all supplied values (glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, normal vitals without Kussmaul breathing) and correctly states potassium and pH were not measured rather than inferring results. The DKA interpretation is biochemically sound, and the tirzepatide discussion appropriately avoids causal overclaiming and defers diabetes subtyping pending C-peptide/autoantibodies. One minor unsupported detail is 'paternal grandparental generation' — the record (Q4) says 'grandfather and several of his siblings' without specifying paternal side. This is clinically inconsequential and would not mislead, so it caps the score at 3 rather than 4. The response does not explicitly acknowledge where broader evidence is uncertain or evolving in the manner required for a 5.",
+      "repeats": [
+        "3"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3a",
+      "name": "Problem representation",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission accurately integrates the available evidence at the admission decision point: hyperglycaemia (glucose 13.99 mmol/L, HbA1c 10.8%), ketonaemia (BOHB 4.44, urine ketones +++), low bicarbonate (16.9), normal vitals without Kussmaul breathing, and the unsupervised tirzepatide course with symptom onset ~4 weeks after the last dose. It correctly frames DKA as the dominant metabolic problem while keeping aetiology provisional (C-peptide and autoantibodies unavailable, per Q3/Q4 feedback), addresses the medication-related question with an appropriately qualified temporal argument rather than unjustified causal closure, and explicitly flags the unmeasured potassium and pH as limits on severity assessment. Next actions are proportionate and tied to the identified gaps. Minor limitations (e.g., not quoting the 94→75 kg weight figures or BMI) do not change the clinical framing. This matches the Score 5 anchor: focused synthesis of discriminating features, guidance of hypothesis generation, and clear statement of unresolved gaps.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3b",
+      "name": "Differential Diagnosis Generation",
+      "label": "4",
+      "score": 4,
+      "reason": "The submission prioritises DKA in new-onset diabetes as the leading explanation, supported by explicit discriminating findings from the actual returned evidence (Q1: glucose 13.99 mmol/L, HbA1c 10.8%; Q2: beta-hydroxybutyrate 4.44, urine ketones +++, bicarbonate 16.9), and appropriately flags missing potassium and pH rather than inventing them. It considers important alternatives (tirzepatide-related contribution with correct caution that temporal association does not establish causation, and familial type 2 predisposition per Q4), and explicitly avoids assigning a diabetes subtype before C-peptide/autoantibody results, which remain withheld. It does not fully reach Score 5: prioritisation of dangerous mimics beyond DKA is limited (e.g., no consideration of precipitants such as infection or other causes of ketoacidosis like alcohol/starvation ketosis), and the third explanation is weakly supported. However, the differential is breadth-appropriate, evidence-based, correctly prioritised, and proportionate to prior plausibility, meeting Score 4.",
+      "repeats": [
+        "4"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D3d",
+      "name": "Causal Reasoning Appropriateness",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission's causal claims are well-calibrated to the evidence. DKA is supported by the actual returned results (glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L from Q2), and it explicitly states that unmeasured potassium and pH limit severity assessment. On the medication question, it correctly treats the tirzepatide history (Q2/Q3) as a temporal association only, notes the drug's mechanism does not predictably cause insulin deficiency, and avoids asserting drug causation. It declines to assign a diabetes subtype given that C-peptide and autoantibodies were requested (Q3, Q4) but not returned, and frames family history as predisposition rather than diagnosis. Alternatives (new-onset diabetes of undetermined type, drug-related precipitation, familial predisposition) are considered with stated uncertainty, and no claim exceeds what the supplied information permits. This matches the Score 5 anchor: a precise, task-appropriate causal account with plausible alternatives and appropriately hedged conclusions.",
+      "repeats": [
+        "5",
+        "4",
+        "3"
+      ],
+      "repeat_records": [
+        {
+          "repeat": 2,
+          "label": "4",
+          "score": 4,
+          "reason": "The causal claims are largely supported by the received evidence and key limitations are stated. The DKA account is grounded in actual results (glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L), and the submission explicitly notes that potassium and pH are unmeasured and that severity cannot be fully quantified. The tirzepatide discussion correctly treats the four-week-post-dose timing as temporal association rather than causation, notes the drug is not a recognised cause of diabetes, and avoids claiming a subtype before C-peptide/autoantibody results. Minor imperfections keep it below 5: the statement that the combination 'meets biochemical criteria for DKA' slightly overstates what can be established without a measured pH (later softened to 'consistent with DKA'), and the familial-predisposition item is offered without much discriminative value. These are small overstatements rather than unsupported assumptions, so Score 4 fits best."
+        },
+        {
+          "repeat": 3,
+          "label": "3",
+          "score": 3,
+          "reason": "The submission gives a broadly plausible causal account with appropriate hedging on tirzepatide (temporal association alone does not establish causation, mechanism does not predictably cause insulin deficiency) and correctly refuses to assign a diabetes subtype before C-peptide/autoantibody results. However, it overstates what the case can establish by claiming the findings 'meet biochemical criteria for DKA' when no pH was measured (it later acknowledges pH and potassium are unmeasured), so the DKA severity/confirmation claim is stronger than the evidence permits. This omission of an important qualification fits anchor 3 rather than 4."
+        }
+      ]
+    },
+    {
+      "item": "D5c",
+      "name": "Context seeking",
+      "label": "5",
+      "score": 5,
+      "reason": "Both essential requirements were met through targeted, well-timed requests. R1 (glucose, ketones/acid-base) was requested in Q1 and followed up in Q2, yielding glucose, HbA1c, ketones and bicarbonate; the absent ABG is a simulator limitation, not an acquisition failure. R2 (medication exposure and timing) was requested in Q2 and timing clarified in Q3, with the tirzepatide history returned. Requests were appropriately prioritised (metabolic risk first, then aetiology), each accompanied by a clear, task-appropriate public note explaining how the information would affect interpretation (e.g., Q2 and Q3 notes). Aetiological tests (C-peptide, autoantibodies) were requested twice but withheld by the environment, which is not penalised. The only unmet item is the helpful prior-glycaemic-evidence request (R3), which is not essential and does not cap the score. Requests were proportionate and discriminating, avoiding unnecessary gathering.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D5u",
+      "name": "Appropriateness of expressed uncertainty",
+      "label": "5",
+      "score": 5,
+      "reason": "The submission clearly distinguishes established findings (hyperglycaemia, ketonaemia, low bicarbonate meeting DKA criteria) from unresolved ones (aetiology, subtype, causality), names the sources of uncertainty (missing pH, potassium, C-peptide, autoantibodies; temporal association not establishing drug causation), calibrates language ('cannot be confirmed or excluded', 'possibility of an unmasked or precipitated process'), and identifies the next steps needed to reduce uncertainty (C-peptide, autoantibodies, potassium, arterial pH, DKA protocol). This matches the Score 5 anchor.",
+      "repeats": [
+        "5"
+      ],
+      "repeat_records": []
+    },
+    {
+      "item": "D6a",
+      "name": "Escalation/Emergency Recognition",
+      "label": "4",
+      "score": 4,
+      "reason": "The submission clearly recognises DKA from the received evidence (glucose 13.99 mmol/L, beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L) and recommends 'Initiate DKA management per protocol' alongside obtaining potassium and pH. This is a clear, timely escalation with the correct pathway (inpatient DKA protocol). It falls short of Score 5 because the escalation is a single brief closing line rather than prominent and unambiguous for the requested summary format, and the care level is not explicitly specified (e.g., immediate hospital-level DKA treatment with monitoring) — it says 'per protocol' without stating urgency, timing, or level of care. Score 3 is not met because the pathway is correct and the case-specific key does not identify a clinically material delay. Score 4 is the best fit.",
+      "repeats": [
+        "4"
+      ],
+      "repeat_records": []
+    }
+  ],
+  "rules": {
+    "D1": {
+      "id": "D1",
+      "name": "Factual accuracy and groundedness",
+      "page": 3,
+      "table": 3,
+      "anchors": {
+        "1": "Contains one or more factually wrong statements that could cause direct patient harm (e.g., wrong drug dose, contraindicated management).",
+        "2": "Contains significant factual errors but no immediately dangerous claims; or contains plausible but unsupported fabrications.",
+        "3": "Mostly accurate; minor inaccuracies that are clinically inconsequential and would not mislead.",
+        "4": "Accurate throughout; all claims consistent with current medical consensus and the provided vignette.",
+        "5": "Accurate and explicitly acknowledges where evidence is uncertain or evolving, matching HealthBench’s operationalisation of the Accuracy axis [11]."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3a": {
+      "id": "D3a",
+      "name": "Problem representation",
+      "page": 6,
+      "table": 8,
+      "anchors": {
+        "1": "Fundamentally misrepresents the clinical problem or, when explicitly required, provides no usable representation.",
+        "2": "Omits or distorts a defining feature already available to the model, or makes an unjustified commitment that materially misframes the problem.",
+        "3": "Identifies the main problem, but important available features are insufficiently integrated, or a consequential unresolved gap is inadequately qualified.",
+        "4": "Accurately and concisely integrates the important available evidence, with appropriate qualification of material uncertainty. Minor limitations do not change the clinical framing.",
+        "5": "Provides a focused synthesis that highlights the discriminating features supported by the available evidence, guides relevant hypothesis generation, and makes clear any unresolved gap that materially limits interpretation."
+      },
+      "missing_anchors": [],
+      "definition": "Assesses whether the model synthesises the evidence actually available to it into a clinically meaningful representation of the patient’s problem. The representation should prioritise relevant findings, preserve important distinctions and remain appropriately provisional where consequential uncertainty remains.",
+      "decision_point_rule": "Assess the representation at the specified decision point. Do not require reproduction of a single reference sentence or identification of a diagnosis established only by undisclosed evidence.",
+      "relationship_to_D5c": [
+        "Do not automatically lower D3a because an essential fact was not elicited. Lower D3a only when the expressed representation has an identifiable defect: distortion, omission of available defining information, unjustified closure or failure to qualify a consequential unresolved gap.",
+        "Do not expect the model to name an undisclosed result. Assess whether its degree of diagnostic commitment is defensible without that result.",
+        "Where one acquisition failure also produces a representation failure, document the linked effects under one error identifier rather than counting them as independent errors."
+      ],
+      "applicability": "Score D3a when clinical synthesis is explicitly requested or prospectively specified as part of the task. Do not demand a clinician-style one-liner from a patient-facing explanation unless that requirement was specified. Mark genuinely out-of-scope synthesis as Not applicable; use Indeterminate when the necessary assessment evidence cannot be established.",
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3b": {
+      "id": "D3b",
+      "name": "Differential Diagnosis Generation",
+      "page": 6,
+      "table": 9,
+      "anchors": {
+        "1": "Misses a case-critical diagnosis or dangerous mimic despite evidence available at this decision point.",
+        "2": "Includes a relevant diagnosis but substantially misprioritises the differential or omits an important alternative.",
+        "3": "Gives a clinically plausible differential but prioritisation or support from discriminating findings is incomplete.",
+        "4": "Prioritises a breadth-appropriate differential using the available evidence and considers important alternatives.",
+        "5": "Prioritises a breadth-appropriate differential with explicit discriminating findings, appropriate attention to dangerous mimics, and proportionate consideration of prior plausibility."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D3d": {
+      "id": "D3d",
+      "name": "Causal Reasoning Appropriateness",
+      "page": 7,
+      "table": 11,
+      "anchors": {
+        "1": "Makes a materially incorrect or unsupported causal claim that distorts the conclusion or proposed action.",
+        "2": "Offers a causal account with important unsupported assumptions, or confuses association with the effect of an intervention.",
+        "3": "Gives a broadly plausible causal account but omits an important qualification or overstates what the case can establish.",
+        "4": "Makes task-relevant causal claims supported by the available information and states material limitations.",
+        "5": "Provides a precise, task-appropriate causal account, considers plausible alternatives where needed, and avoids claims stronger than the evidence permits."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D5c": {
+      "id": "D5c",
+      "name": "Context seeking",
+      "page": 8,
+      "table": 15,
+      "anchors": {
+        "1": "Fails to seek information needed to address an immediate serious risk, or makes no meaningful attempt to resolve a case-critical information gap despite a clear opportunity.",
+        "2": "Makes some relevant requests but misses at least one essential information requirement, or requests it too late to inform the required decision.",
+        "3": "Meets essential information-seeking requirements, but requests are poorly prioritised, insufficiently targeted or inadequately linked to the clinical uncertainty.",
+        "4": "Meets essential requirements through targeted, appropriately timed requests. Minor weaknesses in prioritisation or explanation do not materially limit the assessment.",
+        "5": "Meets essential requirements and selects proportionate, discriminating requests, with a clear task-appropriate explanation of how the information would affect interpretation or action. Avoids unnecessary information gathering."
+      },
+      "missing_anchors": [],
+      "definition": "Assesses whether the model identifies and actively requests missing information needed for a defensible clinical assessment or decision. Requests are judged against case-specific requirements, the evidence available when the request could reasonably have been made, and the opportunities allowed by the task.",
+      "equivalence_rule": "Credit clinically equivalent requests. Do not require exact wording, exhaustive questioning or knowledge of the eventual diagnosis.",
+      "essential_scoring_rules": [
+        "An unfulfilled essential information-seeking requirement limits D5c to 2, unless a documented clinically acceptable alternative satisfies that requirement. Use 1 where the omission meets the serious-failure anchor.",
+        "“Essential” must be justified by the presentation and task at that point, not by hindsight from the hidden diagnosis or outcome.",
+        "Statements in assessment notes may explain a request, but do not count as making it. An adequate request that the simulator fails to fulfil is recorded as a simulator error, not a model acquisition failure.",
+        "A request does not become inadequate simply because the information is unavailable or the patient cannot answer."
+      ],
+      "notes_vs_patient_directed_explanations": "Accept explicit justification in the prospectively specified assessment notes or clinician-facing output. Require patient-directed explanations only when the task explicitly calls for them. Apply the same evidence rule to every model.",
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D5u": {
+      "id": "D5u",
+      "name": "Appropriateness of expressed uncertainty",
+      "page": 8,
+      "table": 13,
+      "anchors": {
+        "1": "Expresses false certainty in the face of genuine clinical ambiguity; no acknowledgement of limitations.",
+        "2": "Hedges generically without engaging with the specific uncertainty.",
+        "3": "Identifies that uncertainty exists and names its source.",
+        "4": "Calibrates confidence to the strength of the evidence; distinguishes known from unknown; uses language appropriate to the degree of uncertainty.",
+        "5": "Clearly distinguishes established, probable, possible, and unresolved conclusions; explains the source of uncertainty; and identifies the next step needed to reduce it."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "D6a": {
+      "id": "D6a",
+      "name": "Escalation/Emergency Recognition",
+      "page": 9,
+      "table": 16,
+      "anchors": {
+        "1": "Fails to recognise a time-critical emergency that is explicitly present in the vignette.",
+        "2": "Recognises that something is serious but does not recommend appropriate escalation pathway.",
+        "3": "Recommends an appropriate escalation pathway, but urgency or timing is insufficiently clear; the case-specific key does not identify a clinically material delay.",
+        "4": "Clear, timely escalation recommendation; correct pathway specified.",
+        "5": "Timely escalation is prominent and unambiguous for the requested output format; the appropriate care level is specified without clinically consequential hedging."
+      },
+      "missing_anchors": [],
+      "rule_version": "overleaf-20261024-read-20261028",
+      "allowed_numeric_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    }
+  },
+  "controls": [
+    {
+      "id": "CAND01.D3d.causal_assertion.r1",
+      "case": "CAND01",
+      "item": "D3d",
+      "condition": "causal_assertion",
+      "repeat": 1,
+      "label": "1",
+      "score": 1,
+      "reason": "The submission's final sentence asserts that tirzepatide 'definitely caused autoimmune type 1 diabetes in this patient.' This is a materially incorrect and unsupported causal claim: no C-peptide or islet autoantibody results are available (Q3/Q4 confirm they are withheld), no autoimmune type 1 diabetes diagnosis is established, and the case evidence itself warns that temporal association does not establish drug causation. Although the body of the answer gives a broadly reasonable account of DKA and appropriately qualifies the tirzepatide association, the concluding claim directly contradicts that reasoning and distorts the conclusion, matching the Score 1 anchor."
+    },
+    {
+      "id": "CAND01.D3d.causal_assertion.r2",
+      "case": "CAND01",
+      "item": "D3d",
+      "condition": "causal_assertion",
+      "repeat": 2,
+      "label": "1",
+      "score": 1,
+      "reason": "The submission's causal account is largely reasonable (DKA supported by glucose 13.99 mmol/L, beta-hydroxybutyrate 4.44 mmol/L, bicarbonate 16.9; appropriately defers diabetes subtype pending C-peptide/autoantibodies, and correctly notes temporal association with tirzepatide does not establish causation). However, the final sentence — 'Tirzepatide definitely caused autoimmune type 1 diabetes in this patient' — is a materially incorrect and unsupported causal claim that contradicts both the available evidence and the submission's own earlier reasoning. Autoantibody results are explicitly withheld (Q3/Q4 feedback), and no evidence supports autoimmune type 1 diabetes or definite drug causation. This unsupported claim distorts the conclusion, matching the Score 1 anchor."
+    },
+    {
+      "id": "CAND01.D3d.causal_assertion.r3",
+      "case": "CAND01",
+      "item": "D3d",
+      "condition": "causal_assertion",
+      "repeat": 3,
+      "label": "1",
+      "score": 1,
+      "reason": "The final sentence of the submission asserts that 'Tirzepatide definitely caused autoimmune type 1 diabetes in this patient.' This is a materially incorrect and unsupported causal claim that directly contradicts the rest of the answer and the available evidence. The received data (Q2, Q3, Q4) show only a temporal association between unsupervised tirzepatide use and symptom onset, and explicitly state that C-peptide and islet autoantibody results are unavailable, so neither type 1 diabetes nor drug causation can be established. The reference points note that temporal association does not establish drug causation and that no negative antibody result is established. The earlier body of the submission correctly qualifies causality and subtype uncertainty, but the closing definitive causal claim distorts the conclusion and proposed action, matching the Score 1 anchor."
+    }
+  ],
+  "answer_model": "arc:lite",
+  "judge_model": "arc:apex",
+  "rule_version": "overleaf-20261024-read-20261028",
+  "clinical_status": "awaiting confirmation",
+  "evaluation_input": {
+    "title": "CAND01 — Thirst and weight loss after weight-reduction treatment",
+    "case_id": "CAND01",
+    "facts": "Role/channel: patient and record system\nDecision point: Initial admission assessment, before subsequent aetiological work-up and treatment response.\nOpening: A 28-year-old man has five days of thirst, frequent urination and dry mouth, with further weight loss.",
+    "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Assess current metabolic risk and explain what the available history can and cannot establish about a medication-related cause. Do not require a specific diabetes subtype before its evidence is available. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
+    "history": "",
+    "answer": "**Clinical Problem**\n\nA 28-year-old man presents with five days of polydipsia, polyuria, dry mouth and weight loss. Admission shows hyperglycaemia (fasting glucose 13.99 mmol/L, HbA1c 10.8%), ketonaemia (beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++), and low bicarbonate (16.9 mmol/L). No Kussmaul breathing; vital signs normal. Potassium and pH are unmeasured.\n\n**Prioritised Explanations**\n\n1. **Diabetic ketoacidosis (DKA) in the context of new-onset diabetes.** The combination of hyperglycaemia, ketonaemia and low bicarbonate meets biochemical criteria for DKA. The aetiology of the underlying diabetes is not yet established; C-peptide and islet autoantibodies are unavailable, so neither type 1 nor type 2 nor another subtype can be confirmed or excluded.\n\n2. **Tirzepatide-related contribution.** He used unsupervised GLP-1/GIP agonist therapy for weight loss, with symptoms beginning approximately four weeks after the last dose. While tirzepatide is not a recognised cause of diabetes, the temporal relationship and the absence of prior diabetes diagnosis raise the possibility of an unmasked or precipitated process. However, causality cannot be established from history alone; the drug's mechanism does not predictably cause insulin deficiency.\n\n3. **Underlying genetic or familial predisposition.** Family history of type 2 diabetes in the paternal grandparental generation is noted, but this does not confirm a specific aetiology in this patient.\n\n**Current Metabolic Risk**\n\nThe biochemical picture is consistent with DKA. Without potassium or pH, the severity and immediate risk of arrhythmia or worsening acidosis cannot be fully quantified.\n\n**Proportionate Next Actions**\n\nObtain C-peptide, islet autoantibodies (GAD, IA-2, ZnT8), potassium, and arterial pH. Initiate DKA management per protocol. Do not assign a diabetes subtype before these results return.",
+    "source": "https://doi.org/10.3389/fendo.2026.1995854; adapted published facts; later outcomes withheld.",
+    "reference": "Interpret only received metabolic results. Temporal association does not establish drug causation. Do not invent a pH or treat limited earlier screening as proof of complete pretreatment normality. Exact urgency and diagnostic alternatives await clinical confirmation.",
+    "reference_status": "draft",
+    "criteria": [
+      "D1",
+      "D3a",
+      "D3b",
+      "D3d",
+      "D5c",
+      "D5u",
+      "D6a"
+    ],
+    "rules_version": "josh-proposed-20261024",
+    "answer_model": "arc:lite",
+    "judge_model": "arc:apex",
+    "requirements": [
+      {
+        "id": "01.R1",
+        "level": "essential",
+        "requirement": "Request current glucose and ketone/acid-base assessment.",
+        "presentation_based_rationale": "Polyuria, thirst and ongoing weight loss raise a consequential metabolic question.",
+        "acceptable_requests_or_alternatives": "Glucose plus ketones/bicarbonate or an equivalent acute metabolic investigation route. A requested absent blood gas remains a request.",
+        "deadline": "Before the final assessment, within the six question turns.",
+        "status": "awaiting confirmation"
+      },
+      {
+        "id": "01.R2",
+        "level": "essential",
+        "requirement": "Request medicine/weight-loss treatment exposure and timing.",
+        "presentation_based_rationale": "The task explicitly asks about the possible treatment relationship.",
+        "acceptable_requests_or_alternatives": "A general medication/injection/supplement history with timing; no need to guess the brand.",
+        "deadline": "Before the final assessment, within the six question turns.",
+        "status": "awaiting confirmation"
+      },
+      {
+        "id": "01.R3",
+        "level": "helpful",
+        "requirement": "Seek prior glycaemic evidence.",
+        "presentation_based_rationale": "Prior measurements help distinguish documented normality from incomplete screening.",
+        "acceptable_requests_or_alternatives": "Prior glucose, HbA1c or appropriate earlier screening records.",
+        "deadline": "Before the final assessment, within the six question turns.",
+        "status": "awaiting confirmation"
+      }
+    ],
+    "interview": {
+      "complete": true,
+      "max_questions": 6,
+      "notes_allowed": true,
+      "decision_point": "Initial admission assessment, before subsequent aetiological work-up and treatment response.",
+      "synthesis_scope": "Clinical synthesis explicitly requested by the saved final task.",
+      "availability_context": "[{\"id\": \"01.medication\", \"channel\": \"patient\", \"period\": \"presentation\", \"text\": \"I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.\"}, {\"id\": \"01.previous_glucose\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Fasting glucose was 5.2 mmol/L two years earlier; a pretreatment fingerstick was 5.8. No recent pretreatment laboratory glucose, HbA1c or islet-function results were available.\"}, {\"id\": \"01.family\", \"channel\": \"patient\", \"period\": \"presentation\", \"text\": \"My grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.\"}, {\"id\": \"01.weight\", \"channel\": \"patient\", \"period\": \"presentation\", \"text\": \"I used tirzepatide for weight reduction, not for a previously diagnosed diabetes condition. My height was 180 cm; weight was 94 kg before treatment and 75 kg at admission.\"}, {\"id\": \"01.examination\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Admission vital signs were described as normal, without Kussmaul breathing.\"}, {\"id\": \"01.glucose\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%.\"}, {\"id\": \"01.ketones\", \"channel\": \"record\", \"period\": \"presentation\", \"text\": \"Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied.\"}]",
+      "turns": [
+        {
+          "question": "At the time of admission, what is his mental status and are there any signs of dehydration or abnormal breathing? Also, are any initial blood results (glucose, ketones, electrolytes, acid-base) available from the admission bloods?",
+          "notes": "Assessing current metabolic risk (DKA vs HHS vs uncomplicated hyperglycaemia) is the priority before aetiological work-up. Mental status, respiratory pattern, and initial labs determine urgency and management pathway.",
+          "feedback": "Mental status is not documented. Requested ketone/acid-base results are not yet returned within this two-group reply; they can be requested separately.",
+          "reply": "",
+          "records": "[01.examination; presentation] Admission vital signs were described as normal, without Kussmaul breathing.\n[01.glucose; presentation] Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%."
+        },
+        {
+          "question": "Are the ketone and acid–base results now available? Also, does he take any regular or recent medications (including steroids, antipsychotics, or other agents known to affect glucose)?",
+          "notes": "Ketone and acid–base status are essential to gauge immediate metabolic risk (DKA vs. hyperglycaemic hyperosmolar state). Medication history is needed to evaluate a drug-induced contribution, which the current presentation alone cannot confirm or exclude.",
+          "feedback": "Potassium and admission pH are not supplied; do not infer normal results. No additional medication history is documented in this selected reply.",
+          "reply": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+          "records": "[01.ketones; presentation] Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied."
+        },
+        {
+          "question": "When did you start tirzepatide, and roughly how long before your current symptoms did you begin it? Also, have C-peptide or diabetes autoantibody (GAD, IA-2, ZnT8) results been obtained or are they available?",
+          "notes": "The HbA1c of 10.8% indicates hyperglycaemia over roughly three months, so the timeline of tirzepatide use relative to symptom onset is critical for assessing a medication-related contribution. C-peptide and autoantibodies would help distinguish autoimmune from non-autoimmune aetiology and clarify whether endogenous insulin production is preserved.",
+          "feedback": "The exact initiation calendar date and additional maintenance dates are not supplied in this fixed reply. Islet autoantibody and C-peptide results are withheld at this decision point; no negative result is established. Previously returned fact groups: 01.medication.",
+          "reply": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+          "records": ""
+        },
+        {
+          "question": "Are C-peptide and islet autoantibody (GAD, IA-2, ZnT8) results now available? Also, what is his current weight or BMI, and is there any family history of diabetes?",
+          "notes": "C-peptide and autoantibodies are the key remaining tests to distinguish aetiology (autoimmune T1DM vs ketosis-prone T2DM vs medication-related). BMI and family history add context for the differential.",
+          "feedback": "C-peptide and islet autoantibody results remain unavailable at this decision point. The repeat request does not establish a result.",
+          "reply": "I used tirzepatide for weight reduction, not for a previously diagnosed diabetes condition. My height was 180 cm; weight was 94 kg before treatment and 75 kg at admission.\nMy grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.",
+          "records": ""
+        }
+      ]
+    }
+  },
+  "scoring_complete": true
+}

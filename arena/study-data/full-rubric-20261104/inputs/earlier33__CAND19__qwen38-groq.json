@@ -1,0 +1,408 @@
+{
+  "subject_key": "earlier33__CAND19__qwen38-groq",
+  "case_key": "earlier33__CAND19",
+  "case_id": "CAND19",
+  "cohort": "earlier33",
+  "answer_model": "qwen38-groq",
+  "answer_model_label": "Qwen3.8 27B / Groq",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/answers/qwen38-groq/CAND19.json",
+  "source_answer_sha256": "298d18b94276808c5ba16d0af1b7078f2ba62101c55a147c676867c7d1888aa8",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND19",
+    "model": "qwen/qwen3.8-27b",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "To help distinguish between a progression of his psychiatric condition and a new neurological issue, could you describe the specific changes in his behavior and daily functioning over the last few months? Additionally, are there any existing medical records, such as recent blood tests or brain imaging, that we can review?",
+        "assessment": {
+          "summary": "35-year-old male with a history of schizophrenia presenting with worsening behavior, reduced functioning, and decreased verbal output. The clinical picture is currently indeterminate, as it is unclear whether this represents a relapse of his psychiatric condition or the onset of a new neurological process. No specific examination findings or test results have been provided yet.",
+          "certainty": "uncertain",
+          "working": "Progression of schizophrenia vs. new neurological etiology"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "To help distinguish between a progression of his psychiatric condition and a new neurological issue, could you describe the specific changes in his behavior and daily functioning over the last few months? Additionally, are there any existing medical records, such as recent blood tests or brain imaging, that we can review?",
+          "topics": [
+            "presenting_symptoms",
+            "tests"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "35-year-old male with a history of schizophrenia presenting with worsening behavior, reduced functioning, and decreased verbal output. The clinical picture is currently indeterminate, as it is unclear whether this represents a relapse of his psychiatric condition or the onset of a new neurological process. No specific examination findings or test results have been provided yet.",
+            "certainty": "uncertain",
+            "working": "Progression of schizophrenia vs. new neurological etiology"
+          }
+        },
+        "returned": [
+          {
+            "id": "19.progression",
+            "channel": "caregiver",
+            "text": "Changes progressed over three years: loss of empathy, disinhibition, self-neglect, job loss and dependence on family. Speech became markedly reduced in the last six months.",
+            "source_location": "L137-L138; L172-L174",
+            "match": "course|onset|duration|progress|function|behavio|speech|timeline|daily|cognit|memory|personality",
+            "period": "presentation"
+          },
+          {
+            "id": "19.laboratory",
+            "channel": "record",
+            "text": "Routine bloods, thyroid function, vitamin B12, HIV and VDRL testing were unremarkable.",
+            "source_location": "L140",
+            "match": "blood|laborator|thyroid|vitamin|b12|\\bhiv\\b|vdrl|reversible",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "19.progression",
+              "request_span": "specific changes in his behavior and daily functioning over the last few months"
+            },
+            {
+              "id": "19.laboratory",
+              "request_span": "recent blood tests"
+            },
+            {
+              "id": "19.ct",
+              "request_span": "brain imaging"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Have there been any new physical symptoms such as tremors, stiffness, falls, or changes in walking, and is there an existing brain MRI report we can review?",
+        "assessment": {
+          "summary": "The three-year progression of personality change, disinhibition, and functional decline, combined with recent mutism, suggests a neurodegenerative or progressive neurological process rather than a simple schizophrenia relapse. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics, but do not rule out structural or neurodegenerative causes. The absence of reported motor symptoms leaves the differential broad, including frontotemporal dementia, late-onset psychiatric disorders, or other progressive encephalopathies.",
+          "certainty": "uncertain",
+          "working": "Progressive neurological disorder (e.g., frontotemporal dementia) vs. treatment-resistant schizophrenia"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Have there been any new physical symptoms such as tremors, stiffness, falls, or changes in walking, and is there an existing brain MRI report we can review?",
+          "topics": [
+            "presenting_symptoms",
+            "mri_imaging"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "The three-year progression of personality change, disinhibition, and functional decline, combined with recent mutism, suggests a neurodegenerative or progressive neurological process rather than a simple schizophrenia relapse. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics, but do not rule out structural or neurodegenerative causes. The absence of reported motor symptoms leaves the differential broad, including frontotemporal dementia, late-onset psychiatric disorders, or other progressive encephalopathies.",
+            "certainty": "uncertain",
+            "working": "Progressive neurological disorder (e.g., frontotemporal dementia) vs. treatment-resistant schizophrenia"
+          }
+        },
+        "returned": [
+          {
+            "id": "19.gait",
+            "channel": "record",
+            "text": "He walked independently with a slow normal-based gait and reduced bilateral arm swing, without freezing, festination or overt instability.",
+            "source_location": "L151",
+            "match": "walk|gait|arm swing|parkinson|mobility",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: tremors, stiffness, falls; brain MRI report. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "19.gait",
+              "request_span": "changes in walking"
+            }
+          ],
+          "unanswered_spans": [
+            "tremors, stiffness, falls",
+            "brain MRI report"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Has he experienced any new physical symptoms such as tremors, stiffness, or falls, and is there an existing brain MRI report we can review?",
+        "assessment": {
+          "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+          "certainty": "uncertain",
+          "working": "Progressive neurological disorder vs. treatment-resistant schizophrenia"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Has he experienced any new physical symptoms such as tremors, stiffness, or falls, and is there an existing brain MRI report we can review?",
+          "topics": [
+            "presenting_symptoms",
+            "mri_imaging"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+            "certainty": "uncertain",
+            "working": "Progressive neurological disorder vs. treatment-resistant schizophrenia"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: tremors, stiffness, or falls; brain MRI report. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "tremors, stiffness, or falls",
+            "brain MRI report"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "What specific antipsychotic medications has he been taking, and for how long? Additionally, are there any existing EEG or CT scan reports available for review?",
+        "assessment": {
+          "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+          "certainty": "uncertain",
+          "working": "Progressive neurological disorder vs. treatment-resistant schizophrenia"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What specific antipsychotic medications has he been taking, and for how long? Additionally, are there any existing EEG or CT scan reports available for review?",
+          "topics": [
+            "medications",
+            "tests"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+            "certainty": "uncertain",
+            "working": "Progressive neurological disorder vs. treatment-resistant schizophrenia"
+          }
+        },
+        "returned": [
+          {
+            "id": "19.treatment",
+            "channel": "record",
+            "text": "Prescriptions included amitriptyline, clozapine, aripiprazole, valproate, procyclidine and lorazepam, without meaningful improvement. Exact durations and dose changes could not be verified.",
+            "source_location": "L139",
+            "match": "medic|drug|treat|prescri|response|clozapine|antipsych|dose",
+            "period": "presentation"
+          },
+          {
+            "id": "19.ct",
+            "channel": "record",
+            "text": "The initial CT was interpreted as hydrocephalus, prompting referral. Its later reinterpretation is not supplied at this point.",
+            "source_location": "L140; L175",
+            "match": "\\bct\\b|computed tomography|previous.{0,15}(scan|imag)|initial.{0,15}(scan|imag)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: for how long; EEG. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "19.treatment",
+              "request_span": "specific antipsychotic medications has he been taking"
+            },
+            {
+              "id": "19.ct",
+              "request_span": "CT scan reports available for review"
+            }
+          ],
+          "unanswered_spans": [
+            "for how long",
+            "EEG"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Given the CT finding of hydrocephalus, has he had any recent changes in headache, nausea, or level of consciousness, and is there a more recent brain imaging report available to review?",
+        "assessment": {
+          "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+          "certainty": "uncertain",
+          "working": "Progressive neurodegenerative disorder vs. treatment-resistant schizophrenia"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Given the CT finding of hydrocephalus, has he had any recent changes in headache, nausea, or level of consciousness, and is there a more recent brain imaging report available to review?",
+          "topics": [
+            "presenting_symptoms",
+            "ct_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+            "certainty": "uncertain",
+            "working": "Progressive neurodegenerative disorder vs. treatment-resistant schizophrenia"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: recent changes in headache, nausea, or level of consciousness; a more recent brain imaging report available to review. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "recent changes in headache, nausea, or level of consciousness",
+            "a more recent brain imaging report available to review"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-11-02T16:34:06.446887+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "35-year-old male with a history of schizophrenia presenting with a three-year progression of personality change, disinhibition, and functional decline, culminating in recent mutism. Unremarkable routine bloods, thyroid, B12, HIV, and VDRL results help exclude common metabolic or infectious mimics. The gait is described as slow with reduced arm swing but without freezing or instability. The clinical picture remains indeterminate, distinguishing between a progressive neurological disorder (e.g., frontotemporal dementia) and treatment-resistant schizophrenia.",
+      "certainty": "uncertain",
+      "working": "Progressive neurodegenerative disorder vs. treatment-resistant schizophrenia"
+    },
+    "final_answer": "**Clinical Summary**\nA 35-year-old man with a prior schizophrenia diagnosis presents with a three-year progressive decline. Key features include loss of empathy, disinhibition, self-neglect, job loss, and recent mutism. Routine bloods, thyroid function, B12, HIV, and VDRL were unremarkable. Gait is slow with reduced arm swing but lacks freezing or instability. An initial CT was interpreted as hydrocephalus, prompting referral. Medication history includes clozapine, aripiprazole, valproate, and others, without meaningful improvement. Exact medication durations and dose changes remain unverified. No EEG or recent MRI is available.\n\n**Prioritised Explanations**\n1. **Progressive Neurological Disorder:** The three-year trajectory of personality change, disinhibition, and functional decline, culminating in mutism, strongly suggests a neurodegenerative process such as frontotemporal dementia. The initial CT finding of hydrocephalus adds structural uncertainty. However, the absence of reported tremors, stiffness, or falls leaves the specific etiology broad.\n2. **Treatment-Resistant Schizophrenia:** The established label and polypharmacy regimen support this possibility. Yet, the specific pattern of early personality change and disinhibition is atypical for standard schizophrenia progression. The lack of meaningful response to multiple agents, including clozapine, raises concern for an alternative diagnosis.\n3. **Hydrocephalus-Related Encephalopathy:** The initial CT interpretation of hydrocephalus could explain gait changes and cognitive decline. However, the absence of reported headache, nausea, or altered consciousness makes acute pressure symptoms less likely, though chronic progression remains possible.\n\n**Next Actions**\nUrgent neurological referral is required. Obtain a brain MRI to clarify the hydrocephalus finding and assess for atrophy. Verify medication durations and doses to rule out adverse effects. Perform a comprehensive cognitive assessment to distinguish progression from baseline. Note that incomplete cognitive data and unverified medication history limit definitive diagnosis.",
+    "word_count": {
+      "words": 267,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": false,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-11-02T18:07:17.937667+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D1.json",
+      "status": "complete",
+      "score": 3,
+      "reason": "The submission is largely grounded in the supplied evidence: three-year progression with disinhibition, self-neglect and reduced speech (Q1), unremarkable bloods (Q1), gait findings (Q2), medication list with unverified durations (Q4), and the initial CT read as hydrocephalus (Q4), with appropriate hedging such as 'absence of reported tremors' and preserved uncertainty about medication duration and CT interpretation. However, there are minor inaccuracies: it describes 'mutism' when the evidence says speech 'became markedly reduced'/'says very little'; and it states 'No EEG or recent MRI is available' when the environment only indicated no supplied answer (not confirmed unavailability), a subtle overstatement of absent evidence. These are clinically inconsequential and would not mislead, matching the Score 3 anchor rather than Score 4's 'accurate throughout'."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D3a.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The summary accurately integrates the available evidence: three-year progressive behavioural/personality decline with reduced speech, unremarkable routine bloods, gait with reduced arm swing, polypharmacy without improvement, unverified medication durations, and the initial CT read as hydrocephalus. It appropriately prioritises a neurodegenerative process, treatment-resistant schizophrenia, and hydrocephalus-related encephalopathy, qualifying uncertainty (e.g., absence of reported pressure symptoms, unverified medication history, incomplete cognitive data) as the task required. Minor defects prevent a 5: 'recent mutism' slightly overstates the supplied finding of markedly reduced speech, and 'No EEG or recent MRI is available' treats unreturned information as confirmed absence rather than unverified/unsupplied. These do not materially misframe the problem, so the anchor for Score 4 applies: accurate integration with appropriate qualification, minor limitations only."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D3b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission prioritises a breadth-appropriate differential using the actual evidence: frontotemporal-type neurodegenerative disorder first (supported by the three-year disinhibition/empathy loss/functional decline and mutism from Q1), treatment-resistant schizophrenia second (with explicit reasoning that the pattern and clozapine non-response from Q4 are atypical), and hydrocephalus-related encephalopathy third (based on the Q4 CT interpretation), with negative routine bloods, thyroid, B12, HIV and VDRL implicitly excluding metabolic/infectious mimics. Prior plausibility and dangerous alternatives are addressed proportionately, and uncertainty about medication duration and the CT interpretation is preserved as required. However, it is not a full Score 5: it treats unanswered requests as negative findings — Q2/Q3 explicitly state tremors, stiffness and falls were not answered (not absent), and Q5 states headache, nausea and consciousness changes were not answered — yet the submission says 'the absence of reported tremors, stiffness, or falls' and 'the absence of reported headache, nausea, or altered consciousness' to argue against parkinsonian features and acute raised pressure. The environment warned these are not negative clinical findings, so this weakens the explicit discriminating-finding support. The differential is otherwise well prioritised and clinically plausible, placing this at Score 4."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D4d.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission correctly interprets the trajectory: a three-year progressive decline (loss of empathy, disinhibition, self-neglect, job loss, then marked speech reduction/mutism) is distinguished from the established schizophrenia label using collateral history (Q1) and treatment non-response (Q4), consistent with the reference note not to equate the label with progression. It grades the explanations by likelihood (frontotemporal-type neurodegeneration first, treatment-resistant schizophrenia second, hydrocephalus-related encephalopathy third) and preserves required uncertainty: medication durations 'remain unverified' (Q4), the CT interpretation is flagged as uncertain, and incomplete cognitive data are acknowledged. It links the trajectory to management decisions (urgent neurological referral, MRI to clarify hydrocephalus and assess atrophy, medication verification, formal cognitive assessment). Minor caveat: it phrases unreturned items as 'absence of reported tremors, stiffness, or falls' and headache/nausea (Q2/Q3/Q5 returned no answers), which is defensible wording ('not reported') rather than an inferred negative finding, and does not materially distort the trajectory interpretation. Overall this meets the anchor for correct, graded, and management-linked interpretation."
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D5u.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission generally calibrates well: it distinguishes what is established (three-year progression, unremarkable bloods, medication list) from what is unknown (exact durations, CT interpretation), names the sources of uncertainty (unverified medication history, incomplete cognitive data, structural uncertainty from the CT), and identifies concrete next steps to reduce it (MRI, verifying medication durations, comprehensive cognitive assessment). However, it falls short of a top score on calibration: it treats environment non-responses as negative findings — e.g., 'the absence of reported tremors, stiffness, or falls' and 'absence of headache, nausea, or altered consciousness' (Q2–Q3 and Q5 explicitly state these are not supplied and are not negative findings), and 'No EEG or recent MRI is available' overstates unreturned information as confirmed unavailability. This slightly overstates what is known, preventing fully accurate distinction of established versus unresolved conclusions, so Score 4 is the best fit."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/qwen_all_cases_20261101/cohorts/earlier33/grades/qwen38-groq/CAND19.D5c.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "All three essential requirements were met before the final assessment: R1 (collateral progression and functioning) was requested in Q1 and returned; R2 (treatment history and response) was requested in Q4 and returned; R3 (neurological assessment/brain investigation) was addressed by the MRI request in Q2 and the CT request in Q4, with the CT report returned. Requests were targeted at the core clinical uncertainty (psychiatric relapse vs. new neurological process) and were appropriately timed. Weaknesses prevent a 5: Q3 exactly repeated Q2's unanswered items, wasting a turn; the repeated MRI request and the EEG request were for items unavailable in this pre-MRI packet, adding some unnecessary information gathering; and the public assessment notes did not clearly explain how the requested information would alter interpretation or action. These are minor prioritisation and efficiency issues that do not materially limit the assessment, so Score 4 applies."
+    },
+    "D6a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

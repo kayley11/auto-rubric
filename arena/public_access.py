@@ -71,6 +71,11 @@ def members(raw):
         if identifier in result:
             raise ValueError("Member IDs must be unique.")
         result[identifier] = {"id": identifier, "role": row["role"], "password_hash": encoded}
+        if row.get("workspace"):
+            result[identifier]["workspace"] = row["workspace"]
+    for member in result.values():
+        if member.get("workspace") and member["workspace"] not in result:
+            raise ValueError("A shared workspace must name a configured account.")
     return result
 
 

@@ -4,8 +4,12 @@ import hashlib
 import json
 import re
 from copy import deepcopy
+from pathlib import Path
 
 from study import ORIGINAL_VERSION, dataset, interview
+from workspace_rules import WorkspaceRules
+
+WORKSPACE_RULES = WorkspaceRules(Path(__file__).resolve().parent / ".data/workspace-rules")
 
 REVISED_ID = "josh-proposed-20261024"
 REVISED_VERSION = {
@@ -14,11 +18,21 @@ REVISED_VERSION = {
     "scope": "Replaces D3a and D5c only; all other items retain their original anchors.",
     "status": (
         "Author-proposed rules; case requirements and clinical references "
-        "await Josh’s confirmation."
+        "are awaiting confirmation."
     ),
 }
-VERSIONS = [ORIGINAL_VERSION, REVISED_VERSION]
-PENDING = "Researcher candidate; awaiting Josh’s confirmation"
+MANUSCRIPT_ID = "overleaf-20261024-read-20261028"
+MANUSCRIPT_VERSION = {
+    "id": MANUSCRIPT_ID,
+    "label": "Manuscript snapshot · 24 Oct 2026",
+    "scope": (
+        "Uses the 11 retained manuscript criteria, including revised problem "
+        "representation and information seeking. Other items keep original anchors."
+    ),
+    "status": "Clinical references and information requirements: awaiting confirmation.",
+}
+VERSIONS = [ORIGINAL_VERSION, REVISED_VERSION, MANUSCRIPT_VERSION]
+PENDING = "Researcher candidate; awaiting confirmation"
 CLEAN_EVIDENCE_ID = "clean-evidence-20261025"
 EVIDENCE_ID = "availability-clarified-20261025"
 LEGACY_EVIDENCE_ID = "website-evidence-20261024"
@@ -54,10 +68,27 @@ def version_info(version_id="original"):
     for version in VERSIONS:
         if version["id"] == version_id:
             return deepcopy(version)
-    raise ValueError("Choose the original rubric or Josh’s proposed D3a / D5c.")
+    saved = WORKSPACE_RULES.record(version_id)
+    if saved:
+        return {k: saved[k] for k in ("id", "label", "base_version", "status", "scope")}
+    raise ValueError("Choose an available scoring rule version.")
+
+
+def revised_version(version_id):
+    for _ in range(100):
+        if version_id in {REVISED_ID, MANUSCRIPT_ID}:
+            return True
+        record = WORKSPACE_RULES.record(version_id)
+        if not record:
+            return False
+        version_id = record["base_version"]
+    raise ValueError("Rubric revision chain is too long.")
 
 
 def rubric_snapshot(original, version_id="original"):
+    saved = WORKSPACE_RULES.record(version_id)
+    if saved:
+        return deepcopy(saved["rubric"])
     result = deepcopy(original)
     version_info(version_id)
     if version_id == REVISED_ID:
@@ -65,6 +96,12 @@ def rubric_snapshot(original, version_id="original"):
             if item["id"] in {"D3a", "D5c"}:
                 item.update(deepcopy(dataset()["revised_rules"][item["id"]]))
                 item.update(missing_anchors=[], rule_version=REVISED_ID)
+    elif version_id == MANUSCRIPT_ID:
+        path = Path(__file__).resolve().parent / "public/cases/BMJ_RUBRIC.json"
+        current = {c["id"]: c for c in json.loads(path.read_text(encoding="utf-8"))["criteria"]}
+        for item in result["criteria"]:
+            if item["id"] in current:
+                item.update(deepcopy(current[item["id"]]))
     return result
 
 
@@ -208,10 +245,13 @@ def legacy_revised_query(data, cid):
     if data["history"]:
         query += "\n\nEarlier conversation actually supplied:\n" + data["history"]
     query += "\n\nDecision point: " + record["decision_point"]
-    query += (
-        f"\nAllowed questions: {record['max_questions']}. "
-        f"Transcript complete: {record['complete']}."
-    )
+    if data.get("evaluation_mode") == "written" and not record["turns"]:
+        query += "\nWritten task; no executed question/response opportunity."
+    else:
+        query += (
+            f"\nAllowed questions: {record['max_questions']}. "
+            f"Transcript complete: {record['complete']}."
+        )
     if cid == "D3a":
         query += "\nSynthesis scope: " + record["synthesis_scope"]
         query += (
@@ -265,11 +305,14 @@ def revised_query(data, cid):
     )
     if data["history"]:
         query += "\n\nEarlier conversation actually supplied:\n" + data["history"]
-    query += (
-        f"\n\nDecision point: {record['decision_point']}"
-        f"\nAllowed questions: {record['max_questions']}. "
-        f"Transcript complete: {record['complete']}."
-    )
+    query += f"\n\nDecision point: {record['decision_point']}"
+    if data.get("evaluation_mode") == "written" and not record["turns"]:
+        query += "\nWritten task; no executed question/response opportunity."
+    else:
+        query += (
+            f"\nAllowed questions: {record['max_questions']}. "
+            f"Transcript complete: {record['complete']}."
+        )
     if cid == "D3a":
         return (
             query

@@ -1,0 +1,323 @@
+{
+  "subject_key": "earlier33__CAND12__kcl-chat",
+  "case_key": "earlier33__CAND12",
+  "case_id": "CAND12",
+  "cohort": "earlier33",
+  "answer_model": "kcl-chat",
+  "answer_model_label": "arc:chat / Qwen3.8-Flash-Next",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-chat/CAND12.json",
+  "source_answer_sha256": "de2d424fa5ea21f28914b5bd74a28b784bf43d80b31b9b4c71228092f44a4e44",
+  "has_complete_answer": false,
+  "source_status": "interviewing",
+  "state": {
+    "case_id": "CAND12",
+    "model": "arc:chat",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What do the existing EEG and brain MRI reports from the age-75 admission show?",
+        "assessment": {
+          "summary": "A 75-year-old man has late-onset focal seizures that have become daily, with worsening memory. The main problem is identifying whether cognition is affected by seizure burden, a structural lesion, an inflammatory or neurodegenerative process, or another cause. Existing EEG and MRI reports are needed to characterise epileptiform activity and structural or signal abnormalities.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What do the existing EEG and brain MRI reports from the age-75 admission show?",
+          "topics": [
+            "eeg",
+            "mri_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "A 75-year-old man has late-onset focal seizures that have become daily, with worsening memory. The main problem is identifying whether cognition is affected by seizure burden, a structural lesion, an inflammatory or neurodegenerative process, or another cause. Existing EEG and MRI reports are needed to characterise epileptiform activity and structural or signal abnormalities.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "12.age75_video_eeg",
+            "channel": "record",
+            "text": "At 75, 24-hour video EEG recorded six clinical seizures with ictal discharges arising in the left frontotemporal region and spreading through the left hemisphere. Table 1 also lists interictal spike/sharp-wave and sharp-transient counts, but explicitly states that sharp transients were not definitively epileptiform.",
+            "source_location": "epilepsy_biomarkers-B0057; epilepsy_biomarkers-B0061-B0065; epilepsy_biomarkers-B0071",
+            "match": "eeg|electroencephal|electrophysi|monitor|ictal|interictal|discharg|sharp|spike|localis|localiz",
+            "period": "presentation"
+          },
+          {
+            "id": "12.imaging_through_75",
+            "channel": "record",
+            "text": "At 74, brain MRI including susceptibility-weighted sequences showed mild diffuse atrophy without hippocampal sclerosis, microbleeds, amyloid-angiopathy features or significant vascular burden. FDG-PET showed no significant hypometabolism. At 75, repeat MRI and FDG-PET showed no significant interval change. No age-75 amyloid PET result is supplied.",
+            "source_location": "epilepsy_biomarkers-B0056-B0057; epilepsy_biomarkers-B0055, age-74/75 figure description",
+            "match": "imag|mri|magnetic resonance|atrophy|hippocamp|vascular|fdg|pet|scan|structur|amyloid imaging",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "12.age75_video_eeg",
+              "request_span": "EEG"
+            },
+            {
+              "id": "12.imaging_through_75",
+              "request_span": "brain MRI reports from the age-75 admission"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "What anti-seizure medications has he been taking, and has there been any change in dose or regimen around the time seizures became daily?",
+        "assessment": {
+          "summary": "A 75-year-old man has daily left frontotemporal focal seizures with worsening memory. MRI and FDG-PET at 74 and 75 show only mild diffuse atrophy without focal lesion, hippocampal sclerosis, vascular pathology, or significant hypometabolism. The high seizure burden from the left frontotemporal region is a plausible contributor to cognitive decline, but an underlying neurodegenerative or inflammatory process cannot be excluded given the progressive memory symptoms. Treatment adequacy is unknown.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What anti-seizure medications has he been taking, and has there been any change in dose or regimen around the time seizures became daily?",
+          "topics": [
+            "medications"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "A 75-year-old man has daily left frontotemporal focal seizures with worsening memory. MRI and FDG-PET at 74 and 75 show only mild diffuse atrophy without focal lesion, hippocampal sclerosis, vascular pathology, or significant hypometabolism. The high seizure burden from the left frontotemporal region is a plausible contributor to cognitive decline, but an underlying neurodegenerative or inflammatory process cannot be excluded given the progressive memory symptoms. Treatment adequacy is unknown.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "12.medication_history",
+            "channel": "record",
+            "text": "Carbamazepine was stopped after a drug eruption. Valproate monotherapy, reported at up to 800 mg/day, was associated with seizure remission by age 64. Gabapentin was added at age 74 after recurrent seizures and right frontotemporal sharp waves on repeated EEG; its dose and the exact current valproate dose are not supplied here.",
+            "source_location": "epilepsy_biomarkers-B0053; epilepsy_biomarkers-B0056",
+            "match": "medic|drug|treat|carbamazepine|valpro|gabapentin|adverse|rash|eruption|allerg|response|antiseizure|anti.seizure",
+            "period": "presentation"
+          },
+          {
+            "id": "12.seizure_burden",
+            "channel": "record",
+            "text": "Focal impaired-awareness seizures recurred at age 72 after earlier remission, increased by 74 and became daily by the admission at 75 despite treatment.",
+            "source_location": "epilepsy_biomarkers-B0056-B0057",
+            "match": "seiz|frequency|burden|daily|recurr|remission|control|timeline|course|progress|history",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "12.medication_history",
+              "request_span": "What anti-seizure medications has he been taking, and has there been any change in dose or regimen around the time seizures became daily"
+            },
+            {
+              "id": "12.seizure_burden",
+              "request_span": "around the time seizures became daily"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Were any CSF studies performed during the age-75 admission, and if so, what were the cell count, protein, and any oligoclonal band or antibody results?",
+        "assessment": {
+          "summary": "A 75-year-old man has escalating left frontotemporal focal seizures (now daily) with worsening memory. MRI at 74 and 75 shows only mild diffuse atrophy without structural lesion, hippocampal sclerosis, or vascular pathology; FDG-PET shows no significant hypometabolism. EEG at 75 confirms left frontotemporal ictal onset with left hemispheric spread, while EEG at 74 showed right frontotemporal sharp waves, suggesting bilateral epileptogenic potential. Seizures recurred at 72 after remission on valproate, worsened despite gabapentin addition at 74. The high seizure burden is a plausible contributor to cognitive decline, but the bilateral epileptiform activity and progressive memory symptoms raise concern for an underlying inflammatory or autoimmune process not yet excluded. CSF findings are needed to assess for inflammation or autoimmunity.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Were any CSF studies performed during the age-75 admission, and if so, what were the cell count, protein, and any oligoclonal band or antibody results?",
+          "topics": [
+            "csf"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "A 75-year-old man has escalating left frontotemporal focal seizures (now daily) with worsening memory. MRI at 74 and 75 shows only mild diffuse atrophy without structural lesion, hippocampal sclerosis, or vascular pathology; FDG-PET shows no significant hypometabolism. EEG at 75 confirms left frontotemporal ictal onset with left hemispheric spread, while EEG at 74 showed right frontotemporal sharp waves, suggesting bilateral epileptogenic potential. Seizures recurred at 72 after remission on valproate, worsened despite gabapentin addition at 74. The high seizure burden is a plausible contributor to cognitive decline, but the bilateral epileptiform activity and progressive memory symptoms raise concern for an underlying inflammatory or autoimmune process not yet excluded. CSF findings are needed to assess for inflammation or autoimmunity.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "12.age75_csf_sample",
+            "channel": "record",
+            "text": "For the age-75 Ex. 1 sample, the published CSF results are Aβ40 13,671 pg/mL; Aβ42 1,549 pg/mL (reported reference >674); Aβ42/40 ratio 0.113 (reported reference >0.118); and p-tau 74.6 pg/mL (reported reference <50.0). These are the retrospective published sample results; real-time availability of the amyloid values at 75 is not asserted.",
+            "source_location": "epilepsy_biomarkers-B0057; epilepsy_biomarkers-B0066-B0069; epilepsy_biomarkers-B0078",
+            "match": "csf|cerebrospinal|biomarker|amyloid|abeta|aβ|a-beta|a.?42|a.?40|ratio|tau|lumbar|puncture|reference range|cutoff",
+            "period": "presentation"
+          },
+          {
+            "id": "12.measurement_context",
+            "channel": "record",
+            "text": "The first lumbar puncture was at 75, so pre-epilepsy CSF biomarker levels are unknown. The article states that stored Aβ samples were measured in duplicate in one analytical batch after one freeze-thaw cycle; p-tau was measured during routine practice at each puncture. Timing of cognitive testing relative to recent seizures was not systematically recorded.",
+            "source_location": "epilepsy_biomarkers-B0078; epilepsy_biomarkers-B0092",
+            "match": "context|timing|sample|assay|method|batch|pre.?epilep|baseline biomarker|post.?ictal|recent seizure|confound|limitation|availability",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: what were the cell count; protein; any oligoclonal band; antibody results. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "12.age75_csf_sample",
+              "request_span": "Were any CSF studies performed during the age-75 admission"
+            },
+            {
+              "id": "12.measurement_context",
+              "request_span": "Were any CSF studies performed during the age-75 admission"
+            }
+          ],
+          "unanswered_spans": [
+            "what were the cell count",
+            "protein",
+            "any oligoclonal band",
+            "antibody results"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "interviewing",
+    "started_at": "2026-10-29T16:08:13.685109+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D3b": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": null,
+      "status": "no_saved_grade",
+      "score": null,
+      "reason": ""
+    },
+    "D6a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

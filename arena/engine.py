@@ -27,10 +27,12 @@ import litellm
 from dotenv import load_dotenv
 from pydantic import Field
 from scoring import (
+    MANUSCRIPT_ID,
     REVISED_ID,
     REVISED_SYSTEM,
     revised_query,
     revised_submission,
+    revised_version,
     rubric_snapshot,
     transcript,
     validate_evidence,
@@ -46,6 +48,7 @@ load_dotenv(REPO_ROOT / ".env", override=False)
 RUBRIC_BYTES = (APP_ROOT / "rubric.json").read_bytes()
 RUBRIC = json.loads(RUBRIC_BYTES)
 CRITERIA = {item["id"]: item for item in RUBRIC["criteria"]}
+RUBRIC_ID = "clinical-reasoning"
 PRESETS = {
     "Clinical reasoning": [
         "D1",
@@ -186,6 +189,9 @@ def redact(value, key=""):
 
 def validate_input(data, *, planned_interview=False):
     result = {}
+    result["rubric_id"] = data.get("rubric_id", RUBRIC_ID)
+    if result["rubric_id"] != RUBRIC_ID:
+        raise ValueError("Choose a rubric available in the catalogue.")
     limits = {
         "title": 160,
         "facts": 50000,
@@ -205,11 +211,20 @@ def validate_input(data, *, planned_interview=False):
     result["history_required"] = bool(data.get("history_required", False))
     if result["history_required"] and not result["history"]:
         raise ValueError("This follow-up needs the saved initial conversation before it can run.")
-    for key in ("case_id", "base_case_id", "reused_initial_run_id"):
+    for key in (
+        "case_id",
+        "base_case_id",
+        "reused_initial_run_id",
+        "comparison_id",
+        "case_number",
+        "case_code",
+    ):
         value = data.get(key, "")
         if not isinstance(value, str) or len(value) > 100:
             raise ValueError(f"Invalid {key}.")
         result[key] = value
+    if result["case_code"] and not re.fullmatch(r"[A-Za-z0-9_-]{1,60}", result["case_code"]):
+        raise ValueError("Use a valid case code.")
     selected = data.get("criteria", PRESETS["Clinical reasoning"])
     if not isinstance(selected, list) or not selected or any(x not in CRITERIA for x in selected):
         raise ValueError("Select at least one recognised rubric item.")
@@ -223,7 +238,7 @@ def validate_input(data, *, planned_interview=False):
         validate_evidence(
             data,
             result["criteria"],
-            result["rules_version"] == REVISED_ID and not planned_interview,
+            revised_version(result["rules_version"]) and not planned_interview,
         )
     )
     provenance = data.get("requirements_review", {})
@@ -244,9 +259,9 @@ def validate_input(data, *, planned_interview=False):
         raise ValueError("Unrecognised reference status.")
     if not result["reference"]:
         result["reference_status"] = "none"
-    elif result["rules_version"] == REVISED_ID:
+    elif revised_version(result["rules_version"]):
         result["reference_status"] = "draft"
-    result["title"] = result["title"] or result["facts"].splitlines()[0][:75]
+    result["title"] = result["title"] or result["case_code"] or result["facts"].splitlines()[0][:75]
     return result
 
 
@@ -282,7 +297,7 @@ def word_count_info(answer, task=""):
 
 
 def judge_query(data, cid=None):
-    if data.get("rules_version") == REVISED_ID and cid in {"D3a", "D5c"}:
+    if revised_version(data.get("rules_version")) and cid in {"D3a", "D5c"}:
         return revised_query(data, cid)
     query = f"Case facts:\n{data['facts']}\n\nTask:\n{data['task']}"
     if data["history"]:
@@ -314,12 +329,17 @@ def criterion_item(cid, data=None):
 
 def make_criterion(cid, data=None):
     item = criterion_item(cid, data)
-    revised = item.get("rule_version") == REVISED_ID
+    revised = item.get("rule_version") in {REVISED_ID, MANUSCRIPT_ID} and cid in {"D3a", "D5c"}
+    manuscript = item.get("rule_version") == MANUSCRIPT_ID
     anchors = "\n".join(
         f"Score {n}: {item['anchors'].get(str(n), 'No original descriptor supplied.')}"
-        for n in range(1, 6)
+        for n in (item.get("allowed_numeric_labels", range(1, 6)) if manuscript else range(1, 6))
     )
     requirement = f"{item['name']}\nOriginal rubric anchors:\n{anchors}"
+    if data and data.get("rules_version", "").startswith("workspace-"):
+        requirement = (
+            f"{item['name']}\nDefinition:\n{item['definition']}\nRubric anchors:\n{anchors}"
+        )
     if revised:
         rules = [item["name"], "Author-proposed definition:", item["definition"]]
         for key in (
@@ -338,13 +358,18 @@ def make_criterion(cid, data=None):
         weight=1,
         scale_type="ordinal",
         requirement=requirement,
-        options=[CriterionOption(label=str(n), value=(n - 1) / 4) for n in range(1, 6)]
+        options=[
+            CriterionOption(label=str(n), value=(int(n) - 1) / 4)
+            for n in (
+                item.get("allowed_numeric_labels", range(1, 6)) if manuscript else range(1, 6)
+            )
+        ]
         + (
             [
                 CriterionOption(label="Not applicable", value=0, na=True),
                 CriterionOption(label="Indeterminate", value=0, na=True),
             ]
-            if revised
+            if revised or manuscript
             else [CriterionOption(label="Cannot assess", value=0, na=True)]
         ),
     )
@@ -424,7 +449,11 @@ class Provider:
         return raw["choices"][0]["message"]["content"].strip()
 
     async def grade(self, data, cid, capture):
-        revised = criterion_item(cid, data).get("rule_version") == REVISED_ID
+        item = criterion_item(cid, data)
+        revised = item.get("rule_version") in {REVISED_ID, MANUSCRIPT_ID} and cid in {"D3a", "D5c"}
+        system = REVISED_SYSTEM if revised else JUDGE_SYSTEM
+        if item.get("rule_version") == MANUSCRIPT_ID and not revised:
+            system = system.replace("Use Cannot assess", "Use Indeterminate")
         config = LLMConfig(
             model="openai/" + data["judge_model"],
             api_key=self.settings.api_key,
@@ -440,7 +469,7 @@ class Provider:
         )
         grader = CriterionGrader(
             llm_config=config,
-            multi_choice_system_prompt=REVISED_SYSTEM if revised else JUDGE_SYSTEM,
+            multi_choice_system_prompt=system,
             multi_choice_response_format=VerifiedJudgment,
             shuffle_options=False,
             auto_na_option=False,
@@ -563,6 +592,7 @@ def plain_text(run):
         "AUTORUBRIC — CASE, ANSWER AND ITEM RESULTS",
         "",
         data["title"],
+        *(["CASE CODE: " + data["case_code"]] if data.get("case_code") else []),
         "SCORING RULES: " + run.get("rubric_version", {}).get("label", "Original rubric"),
         "EVIDENCE METHOD: " + data.get("evidence_version", "website-evidence-20261024"),
         "",
@@ -574,7 +604,7 @@ def plain_text(run):
     ]
     if data["history"]:
         lines += ["", "EARLIER CONVERSATION", data["history"]]
-    if data.get("interview"):
+    if data.get("interview", {}).get("turns") or data.get("interview", {}).get("complete"):
         record = data["interview"]
         lines += [
             "",
@@ -685,7 +715,7 @@ def csv_text(run):
                 cell(x)
                 for x in [
                     run["id"],
-                    run["input"]["title"],
+                    run["input"].get("case_code") or run["input"]["title"],
                     cid,
                     CRITERIA[cid]["name"],
                     grade.get("status", "not_assessed"),

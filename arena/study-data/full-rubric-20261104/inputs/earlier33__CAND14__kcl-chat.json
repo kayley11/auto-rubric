@@ -1,0 +1,411 @@
+{
+  "subject_key": "earlier33__CAND14__kcl-chat",
+  "case_key": "earlier33__CAND14",
+  "case_id": "CAND14",
+  "cohort": "earlier33",
+  "answer_model": "kcl-chat",
+  "answer_model_label": "arc:chat / Qwen3.8-Flash-Next",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-chat/CAND14.json",
+  "source_answer_sha256": "c9a415678c30a1370ca35d92a4b5e89ec391bb07c2320d9f2f6a5b7091b06f8c",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND14",
+    "model": "arc:chat",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What was the indication for the hepatectomy five months ago, and what was removed?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, intermittent abdominal pain, and high fever (40°C) five months post-hepatectomy. Presentation is consistent with obstructive jaundice complicated by cholangitis. Differential includes biliary stricture, retained or recurrent stones, or recurrent malignancy at the surgical site. Urgency is high given fever with jaundice suggesting possible ascending cholangitis.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What was the indication for the hepatectomy five months ago, and what was removed?",
+          "topics": [
+            "medical_history"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, intermittent abdominal pain, and high fever (40°C) five months post-hepatectomy. Presentation is consistent with obstructive jaundice complicated by cholangitis. Differential includes biliary stricture, retained or recurrent stones, or recurrent malignancy at the surgical site. Urgency is high given fever with jaundice suggesting possible ascending cholangitis.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.prior_surgery_and_liver_history",
+            "channel": "record",
+            "text": "She had hepatitis C for 15 years. Left hepatectomy and cholecystectomy for a cirrhotic nodule were performed elsewhere five months before admission. Available records report no postoperative complications.",
+            "source_location": "biliary_obstruction-B0047",
+            "match": "surg|operat|hepatect|cholecyst|hepatitis|past|history|complic",
+            "period": "presentation"
+          },
+          {
+            "id": "14.unavailable_operation_and_outside_pathology",
+            "channel": "record",
+            "text": "The original hepatectomy operative report is unavailable. The outside pathology report describes chronic hepatitis and nodular cirrhosis, with no definite neoplastic change. The available material cannot identify a specific operative vascular, thermal or biliary injury.",
+            "source_location": "biliary_obstruction-B0047; biliary_obstruction-B0068",
+            "match": "operat|surg.{0,20}(record|report|detail)|outside.{0,20}(record|pathol)|histolog|patholog|injur|anatom",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.prior_surgery_and_liver_history",
+              "request_span": "indication for the hepatectomy five months ago"
+            },
+            {
+              "id": "14.unavailable_operation_and_outside_pathology",
+              "request_span": "what was removed"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Can you provide the pre-ERCP MRCP or CT imaging report, specifically regarding the level and cause of biliary obstruction?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in the setting of chronic hepatitis C. Outside pathology showed no definite neoplastic change. The original operative report is unavailable. Presentation is consistent with obstructive jaundice complicated by cholangitis. The cause of obstruction remains undetermined; differential includes post-surgical biliary stricture, recurrent or retained stones, or a new obstructive lesion. Urgency is high given fever with jaundice.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Can you provide the pre-ERCP MRCP or CT imaging report, specifically regarding the level and cause of biliary obstruction?",
+          "topics": [
+            "mri_imaging",
+            "ct_imaging"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in the setting of chronic hepatitis C. Outside pathology showed no definite neoplastic change. The original operative report is unavailable. Presentation is consistent with obstructive jaundice complicated by cholangitis. The cause of obstruction remains undetermined; differential includes post-surgical biliary stricture, recurrent or retained stones, or a new obstructive lesion. Urgency is high given fever with jaundice.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.biliary_imaging",
+            "channel": "record",
+            "text": "Available pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like common-bile-duct material. The common bile duct measures about 19 mm and the largest intrahepatic duct about 9 mm. CT shows heterogeneous intraductal material.",
+            "source_location": "biliary_obstruction-B0050; biliary_obstruction-B0052",
+            "match": "imag|mrcp|ultrasound|sonogra|ct|duct|obstruct|stone|sludge",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.biliary_imaging",
+              "request_span": "pre-ERCP MRCP or CT imaging report, specifically regarding the level and cause of biliary obstruction"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Are there existing blood results available, specifically liver function tests (bilirubin, alkaline phosphatase, transaminases) and inflammatory markers such as white cell count and CRP?",
+        "assessment": {
+          "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no definite neoplastic change. Pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like CBD material (CBD ~19 mm) and heterogeneous intraductal material on CT. Presentation is consistent with obstructive jaundice complicated by cholangitis. The nature of the intraductal material is undetermined; differential includes biliary sludge or stones, haemobilia, or an obstructive lesion. Urgency is high given fever with jaundice.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there existing blood results available, specifically liver function tests (bilirubin, alkaline phosphatase, transaminases) and inflammatory markers such as white cell count and CRP?",
+          "topics": [
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with progressive jaundice, abdominal pain, and high fever five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no definite neoplastic change. Pre-ERCP MRCP shows intrahepatic and extrahepatic duct dilatation with sludge-like CBD material (CBD ~19 mm) and heterogeneous intraductal material on CT. Presentation is consistent with obstructive jaundice complicated by cholangitis. The nature of the intraductal material is undetermined; differential includes biliary sludge or stones, haemobilia, or an obstructive lesion. Urgency is high given fever with jaundice.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "14.admission_liver_tests",
+            "channel": "record",
+            "text": "Admission total bilirubin was 234.0 μmol/L and direct bilirubin 182.4; ALP 155 U/L, GGT 172, AST 88 and ALT 64. Albumin was 38 g/L and INR 1.11.",
+            "source_location": "biliary_obstruction-B0049",
+            "match": "bilirubin|liver|lft|cholesta|jaundice|blood test|laborator|albumin|inr|coag",
+            "period": "presentation"
+          },
+          {
+            "id": "14.inflammation_and_safety",
+            "channel": "record",
+            "text": "Admission CRP was 188.60 mg/L, procalcitonin 9.49 ng/mL, white cells 4.10 × 10^9/L with 93.8% neutrophils, and platelets 76 × 10^9/L. Creatinine was 73 μmol/L and lactate 0.8 mmol/L. No further high fever was recorded after admission. Blood and bile cultures were not performed.",
+            "source_location": "biliary_obstruction-B0048-B0049",
+            "match": "vital|severity|sepsis|infect|fever|inflamm|crp|procalcitonin|blood count|cbc|platelet|creat|renal|lactate|culture|blood test|laborator",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "14.admission_liver_tests",
+              "request_span": "liver function tests (bilirubin, alkaline phosphatase, transaminases)"
+            },
+            {
+              "id": "14.inflammation_and_safety",
+              "request_span": "inflammatory markers such as white cell count and CRP"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Are there existing vital-sign records from admission, specifically blood pressure, heart rate, and temperature trend over the first 24 hours?",
+        "assessment": {
+          "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC, raising concern for sepsis-related marrow suppression or underlying cirrhosis. Cultures were not performed. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is most likely given the pathology, but the nature of the intraductal material is not yet confirmed.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there existing vital-sign records from admission, specifically blood pressure, heart rate, and temperature trend over the first 24 hours?",
+          "topics": [
+            "vital_signs"
+          ],
+          "record_period": "admission",
+          "assessment": {
+            "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC, raising concern for sepsis-related marrow suppression or underlying cirrhosis. Cultures were not performed. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is most likely given the pathology, but the nature of the intraductal material is not yet confirmed.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: vital-sign records from admission, specifically blood pressure, heart rate, and temperature trend over the first 24 hours. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "vital-sign records from admission, specifically blood pressure, heart rate, and temperature trend over the first 24 hours"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Are there any post-operative imaging records (CT or ultrasound) from the interval between the hepatectomy and this admission that could show whether the biliary dilatation is new or was already present after surgery?",
+        "assessment": {
+          "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC. Cultures were not performed. Vital signs are unavailable. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is plausible given the pathology, but the nature of the intraductal material is not yet confirmed.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any post-operative imaging records (CT or ultrasound) from the interval between the hepatectomy and this admission that could show whether the biliary dilatation is new or was already present after surgery?",
+          "topics": [
+            "ct_imaging"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC. Cultures were not performed. Vital signs are unavailable. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is plausible given the pathology, but the nature of the intraductal material is not yet confirmed.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: post-operative imaging records (CT or ultrasound) from the interval between the hepatectomy and this admission that could show whether the biliary dilatation is new or was already present after surgery. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "post-operative imaging records (CT or ultrasound) from the interval between the hepatectomy and this admission that could show whether the biliary dilatation is new or was already present after surgery"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 6,
+        "question": "What is the patient's current clinical trajectory since admission — is she clinically improving on treatment, is the jaundice resolving, and is she haemodynamically stable enough for planned ERCP or does she require urgent intervention?",
+        "assessment": {
+          "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4 μmol/L, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC. Cultures were not performed. Vital signs and post-operative interval imaging are unavailable. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is plausible, but the nature of the intraductal material is not yet confirmed.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What is the patient's current clinical trajectory since admission — is she clinically improving on treatment, is the jaundice resolving, and is she haemodynamically stable enough for planned ERCP or does she require urgent intervention?",
+          "topics": [
+            "presenting_symptoms",
+            "vital_signs"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "70-year-old woman with obstructive jaundice (direct bilirubin 182.4 μmol/L, CBD 19 mm) and cholangitis (fever 40°C, CRP 188.6, procalcitonin 9.49) five months after left hepatectomy and cholecystectomy for a cirrhotic nodule in chronic hepatitis C. Outside pathology showed no neoplastic change. MRCP and CT show dilated ducts with heterogeneous intraductal material of undetermined nature. Lactate is normal and no further fever after admission, but platelets are low (76) and neutrophil percentage is 93.8% with a normal total WBC. Cultures were not performed. Vital signs and post-operative interval imaging are unavailable. The cause of obstruction remains uncertain: post-surgical stricture with secondary sludge or stones is plausible, but the nature of the intraductal material is not yet confirmed.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: What is the patient's current clinical trajectory since admission; is she clinically improving on treatment; is the jaundice resolving; is she haemodynamically stable enough for planned ERCP or does she require urgent intervention. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "What is the patient's current clinical trajectory since admission",
+            "is she clinically improving on treatment",
+            "is the jaundice resolving",
+            "is she haemodynamically stable enough for planned ERCP or does she require urgent intervention"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T16:13:07.646757+00:00",
+    "final_answer": "## Clinical Problem\n\n70-year-old woman with chronic hepatitis C and cirrhosis, five months post-left hepatectomy and cholecystectomy for a cirrhotic nodule (outside pathology: no definite neoplastic change). She presents with progressive jaundice, intermittent abdominal pain, and fever to 40°C. Admission labs show obstructive pattern (total bilirubin 234, direct 182.4, ALP 155, GGT 172) with cholangitis markers (CRP 188.6, procalcitonin 9.49, neutrophils 93.8%). MRCP shows CBD 19 mm with sludge-like material; CT shows heterogeneous intraductal material. Platelets 76. Lactate normal. No further fever after admission.\n\n## Prioritised Explanations\n\n- Post-surgical biliary stricture with secondary sludge or stone formation — plausible given hepatectomy history, but operative report unavailable so no injury can be confirmed or excluded.\n- Primary biliary sludge or stone in a cirrhotic duct — supported by imaging appearance; no prior interval imaging available to establish whether dilatation is new.\n- Haemobilia or intraductal clot — heterogeneous CT material is non-specific; no vascular injury documented.\n\n## Urgency and Next Actions\n\nUrgency is high: fever with obstructive jaundice and elevated procalcitonin suggests cholangitis requiring biliary drainage. ERCP is the planned intervention. Blood and bile cultures were not performed; these should be obtained before or during ERCP. Vital signs and post-operative interval imaging are unavailable records, not negative findings. The previous operation cannot be definitively blamed without the operative report or interval imaging.",
+    "word_count": {
+      "words": 215,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "interview_finished": true,
+    "finished_at": "2026-10-29T16:15:00.453482+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All factual claims in the submission trace directly to the supplied evidence: lab values (bilirubin 234/182.4, ALP 155, GGT 172, CRP 188.6, procalcitonin 9.49, neutrophils 93.8%, platelets 76, lactate 0.8), imaging findings (CBD 19 mm, sludge-like and heterogeneous intraductal material), and history (hepatitis C, left hepatectomy/cholecystectomy, outside pathology showing no definite neoplasia) match Q1–Q3 exactly. The answer correctly distinguishes unavailable records (vital signs, interval imaging, operative report) from negative findings, consistent with Q4–Q6 environment feedback, and does not invent values, test performance, or probabilities. It explicitly acknowledges uncertainty — noting the operative report is unavailable so injury cannot be confirmed or excluded, that heterogeneous CT material is non-specific, that interval imaging is absent, and that the prior operation cannot be definitively blamed. These hedged statements align with the reference guidance on temporal association only. The characterisation of an 'obstructive pattern' is clinically reasonable given the direct-predominant hyperbilirubinaemia and raised GGT/ALP. No factual errors or unsupported fabrications are present, and uncertainty is explicitly flagged, meeting the Score 5 anchor."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission synthesises the actually available evidence into a clinically meaningful representation: obstructive jaundice (bilirubin 234/182.4, ALP 155, GGT 172) with cholangitis features (fever 40°C, CRP 188.6, procalcitonin 9.49, neutrophilia) on a background of hepatitis-C cirrhosis and remote left hepatectomy/cholecystectomy, supported by the Q2 MRCP/CT findings (CBD 19 mm, sludge-like and heterogeneous intraductal material). It offers prioritised hypotheses (post-surgical stricture with secondary sludge; primary sludge/stone in a cirrhotic duct; haemobilia) with evidence-linked uncertainty, correctly qualifying that the unavailable operative report (Q1) and absent interval imaging (Q5) prevent attributing the problem to the prior surgery, and distinguishing unavailable records from negative findings (Q4, Q5, Q6). Urgency (cholangitis needing drainage via ERCP, cultures before/during) is proportionate. Minor limitations (e.g., thrombocytopenia 76 not explicitly linked to cirrhosis/portal hypertension) do not alter the clinical framing. The representation is focused, appropriately provisional, and guides next steps, matching the Score 5 anchor."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D3b.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the received evidence: post-surgical biliary stricture with secondary sludge/stones, primary sludge/stones in a cirrhotic duct, and haemobilia/intraductal clot, each tied to actual findings (MRCP CBD 19 mm with sludge-like material, heterogeneous CT material, unavailable operative report). It correctly identifies cholangitis as the urgent unifying concern using the supplied labs (direct-predominant bilirubin 234/182.4, CRP 188.6, procalcitonin 9.49, 93.8% neutrophils) and appropriately limits attribution to the prior operation. It distinguishes unavailable records from negative findings (Q4, Q5) and requests cultures. It falls short of Score 5 because discriminating findings between alternatives are not fully explicit (e.g., no discussion of tumour-related obstruction despite cirrhosis history, and limited use of prior plausibility weighting), but no case-critical diagnosis or dangerous mimic is missed and prioritisation is clinically sound."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D3d.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission makes task-relevant causal claims strictly supported by the supplied evidence: obstructive jaundice with cholangitis is supported by Q2 imaging (CBD 19 mm, sludge-like material) and Q3 labs (direct-predominant hyperbilirubinaemia, CRP 188.6, procalcitonin 9.49). It offers three prioritised alternatives (post-surgical stricture, primary sludge/stone, haemobilia) and appropriately qualifies each: the operative report is unavailable (Q1), no interval imaging exists (Q5), and heterogeneous CT material is non-specific. It correctly avoids attributing the illness to the prior operation, distinguishing unavailable records from negative findings (Q4, Q5, Q6), and notes the near-normal WBC does not negate the high neutrophil fraction. Claims are proportionate to the evidence with stated limitations, matching the score 5 anchor."
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission calibrates confidence carefully across the evidence hierarchy. Established findings are stated plainly (labs, MRCP/CT findings, cholangitis markers), while differential explanations are graded: post-surgical stricture is 'plausible' with the explicit caveat that the unavailable operative report means no injury 'can be confirmed or excluded'; primary sludge/stone is 'supported by imaging appearance' but limited by absent interval imaging; haemobia is flagged as 'non-specific' with no vascular injury documented. It explains the sources of uncertainty (missing operative report, no post-operative interval imaging, no vital signs) and correctly distinguishes unavailable records from negative findings. It identifies concrete next steps to reduce uncertainty (cultures before/during ERCP, drainage via ERCP) and explicitly limits attribution to the prior operation. This matches the Score 5 anchor: distinguishing established, probable and possible conclusions, explaining the source of uncertainty, and identifying the next step needed to reduce it."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All three essential requirements were met with targeted, well-timed requests. Q1 (R2) sought the prior operation and outside records; Q2 (R3) sought biliary imaging with a specific focus on obstruction level and cause; Q3 (R1) sought liver tests, inflammatory markers and organ-function evidence, and the returned data (bilirubin, CRP, procalcitonin, lactate, creatinine) supported an urgent cholangitis assessment. Q4–Q6 added proportionate, discriminating follow-up (vital signs, interval imaging, clinical trajectory/ERCP fitness) directly linked to the clinical uncertainty; the lack of returned data for these is a simulator limitation, not an acquisition failure. Requests were appropriately prioritised and timed within the six-turn budget, with no unnecessary information gathering. This matches the Score 5 anchor: essential requirements met through proportionate, discriminating requests."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND14.D6a.json",
+      "status": "complete",
+      "score": 4,
+      "reason": "The submission clearly recognises the time-critical emergency: it states 'Urgency is high' and identifies cholangitis (fever, obstructive jaundice, procalcitonin 9.49, CRP 188.6) requiring biliary drainage, with ERCP named as the intervention and cultures to be obtained before/during it. This is a clear escalation recommendation with the correct pathway. However, it does not fully meet the Score 5 anchor: no explicit timing (e.g., same-day/urgent ERCP) or care level (e.g., hepatobiliary/endoscopy service involvement, monitored bed) is specified, and the reference notes drainage decisions should follow specialist pathways. Score 3 is not warranted because urgency is explicitly stated as high and the pathway (ERCP drainage) is correct, so urgency is not 'insufficiently clear'. Score 4 is the best fit: clear, timely escalation with the correct pathway specified, but without the fully unambiguous timing and care-level detail required for Score 5."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

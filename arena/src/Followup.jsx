@@ -1,3 +1,4 @@
+import { backendName } from "./modelIdentity.mjs";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
@@ -183,7 +184,12 @@ export function Followup({ onUseData }) {
               <tbody>
                 {data.models.map((model) => (
                   <tr key={model}>
-                    <th scope="row">{model}</th>
+                    <th scope="row">
+                      {model}
+                      <small className="model-backend">
+                        {backendName(model)}
+                      </small>
+                    </th>
                     {["old", "fresh"].map((arm) => {
                       const row = data.records.find(
                         (r) => r.arm === arm && r.model === model,

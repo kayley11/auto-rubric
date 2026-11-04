@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { LockKeyhole, X } from "lucide-react";
 
 export function requestSignIn(response) {
@@ -9,7 +10,7 @@ export function requestSignIn(response) {
 export function AccessControl({ access }) {
   const dialogRef = useRef(null);
   const [open, setOpen] = useState(false),
-    [id, setId] = useState(""),
+    [id, setId] = useState("workspace"),
     [password, setPassword] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -73,6 +74,7 @@ export function AccessControl({ access }) {
     });
     if (response.ok) {
       localStorage.removeItem("autorubric-draft");
+      sessionStorage.removeItem("autorubric-batch-v1");
       window.location.reload();
     }
   }
@@ -83,7 +85,7 @@ export function AccessControl({ access }) {
           {access.online === false
             ? "Evaluations offline"
             : access.authenticated
-              ? "Member access"
+              ? "Workspace access"
               : "Public view"}
         </span>
         <button
@@ -95,65 +97,71 @@ export function AccessControl({ access }) {
           {access.authenticated ? "Sign out" : "Sign in"}
         </button>
       </div>
-      {open && (
-        <div className="modal-backdrop">
-          <section
-            ref={dialogRef}
-            className="modal access-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="access-title"
-          >
-            <div className="modal-heading">
-              <h2 id="access-title">Member sign-in</h2>
-              <button
-                className="icon-button"
-                aria-label="Close sign-in"
-                onClick={() => setOpen(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <form onSubmit={signIn} className="access-form">
-              <p>
-                Browsing the saved study is public. Generating, scoring and
-                saving reviews require an authorised account. New evaluations
-                are private to that account.
-              </p>
-              <label className="field">
-                Account ID
-                <input
-                  autoFocus
-                  autoComplete="username"
-                  value={id}
-                  onChange={(e) => setId(e.target.value)}
-                  required
-                  maxLength={40}
-                />
-              </label>
-              <label className="field">
-                Access password
-                <input
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  maxLength={256}
-                />
-              </label>
-              {error && (
-                <p className="error-banner" role="alert">
-                  {error}
+      {open &&
+        createPortal(
+          <div className="modal-backdrop">
+            <section
+              ref={dialogRef}
+              className="modal access-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="access-title"
+            >
+              <div className="modal-heading">
+                <h2 id="access-title">Workspace sign-in</h2>
+                <button
+                  className="icon-button"
+                  aria-label="Close sign-in"
+                  onClick={() => setOpen(false)}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <form onSubmit={signIn} className="access-form">
+                <p>
+                  Saved cases are public. Sign in to the shared workspace to
+                  generate answers, score cases and save reviews.
                 </p>
-              )}
-              <button className="primary" disabled={busy}>
-                {busy ? "Signing in…" : "Sign in"}
-              </button>
-            </form>
-          </section>
-        </div>
-      )}
+                <p className="field-help">
+                  Workspace members can evaluate and review. The rubric editor
+                  account alone can change scoring rules. Review forms keep a
+                  reviewer ID.
+                </p>
+                <label className="field">
+                  Account ID
+                  <input
+                    autoComplete="username"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
+                    required
+                    maxLength={40}
+                  />
+                </label>
+                <label className="field">
+                  Access password
+                  <input
+                    type="password"
+                    autoFocus
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    maxLength={256}
+                  />
+                </label>
+                {error && (
+                  <p className="error-banner" role="alert">
+                    {error}
+                  </p>
+                )}
+                <button className="primary" disabled={busy}>
+                  {busy ? "Signing in…" : "Sign in"}
+                </button>
+              </form>
+            </section>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

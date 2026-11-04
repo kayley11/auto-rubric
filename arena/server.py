@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import mimetypes
 import os
@@ -15,15 +16,18 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+import comparison
 import evidence
 import exports
 import patient
+import scoring
 from engine import (
     APP_ROOT,
     CRITERIA,
     DEFAULT_TASK,
     PRESETS,
     RUBRIC,
+    RUBRIC_ID,
     Provider,
     Settings,
     csv_text,
@@ -48,6 +52,7 @@ from study import ORIGINAL_VERSION
 from study import interview as study_interview
 from study import output as study_output
 from study import summary as study_summary
+from workspace_cases import WorkspaceCases, submission_details
 
 
 def now():
@@ -71,6 +76,7 @@ class Application:
         self.stop = threading.Event()
         self.active_id = None
         self.reviews = Reviews(self.directory / "_reviews")
+        self.cases = WorkspaceCases(self.directory)
         # A restart must never leave the UI claiming an old request is still running.
         for path in self.directory.glob("*.json"):
             run = json.loads(path.read_text(encoding="utf-8"))
@@ -109,7 +115,7 @@ class Application:
         run.setdefault("rubric_version", deepcopy(ORIGINAL_VERSION))
         run["usage"] = usage_totals(run)
         run["safety"] = safety_status(run.get("grades", {}))
-        if run["input"].get("answer") and {"D3a", "D5c"} & set(run["input"].get("criteria", [])):
+        if run["input"].get("answer"):
             run["review_id"] = evidence.run_packet(run)["id"]
             run["fact_coverage"] = evidence.patient_coverage(run)
         run.pop("patient_case_snapshot", None)
@@ -125,12 +131,23 @@ class Application:
                 {k: r.get(k) for k in ("id", "status", "created_at", "updated_at")}
                 | {
                     "title": r["input"]["title"],
+                    "case_code": r["input"].get("case_code", ""),
                     "graded": len(
                         [x for x in r.get("grades", {}).values() if x["status"] in RESULT_STATUSES]
                     ),
                     "total": len(r["input"]["criteria"]),
                     "rubric_version": r.get("rubric_version", ORIGINAL_VERSION),
                     "purpose": r.get("purpose", ""),
+                    "comparison_id": r["input"].get("comparison_id", ""),
+                    "case_number": r["input"].get("case_number", ""),
+                    "answer_model": (
+                        "provided-answer"
+                        if r.get("answer_source") == "pasted"
+                        and not r["input"].get("interview_source")
+                        else r["input"].get("answer_model", "")
+                    ),
+                    "judge_model": r["input"].get("judge_model", ""),
+                    "case_submission": r.get("case_submission", {}),
                 }
                 for r in items
             ],
@@ -179,6 +196,10 @@ class Application:
                     # The generated answer can be edited. Its case and task cannot silently change.
                     # New scoring conditions require a separate run, even before any grade.
                     immutable = (
+                        "case_code",
+                        "rubric_id",
+                        "comparison_id",
+                        "case_number",
                         "facts",
                         "task",
                         "history",
@@ -202,6 +223,19 @@ class Application:
                     if run.get("generated_answer") != data["answer"]:
                         run["answer_source"] = "generated_then_edited"
                 else:
+                    submission = submission_details(body.get("case_submission"))
+                    if not data["case_code"]:
+                        if re.fullmatch(r"[A-Za-z0-9_-]{1,60}", data["case_id"]):
+                            data["case_code"] = data["case_id"]
+                        elif data["comparison_id"] and data["case_number"]:
+                            key = data["comparison_id"] + "/" + data["case_number"]
+                            data["case_code"] = (
+                                "CASE-" + hashlib.sha256(key.encode()).hexdigest()[:10].upper()
+                            )
+                        else:
+                            data["case_code"] = "CASE-" + uuid.uuid4().hex[:10].upper()
+                    if not body.get("title", "").strip():
+                        data["title"] = data["case_code"]
                     snapshot = rubric_snapshot(RUBRIC, data["rules_version"])
                     settings = self.settings.public()
                     settings["evidence_version"] = data["evidence_version"]
@@ -230,6 +264,8 @@ class Application:
                         "generation_attempts": [],
                         "review": {"items": {}},
                     }
+                    if submission:
+                        run["case_submission"] = {**submission, "submitted_at": run["created_at"]}
                     if action == "interview":
                         run["patient_case_snapshot"] = patient.case(data["case_id"])
                         run["patient_protocol"] = {
@@ -429,6 +465,27 @@ class Handler(BaseHTTPRequestHandler):
         try:
             self.guarded(mutation)
             path = urlparse(self.path).path
+            if not mutation and path == "/api/comparison":
+                return self.send(200, comparison.dataset())
+            match = re.fullmatch(r"/api/comparison/cases/([A-Z0-9]+)", path)
+            if not mutation and match:
+                data = comparison.dataset(match[1])
+                saved = [p for p in evidence.published_packets() if p["case_id"] == data["id"]]
+                for model in data["models"]:
+                    packet = next(
+                        (
+                            p
+                            for p in saved
+                            if p["model"] == model["model_id"]
+                            and p["data"]["answer"] == model.get("answer")
+                            and p["data"]["rules_version"]
+                            == model.get("rule_version", data["rule_version"])
+                        ),
+                        None,
+                    )
+                    if packet:
+                        model["review_id"] = packet["id"]
+                return self.send(200, data)
             if path == "/api/config" and not mutation:
                 return self.send(
                     200,
@@ -436,8 +493,28 @@ class Handler(BaseHTTPRequestHandler):
                         "settings": self.app.settings.public(),
                         "rubric": RUBRIC,
                         "rubric_version": ORIGINAL_VERSION,
-                        "rule_versions": VERSIONS,
+                        "rule_versions": VERSIONS
+                        + [version_info(r["id"]) for r in scoring.WORKSPACE_RULES.records()],
+                        "workspace_rubrics": {
+                            r["id"]: r["rubric"] for r in scoring.WORKSPACE_RULES.records()
+                        },
+                        "current_rules_version": scoring.WORKSPACE_RULES.active()
+                        or VERSIONS[-1]["id"],
+                        "rubric_catalogue": [
+                            {
+                                "id": RUBRIC_ID,
+                                "name": "Clinical reasoning rubric",
+                                "description": (
+                                    "Clinical reasoning, evidence use, communication and safety."
+                                ),
+                                "versions": [v["id"] for v in VERSIONS]
+                                + [r["id"] for r in scoring.WORKSPACE_RULES.records()],
+                                "current_version": scoring.WORKSPACE_RULES.active()
+                                or VERSIONS[-1]["id"],
+                            }
+                        ],
                         "revised_rubric": rubric_snapshot(RUBRIC, VERSIONS[1]["id"]),
+                        "manuscript_rubric": rubric_snapshot(RUBRIC, VERSIONS[2]["id"]),
                         "saved_interviews": [
                             {
                                 "case_id": r["case_id"],
@@ -456,6 +533,9 @@ class Handler(BaseHTTPRequestHandler):
                         "cases": json.loads(
                             (APP_ROOT / "case-library.json").read_text(encoding="utf-8")
                         )["cases"],
+                        "case_count": json.loads(
+                            (APP_ROOT / "case-library.json").read_text(encoding="utf-8")
+                        )["base_case_count"],
                         "active_run": self.app.active_id,
                         "patient_cases": patient.catalogue(),
                     },
@@ -505,6 +585,34 @@ class Handler(BaseHTTPRequestHandler):
                 )
             if path == "/api/review" and not mutation:
                 return self.send(200, evidence.review_catalogue(self.app))
+            if path == "/api/decisions" and not mutation:
+                return self.send(200, evidence.decision_catalogue(self.app))
+            if path == "/api/rubrics/manage":
+                if mutation:
+                    saved = scoring.WORKSPACE_RULES.save(
+                        self.body(),
+                        RUBRIC,
+                        getattr(self, "member", None) and self.member["id"] or "local-admin",
+                        load_snapshot=lambda v: rubric_snapshot(RUBRIC, v),
+                    )
+                    return self.send(200, {k: v for k, v in saved.items() if k != "rubric"})
+                return self.send(
+                    200,
+                    {
+                        "versions": VERSIONS
+                        + [version_info(r["id"]) for r in scoring.WORKSPACE_RULES.records()],
+                        "snapshots": {v["id"]: rubric_snapshot(RUBRIC, v["id"]) for v in VERSIONS}
+                        | {r["id"]: r["rubric"] for r in scoring.WORKSPACE_RULES.records()},
+                        "active": scoring.WORKSPACE_RULES.active() or VERSIONS[-1]["id"],
+                    },
+                )
+            if path == "/api/cases/submitted":
+                if mutation:
+                    body = self.body()
+                    return self.send(
+                        200, self.app.cases.save(body.get("cases"), body.get("case_submission"))
+                    )
+                return self.send(200, self.app.cases.catalogue(self.app))
             match = re.fullmatch(
                 r"/api/(evidence|review|requirements)/([a-f0-9]{24})(?:/([A-Za-z0-9-]+))?", path
             )
@@ -579,18 +687,26 @@ class Handler(BaseHTTPRequestHandler):
                     if mutation and action == "reveal":
                         self.body()
                         return self.send(200, self.app.reviews.reveal(packet))
-                    if not mutation and action in {None, "D3a", "D5c"}:
+                    if not mutation and (not action or action in packet["rules"]):
                         rating = self.app.reviews.rating(packet)
-                        item = action or ("D3a" if "D3a" in packet["rules"] else "D5c")
+                        item = action or next(
+                            (
+                                cid
+                                for cid in evidence.review_order(packet)
+                                if not rating or cid not in rating.get("items", {})
+                            ),
+                            evidence.review_order(packet)[0],
+                        )
                         if item not in packet["rules"]:
                             raise ValueError("This criterion is not selected for the saved answer.")
                         if (
-                            item == "D5c"
+                            item != "D3a"
                             and "D3a" in packet["rules"]
                             and (not rating or "D3a" not in rating.get("items", {}))
                         ):
                             raise ValueError(
-                                "Save the D3a rating before opening examiner-only evidence."
+                                "Save problem representation "
+                                "before opening reference-only evidence."
                             )
                         return self.send(
                             200, evidence.blind_packet(packet, item) | {"review": rating}

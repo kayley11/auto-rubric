@@ -1,0 +1,373 @@
+{
+  "subject_key": "earlier33__CAND01__kcl-chat",
+  "case_key": "earlier33__CAND01",
+  "case_id": "CAND01",
+  "cohort": "earlier33",
+  "answer_model": "kcl-chat",
+  "answer_model_label": "arc:chat / Qwen3.8-Flash-Next",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-chat/CAND01.json",
+  "source_answer_sha256": "f8f6a29b37306c5c8f383273dcbb1816d1cb765e0e1191e70f3f46c2f933ab45",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND01",
+    "model": "arc:chat",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "Are there any other symptoms such as abdominal pain, vomiting, or drowsiness, and is he currently taking any medications or has he recently started any new drugs?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. This is a classic presentation of new-onset diabetes mellitus. The acute onset and age raise concern for type 1 diabetes, but subtype cannot be confirmed without further evidence. The immediate priority is to assess for diabetic ketoacidosis and to exclude medication-induced hyperglycaemia.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any other symptoms such as abdominal pain, vomiting, or drowsiness, and is he currently taking any medications or has he recently started any new drugs?",
+          "topics": [
+            "presenting_symptoms",
+            "medications"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. This is a classic presentation of new-onset diabetes mellitus. The acute onset and age raise concern for type 1 diabetes, but subtype cannot be confirmed without further evidence. The immediate priority is to assess for diabetic ketoacidosis and to exclude medication-induced hyperglycaemia.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.medication",
+            "channel": "patient",
+            "text": "I used tirzepatide without medical supervision: weekly 2.5, 5 and 7.5 mg, each for four weeks, then intermittent 5 mg. Symptoms began about four weeks after my last dose.",
+            "source_location": "B0056",
+            "match": "medic|drug|inject|weight.?loss treatment|weight.?reduction treatment|tirzepatide|supplement",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: Are there any other symptoms such as abdominal pain, vomiting, or drowsiness. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.medication",
+              "request_span": "is he currently taking any medications or has he recently started any new drugs"
+            }
+          ],
+          "unanswered_spans": [
+            "Are there any other symptoms such as abdominal pain, vomiting, or drowsiness"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Did you have any blood glucose or HbA1c measurements before or during your tirzepatide use, and is there a family history of diabetes?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. He self-administered tirzepatide (a GLP-1/GIP agonist that lowers glucose) in escalating doses, with symptoms beginning approximately four weeks after his last dose. Tirzepatide would not be expected to cause hyperglycaemia; rather, it may have masked pre-existing diabetes, with unmasking after cessation. Alternatively, this could represent coincidental new-onset diabetes (type 1 or type 2) temporally associated with tirzepatide withdrawal. Prior glucose data and family history would help distinguish masked pre-existing diabetes from new-onset disease.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Did you have any blood glucose or HbA1c measurements before or during your tirzepatide use, and is there a family history of diabetes?",
+          "topics": [
+            "routine_laboratory",
+            "medical_history"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. He self-administered tirzepatide (a GLP-1/GIP agonist that lowers glucose) in escalating doses, with symptoms beginning approximately four weeks after his last dose. Tirzepatide would not be expected to cause hyperglycaemia; rather, it may have masked pre-existing diabetes, with unmasking after cessation. Alternatively, this could represent coincidental new-onset diabetes (type 1 or type 2) temporally associated with tirzepatide withdrawal. Prior glucose data and family history would help distinguish masked pre-existing diabetes from new-onset disease.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.previous_glucose",
+            "channel": "record",
+            "text": "Fasting glucose was 5.2 mmol/L two years earlier; a pretreatment fingerstick was 5.8. No recent pretreatment laboratory glucose, HbA1c or islet-function results were available.",
+            "source_location": "B0055",
+            "match": "previous|prior|baseline|before.{0,25}(glucose|diabet|treatment)|history of diabet",
+            "period": "presentation"
+          },
+          {
+            "id": "01.family",
+            "channel": "patient",
+            "text": "My grandfather and several of his siblings had type 2 diabetes. No autoimmune family history was reported.",
+            "source_location": "B0056",
+            "match": "family|relative|hereditar",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: during your tirzepatide use. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.previous_glucose",
+              "request_span": "blood glucose or HbA1c measurements before or during your tirzepatide use"
+            },
+            {
+              "id": "01.family",
+              "request_span": "family history of diabetes"
+            }
+          ],
+          "unanswered_spans": [
+            "during your tirzepatide use"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Are there any current vital-sign records (blood pressure, heart rate, respiratory rate) and any current blood results such as glucose, ketones, or blood gas available from this admission?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. He self-administered tirzepatide (a GLP-1/GIP agonist that lowers glucose) in escalating doses, with symptoms beginning approximately four weeks after his last dose. Tirzepatide would not cause hyperglycaemia; the most plausible mechanism is unmasking of pre-existing diabetes after cessation, supported by a borderline pretreatment fingerstick of 5.8 mmol/L and a family history of type 2 diabetes. However, coincidental new-onset type 1 diabetes cannot be excluded given the acute presentation and weight loss. DKA symptoms (abdominal pain, vomiting, drowsiness) remain unreported and cannot be excluded. Current metabolic status is unknown.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any current vital-sign records (blood pressure, heart rate, respiratory rate) and any current blood results such as glucose, ketones, or blood gas available from this admission?",
+          "topics": [
+            "vital_signs",
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. He self-administered tirzepatide (a GLP-1/GIP agonist that lowers glucose) in escalating doses, with symptoms beginning approximately four weeks after his last dose. Tirzepatide would not cause hyperglycaemia; the most plausible mechanism is unmasking of pre-existing diabetes after cessation, supported by a borderline pretreatment fingerstick of 5.8 mmol/L and a family history of type 2 diabetes. However, coincidental new-onset type 1 diabetes cannot be excluded given the acute presentation and weight loss. DKA symptoms (abdominal pain, vomiting, drowsiness) remain unreported and cannot be excluded. Current metabolic status is unknown.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.examination",
+            "channel": "record",
+            "text": "Admission vital signs were described as normal, without Kussmaul breathing.",
+            "source_location": "B0057",
+            "match": "vital|examin|breath|blood pressure|heart rate|dehydrat",
+            "period": "presentation"
+          },
+          {
+            "id": "01.glucose",
+            "channel": "record",
+            "text": "Admission fasting glucose 13.99 mmol/L; HbA1c 10.8%.",
+            "source_location": "B0065-B0067",
+            "match": "glucose|glycaem|glycem|hba1c|blood sugar|diabetes test|blood test|laborator",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.examination",
+              "request_span": "current vital-sign records (blood pressure, heart rate, respiratory rate)"
+            },
+            {
+              "id": "01.glucose",
+              "request_span": "current blood results such as glucose"
+            },
+            {
+              "id": "01.ketones",
+              "request_span": "ketones, or blood gas"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Are there any ketone results available from this admission, either blood beta-hydroxybutyrate or urine ketones?",
+        "assessment": {
+          "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. Admission glucose 13.99 mmol/L and HbA1c 10.8% confirm significant hyperglycaemia. The HbA1c indicates sustained hyperglycaemia over weeks, predating the five-day symptom window, consistent with tirzepatide masking pre-existing diabetes that became clinically apparent after cessation. A borderline pretreatment fingerstick (5.8 mmol/L) and family history of type 2 diabetes support this. However, the degree of HbA1c elevation and acute weight loss do not exclude coincidental new-onset type 1 diabetes. Vital signs are normal without Kussmaul breathing, which is reassuring against established DKA, but ketone status remains unreported and is the critical missing datum for metabolic risk stratification.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there any ketone results available from this admission, either blood beta-hydroxybutyrate or urine ketones?",
+          "topics": [
+            "routine_laboratory"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "28-year-old man with five days of polyuria, polydipsia, dry mouth and weight loss. Admission glucose 13.99 mmol/L and HbA1c 10.8% confirm significant hyperglycaemia. The HbA1c indicates sustained hyperglycaemia over weeks, predating the five-day symptom window, consistent with tirzepatide masking pre-existing diabetes that became clinically apparent after cessation. A borderline pretreatment fingerstick (5.8 mmol/L) and family history of type 2 diabetes support this. However, the degree of HbA1c elevation and acute weight loss do not exclude coincidental new-onset type 1 diabetes. Vital signs are normal without Kussmaul breathing, which is reassuring against established DKA, but ketone status remains unreported and is the critical missing datum for metabolic risk stratification.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "01.ketones",
+            "channel": "record",
+            "text": "Admission beta-hydroxybutyrate 4.44 mmol/L, urine ketones +++, bicarbonate 16.9 mmol/L, sodium 137 and chloride 100.4 mmol/L. Potassium was not supplied. Admission arterial blood gas was not obtained; no measured pH is supplied.",
+            "source_location": "B0076-B0080; B0098",
+            "match": "keton|acid|bicarbon|blood gas|\\bph\\b|electroly|metabolic|blood test|laborator",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "01.ketones",
+              "request_span": "ketone results available from this admission, either blood beta-hydroxybutyrate or urine ketones"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T15:36:13.362773+00:00",
+    "interview_finished": true,
+    "closing_note": {
+      "summary": "28-year-old man with five days of osmotic symptoms and weight loss. Admission biochemistry confirms diabetic ketoacidosis: glucose 13.99 mmol/L, beta-hydroxybutyrate 4.44 mmol/L, bicarbonate 16.9 mmol/L, anion gap ~19.7 mmol/L. No measured pH is available, limiting formal severity grading. HbA1c 10.8% indicates sustained hyperglycaemia predating the five-day symptom window. Tirzepatide (GLP-1/GIP agonist) self-administered in escalating doses, with symptoms beginning four weeks after cessation, is temporally consistent with unmasking of pre-existing diabetes; a borderline pretreatment fingerstick (5.8 mmol/L) and family history of type 2 diabetes support this. However, coincidental new-onset type 1 diabetes cannot be excluded given acute ketosis and weight loss in a young adult; C-peptide and islet autoantibodies are not yet available. Normal vital signs and absence of Kussmaul breathing are reassuring against severe acidosis, but missing pH and potassium limit full risk stratification. Next: obtain venous pH, potassium, C-peptide, and islet autoantibodies.",
+      "certainty": "uncertain"
+    },
+    "final_answer": "**Clinical Problem**\n\nA 28-year-old man presents with five days of polyuria, polydipsia, dry mouth and weight loss. Admission glucose is 13.99 mmol/L with HbA1c 10.8%, confirming sustained hyperglycaemia predating the symptom window. Beta-hydroxybutyrate is 4.44 mmol/L with bicarbonate 16.9 mmol/L and urine ketones +++, indicating significant ketosis with metabolic acidosis. Normal vital signs and absence of Kussmaul breathing are reassuring but do not exclude evolving DKA; no pH or potassium is available.\n\n**Prioritised Explanations**\n\nUnmasked pre-existing type 2 diabetes. The HbA1c of 10.8% implies weeks of hyperglycaemia before symptoms, consistent with tirzepatide masking underlying disease that became apparent after cessation. A borderline pretreatment fingerstick (5.8 mmol/L) and family history of type 2 diabetes support this. Uncertainty: no islet autoantibodies or C-peptide available.\n\nCoincidental new-onset type 1 diabetes. Acute presentation, weight loss and ketosis at this severity are compatible with insulin-deficient diabetes. Uncertainty: no autoimmune family history reported, but absence does not exclude it.\n\nMixed or atypical subtype. Overlap features prevent definitive classification without further evidence.\n\n**Medication Assessment**\n\nTirzepatide lowers glucose and would not cause hyperglycaemia. The available history supports a masking-then-unmasking mechanism rather than a causative one, but cannot exclude coincidental new-onset disease.\n\n**Next Actions**\n\nUrgent venous or arterial blood gas for pH, potassium measurement, and islet autoantibodies with C-peptide to guide subtype and management.",
+    "word_count": {
+      "words": 215,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "finished_at": "2026-10-29T15:37:33.866816+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission is accurate throughout and explicitly flags uncertainty. All cited values (glucose 13.99 mmol/L, HbA1c 10.8%, beta-hydroxybutyrate 4.44 mmol/L, bicarbonate 16.9, urine ketones +++, fingerstick 5.8, family history) match the supplied Q2–Q4 evidence, and it correctly avoids inventing pH or potassium, noting they are unavailable. Its interpretation is clinically sound: ketosis with low bicarbonate suggests metabolic acidosis without overclaiming DKA; HbA1c 10.8% supports hyperglycaemia predating symptoms; tirzepatide is correctly described as glucose-lowering, with a masking/unmasking mechanism framed as supported but not proven, matching the reference note that temporal association does not establish causation. It acknowledges missing islet autoantibodies/C-peptide and evolving subtype uncertainty, meeting the Score 5 anchor of explicitly acknowledging uncertain evidence."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The task explicitly requested a clinical summary at the initial admission decision point, so D3a applies. The submission accurately integrates all available evidence: the presenting symptoms, admission glucose 13.99 mmol/L and HbA1c 10.8% (correctly noting this implies hyperglycaemia predating the five-day symptom window), ketosis with beta-hydroxybutyrate 4.44 mmol/L, bicarbonate 16.9 mmol/L and urine ketones +++, normal vital signs, and the tirzepatide history from Q1 with prior glucose values and family history from Q2. It appropriately qualifies the consequential unresolved gaps (no pH, no potassium, no autoantibodies/C-peptide) without inventing them, consistent with the environment feedback. The medication assessment correctly distinguishes a masking/unmasking mechanism from a causative one and states what the history cannot exclude, matching the task's request. The three prioritised explanations are evidence-linked with stated uncertainties and avoid premature subtype closure, as instructed. The representation is focused, discriminating (HbA1c timing vs acute ketosis), and guides next actions. Minor limitations (e.g., 'confirming' is slightly strong for HbA1c inference, and 'metabolic acidosis' is inferred from bicarbonate rather than measured pH) do not materially misframe the problem. This meets the Score 5 anchor: a focused synthesis highlighting discriminating features with clear statement of unresolved gaps."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential using only the supplied evidence (Q2: HbA1c 10.8%, pretreatment glucose 5.8, family history; Q3: glucose 13.99, normal vitals; Q4: ketones 4.44, bicarbonate 16.9). It explicitly addresses the dangerous mimic/complication of evolving DKA, noting absent pH and potassium, and gives explicit discriminating findings for each candidate (HbA1c indicating chronic hyperglycaemia favouring unmasked type 2 diabetes vs acute ketotic presentation favouring type 1). It proportionately weighs prior plausibility (family history, tirzepatide pharmacology) and appropriately avoids requiring a subtype before antibody/C-peptide results, and correctly treats tirzepatide as a masking rather than causative mechanism without overclaiming. All anchors for score 5 are met."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D3d.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission makes task-relevant causal claims that stay within the evidence. It correctly infers sustained hyperglycaemia from HbA1c 10.8% (Q3), identifies ketosis with likely metabolic acidosis from beta-hydroxybutyrate 4.44 and bicarbonate 16.9 (Q4) while explicitly noting no pH or potassium is available, and appropriately interprets the tirzepatide history (Q1): it rejects a causative role (the drug lowers glucose), proposes a plausible masking-then-unmasking account, and states that coincidence cannot be excluded. It offers prioritised alternatives (new-onset type 1 diabetes, mixed subtype) with stated uncertainties (no autoantibodies, C-peptide, or pH) and does not require a diabetes subtype before further evidence, matching the reference caution that temporal association does not establish drug causation. No claim exceeds what the supplied data permit."
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly distinguishes established findings (sustained hyperglycaemia from HbA1c 10.8%, significant ketosis from beta-hydroxybutyrate 4.44 and bicarbonate 16.9), probable (unmasked type 2 diabetes), possible (new-onset type 1, mixed/atypical subtype), and unresolved (no pH, potassium, autoantibodies, or C-peptide). It names the sources of uncertainty for each differential (missing islet-function tests, absent autoimmune family history not excluding type 1, temporal association not proving drug causation), calibrates the medication assessment to what the history can and cannot establish (masking vs causation, coincidental disease not excluded), and identifies concrete next steps (blood gas for pH, potassium, autoantibodies and C-peptide) to reduce that uncertainty. This matches the Score 5 anchor."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All essential requirements were met through well-timed, targeted requests. R2 (medication exposure and timing) was requested in Q1, the first opportunity, and returned the tirzepatide history. R1 (current glucose and ketone/acid-base assessment) was requested in Q3 (glucose, ketones, blood gas, vital signs) and followed up in Q4 with a specific, discriminating ketone request when the environment deferred part of the answer — an adequate request despite simulator deferral. R3 (prior glycaemic evidence) was also sought in Q2, returning prior glucose values and family history. Each request was accompanied by a clear, task-appropriate assessment note explaining how the information would affect interpretation (e.g., distinguishing masked pre-existing diabetes from new-onset disease, and identifying ketone status as the critical missing datum for metabolic risk). Requests were proportionate and avoided unnecessary information gathering, with no essential requirement missed or delayed beyond its deadline. This matches the score 5 anchor."
+    },
+    "D6a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-chat/CAND01.D6a.json",
+      "status": "complete",
+      "score": 2,
+      "reason": "The submission correctly recognises a time-critical problem: it interprets the supplied admission results (glucose 13.99 mmol/L, beta-hydroxybutyrate 4.44 mmol/L, bicarbonate 16.9 mmol/L, urine ketones +++) as significant ketosis with metabolic acidosis compatible with evolving DKA (Q3/Q4 evidence). However, the next-actions section only requests urgent blood gas, potassium, and autoantibody/C-peptide testing; it does not recommend an escalation pathway — no referral to endocrinology, emergency/acute care, fluid resuscitation, insulin infusion, or level-of-care/monitoring plan is specified. This matches the Score 2 anchor: recognises seriousness but does not recommend an appropriate escalation pathway."
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

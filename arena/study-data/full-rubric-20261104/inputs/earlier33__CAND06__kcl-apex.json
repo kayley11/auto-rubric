@@ -1,0 +1,435 @@
+{
+  "subject_key": "earlier33__CAND06__kcl-apex",
+  "case_key": "earlier33__CAND06",
+  "case_id": "CAND06",
+  "cohort": "earlier33",
+  "answer_model": "kcl-apex",
+  "answer_model_label": "arc:apex / GLM-5.3",
+  "source_answer": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/answers/kcl-apex/CAND06.json",
+  "source_answer_sha256": "3fb7dee7417c53efed9d2a66071490c625321b0d640266e44f747dc4322d5bba",
+  "has_complete_answer": true,
+  "source_status": "complete",
+  "state": {
+    "case_id": "CAND06",
+    "model": "arc:apex",
+    "mode": "source-interview",
+    "turns": [
+      {
+        "number": 1,
+        "question": "What does the admission renal and urine work-up show — please provide the existing urinalysis and routine renal laboratory reports from this admission.",
+        "assessment": {
+          "summary": "55-year-old man with two years of persistent proteinuria admitted for diagnostic assessment; renal characterisation pending.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "What does the admission renal and urine work-up show — please provide the existing urinalysis and routine renal laboratory reports from this admission.",
+          "topics": [
+            "routine_laboratory",
+            "tests"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "55-year-old man with two years of persistent proteinuria admitted for diagnostic assessment; renal characterisation pending.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "06.renal_severity",
+            "channel": "record",
+            "text": "Case 1 admission creatinine was 114 micromol/L and eGFR 61.6 mL/min/1.73 m². Twenty-four-hour urine protein was 1,259 mg and serum albumin 43 g/L. The report describes a two-year history of abnormal urinalysis but supplies no serial pretreatment creatinine trajectory.",
+            "source_location": "B0053; B0069-B0072",
+            "match": "renal|kidney|creat|egfr|protein|albumin|baseline|prior.{0,15}(?:test|result)|trend|urinalysis",
+            "period": "presentation"
+          },
+          {
+            "id": "06.tubular_markers",
+            "channel": "record",
+            "text": "Urine glucose was ++ and urine pH 7.5. Urinary beta-2-microglobulin was 30.7 mg/L and alpha-1-microglobulin 110.9 mg/L. The source does not give a simultaneous serum glucose value for interpreting the glycosuria.",
+            "source_location": "B0079-B0081; B0093",
+            "match": "tubul|glycos|glucos|urine ph|microglob|low.?molecular|fanconi|urinalysis|urine.{0,15}(?:test|result)",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "06.renal_severity",
+              "request_span": "admission renal and urine work-up"
+            },
+            {
+              "id": "06.tubular_markers",
+              "request_span": "urinalysis"
+            },
+            {
+              "id": "06.electrolytes",
+              "request_span": "routine renal laboratory reports"
+            },
+            {
+              "id": "06.tubular_limits",
+              "request_span": "urinalysis"
+            }
+          ],
+          "unanswered_spans": [],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 2,
+        "question": "Please provide the existing serum and urine monoclonal-protein studies (immunofixation, electrophoresis, free light chains) from this admission.",
+        "assessment": {
+          "summary": "Chronic proteinuria (1.26 g/24h) with preserved albumin, mild renal impairment (creatinine 114, eGFR 61.6) and marked urinary beta-2- and alpha-1-microglobulin with glycosuria and alkaline urine pH, suggesting a tubulointerstitial/proximal tubular process rather than pure glomerular disease; monoclonal-protein data requested.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing serum and urine monoclonal-protein studies (immunofixation, electrophoresis, free light chains) from this admission.",
+          "topics": [
+            "monoclonal_testing"
+          ],
+          "record_period": "current",
+          "assessment": {
+            "summary": "Chronic proteinuria (1.26 g/24h) with preserved albumin, mild renal impairment (creatinine 114, eGFR 61.6) and marked urinary beta-2- and alpha-1-microglobulin with glycosuria and alkaline urine pH, suggesting a tubulointerstitial/proximal tubular process rather than pure glomerular disease; monoclonal-protein data requested.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "06.immunofixation",
+            "channel": "record",
+            "text": "Serum immunofixation showed a monoclonal IgG-kappa peak. Detailed marrow, skeletal and renal tissue findings are withheld in this adaptation, rather than being negative.",
+            "source_location": "B0089-B0090",
+            "match": "immunofix|electroph|paraprotein|monoclon|\\bspep\\b|\\bupep\\b|\\bife\\b",
+            "period": "presentation"
+          },
+          {
+            "id": "06.free_light_chains",
+            "channel": "record",
+            "text": "Serum free kappa was 427.5 mg/L and free lambda 8.47 mg/L, with kappa/lambda ratio 50.47. Serum IgG was 15.80 g/L. These are Case 1 values.",
+            "source_location": "B0053; B0065-B0068",
+            "match": "light.?chain|free.{0,10}(?:kappa|lambda)|kappa|lambda|ratio|paraprotein|monoclon|myeloma|immunoglob|\\bigg\\b",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: electrophoresis. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "06.immunofixation",
+              "request_span": "immunofixation"
+            },
+            {
+              "id": "06.free_light_chains",
+              "request_span": "free light chains"
+            }
+          ],
+          "unanswered_spans": [
+            "electrophoresis"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 3,
+        "question": "Please provide the existing routine admission blood counts and biochemistry results, including haemoglobin, calcium and any other available routine laboratory values.",
+        "assessment": {
+          "summary": "Chronic proteinuria with tubular markers and marked kappa-chain excess (ratio 50.47) with IgG-kappa monoclonal protein raises possible monoclonal gammopathy-associated tubulointerstitial kidney disease; myeloma-related end-organ burden being assessed.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing routine admission blood counts and biochemistry results, including haemoglobin, calcium and any other available routine laboratory values.",
+          "topics": [
+            "routine_laboratory"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "Chronic proteinuria with tubular markers and marked kappa-chain excess (ratio 50.47) with IgG-kappa monoclonal protein raises possible monoclonal gammopathy-associated tubulointerstitial kidney disease; myeloma-related end-organ burden being assessed.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [
+          {
+            "id": "06.blood_counts",
+            "channel": "record",
+            "text": "Haemoglobin was 131 g/L, platelets 191 ×10^9/L and LDH 143 U/L. These values belong to Case 1, not the second patient in the report.",
+            "source_location": "B0053; B0063-B0064; B0078",
+            "match": "count|haemoglobin|hemoglobin|anaemi|anemi|platelet|\\bcbc\\b|\\bfbc\\b|\\bldh\\b|laborator|blood test",
+            "period": "presentation"
+          },
+          {
+            "id": "06.electrolytes",
+            "channel": "record",
+            "text": "Serum calcium was 2.38 mmol/L, phosphate 1.36 mmol/L, potassium 3.7 mmol/L, bicarbonate 22.7 mmol/L and uric acid 300 micromol/L.",
+            "source_location": "B0053; B0073-B0077",
+            "match": "calcium|phosph|potassium|bicarbon|electroly|uric|urate|acid.?base|metabolic|laborator|blood test",
+            "period": "presentation"
+          }
+        ],
+        "feedback": "No supplied answer for: any other available routine laboratory values. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [
+            {
+              "id": "06.blood_counts",
+              "request_span": "haemoglobin"
+            },
+            {
+              "id": "06.electrolytes",
+              "request_span": "calcium"
+            }
+          ],
+          "unanswered_spans": [
+            "any other available routine laboratory values"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 4,
+        "question": "Are there existing records of his earlier medical history or prior admissions related to the abnormal urinalysis, such as documented kidney problems, infections, or drug exposures over the two years before admission?",
+        "assessment": {
+          "summary": "Chronic proteinuria (1.26 g/24h) with preserved serum albumin, mild renal impairment (eGFR 61.6) and marked urinary low-molecular-weight protein, glycosuria and alkaline urine indicating proximal tubular dysfunction; IgG-kappa monoclonal protein with kappa/lambda ratio 50.47 suggests a monoclonal gammopathy-associated tubulopathy, with no anaemia, hypercalcaemia or electrolyte crisis so far.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Are there existing records of his earlier medical history or prior admissions related to the abnormal urinalysis, such as documented kidney problems, infections, or drug exposures over the two years before admission?",
+          "topics": [
+            "previous_episodes",
+            "medical_history"
+          ],
+          "record_period": "previous",
+          "assessment": {
+            "summary": "Chronic proteinuria (1.26 g/24h) with preserved serum albumin, mild renal impairment (eGFR 61.6) and marked urinary low-molecular-weight protein, glycosuria and alkaline urine indicating proximal tubular dysfunction; IgG-kappa monoclonal protein with kappa/lambda ratio 50.47 suggests a monoclonal gammopathy-associated tubulopathy, with no anaemia, hypercalcaemia or electrolyte crisis so far.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: earlier medical history or prior admissions related to the abnormal urinalysis; documented kidney problems; infections; drug exposures over the two years before admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "earlier medical history or prior admissions related to the abnormal urinalysis",
+            "documented kidney problems",
+            "infections",
+            "drug exposures over the two years before admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 5,
+        "question": "Please provide the existing urine electrophoresis or urine monoclonal-protein (Bence Jones) report from this admission.",
+        "assessment": {
+          "summary": "Chronic tubulointerstitial-pattern proteinuria with proximal tubular dysfunction and IgG-kappa monoclonal gammopathy (free light-chain ratio 50.47); no anaemia, hypercalcaemia or severe electrolyte disturbance; urine monoclonal-protein characterisation requested.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing urine electrophoresis or urine monoclonal-protein (Bence Jones) report from this admission.",
+          "topics": [
+            "monoclonal_testing"
+          ],
+          "record_period": "initial",
+          "assessment": {
+            "summary": "Chronic tubulointerstitial-pattern proteinuria with proximal tubular dysfunction and IgG-kappa monoclonal gammopathy (free light-chain ratio 50.47); no anaemia, hypercalcaemia or severe electrolyte disturbance; urine monoclonal-protein characterisation requested.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: existing urine electrophoresis or urine monoclonal-protein (Bence Jones) report from this admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "existing urine electrophoresis or urine monoclonal-protein (Bence Jones) report from this admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      },
+      {
+        "number": 6,
+        "question": "Please provide the existing serum protein electrophoresis report quantifying the monoclonal (M-) protein from this admission.",
+        "assessment": {
+          "summary": "Chronic tubulointerstitial-pattern proteinuria with proximal tubular dysfunction (glycosuria, raised urinary beta-2- and alpha-1-microglobulin, alkaline urine) and mild renal impairment, alongside IgG-kappa monoclonal gammopathy with kappa/lambda ratio 50.47; no anaemia, hypercalcaemia or major electrolyte disturbance; M-protein quantification requested.",
+          "certainty": "uncertain"
+        },
+        "doctor_output": {
+          "action": "ask",
+          "question": "Please provide the existing serum protein electrophoresis report quantifying the monoclonal (M-) protein from this admission.",
+          "topics": [
+            "monoclonal_testing"
+          ],
+          "record_period": "any",
+          "assessment": {
+            "summary": "Chronic tubulointerstitial-pattern proteinuria with proximal tubular dysfunction (glycosuria, raised urinary beta-2- and alpha-1-microglobulin, alkaline urine) and mild renal impairment, alongside IgG-kappa monoclonal gammopathy with kappa/lambda ratio 50.47; no anaemia, hypercalcaemia or major electrolyte disturbance; M-protein quantification requested.",
+            "certainty": "uncertain"
+          }
+        },
+        "returned": [],
+        "feedback": "No supplied answer for: existing serum protein electrophoresis report quantifying the monoclonal (M-) protein from this admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test.",
+        "selection": {
+          "matches": [],
+          "unanswered_spans": [
+            "existing serum protein electrophoresis report quantifying the monoclonal (M-) protein from this admission"
+          ],
+          "method": "Fixed semantic matcher; literal spans and existing IDs validated",
+          "technical_review": "awaiting review"
+        }
+      }
+    ],
+    "status": "complete",
+    "started_at": "2026-10-29T15:54:15.820992+00:00",
+    "final_answer": "# Pretreatment Diagnostic Review — Case 1\n\n**Clinical problem.** A 55-year-old man with two years of abnormal urinalysis has proteinuria of 1,259 mg/24 h with preserved serum albumin (43 g/L), mild renal impairment (creatinine 114 µmol/L, eGFR 61.6), glycosuria (++), urine pH 7.5, and markedly elevated urinary beta-2-microglobulin (30.7 mg/L) and alpha-1-microglobulin (110.9 mg/L). This pattern indicates predominantly proximal tubular dysfunction with tubulointerstitial injury rather than pure glomerular disease.\n\n**Prioritised explanations.**\n1. **Monoclonal gammopathy-associated tubulointerstitial kidney disease.** Serum immunofixation shows IgG-kappa monoclonal protein with free kappa 427.5 mg/L, lambda 8.47 mg/L, ratio 50.47. This markedly skewed ratio strongly supports a clonal plasma-cell disorder driving tubular injury. Uncertainty: M-protein quantification, urine monoclonal-protein studies, marrow and tissue data are withheld, so clonal burden and causal link remain unconfirmed.\n2. **Other proximal tubulopathy** (toxic, drug-related or inherited) — cannot be excluded because prior history and drug exposures are not supplied; absence of records is not a negative finding.\n3. **Coincident glomerular disease** — less likely given preserved albumin, but not excluded without biopsy.\n\n**Myeloma end-organ burden.** No anaemia (Hb 131 g/L), normal calcium (2.38 mmol/L), normal LDH and electrolytes argue against overt multiple myeloma.\n\n**Next steps.** Quantify serum M-protein, obtain urine monoclonal-protein studies, complete haematological staging, and proceed to renal biopsy to characterise the lesion before treatment decisions.",
+    "word_count": {
+      "words": 211,
+      "minimum": 180,
+      "maximum": 260,
+      "within_range": true,
+      "extra_tolerance": 0,
+      "json_excluded": false
+    },
+    "interview_finished": true,
+    "finished_at": "2026-10-29T15:55:08.193744+00:00"
+  },
+  "previous_scores": {
+    "D1": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-apex/CAND06.D1.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "All numeric claims (creatinine 114, eGFR 61.6, 24-h protein 1,259 mg, albumin 43, urine glucose ++, pH 7.5, beta-2-microglobulin 30.7, alpha-1-microglobulin 110.9, IgG-kappa on immunofixation, free kappa 427.5, lambda 8.47, ratio 50.47, Hb 131, calcium 2.38, LDH 143) match the evidence returned in Q1–Q3. Interpretive claims are appropriately hedged: the tubulointerstitial interpretation is presented as an inference from supplied markers, the causal link to a plasma-cell disorder is flagged as unconfirmed pending withheld M-protein quantification, urine studies, marrow and biopsy data, and the absence of prior history is correctly framed as absence of records rather than a negative finding. No findings, doses or probabilities are invented, and no withheld facts (Case 2 data, crystalline subtype, marrow percentage, staging) are imported. The submission explicitly acknowledges where evidence is uncertain or withheld, matching the Score 5 anchor."
+    },
+    "D2a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D2d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3a": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-apex/CAND06.D3a.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The synthesis is focused and evidence-based: it integrates the available renal data (1,259 mg/24 h proteinuria with preserved albumin, mild eGFR reduction, glycosuria, alkaline urine pH, markedly elevated beta-2- and alpha-1-microglobulin) into a defensible framing of predominantly proximal tubular dysfunction with tubulointerstitial injury. It correctly uses the monoclonal-protein evidence (IgG-kappa, ratio 50.47) to prioritise monoclonal gammopathy-associated tubulointerstitial disease while explicitly qualifying that M-protein quantification, urine studies, marrow and tissue data are withheld, so clonal burden and causality remain unconfirmed. It appropriately avoids claiming a renal pathological subtype, notes that absent history/drug records are not negative findings, uses blood counts and biochemistry to argue against overt myeloma, and states proportionate next discriminating investigations. This meets the Score 5 anchor: discriminating features are highlighted, hypothesis generation is guided, and the unresolved gaps that materially limit interpretation are made clear."
+    },
+    "D3b": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-apex/CAND06.D3b.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission prioritises a breadth-appropriate differential grounded in the actual supplied evidence: monoclonal gammopathy-associated tubulointerstitial kidney disease is ranked first with explicit discriminating findings (IgG-kappa paraprotein, kappa/lambda ratio 50.47, low-molecular-weight proteinuria, glycosuria with preserved albumin arguing for tubular over glomerular disease). Important alternatives are considered (other proximal tubulopathies, coincident glomerular disease), dangerous mimics are addressed proportionately (overt myeloma assessed against Hb 131, calcium 2.38, LDH 143), and uncertainty is handled correctly — withheld M-protein quantification, urine studies, marrow and biopsy data are flagged as unconfirmed rather than negative, consistent with the Q4–Q6 non-answers. Prior plausibility is attended to (two-year history, age, kappa restriction). Next discriminating investigations (M-protein quantification, urine monoclonal studies, staging, biopsy) match the provisional reference without importing hidden facts or Case 2 findings. This meets the Score 5 anchor: prioritised differential, explicit discriminating findings, attention to dangerous mimics, and proportionate consideration of prior plausibility."
+    },
+    "D3c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D3d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D4d": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5u": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-apex/CAND06.D5u.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "The submission clearly separates established findings (proteinuria 1,259 mg/24 h, preserved albumin, IgG-kappa paraprotein, kappa/lambda ratio 50.47) from unconfirmed conclusions, explicitly naming the sources of uncertainty: withheld M-protein quantification, urine monoclonal-protein studies, marrow and tissue data (Q2, Q5, Q6 returned no reports). It calibrates language ('strongly supports', 'cannot be excluded', 'less likely... but not excluded without biopsy'), correctly treats absent records as non-findings (Q4), and identifies concrete next steps that would reduce the uncertainty (M-protein quantification, urine studies, staging, biopsy). This meets the Score 5 anchor: distinguishing established, probable and possible conclusions, explaining the source of uncertainty, and stating the next discriminating step."
+    },
+    "D5b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D5c": {
+      "path": "/Users/lzt/Downloads/毕设/Autorubric/Josh_AutoRubric_Pilot/runs/five_model_33_cases_20261029/grades/kcl-apex/CAND06.D5c.json",
+      "status": "complete",
+      "score": 5,
+      "reason": "Both essential requirements are met with well-timed, targeted requests. Q1 (06.R1) obtained renal function and urine characterisation early, and the returned data (creatinine/eGFR, 24-hour protein, tubular markers) directly informed the renal differential. Q2 (06.R2) obtained immunofixation and free light chains, addressing the task's explicit monoclonal-protein question. Q3 appropriately sought myeloma-relevant end-organ screening (haemoglobin, calcium, electrolytes), and Q4–Q6 made reasonable attempts at discriminating information (prior history, urine and serum M-protein quantification) that the environment simply did not supply — these count as adequate requests, not acquisition failures. Each turn's public assessment note prospectively explains how the information would affect interpretation (tubulointerstitial pattern, monoclonal gammopathy-associated tubulopathy, absence of anaemia/hypercalcaemia), satisfying the explanation criterion. The helpful R3 items (marrow/skeletal/biopsy) are partially covered by Q3 and the withheld-source inventory; no essential requirement is unfulfilled, and the request sequence is proportionate and clinically prioritised with no clearly unnecessary gathering."
+    },
+    "D6a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D6c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7a": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7b": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    },
+    "D7c": {
+      "path": null,
+      "status": "not_selected",
+      "score": null,
+      "reason": ""
+    }
+  }
+}

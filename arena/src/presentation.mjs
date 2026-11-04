@@ -37,7 +37,9 @@ export function displayText(value) {
 export function displayData(value, key = "") {
   if (typeof value === "string") {
     if (key === "reviewer" && value)
-      return /^(?:R\d+|reviewer[-_][a-z0-9_-]+)$/i.test(value)
+      return /^(?:R\d+|reviewer[-_][a-z0-9_-]+|CLINICIAN_[a-z0-9_-]+|workspace(?:\/(?:R\d+|reviewer[-_][a-z0-9_-]+|CLINICIAN_[a-z0-9_-]+))?)$/i.test(
+        value,
+      )
         ? value
         : "Reviewer";
     if (/^(?:author|authors|prepared_by|confirmed_by)$/i.test(key) && value)
