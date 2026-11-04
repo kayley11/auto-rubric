@@ -20,4 +20,6 @@ Details: [data checks](data-checks.json), [public checks](published-checks.json)
 
 GitHub integration: 1,072 Python tests, 52 JavaScript checks, the build and Ruff checks passed in an isolated checkout. [Validation](github-validation.json) and [upload scan](github-upload-checks.json) record the scope. The [frozen archive](../../study-data/full-rubric-20261104/README.md) includes its own byte manifest and a credential-free verification command.
 
+The first hosted Windows run exposed a CP1252/UTF-8 mismatch when saving workspace JSON. The follow-up explicitly writes UTF-8 and adds a simulated-CP1252 regression test; all 1,073 local Python tests passed. [Compatibility check](windows-utf8-validation.json). Hosted outcomes are recorded by GitHub Actions on the corresponding commit. Research records and numerical scores were not rewritten.
+
 Only display copies were added. The full local research output remains in the separate `full_rubric_completion_78_20261104` run. New evaluations retain their configured scoring version; publishing these saved grades does not change that setting.

@@ -98,7 +98,9 @@ class WorkspaceCases:
                     merge_submissions(record, [submission])
                 if not exists or before != record.get("submissions", []):
                     temporary = path.with_suffix(".tmp")
-                    temporary.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+                    temporary.write_text(
+                        json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+                    )
                     temporary.replace(path)
                 result.append(record)
         return result

@@ -79,9 +79,9 @@ class WorkspaceRules:
             "rubric": snapshot,
         }
         path = self.root / ("revision-" + identifier + ".json")
-        path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+        path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         if body.get("make_default") is True:
             temp = self.root / "active.tmp"
-            temp.write_text(json.dumps({"id": identifier}) + "\n")
+            temp.write_text(json.dumps({"id": identifier}) + "\n", encoding="utf-8")
             temp.replace(self.root / "active.json")
         return record
