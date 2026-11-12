@@ -62,6 +62,47 @@ def login(client, identifier="R01"):
     return response
 
 
+def test_evidence_notes_are_private_and_do_not_change_grades(hosted):
+    from evidence_annotations import digest
+
+    server, client = hosted
+    key = "a" * 64
+    assert client.get("/api/evidence-annotations/" + key).status_code == 403
+    assert client.post("/api/evidence-annotations", json={}).status_code == 403
+    login(client)
+    answer, reason, rubric = "This result remains unknown.", "A saved reason.", "A saved rubric."
+    body = {
+        "context": {
+            "answer_key": "test/saved-answer",
+            "answer_sha256": digest(answer),
+            "case_id": "TEST",
+            "item_id": "D3a",
+            "reason_sha256": digest(reason),
+            "rubric_sha256": digest(rubric),
+            "rubric_version": "saved-v1",
+        },
+        "answer": answer,
+        "reason": reason,
+        "rubric_text": rubric,
+        "annotation_id": "note-1",
+        "reviewer": "reviewer_01",
+        "note": "Check this passage against the selected anchor.",
+        "status": "awaiting_review",
+        "origin": "manual",
+        "selectors": [{"start": 0, "end": len(answer), "quote": answer}],
+    }
+    result = client.post("/api/evidence-annotations", json=body)
+    assert result.status_code == 201
+    saved = result.json()
+    key = saved["context_id"]
+    assert saved["annotations"][0]["does_not_change_score"]
+    assert saved["clinical_reference_status"] == "awaiting confirmation"
+    assert client.get("/api/evidence-annotations/" + key).json()["saved_revisions"] == 1
+    assert not server.apps["R01"].list_runs()
+    login(client, "R02")
+    assert client.get("/api/evidence-annotations/" + key).json()["saved_revisions"] == 0
+
+
 def test_password_and_sessions_reject_forgery_expiry_and_password_rotation(accounts):
     users = members(accounts)
     assert check_password(TEST_PASSWORD, users["R01"]["password_hash"])

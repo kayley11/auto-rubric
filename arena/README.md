@@ -92,3 +92,7 @@ Checks:
 .venv/bin/python -m pytest arena/tests -q
 cd arena && npm run build
 ```
+
+## Linked scoring evidence
+
+Saved score details link quoted answer passages to the saved rubric definition and grading levels. Reviewers can highlight text with Recogito and save evidence notes in the protected workspace. Automatic links remain awaiting review; clinical references and requirements remain awaiting confirmation. [Usage and validation](docs/scoring-evidence.md).

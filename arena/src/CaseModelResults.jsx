@@ -4,6 +4,7 @@ import { RefreshCw, ChevronDown } from "lucide-react";
 import { ExportMenu, exposure } from "./StudyTools";
 import { EvidenceDialog } from "./EvidenceDialog";
 import { CaseContext } from "./CaseContext";
+import { ScoringEvidence } from "./ScoringEvidence.jsx";
 import { displayData } from "./presentation.mjs";
 import { scoringVersionLabel } from "./caseIdentity.mjs";
 
@@ -206,7 +207,7 @@ function ModelEvidence({ data, model, initialItem, onClose, caseInfo }) {
       }
     >
       <CaseContext
-        data={{
+        data={tab === "evaluation" ? null : {
           case_id: data.id,
           title: caseInfo?.title || data.title,
           description: caseInfo?.summary,
@@ -264,115 +265,25 @@ function ModelEvidence({ data, model, initialItem, onClose, caseInfo }) {
             </button>
           ))}
         </nav>
-        {tab === "evaluation" && (
+        {tab === "evaluation" && criterion && (
           <>
-            <label className="field">
-              Rubric item
-              <select value={item} onChange={(e) => setItem(e.target.value)}>
-                {data.criteria.map((c) => {
-                  const s = model.scores.find((s) => s.item === c.id);
-                  return (
-                    <option key={c.id} value={c.id}>
-                      {c.name} ({c.id}) ·{" "}
-                      {s ? cellText(model, s) : "Not assessed"}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-            <div className="selected-evaluation">
-              <div className="selected-score">
-                {score?.status === "complete" ? score.label : "—"}
-              </div>
-              <div>
-                <h3>
-                  {criterion?.name} ({item})
-                </h3>
-                <p>
-                  {score?.status === "complete"
-                    ? "Saved judge explanation"
-                    : cellText(model, score || {})}
-                </p>
-              </div>
-            </div>
-            <div className="case-prewrap judge-explanation">
-              {score?.reason ||
-                "No completed evaluation is saved for this item."}
-            </div>
-            {!!score?.review_flags?.length && (
-              <div className="notice" role="note">
-                <strong>Output needs review · original score retained</strong>
-                <ul>
-                  {score.review_flags.map((flag, n) => (
-                    <li key={n}>{flag.type === "quote_not_literal"
-                      ? "The judge's excerpt could not be matched word for word. Check it against the saved evidence; this does not by itself establish a clinical error."
-                      : flag.detail}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {score?.evidence_quote && (
-              <>
-                <h3>Judge-supplied evidence excerpt</h3>
-                <blockquote className="case-prewrap">{score.evidence_quote}</blockquote>
-              </>
-            )}
-            {score?.requirement_checks?.length > 0 && (
-              <details className="study-disclosure">
-                <summary>Information requirements: request-by-request checks</summary>
-                {score.requirement_checks.map((check, n) => (
-                  <section key={n}>
-                    <h4>{check.id} · {check.status.replaceAll("_", " ")}</h4>
-                    {check.request_quote && <blockquote>{check.request_quote}</blockquote>}
-                    <p>{check.reason}</p>
-                  </section>
-                ))}
-              </details>
-            )}
-            <h3>Rubric used for this evaluation</h3>
-            {criterion?.definition && <p>{criterion.definition}</p>}
-            <dl className="evidence-anchors">
-              {Object.entries(criterion?.anchors || {}).map(([n, text]) => (
-                <div
-                  key={n}
-                  className={String(score?.label) === n ? "selected" : ""}
-                >
-                  <dt>{n}</dt>
-                  <dd>{text}</dd>
-                </div>
-              ))}
-            </dl>
-            {[
-              criterion?.decision_point_rule,
-              criterion?.equivalence_rule,
-              ...(criterion?.essential_scoring_rules || []),
-              ...(criterion?.relationship_to_D5c || []),
-              criterion?.notes_vs_patient_directed_explanations,
-              criterion?.applicability,
-            ]
-              .filter(Boolean)
-              .map((rule, n) => (
-                <p className="rule-definition" key={n}>
-                  {typeof rule === "string" ? rule : JSON.stringify(rule)}
-                </p>
-              ))}
-            {criterion?.context && <details className="study-disclosure"><summary>Additional scoring guidance</summary><p className="case-prewrap">{criterion.context}</p></details>}
-            <h3>Answer being evaluated</h3>
-            <div className="case-prewrap evidence-answer">
-              {model.answer || "No final answer saved."}
-            </div>
-            <details className="study-disclosure">
-              <summary>Task, reference and candidate requirements</summary>
-              <p className="case-prewrap">{data.task}</p>
-              <h4>Reference — awaiting confirmation</h4>
-              <p className="case-prewrap">
-                {data.reference || "None supplied."}
-              </p>
-              <h4>Candidate requirements — awaiting confirmation</h4>
-              <pre className="saved-output-text">
-                {JSON.stringify(data.requirements, null, 2)}
-              </pre>
-            </details>
+            <ScoringEvidence
+              caseId={data.id}
+              answerKey={`${data.study_id || data.scoring_condition || "saved"}/${model.id || model.model_id}`}
+              answer={model.answer || ""}
+              criterion={criterion}
+              grade={score || {label: "Not assessed", reason: "No completed evaluation is saved for this item."}}
+              version={model.rule_version || data.rule_version}
+              facts={[data.initial_facts, data.opening && !data.initial_facts?.includes(data.opening) ? data.opening : ""].filter(Boolean).join("\n\n")}
+              task={data.task}
+              turns={model.turns || []}
+              reference={data.reference}
+              requirements={data.requirements}
+              items={data.criteria}
+              onItemChange={setItem}
+            />
+            {!!score?.review_flags?.length && <div className="notice" role="note"><strong>Output needs review · original score retained</strong><ul>{score.review_flags.map((flag,n) => <li key={n}>{flag.type === "quote_not_literal" ? "The judge's excerpt could not be matched word for word. Check it against the saved evidence; this does not by itself establish a clinical error." : flag.detail}</li>)}</ul></div>}
+            {score?.requirement_checks?.length > 0 && <details className="study-disclosure"><summary>Information requirements: request-by-request checks</summary>{score.requirement_checks.map((check,n) => <section key={n}><h4>{check.id} · {check.status.replaceAll("_", " ")}</h4>{check.request_quote && <blockquote>{check.request_quote}</blockquote>}<p>{check.reason}</p></section>)}</details>}
           </>
         )}
         {tab === "answer" && (

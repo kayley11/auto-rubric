@@ -31,6 +31,8 @@ import { Cases } from "./Cases";
 import { BatchImport } from "./BatchImport";
 import { EvaluationSetup, clinicalRubricId } from "./EvaluationSetup";
 import { CaseContext } from "./CaseContext";
+import { ScoringEvidence } from "./ScoringEvidence.jsx";
+import { EvidenceDialog } from "./EvidenceDialog";
 import { SavedEvaluations } from "./SavedEvaluations";
 import { SubmissionFields, useContributor } from "./ContributorFields";
 import { contributorError, newSubmission } from "./caseSubmission.mjs";
@@ -180,6 +182,7 @@ function Anchors({ item }) {
 }
 
 export function App() {
+  const [linkedItem, setLinkedItem] = useState(null);
   const [contributor, setContributor] = useContributor();
   const [submission, setSubmission] = useState(() => newSubmission());
   const [view, setView] = useState(currentView);
@@ -1470,8 +1473,10 @@ export function App() {
                                 <span className="criterion-id">{cid}</span>
                                 <h3>{item.name}</h3>
                                 {(!hideScores || grade?.status === "error") && (
-                                  <span
+                                  <button type="button"
                                     className={`score ${grade?.score <= 2 && grade?.score != null ? "low" : ""}`}
+                                    onClick={() => setLinkedItem(cid)}
+                                    aria-label={`Open linked evidence for ${cid}`}
                                   >
                                     {grade?.score != null ? (
                                       <>
@@ -1489,7 +1494,7 @@ export function App() {
                                     ) : (
                                       "Not assessed"
                                     )}
-                                  </span>
+                                  </button>
                                 )}
                               </div>
                               {(!hideScores || grade?.status === "error") && (
@@ -1504,6 +1509,7 @@ export function App() {
                                       grade?.error ||
                                       "No result yet."}
                                   </p>
+                                  <button type="button" className="trace-open-button" onClick={() => setLinkedItem(cid)}>View linked evidence & add a note →</button>
                                   {grade?.unanchored && (
                                     <p className="unanchored">
                                       This intermediate grade has no original
@@ -1579,6 +1585,7 @@ export function App() {
                           </button>
                         </div>
                       )}
+                      {linkedItem && !hideScores && criteria.find(c => c.id === linkedItem) && <EvidenceDialog title={`${form.case_code || form.case_id || run.id} · Linked scoring evidence`} onClose={() => setLinkedItem(null)}><ScoringEvidence caseId={form.case_code || form.case_id || run.id} answerKey={run.id} answer={form.answer || ""} criterion={criteria.find(c => c.id === linkedItem)} grade={run.grades[linkedItem] || {}} version={run.rubric_version?.id || form.rules_version} facts={form.facts} task={form.task} turns={form.interview?.turns || []} reference={form.reference} requirements={form.requirements} items={criteria.filter(c => form.criteria.includes(c.id))} onItemChange={setLinkedItem}/></EvidenceDialog>}
                       <p className="scope-note">
                         Draft reference points and author-dependent scoring
                         choices can be checked in human review. A completed run

@@ -38,6 +38,7 @@ from engine import (
     usage_totals,
     validate_input,
 )
+from evidence_annotations import EvidenceAnnotations
 from reviews import Reviews
 from scoring import (
     LEGACY_EVIDENCE_ID,
@@ -77,6 +78,7 @@ class Application:
         self.active_id = None
         self.reviews = Reviews(self.directory / "_reviews")
         self.cases = WorkspaceCases(self.directory)
+        self.evidence_annotations = EvidenceAnnotations(self.directory / "_evidence_annotations")
         # A restart must never leave the UI claiming an old request is still running.
         for path in self.directory.glob("*.json"):
             run = json.loads(path.read_text(encoding="utf-8"))
@@ -465,6 +467,17 @@ class Handler(BaseHTTPRequestHandler):
         try:
             self.guarded(mutation)
             path = urlparse(self.path).path
+            if path == "/api/evidence-annotations" and mutation:
+                member = getattr(self, "member", None)
+                return self.send(
+                    201,
+                    self.app.evidence_annotations.save(
+                        self.body(), member["id"] if member else "local-workspace"
+                    ),
+                )
+            annotation_match = re.fullmatch(r"/api/evidence-annotations/([a-f0-9]{64})", path)
+            if annotation_match and not mutation:
+                return self.send(200, self.app.evidence_annotations.read(annotation_match[1]))
             if not mutation and path == "/api/comparison":
                 return self.send(200, comparison.dataset())
             match = re.fullmatch(r"/api/comparison/cases/([A-Z0-9]+)", path)

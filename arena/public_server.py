@@ -113,6 +113,9 @@ class HostedHandler(Handler):
                     "online": True,
                 },
             }
+        # Annotation intervals and hashes refer to the exact saved text.
+        if urlparse(self.path).path.startswith("/api/evidence-annotations"):
+            return super().send(status, body, content_type, filename)
         if isinstance(body, (dict, list)):
             body = display_data(body)
         elif isinstance(body, str):
@@ -158,6 +161,8 @@ class HostedHandler(Handler):
         if path in {"/api/access/login", "/api/access/logout"}:
             return
         member = self.member
+        if path.startswith("/api/evidence-annotations") and not member:
+            raise PermissionError("Sign in to view or save workspace evidence notes.")
         if mutation and not member:
             raise PermissionError("Sign in to generate, score or save a review.")
         if path in {"/api/rubrics/manage", "/api/decisions"} or (
