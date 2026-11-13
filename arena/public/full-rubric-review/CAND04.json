@@ -3,7 +3,7 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-04T20:56:05.403331+00:00",
+  "updated_at": "2026-11-12T17:32:26.202481+00:00",
   "title": "Severe kidney injury after a febrile gastrointestinal illness",
   "audience": "Clinician",
   "mode": "written-record",
@@ -50,7 +50,7 @@
   "judge": "arc:apex",
   "rule_version": "overleaf-20261024-retrieved-20261104-full22",
   "scoring_condition": "full-profile-review-20261104",
-  "condition_note": "New full-profile review of the same saved answers. The rubric, evidence supplied to the judge and review format differ from some earlier ratings.",
+  "condition_note": "Full 22-item review of fixed saved answers. Previously missing KCL answers were recovered separately on 12 November 2026; all earlier successful answers and grades remain unchanged.",
   "d5c_mode": "active_acquisition",
   "criteria": [
     {
@@ -477,260 +477,616 @@
       "model_id": "arc:lite",
       "backend_model": "Qwen3.8-27B",
       "service": "kcl",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
-      "closing_note": null,
+      "answer_status": "complete",
+      "answer": "**Clinical Assessment: Initial Admission**\n\nThis 74-year-old woman presents with severe acute kidney injury (creatinine 689 µmol/L, baseline 65 six months prior; urea nitrogen 66.3 mmol/L), life-threatening hyperkalaemia (7.11 mmol/L), severe metabolic acidosis (CO2 combining power 5.5 mmol/L), and fluid overload (bilateral crackles, moderate lower-limb oedema) following a febrile gastrointestinal illness two weeks before admission.\n\nPrioritised explanations:\n\n1. Sepsis-associated acute kidney injury with acute parenchymal inflammation (acute pyelonephritis or acute interstitial nephritis). Supporting evidence: WBC 52.85 ×10^9/L with 97.8% neutrophils, procalcitonin 5.9 ng/mL, CRP 96 mg/L, marked urinary pyuria and bacteraemia, bilateral renal enlargement with cortical thickening on non-contrast CT and ultrasound. Uncertainty: no culture-based susceptibility available; NGS results pending.\n\n2. Acute tubular necrosis secondary to sepsis or hypoperfusion. Not excluded; imaging shows no obstruction but cannot distinguish ATN from parenchymal inflammation without histology.\n\n3. Travel-related aetiology (e.g., leptospirosis, hantavirus) not excluded given the long-haul flight preceding the febrile illness; destination unconfirmed.\n\nImmediate risks: fatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration. RRT initiation status is unconfirmed; bladder catheterisation status also unconfirmed.\n\nNext actions: confirm RRT and catheter status, obtain NGS results, hold metformin given AKI, and consider renal biopsy if clinical trajectory warrants definitive histological diagnosis.",
+      "word_count": {
+        "words": 195,
+        "minimum": 180,
+        "maximum": 260,
+        "within_range": true,
+        "extra_tolerance": 0,
+        "json_excluded": false
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you provide her current vital signs (blood pressure, heart rate, respiratory rate, temperature, oxygen saturation) and the admission routine blood results (full blood count, urea, creatinine, electrolytes, CRP)?",
+          "assessment": {
+            "summary": "74-year-old woman with acute reduction in urine output, dyspnoea and leg oedema following a febrile illness with GI symptoms. Working assessment: acute kidney injury with fluid overload; aetiology uncertain pending laboratory and clinical data. Immediate risks include hyperkalaemia, worsening pulmonary oedema, and possible sepsis-related renal impairment.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "04.admission_examination",
+              "channel": "record",
+              "text": "Admission findings were heart rate 106/min, temperature 36.5°C, blood pressure 130/56 mmHg, respiratory rate 28/min and oxygen saturation 97% on room air. There were bilateral pulmonary crackles, moderate lower-limb pitting oedema and dullness on bladder percussion. Abdominal, rebound and renal tenderness were absent.",
+              "period": "presentation"
+            },
+            {
+              "id": "04.urine_inflammation",
+              "channel": "record",
+              "text": "The table reports WBC 52.85 ×10^9/L, neutrophils 97.8%, CRP 96 mg/L and procalcitonin 5.9 ng/mL. Urine had marked pyuria and haematuria; flow-cytometry WBC was 41,905/microlitre, RBC 15,125/microlitre and bacteria 7,698/microlitre. UPCR was 1,655 mg/g creatinine and UACR 415.3 mg/g creatinine; reported 24-hour total protein was 598 mg.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide her admission routine blood results (urea, creatinine, potassium, sodium, bicarbonate) and, if one was performed, the renal and bladder ultrasound report?",
+          "assessment": {
+            "summary": "74-year-old woman with severe bacterial infection (WBC 52.85, neutrophils 97.8%, procalcitonin 5.9, CRP 96) and significant urinary pyuria/haematuria/bacteraemia, consistent with complicated UTI or pyelonephritis. Bladder dullness on percussion suggests urinary retention contributing to reduced output. Bilateral crackles and oedema indicate fluid overload. Working assessment: acute kidney injury in the setting of sepsis and possible obstructive component; severity and electrolyte status pending. Immediate risks: hyperkalaemia, worsening pulmonary oedema, septic deterioration.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "04.renal_metabolic",
+              "channel": "record",
+              "text": "The initial laboratory table reports creatinine 689 micromol/L, urea nitrogen 66.3 mmol/L, potassium 7.11 mmol/L, phosphate 3.98 mmol/L, calcium 1.86 mmol/L and carbon dioxide combining power 5.5 mmol/L. The documented creatinine baseline was 65 micromol/L six months before admission. No measured blood-gas pH is supplied.",
+              "period": "presentation"
+            },
+            {
+              "id": "04.imaging_limits",
+              "channel": "record",
+              "text": "Non-contrast CT showed bilateral renal enlargement and cortical thickening, with an ill-defined relatively hypoattenuating area at the left upper pole. Ultrasound showed bilateral enlargement and cortical swelling without hydronephrosis or abscess. Contrast CT was not performed because of AKI; acute-phase MRI was not performed because her clinical condition precluded safe transport/examination. These are missing investigations, not negative contrast/MRI findings.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: sodium. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the admission blood culture results (organism and sensitivity) if available, and confirm whether urgent renal replacement therapy has been initiated given the potassium of 7.11 and CO2 combining power of 5.5?",
+          "assessment": {
+            "summary": "Severe AKI (Cr 65→689) with life-threatening hyperkalaemia (7.11), severe metabolic acidosis (CO2 5.5), and fluid overload in the setting of a severe bacterial urinary infection (WBC 52.85, procalcitonin 5.9, marked pyuria/bacteraemia). Bilateral renal enlargement with cortical thickening on non-contrast CT and ultrasound, no obstruction. Working assessment: sepsis-associated AKI with acute parenchymal inflammation (acute pyelonephritis or acute interstitial nephritis); ATN cannot be excluded. Immediate risks: fatal arrhythmia, worsening pulmonary oedema, septic deterioration. Aetiology remains uncertain without culture data, contrast imaging, or histology.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "04.admission_sampling",
+              "channel": "record",
+              "text": "The report states that a single 0.5-g IV meropenem dose was given on the day of admission before conventional blood and urine cultures were collected. NGS blood and urine samples were collected the day after admission. Microbiological results are outside this initial review packet; no culture-based susceptibility result is available in the report.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: confirm whether urgent renal replacement therapy has been initiated given the potassium of 7.11 and CO2 combining power of 5.5. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "What were the specific gastrointestinal symptoms (for example diarrhoea, vomiting, or abdominal pain), and was a urinary catheter placed on admission given the bladder dullness noted on examination?",
+          "assessment": {
+            "summary": "Severe AKI (Cr 65→689) with life-threatening hyperkalaemia (7.11) and metabolic acidosis (CO2 5.5) in the setting of a severe bacterial urinary infection (WBC 52.85, procalcitonin 5.9, marked pyuria and bacteraemia). Bilateral renal enlargement with cortical thickening on non-contrast CT and ultrasound, no obstruction. Fluid overload with bilateral crackles and oedema. Working assessment: sepsis-associated AKI with acute parenchymal inflammation; ATN and acute interstitial nephritis not excluded. RRT status unconfirmed. Aetiology uncertain pending microbiology and histology.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "04.illness_timeline",
+              "channel": "record",
+              "text": "Two weeks before admission she developed fever after a long-haul flight, peaking at 38.8°C, with nausea, diarrhoea and poor appetite. Fever and diarrhoea improved after acetaminophen and rifaximin. One week before admission she developed oliguria, reported as 350 mL/day, and dyspnoea, which progressed.",
+              "period": "presentation"
+            },
+            {
+              "id": "04.admission_examination",
+              "channel": "record",
+              "text": "Admission findings were heart rate 106/min, temperature 36.5°C, blood pressure 130/56 mmHg, respiratory rate 28/min and oxygen saturation 97% on room air. There were bilateral pulmonary crackles, moderate lower-limb pitting oedema and dullness on bladder percussion. Abdominal, rebound and renal tenderness were absent.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: was a urinary catheter placed on admission given the bladder dullness noted on examination. Do not infer unreported values, results or the performance of a test. Previously returned: 04.admission_examination. Repetition does not establish new information."
+        },
+        {
+          "number": 5,
+          "question": "Where did she travel to on the long-haul flight, and was she taking any regular medications (such as NSAIDs, diuretics, or immunosuppressants) before the illness began?",
+          "assessment": {
+            "summary": "Severe AKI (Cr 65→689) with life-threatening hyperkalaemia (7.11) and metabolic acidosis (CO2 5.5) in the setting of a severe bacterial urinary infection (WBC 52.85, procalcitonin 5.9, marked pyuria and bacteraemia). Bilateral renal enlargement with cortical thickening on non-contrast CT and ultrasound, no obstruction. Fluid overload with bilateral crackles and oedema. Timeline: febrile GI illness 2 weeks prior (post long-haul flight), oliguria and dyspnoea 1 week prior. Working assessment: sepsis-associated AKI with acute parenchymal inflammation; ATN and acute interstitial nephritis not excluded. Travel-related aetiology (e.g. leptospirosis, Hantavirus) not yet excluded. RRT status and catheter placement unconfirmed. Aetiology uncertain pending microbiology and histology.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "04.background_medications",
+              "channel": "record",
+              "text": "She had hypertension and hyperlipidaemia for 10 years and type 2 diabetes for 20 years. Recorded medicines were felodipine, atorvastatin, aspirin, metformin and insulin. Acetaminophen and rifaximin were used during the preceding illness.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: Where did she travel to on the long-haul flight. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
+      "closing_note": {
+        "summary": "Clinical Summary\n\n74-year-old woman with severe acute kidney injury (creatinine 65 to 689 µmol/L over two weeks), life-threatening hyperkalaemia (7.11 mmol/L), severe metabolic acidosis (CO2 combining power 5.5 mmol/L), and fluid overload. The renal presentation follows a febrile illness with gastrointestinal symptoms, with progressive oliguria and dyspnoea over the preceding week.\n\nPrioritised explanations\n\n1. Sepsis-associated AKI with acute parenchymal inflammation (working diagnosis): Marked leukocytosis, procalcitonin 5.9, CRP 96, and significant urinary pyuria with bacteraemia indicate severe bacterial urinary infection. Bilateral renal enlargement with cortical thickening on non-contrast CT and ultrasound, without obstruction, is consistent with acute pyelonephritis or acute interstitial nephritis. ATN from sepsis cannot be excluded.\n\n2. Obstructive component (less likely): Bladder dullness suggests possible retention, but ultrasound showed no hydronephrosis.\n\n3. Travel-related aetiology (not excluded): Febrile illness followed a long-haul flight; leptospirosis or hantavirus remain considerations, but destination is unknown and NGS results are pending.\n\nImmediate risks and next steps\n\nFatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration are the principal immediate threats. RRT status is unconfirmed. Await NGS blood and urine results for pathogen identification; monitor potassium and acid-base status; consider renal biopsy if aetiology remains unclear after microbiological data. Contrast CT and MRI were not performed due to clinical constraints; the left upper pole hypoattenuating area on non-contrast CT remains uncharacterised.",
+        "certainty": "working"
+      },
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 3,
+          "label": "3",
+          "reason": "The record documents urinary bacteria (bacteriuria), not bacteraemia; this mislabel implies positive blood cultures that were not reported. Otherwise claims are accurate and grounded, so the error is minor but could mislead microbiological interpretation.",
+          "evidence_quote": "marked urinary pyuria and bacteraemia",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires a grounded clinician-facing synthesis using only supplied information, so factual accuracy and numeric fidelity are assessable."
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Inferences are clinically defensible and appropriately qualified against the available evidence. The bacteraemia/bacteriuria conflation is a factual slip rather than a reasoning failure.",
+          "evidence_quote": "Acute tubular necrosis secondary to sepsis or hypoperfusion. Not excluded; imaging shows no obstruction but cannot distinguish ATN from parenchymal inflammation without histology.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The prioritised-explanations task with evidence and uncertainty requires defensible inference steps."
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Premises (labs, imaging, timeline) are established before use and conclusions are connected to them. Only minor signposting omissions in linking risks to actions.",
+          "evidence_quote": "Prioritised explanations: 1. Sepsis-associated acute kidney injury... 2. Acute tubular necrosis... 3. Travel-related aetiology",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A coherent account linking supplied findings to a working explanation is explicitly requested."
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Every substantive step serves the clinical interpretation, differential, or plan with no redundancy within the word limit.",
+          "evidence_quote": "Next actions: confirm RRT and catheter status, obtain NGS results, hold metformin given AKI, and consider renal biopsy if clinical trajectory warrants definitive histological diagnosis.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The 180–260 word limit makes efficiency of the expressed reasoning clinically meaningful."
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All critical components are covered: severity, aetiological differential, life-threatening risks, unconfirmed RRT, medication safety (metformin), and a proportionate biopsy stance.",
+          "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration. RRT initiation status is unconfirmed",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Completeness of reasoning about danger, differential and next steps is required by the task."
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Focused synthesis integrates the discriminating features (baseline-to-current creatinine, hyperkalaemia, acidosis, fluid overload, preceding illness) and keeps unresolved gaps explicit.",
+          "evidence_quote": "severe acute kidney injury (creatinine 689 µmol/L, baseline 65 six months prior...), life-threatening hyperkalaemia (7.11 mmol/L), severe metabolic acidosis... following a febrile gastrointestinal illness",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requests a clinical synthesis for a clinician audience."
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Breadth-appropriate prioritised differential with explicit supporting findings, attention to dangerous mimics, and proportionate weight on prior plausibility and uncertainty.",
+          "evidence_quote": "3. Travel-related aetiology (e.g., leptospirosis, hantavirus) not excluded given the long-haul flight preceding the febrile illness; destination unconfirmed.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty are explicitly requested."
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Test selection is well targeted and respects the imaging limits, but justification for each investigation is only implicit rather than explicit.",
+          "evidence_quote": "obtain NGS results, hold metformin given AKI, and consider renal biopsy if clinical trajectory warrants definitive histological diagnosis",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task asks for proportionate next information/actions and preservation of imaging limits, which is a testing-decision assessment."
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Causal claims (sepsis-driven parenchymal inflammation, ATN from sepsis/hypoperfusion) are supported and limitations stated, though some qualifications are brief.",
+          "evidence_quote": "ATN from sepsis cannot be excluded... imaging shows no obstruction but cannot distinguish ATN from parenchymal inflammation without histology.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Interpreting causes of the renal presentation (infection, obstruction, drug, volume) requires task-relevant causal interpretation."
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Strict adherence to the pre-NGS admission window with explicit temporal anchors and no use of later findings.",
+          "evidence_quote": "following a febrile gastrointestinal illness two weeks before admission",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The decision point is explicitly bounded before next-day NGS, pathology and treatment response, creating a meaningful temporal window."
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Correctly identifies direction and magnitude of the creatinine change and interprets it as severe AKI.",
+          "evidence_quote": "creatinine 689 µmol/L, baseline 65 six months prior",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A documented creatinine baseline six months prior versus admission value, and urine output decline, provide observable directional changes."
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Events are sequenced correctly with explicit temporal anchors (two weeks, one week, admission).",
+          "evidence_quote": "progressive oliguria and dyspnoea over the preceding week... febrile gastrointestinal illness two weeks before admission",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The febrile illness, subsequent oliguria and admission findings require correct event sequencing."
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Deteriorating trajectory is correctly characterised and directly linked to the immediate risk profile and next actions.",
+          "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Worsening dyspnoea, oedema and declining urine output constitute an assessable deterioration trajectory."
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Established findings, working diagnoses, and unresolved items are clearly distinguished, with proportionate next steps to reduce uncertainty.",
+          "evidence_quote": "no culture-based susceptibility available; NGS results pending... RRT initiation status is unconfirmed",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires distinguishing a working explanation from confirmed pathology and acknowledging imaging limits."
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "The differential was progressively updated across turns (sepsis-AKI, then travel-related causes after the timeline, then medication review) in proportion to the new evidence without overreaction.",
+          "evidence_quote": "Travel-related aetiology (e.g., leptospirosis, hantavirus) not excluded given the long-haul flight preceding the febrile illness",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active-interview protocol with up to six requests supplies sequentially obtained new evidence, making belief updating observable."
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All three essential requirements were requested early, within the six turns, and were fulfilled by the record system. Requests were targeted to the key uncertainties (severity/electrolytes, infection evidence, obstruction/imaging limits, medication and travel exposure), with assessment notes explaining how each would affect interpretation; unfulfilled items (sodium, catheter, RRT status) were asked and their absence correctly attributed to the environment.",
+          "evidence_quote": "Could you provide her admission routine blood results (urea, creatinine, potassium, sodium, bicarbonate) and, if one was performed, the renal and bladder ultrasound report?",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The protocol allows six actual information requests from the record system, so active acquisition is in scope.",
-          "requirement_checks": []
+          "requirement_checks": [
+            {
+              "id": "04.R1",
+              "request_quote": "Could you provide her current vital signs (blood pressure, heart rate, respiratory rate, temperature, oxygen saturation) and the admission routine blood results (full blood count, urea, creatinine, electrolytes, CRP)?",
+              "status": "requested_satisfied",
+              "reason": "Requested in turn 1 and fulfilled with examination and renal/metabolic data in turns 1-2, informing immediate danger assessment."
+            },
+            {
+              "id": "04.R2",
+              "request_quote": "Could you provide the admission blood culture results (organism and sensitivity) if available... was she taking any regular medications (such as NSAIDs, diuretics, or immunosuppressants) before the illness began?",
+              "status": "requested_satisfied",
+              "reason": "Urine/infection data were returned in turn 1 and medication history in turn 5; culture request was made but results were unavailable in the packet, which is an environment limitation, not an acquisition failure."
+            },
+            {
+              "id": "04.R3",
+              "request_quote": "...and, if one was performed, the renal and bladder ultrasound report?",
+              "status": "requested_satisfied",
+              "reason": "Imaging was requested in turn 2 and returned, including explicit recognition that contrast CT and MRI were not performed rather than negative."
+            }
+          ]
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "The life-threatening hyperkalaemia and need to confirm urgent RRT are clearly identified, but the escalation urgency is stated as a next action rather than an unambiguous emergency directive.",
+          "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia... RRT initiation status is unconfirmed... confirm RRT and catheter status",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task asks to prioritise immediate dangers such as hyperkalaemia and severe AKI, an urgency decision."
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Actively avoids harm (metformin hold in AKI, respecting the contrast-CT contraindication) but does not specify monitoring or mitigation for the hyperkalaemia itself.",
+          "evidence_quote": "hold metformin given AKI",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Avoiding harm (e.g., contrast in AKI, nephrotoxins, untreated hyperkalaemia) is relevant to the stated actions and imaging limits."
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the task or record materials.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Headed, prioritised structure well matched to a busy clinician's cognitive load within the word limit.",
+          "evidence_quote": "**Clinical Assessment: Initial Admission**",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A structured 180–260 word clinician-facing assessment makes clarity and structure assessable."
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Register is precisely matched to a clinician audience using appropriate technical terminology.",
+          "evidence_quote": "Sepsis-associated acute kidney injury with acute parenchymal inflammation (acute pyelonephritis or acute interstitial nephritis)",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The audience is explicitly the clinical team, so audience calibration is in scope."
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All explicit instructions followed: prioritised explanations with uncertainty, proportionate next steps, word count within 180–260, and no invented findings beyond the noted terminology slip.",
+          "evidence_quote": "deterministic_word_count: 195 words",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Explicit word-count, turn-limit and content constraints make instruction following assessable."
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [
+        {
+          "id": "E1",
+          "primary_item": "D1",
+          "other_items": [
+            "D2a",
+            "D3b"
+          ],
+          "observation": "The answer repeatedly describes urinary findings as 'bacteraemia' when the record documents urinary bacteria (bacteriuria); this is the only material accuracy defect and slightly inflates the sepsis evidence base."
+        }
+      ],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "marked urinary pyuria and bacteraemia",
+              "reason": "The record documents urinary bacteria (bacteriuria), not bacteraemia; this mislabel implies positive blood cultures that were not reported. Otherwise claims are accurate and grounded, so the error is minor but could mislead microbiological interpretation."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Acute tubular necrosis secondary to sepsis or hypoperfusion. Not excluded; imaging shows no obstruction but cannot distinguish ATN from parenchymal inflammation without histology.",
+              "reason": "Inferences are clinically defensible and appropriately qualified against the available evidence. The bacteraemia/bacteriuria conflation is a factual slip rather than a reasoning failure."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Prioritised explanations: 1. Sepsis-associated acute kidney injury... 2. Acute tubular necrosis... 3. Travel-related aetiology",
+              "reason": "Premises (labs, imaging, timeline) are established before use and conclusions are connected to them. Only minor signposting omissions in linking risks to actions."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Next actions: confirm RRT and catheter status, obtain NGS results, hold metformin given AKI, and consider renal biopsy if clinical trajectory warrants definitive histological diagnosis.",
+              "reason": "Every substantive step serves the clinical interpretation, differential, or plan with no redundancy within the word limit."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration. RRT initiation status is unconfirmed",
+              "reason": "All critical components are covered: severity, aetiological differential, life-threatening risks, unconfirmed RRT, medication safety (metformin), and a proportionate biopsy stance."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "severe acute kidney injury (creatinine 689 µmol/L, baseline 65 six months prior...), life-threatening hyperkalaemia (7.11 mmol/L), severe metabolic acidosis... following a febrile gastrointestinal illness",
+              "reason": "Focused synthesis integrates the discriminating features (baseline-to-current creatinine, hyperkalaemia, acidosis, fluid overload, preceding illness) and keeps unresolved gaps explicit."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "3. Travel-related aetiology (e.g., leptospirosis, hantavirus) not excluded given the long-haul flight preceding the febrile illness; destination unconfirmed.",
+              "reason": "Breadth-appropriate prioritised differential with explicit supporting findings, attention to dangerous mimics, and proportionate weight on prior plausibility and uncertainty."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "obtain NGS results, hold metformin given AKI, and consider renal biopsy if clinical trajectory warrants definitive histological diagnosis",
+              "reason": "Test selection is well targeted and respects the imaging limits, but justification for each investigation is only implicit rather than explicit."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "ATN from sepsis cannot be excluded... imaging shows no obstruction but cannot distinguish ATN from parenchymal inflammation without histology.",
+              "reason": "Causal claims (sepsis-driven parenchymal inflammation, ATN from sepsis/hypoperfusion) are supported and limitations stated, though some qualifications are brief."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "following a febrile gastrointestinal illness two weeks before admission",
+              "reason": "Strict adherence to the pre-NGS admission window with explicit temporal anchors and no use of later findings."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "creatinine 689 µmol/L, baseline 65 six months prior",
+              "reason": "Correctly identifies direction and magnitude of the creatinine change and interprets it as severe AKI."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "progressive oliguria and dyspnoea over the preceding week... febrile gastrointestinal illness two weeks before admission",
+              "reason": "Events are sequenced correctly with explicit temporal anchors (two weeks, one week, admission)."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia, worsening pulmonary oedema, and septic deterioration.",
+              "reason": "Deteriorating trajectory is correctly characterised and directly linked to the immediate risk profile and next actions."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "no culture-based susceptibility available; NGS results pending... RRT initiation status is unconfirmed",
+              "reason": "Established findings, working diagnoses, and unresolved items are clearly distinguished, with proportionate next steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Travel-related aetiology (e.g., leptospirosis, hantavirus) not excluded given the long-haul flight preceding the febrile illness",
+              "reason": "The differential was progressively updated across turns (sepsis-AKI, then travel-related causes after the timeline, then medication review) in proportion to the new evidence without overreaction."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Immediate risks: fatal arrhythmia from hyperkalaemia... RRT initiation status is unconfirmed... confirm RRT and catheter status",
+              "reason": "The life-threatening hyperkalaemia and need to confirm urgent RRT are clearly identified, but the escalation urgency is stated as a next action rather than an unambiguous emergency directive."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "hold metformin given AKI",
+              "reason": "Actively avoids harm (metformin hold in AKI, respecting the contrast-CT contraindication) but does not specify monitoring or mitigation for the hyperkalaemia itself."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Clinical Assessment: Initial Admission**",
+              "reason": "Headed, prioritised structure well matched to a busy clinician's cognitive load within the word limit."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Sepsis-associated acute kidney injury with acute parenchymal inflammation (acute pyelonephritis or acute interstitial nephritis)",
+              "reason": "Register is precisely matched to a clinician audience using appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 195 words",
+              "reason": "All explicit instructions followed: prioritised explanations with uncertainty, proportionate next steps, word count within 180–260, and no invented findings beyond the noted terminology slip."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D1",
+              "other_items": [
+                "D2a",
+                "D3b"
+              ],
+              "observation": "The answer repeatedly describes urinary findings as 'bacteraemia' when the record documents urinary bacteria (bacteriuria); this is the only material accuracy defect and slightly inflates the sepsis evidence base."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "Could you provide her admission routine blood results (urea, creatinine, potassium, sodium, bicarbonate) and, if one was performed, the renal and bladder ultrasound report?",
+          "reason": "All three essential requirements were requested early, within the six turns, and were fulfilled by the record system. Requests were targeted to the key uncertainties (severity/electrolytes, infection evidence, obstruction/imaging limits, medication and travel exposure), with assessment notes explaining how each would affect interpretation; unfulfilled items (sodium, catheter, RRT status) were asked and their absence correctly attributed to the environment.",
+          "requirement_checks": [
+            {
+              "id": "04.R1",
+              "request_quote": "Could you provide her current vital signs (blood pressure, heart rate, respiratory rate, temperature, oxygen saturation) and the admission routine blood results (full blood count, urea, creatinine, electrolytes, CRP)?",
+              "status": "requested_satisfied",
+              "reason": "Requested in turn 1 and fulfilled with examination and renal/metabolic data in turns 1-2, informing immediate danger assessment."
+            },
+            {
+              "id": "04.R2",
+              "request_quote": "Could you provide the admission blood culture results (organism and sensitivity) if available... was she taking any regular medications (such as NSAIDs, diuretics, or immunosuppressants) before the illness began?",
+              "status": "requested_satisfied",
+              "reason": "Urine/infection data were returned in turn 1 and medication history in turn 5; culture request was made but results were unavailable in the packet, which is an environment limitation, not an acquisition failure."
+            },
+            {
+              "id": "04.R3",
+              "request_quote": "...and, if one was performed, the renal and bladder ultrasound report?",
+              "status": "requested_satisfied",
+              "reason": "Imaging was requested in turn 2 and returned, including explicit recognition that contrast CT and MRI were not performed rather than negative."
+            }
+          ]
+        }
+      },
+      "study_id": "legacy-missing-recovery-20261112",
+      "scoring_condition": "full-rubric-recovery-20261112",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "answer_origin_batch": "normalised_resume",
+      "comparison_note": "Recovered on 12 November 2026 under the original historical six-question task and matching rules. Existing earlier answers and scores are unchanged. Full-22 scoring uses the frozen 4 November rubric and applicability plan.",
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-chat",
@@ -1096,12 +1452,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the task or record materials.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the task or record materials.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -1154,7 +1532,9 @@
           ],
           "observation": "The final answer identifies metformin as likely worsening the acidosis but omits the explicit safety action of withholding it and omits continuation of antimicrobial therapy, weakening an otherwise strong management plan."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-apex",
@@ -1504,12 +1884,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the task or record materials.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the task or record materials.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -1563,7 +1965,9 @@
           ],
           "observation": "The 16-word overrun stems from dense evidence reporting rather than redundancy; content quality is high but the explicit word limit is breached."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "gemma4-free",
@@ -1824,7 +2228,9 @@
       "ratings_complete": 0,
       "not_applicable_count": 0,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "nemotron-free",
@@ -2085,7 +2491,9 @@
       "ratings_complete": 0,
       "not_applicable_count": 0,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "qwen38-groq",
@@ -2448,12 +2856,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the task or record materials.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the task or record materials.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the task or record materials."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -2515,7 +2945,18 @@
           ],
           "observation": "The final answer is 275 words, exceeding the 180-260 word requirement, which is the single explicit instruction deviation."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     }
-  ]
+  ],
+  "authoritative_execution_mode": "source-interview",
+  "na_audit": {
+    "id": "na-scope-audit-135-20261112",
+    "date": "12 Nov 2026",
+    "source_commit": "53564ae09b875d2a13ec28054ada9754fafd9ec3",
+    "report": "/na-audit/FINDINGS.md",
+    "clinical_status": "awaiting confirmation",
+    "original_records_retained": true
+  }
 }

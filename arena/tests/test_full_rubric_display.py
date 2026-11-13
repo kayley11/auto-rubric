@@ -1,10 +1,13 @@
-"""Audit the public result packet, including missingness and source boundaries."""
+"""Keep the original 4 November packet verifiable after later display updates."""
 
 import json
 from collections import Counter
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1] / "public/full-rubric-review"
+ROOT = (
+    Path(__file__).resolve().parents[1]
+    / "study-data/case-review-before-20261113/full-rubric-review"
+)
 
 
 def test_full_review_keeps_every_case_model_item_and_unscored_reason():

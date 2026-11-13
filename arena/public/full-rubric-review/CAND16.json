@@ -3,7 +3,7 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-04T20:56:05.403331+00:00",
+  "updated_at": "2026-11-12T17:32:26.236581+00:00",
   "title": "Polyarthritis, chills and occupational exposure",
   "audience": "Clinician",
   "mode": "written-record",
@@ -50,7 +50,7 @@
   "judge": "arc:apex",
   "rule_version": "overleaf-20261024-retrieved-20261104-full22",
   "scoring_condition": "full-profile-review-20261104",
-  "condition_note": "New full-profile review of the same saved answers. The rubric, evidence supplied to the judge and review format differ from some earlier ratings.",
+  "condition_note": "Full 22-item review of fixed saved answers. Previously missing KCL answers were recovered separately on 12 November 2026; all earlier successful answers and grades remain unchanged.",
   "d5c_mode": "active_acquisition",
   "criteria": [
     {
@@ -477,9 +477,16 @@
       "model_id": "arc:lite",
       "backend_model": "Qwen3.8-27B",
       "service": "kcl",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
+      "answer_status": "complete",
+      "answer": "**Clinical Problem**\n\nA 58-year-old man presents with progressive symmetric polyarthritis involving small and large joints over two months, preceded by sicca symptoms and joint pain at four months, and chills at seven months. He has fatigue, weight loss, and evening chills. Inflammatory markers are markedly elevated and rising (CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h). Rheumatoid factor and anti-CCP are not elevated. He has significant anaemia (Hb 77 g/L) and hypoalbuminaemia (27.5 g/L).\n\n**Prioritised Explanations**\n\n1. Seronegative rheumatoid arthritis or Sjögren's-related arthritis: symmetric polyarthritis with sicca fits, but negative RF/anti-CCP does not exclude these; ANA and further serology are not yet available.\n2. Adult-onset Still's disease: high fever pattern (evening chills), marked CRP elevation, and anaemia are consistent, but measured fevers and rash pattern are not yet documented.\n3. Lymphoproliferative malignancy or chronic infection: weight loss, anaemia, and rising inflammatory markers raise concern; imaging and full blood count with differential are not yet available to exclude these.\n\n**Next Steps**\n\nObtain full blood count with differential, ANA and further autoimmune serology, and imaging (CT chest/abdomen or ultrasound) to identify lymphadenopathy or organomegaly. Characterise morning stiffness duration and document fever pattern. These data are needed before committing to a treatment direction.",
+      "word_count": {
+        "words": 199,
+        "minimum": 180,
+        "maximum": 260,
+        "within_range": true,
+        "extra_tolerance": 0,
+        "json_excluded": false
+      },
       "turns": [
         {
           "number": 1,
@@ -493,9 +500,8 @@
             {
               "id": "16.course",
               "channel": "patient",
-              "patient_text": "",
               "text": "Chills began seven months ago. Dry mouth/eyes and joint pain started about four months ago; over the next two months swelling and pain involved wrists, finger joints, elbows, shoulders, knees, ankles and feet, with fatigue, weight loss and evening chills.",
-              "context": ""
+              "period": "presentation"
             }
           ],
           "feedback": "Do not infer unreported values, results or the performance of a test."
@@ -510,258 +516,548 @@
           },
           "returned": [],
           "feedback": "No supplied answer for: How long does your morning stiffness last each day; Have you had any measured fevers; noticed any rash. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Have you had any blood tests done in the past few months? If so, could I see the results for inflammatory markers (ESR, CRP) and any autoimmune antibodies (rheumatoid factor, anti-CCP, ANA)?",
+          "assessment": {
+            "summary": "58-year-old man with progressive symmetric polyarthritis (wrists, fingers, elbows, shoulders, knees, ankles, feet) evolving over 2 months, preceded by sicca symptoms at 4 months and chills at 7 months. Associated fatigue, weight loss, and evening chills. Differential includes autoimmune arthritis (RA, Sjögren's), adult-onset Still's disease, infection, or malignancy. Inflammatory markers and autoimmune serology would help narrow the aetiology.",
+            "certainty": "uncertain",
+            "working": "Progressive symmetric polyarthritis with systemic features and sicca; aetiology undetermined pending laboratory characterisation."
+          },
+          "returned": [
+            {
+              "id": "16.previous_tests",
+              "channel": "record",
+              "text": "Outside rheumatoid factor and anti-CCP were not elevated; ESR was 54 mm/h and CRP 106.8 mg/L four months before admission.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: ANA. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Have you had any other blood tests done recently, such as a full blood count or liver and kidney function tests? If so, could I see those results?",
+          "assessment": {
+            "summary": "58-year-old man with progressive symmetric polyarthritis (wrists, fingers, elbows, shoulders, knees, ankles, feet) over 2 months, preceded by sicca at 4 months and chills at 7 months, with fatigue and weight loss. Inflammatory markers significantly elevated (ESR 54, CRP 106.8) with negative RF and anti-CCP. Differential includes seronegative RA, Sjögren's-related arthritis, adult-onset Still's disease, infection, or malignancy. Full blood count and organ function would help distinguish cytopenic or infiltrative processes from primary inflammatory arthritis.",
+            "certainty": "uncertain",
+            "working": "Progressive symmetric polyarthritis with systemic features and sicca; aetiology undetermined pending full blood count and organ function data."
+          },
+          "returned": [
+            {
+              "id": "16.current_labs",
+              "channel": "record",
+              "text": "Day 0: CRP 205.88 mg/L, ESR 75 mm/h, haemoglobin 77 g/L and albumin 27.5 g/L.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: kidney function tests. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Have you had any imaging done, such as a CT scan or ultrasound of the chest, abdomen, or joints? If so, could I see those reports?",
+          "assessment": {
+            "summary": "58-year-old man with progressive symmetric polyarthritis over 2 months, sicca at 4 months, chills at 7 months, weight loss and fatigue. Markedly elevated and rising inflammatory markers (CRP 106.8→205.9, ESR 54→75), negative RF and anti-CCP, significant anaemia (Hb 77) and hypoalbuminaemia (27.5). The degree of systemic inflammation with anaemia and weight loss raises concern for adult-onset Still's disease, seronegative RA, lymphoproliferative malignancy, or chronic infection. Imaging would help identify lymphadenopathy, organomegaly, or other structural findings to narrow the differential.",
+            "certainty": "uncertain",
+            "working": "Progressive symmetric polyarthritis with severe systemic inflammation, anaemia and hypoalbuminaemia; aetiology undetermined. Differential includes Still's disease, seronegative RA, lymphoproliferative malignancy, or chronic infection. Imaging and full blood count with differential needed before committing to a treatment direction."
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: Have you had any imaging done, such as a CT scan or ultrasound of the chest, abdomen, or joints? If so, could I see those reports?. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
         }
       ],
-      "closing_note": null,
+      "closing_note": {
+        "summary": "Clinical summary: A 58-year-old man presents with progressive symmetric polyarthritis (wrists, fingers, elbows, shoulders, knees, ankles, feet) evolving over two months, preceded by sicca symptoms at four months and chills at seven months. He has fatigue, weight loss, and evening chills. Inflammatory markers are markedly elevated and rising (CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h). Rheumatoid factor and anti-CCP are negative. Day 0 haemoglobin is 77 g/L and albumin 27.5 g/L. No imaging, full blood count with differential, or ANA results are available.\n\nPrioritised differential:\n1. Adult-onset Still's disease — supported by high-grade systemic inflammation, evening chills, progressive polyarthritis, and negative RF/anti-CCP. Uncertainty: no WBC differential, ferritin, or rash documented; diagnosis of exclusion.\n2. Lymphoproliferative malignancy (e.g., lymphoma) — supported by weight loss, anaemia, hypoalbuminaemia, and severe systemic inflammation. Uncertainty: no imaging or full blood count with differential to identify lymphadenopathy, organomegaly, or abnormal cells.\n3. Seronegative rheumatoid arthritis — supported by symmetric small-joint polyarthritis. Uncertainty: negative RF and anti-CCP reduce but do not exclude this; sicca and degree of systemic inflammation are atypical.\n\nNext steps: Obtain full blood count with differential, platelet count, serum ferritin, and ANA. Chest and abdominal imaging (CT or ultrasound) to assess for lymphadenopathy or organomegaly. If malignancy is not excluded, consider haematology referral and tissue biopsy. Treatment direction should not be committed until the aetiology is clarified.",
+        "certainty": "uncertain"
+      },
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "All patient-specific claims match the supplied record; the phrase 'high fever pattern (evening chills)' slightly overstates chills as fever, though it is immediately qualified by noting measured fevers are undocumented.",
+          "evidence_quote": "Inflammatory markers are markedly elevated and rising (CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h).",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The summary must accurately report supplied labs, exposures and examination findings without invented values."
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Inferences are clinically defensible and evidence-linked; the minor inference of a 'fever pattern' from chills is qualified and does not alter conclusions.",
+          "evidence_quote": "negative RF/anti-CCP does not exclude these; ANA and further serology are not yet available",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Prioritised explanations must follow defensibly from the supplied inflammatory, sicca, exposure and laboratory evidence."
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Premises are established before use, and each differential item is explicitly connected to supporting and missing evidence.",
+          "evidence_quote": "preceded by sicca symptoms and joint pain at four months, and chills at seven months",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The written justification must connect premises (serology, cultures, course) to its conclusions coherently."
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Every section contributes to the clinical interpretation; no repetition or tangential content.",
+          "evidence_quote": "These data are needed before committing to a treatment direction.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The 180-260 word limit makes clinically relevant, non-redundant reasoning assessable."
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "All critical components are covered; serum ferritin (relevant to Still's disease) is omitted as a supporting step, a minor non-essential omission.",
+          "evidence_quote": "Obtain full blood count with differential, ANA and further autoimmune serology, and imaging",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires the case-specific reasoning steps needed to justify a treatment direction."
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "A focused synthesis with explicit temporal anchors, key abnormal values, and clearly stated unresolved gaps (ANA, imaging, FBC differential).",
+          "evidence_quote": "progressive symmetric polyarthritis involving small and large joints over two months, preceded by sicca symptoms... and chills at seven months",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requests a clinical synthesis for a clinician at the Day 0 decision point."
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings, attention to dangerous mimics (malignancy, infection), and stated uncertainty for each.",
+          "evidence_quote": "3. Lymphoproliferative malignancy or chronic infection: weight loss, anaemia, and rising inflammatory markers raise concern",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Up to three prioritised explanations with evidence is a differential-diagnosis task."
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Well-targeted tests linked to the differential; ferritin and blood film are minor omissions and justification is brief rather than explicit for each test.",
+          "evidence_quote": "imaging (CT chest/abdomen or ultrasound) to identify lymphadenopathy or organomegaly",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task asks for proportionate next investigations before treatment commitment."
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Causal claims are proportionate to the evidence and limitations are stated; no unsupported causal assertions.",
+          "evidence_quote": "negative RF and anti-CCP does not exclude these",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Interpreting whether negative serology and rising inflammatory markers cause-support each explanation requires task-relevant causal interpretation."
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Explicitly references timestamps and uses only information available at the Day 0 decision point.",
+          "evidence_quote": "CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The decision point is Day 0 with prior labs four months earlier, giving a meaningful temporal window to respect."
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Correct direction, magnitude (with values), and clinical significance of the rising inflammatory trend.",
+          "evidence_quote": "Inflammatory markers are markedly elevated and rising",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Rising CRP/ESR and worsening anaemia between the outside labs and Day 0 give observable directional changes."
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Events are sequenced correctly with explicit temporal anchors.",
+          "evidence_quote": "chills at seven months... sicca symptoms and joint pain at four months... over two months",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The seven-month and four-month symptom/test history requires correct sequencing."
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Deteriorating trajectory (rising markers, anaemia) is correctly characterised and linked to the management decision to investigate before treating.",
+          "evidence_quote": "These data are needed before committing to a treatment direction.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The supplied course supports characterising a deteriorating versus stable trajectory."
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Clearly distinguishes established findings from missing information, names sources of uncertainty, and identifies proportionate next steps to resolve them.",
+          "evidence_quote": "measured fevers and rash pattern are not yet documented",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly demands calibrated uncertainty about explanations and evidence gaps."
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "The differential appropriately shifts with the new lab evidence (rising CRP/ESR, Hb 77) elevating Still's and malignancy, with only minor imprecision in the degree of updating.",
+          "evidence_quote": "Lymphoproliferative malignancy or chronic infection: weight loss, anaemia, and rising inflammatory markers raise concern",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active-interview protocol provides sequential question-and-answer evidence allowing observable belief updating across the encounter."
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
+          "status": "complete",
+          "score": 2,
+          "label": "2",
+          "reason": "The model made relevant requests for symptom course, serology, laboratory results and imaging, but never requested occupational/animal exposure (16.R1) despite available cattle-exposure information, and never pursued an infection investigation route (16.R2) despite an open infectious differential. Two essential information-seeking requirements were omitted, capping the score at 2.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active interview allowed six actual questions, so targeted acquisition is directly assessable.",
-          "requirement_checks": []
+          "requirement_checks": [
+            {
+              "id": "16.R1",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No question about occupation or animal/food exposure was made in any of the five turns, although the exposure history was available and the constitutional inflammatory presentation made it relevant."
+            },
+            {
+              "id": "16.R2",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No blood culture, exposure-directed infection test, or equivalent infection investigation route was requested before the final diagnostic assessment, despite infection remaining in the differential."
+            },
+            {
+              "id": "16.R3",
+              "request_quote": "How long have you had the joint swelling and pain, and which joints are affected? Have the chills and weight loss been present for the same period, or did they start at a different time?",
+              "status": "requested_satisfied",
+              "reason": "The model actively sought time course and obtained systemic and laboratory findings through targeted record and patient questions."
+            }
+          ]
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 2,
+          "label": "2",
+          "reason": "The severe anaemia (Hb 77 g/L) and marked systemic inflammation suggest a potentially urgent situation, but no escalation pathway, urgency, or care level is specified.",
+          "evidence_quote": "Obtain full blood count with differential, ANA and further autoimmune serology, and imaging",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Severe anaemia (Hb 77) with marked inflammation makes an urgency or care-level decision part of proportionate next actions."
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 3,
+          "label": "3",
+          "reason": "No harmful treatment is recommended and premature immunosuppression is explicitly avoided, but no active safety caveats (e.g., anaemia assessment/transfusion threshold) are given.",
+          "evidence_quote": "Treatment direction should not be committed until the aetiology is clarified.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Avoiding premature immunosuppressive treatment before excluding infection is a mandatory safety consideration the task invokes."
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Clear headings, numbered differential, and concise well-signposted structure matched to the task.",
+          "evidence_quote": "**Prioritised Explanations**",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A structured 180-260 word clinician summary is assessable for clarity and organisation."
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Register is precisely calibrated to a clinician audience with appropriate technical terminology.",
+          "evidence_quote": "seronegative rheumatoid arthritis or Sjögren's-related arthritis",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The output is explicitly directed at a clinician, so register and depth calibration are assessable."
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All explicit instructions followed: summary, three prioritised explanations with uncertainty, proportionate next steps, evidence-before-treatment explanation, and word count within 180-260.",
+          "evidence_quote": "deterministic_word_count: 199 words",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task imposes explicit word-count, content-limit and evidence-use rules to follow."
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [
+        {
+          "id": "E1",
+          "primary_item": "D6a",
+          "other_items": [
+            "D6b"
+          ],
+          "observation": "The answer defers treatment appropriately but does not flag urgency or an escalation pathway despite Hb 77 g/L and CRP 205.9 mg/L, leaving the severity of the anaemia unaddressed as an actionable safety issue."
+        }
+      ],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Inflammatory markers are markedly elevated and rising (CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h).",
+              "reason": "All patient-specific claims match the supplied record; the phrase 'high fever pattern (evening chills)' slightly overstates chills as fever, though it is immediately qualified by noting measured fevers are undocumented.",
+              "item": "D1"
+            },
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "negative RF/anti-CCP does not exclude these; ANA and further serology are not yet available",
+              "reason": "Inferences are clinically defensible and evidence-linked; the minor inference of a 'fever pattern' from chills is qualified and does not alter conclusions.",
+              "item": "D2a"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "preceded by sicca symptoms and joint pain at four months, and chills at seven months",
+              "reason": "Premises are established before use, and each differential item is explicitly connected to supporting and missing evidence.",
+              "item": "D2b"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "These data are needed before committing to a treatment direction.",
+              "reason": "Every section contributes to the clinical interpretation; no repetition or tangential content.",
+              "item": "D2c"
+            },
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Obtain full blood count with differential, ANA and further autoimmune serology, and imaging",
+              "reason": "All critical components are covered; serum ferritin (relevant to Still's disease) is omitted as a supporting step, a minor non-essential omission.",
+              "item": "D2d"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "progressive symmetric polyarthritis involving small and large joints over two months, preceded by sicca symptoms... and chills at seven months",
+              "reason": "A focused synthesis with explicit temporal anchors, key abnormal values, and clearly stated unresolved gaps (ANA, imaging, FBC differential).",
+              "item": "D3a"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "3. Lymphoproliferative malignancy or chronic infection: weight loss, anaemia, and rising inflammatory markers raise concern",
+              "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings, attention to dangerous mimics (malignancy, infection), and stated uncertainty for each.",
+              "item": "D3b"
+            },
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "imaging (CT chest/abdomen or ultrasound) to identify lymphadenopathy or organomegaly",
+              "reason": "Well-targeted tests linked to the differential; ferritin and blood film are minor omissions and justification is brief rather than explicit for each test.",
+              "item": "D3c"
+            },
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "negative RF and anti-CCP does not exclude these",
+              "reason": "Causal claims are proportionate to the evidence and limitations are stated; no unsupported causal assertions.",
+              "item": "D3d"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "CRP 106.8 to 205.9 mg/L; ESR 54 to 75 mm/h",
+              "reason": "Explicitly references timestamps and uses only information available at the Day 0 decision point.",
+              "item": "D4a"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Inflammatory markers are markedly elevated and rising",
+              "reason": "Correct direction, magnitude (with values), and clinical significance of the rising inflammatory trend.",
+              "item": "D4b"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "chills at seven months... sicca symptoms and joint pain at four months... over two months",
+              "reason": "Events are sequenced correctly with explicit temporal anchors.",
+              "item": "D4c"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "These data are needed before committing to a treatment direction.",
+              "reason": "Deteriorating trajectory (rising markers, anaemia) is correctly characterised and linked to the management decision to investigate before treating.",
+              "item": "D4d"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "measured fevers and rash pattern are not yet documented",
+              "reason": "Clearly distinguishes established findings from missing information, names sources of uncertainty, and identifies proportionate next steps to resolve them.",
+              "item": "D5u"
+            },
+            {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Lymphoproliferative malignancy or chronic infection: weight loss, anaemia, and rising inflammatory markers raise concern",
+              "reason": "The differential appropriately shifts with the new lab evidence (rising CRP/ESR, Hb 77) elevating Still's and malignancy, with only minor imprecision in the degree of updating.",
+              "item": "D5b"
+            },
+            {
+              "status": "scored",
+              "score": 2,
+              "evidence_quote": "Obtain full blood count with differential, ANA and further autoimmune serology, and imaging",
+              "reason": "The severe anaemia (Hb 77 g/L) and marked systemic inflammation suggest a potentially urgent situation, but no escalation pathway, urgency, or care level is specified.",
+              "item": "D6a"
+            },
+            {
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Treatment direction should not be committed until the aetiology is clarified.",
+              "reason": "No harmful treatment is recommended and premature immunosuppression is explicitly avoided, but no active safety caveats (e.g., anaemia assessment/transfusion threshold) are given.",
+              "item": "D6b"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Prioritised Explanations**",
+              "reason": "Clear headings, numbered differential, and concise well-signposted structure matched to the task.",
+              "item": "D7a"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "seronegative rheumatoid arthritis or Sjögren's-related arthritis",
+              "reason": "Register is precisely calibrated to a clinician audience with appropriate technical terminology.",
+              "item": "D7b"
+            },
+            {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 199 words",
+              "reason": "All explicit instructions followed: summary, three prioritised explanations with uncertainty, proportionate next steps, evidence-before-treatment explanation, and word count within 180-260.",
+              "item": "D7c"
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D6a",
+              "other_items": [
+                "D6b"
+              ],
+              "observation": "The answer defers treatment appropriately but does not flag urgency or an escalation pathway despite Hb 77 g/L and CRP 205.9 mg/L, leaving the severity of the anaemia unaddressed as an actionable safety issue."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 2,
+          "evidence_quote": "",
+          "reason": "The model made relevant requests for symptom course, serology, laboratory results and imaging, but never requested occupational/animal exposure (16.R1) despite available cattle-exposure information, and never pursued an infection investigation route (16.R2) despite an open infectious differential. Two essential information-seeking requirements were omitted, capping the score at 2.",
+          "requirement_checks": [
+            {
+              "id": "16.R1",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No question about occupation or animal/food exposure was made in any of the five turns, although the exposure history was available and the constitutional inflammatory presentation made it relevant."
+            },
+            {
+              "id": "16.R2",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No blood culture, exposure-directed infection test, or equivalent infection investigation route was requested before the final diagnostic assessment, despite infection remaining in the differential."
+            },
+            {
+              "id": "16.R3",
+              "request_quote": "How long have you had the joint swelling and pain, and which joints are affected? Have the chills and weight loss been present for the same period, or did they start at a different time?",
+              "status": "requested_satisfied",
+              "reason": "The model actively sought time course and obtained systemic and laboratory findings through targeted record and patient questions."
+            }
+          ]
+        }
+      },
+      "study_id": "legacy-missing-recovery-20261112",
+      "scoring_condition": "full-rubric-recovery-20261112",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "answer_origin_batch": "normalised_resume",
+      "comparison_note": "Recovered on 12 November 2026 under the original historical six-question task and matching rules. Existing earlier answers and scores are unchanged. Full-22 scoring uses the frozen 4 November rubric and applicability plan.",
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-chat",
@@ -1099,12 +1395,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -1152,7 +1470,9 @@
           ],
           "observation": "Investigations are well matched to the three differential hypotheses but are listed without per-test justification, capping D3c at 4."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-apex",
@@ -1497,12 +1817,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -1555,7 +1897,9 @@
           ],
           "observation": "The answer proposes a correct but non-urgent outpatient-style work-up despite severe anaemia (Hb 77 g/L) and possible lymphoma, without specifying timing or care level."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "gemma4-free",
@@ -1816,7 +2160,9 @@
       "ratings_complete": 0,
       "not_applicable_count": 0,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "nemotron-free",
@@ -2141,12 +2487,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -2199,7 +2567,9 @@
           ],
           "observation": "The answer describes the polyarthritis as 'symmetric', which is not documented in the supplied record; a minor unsupported patient-specific claim that does not alter the clinical framing."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "qwen38-groq",
@@ -2538,12 +2908,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the supplied case or task.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -2596,7 +2988,18 @@
           ],
           "observation": "The answer is well structured and clinically complete but exceeds the stated 180-260 word limit (275 words), the only notable instruction deviation."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     }
-  ]
+  ],
+  "authoritative_execution_mode": "source-interview",
+  "na_audit": {
+    "id": "na-scope-audit-135-20261112",
+    "date": "12 Nov 2026",
+    "source_commit": "53564ae09b875d2a13ec28054ada9754fafd9ec3",
+    "report": "/na-audit/FINDINGS.md",
+    "clinical_status": "awaiting confirmation",
+    "original_records_retained": true
+  }
 }

@@ -3,7 +3,7 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-04T20:56:05.403331+00:00",
+  "updated_at": "2026-11-12T17:32:26.214207+00:00",
   "title": "Seizure, behavioural change and kidney allograft dysfunction",
   "audience": "Clinician",
   "mode": "written-record",
@@ -50,7 +50,7 @@
   "judge": "arc:apex",
   "rule_version": "overleaf-20261024-retrieved-20261104-full22",
   "scoring_condition": "full-profile-review-20261104",
-  "condition_note": "New full-profile review of the same saved answers. The rubric, evidence supplied to the judge and review format differ from some earlier ratings.",
+  "condition_note": "Full 22-item review of fixed saved answers. Previously missing KCL answers were recovered separately on 12 November 2026; all earlier successful answers and grades remain unchanged.",
   "d5c_mode": "active_acquisition",
   "criteria": [
     {
@@ -477,9 +477,16 @@
       "model_id": "arc:lite",
       "backend_model": "Qwen3.8-27B",
       "service": "kcl",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
+      "answer_status": "complete",
+      "answer": "## Clinical Problem\n\nA 23-year-old kidney-transplant recipient (6 years post deceased-donor transplant) on tacrolimus, mycophenolate and prednisone presents with delirium following a tonic-clonic seizure one week earlier, severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L), thrombocytopenia (92 × 10⁹/L), and acute allograft dysfunction (creatinine 589 μmol/L). A prodromal respiratory illness two weeks prior was unresponsive to levofloxacin. Tacrolimus trough is 7.30 ng/mL.\n\n## Prioritised Differential\n\n1. Thrombotic microangiopathy (TMA) with multi-organ involvement – The combination of microangiopathic haemolytic anaemia, thrombocytopenia, acute graft dysfunction, and encephalopathy is most consistent with TMA affecting the brain, kidney, and marrow. The prodromal illness may represent an infectious trigger. Uncertainty: no ADAMTS13, complement, or biopsy data yet; TMA subtype (TTP, aHUS, drug-induced, transplant-associated) is unconfirmed.\n\n2. CNS infection (viral encephalitis, PML) – Immunosuppression and a prodromal illness raise this possibility. Uncertainty: no neuroimaging, CSF, or pathogen data available; does not explain the microangiopathic picture.\n\n3. Uraemic encephalopathy – Creatinine 589 μmol/L could contribute to altered mental status. Uncertainty: does not account for schistocytes, low haptoglobin, or thrombocytopenia.\n\n## Acute Risk and Next Actions\n\nThe patient is at high risk of further neurological deterioration and graft loss. Urgent: neuroimaging (CT head, then MRI if stable), repeat haematology with peripheral smear review, ADAMTS13 activity, complement panel, blood cultures, and transplant-nephrology and haematology review. Do not delay supportive care (transfusion, haemodynamic monitoring) while awaiting results.",
+      "word_count": {
+        "words": 228,
+        "minimum": 180,
+        "maximum": 260,
+        "within_range": true,
+        "extra_tolerance": 0,
+        "json_excluded": false
+      },
       "turns": [
         {
           "number": 1,
@@ -492,271 +499,586 @@
             {
               "id": "08.prodrome",
               "channel": "caregiver",
-              "patient_text": "",
               "text": "About two weeks before this admission she developed throat discomfort and a productive cough. The symptoms did not improve with levofloxacin.",
-              "context": ""
+              "period": "presentation"
             },
             {
               "id": "08.neurological_course",
               "channel": "caregiver",
-              "patient_text": "",
               "text": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour. Neurological symptoms worsened despite symptomatic treatment at the local hospital, leading to transfer.",
-              "context": ""
+              "period": "presentation"
             }
           ],
           "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: has it been changed recently. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "What immunosuppression regimen is the patient currently on, and are there existing blood test results available — specifically a full blood count, renal function, LDH, and haptoglobin?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with a prodromal upper-respiratory illness (~2 weeks prior), followed by a tonic-clonic seizure (~1 week prior) and progressive encephalopathy, alongside severe anaemia and acute allograft dysfunction. The temporal clustering of microangiopathic-type anaemia, graft dysfunction, and CNS involvement raises concern for thrombotic microangiopathy, but CNS infection (viral encephalitis, PML) and uraemic encephalopathy remain in the differential. The prodromal illness and failure to respond to levofloxacin may be relevant to an infectious or immune-mediated trigger. Immunosuppression regimen and baseline laboratory data are not yet established.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.transplant_medication",
+              "channel": "record",
+              "text": "She received a deceased-donor kidney transplant six years earlier for end-stage renal disease. The reported maintenance regimen before presentation was tacrolimus 1.5 mg twice daily, mycophenolate mofetil 360 mg twice daily and prednisone 8 mg daily.",
+              "period": "presentation"
+            },
+            {
+              "id": "08.haematology",
+              "channel": "record",
+              "text": "The initial work-up described anaemia, thrombocytopenia and schistocytes. Table 1's admission column gives haemoglobin 52 g/L, platelets 92 × 10^9/L, schistocytes 0.8%, haptoglobin 0.126 g/L and LDH 262 U/L.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "What were the admission renal function results (creatinine and urea), and is there an initial head CT or MRI report available from the local hospital or on transfer?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient (6 years post deceased-donor transplant) on tacrolimus/MMF/prednisone with a prodromal respiratory illness (~2 weeks prior, unresponsive to levofloxacin), followed by tonic-clonic seizure and progressive encephalopathy (~1 week prior). Admission haematology shows severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L) with thrombocytopenia (92 × 10⁹/L) and acute allograft dysfunction. This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow). CNS infection and uraemic encephalopathy remain in the differential but do not explain the microangiopathic picture. The prodromal illness may represent an infectious trigger. Renal function quantification and initial neuroimaging are needed to refine the assessment.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "08.allograft_function",
+              "channel": "record",
+              "text": "The local work-up had identified acute allograft dysfunction. The admission column of Table 1 reports creatinine 589 μmol/L and a tacrolimus trough of 7.30 ng/mL. A measured pre-illness creatinine is not given in this packet.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: urea; initial head CT or MRI report available from the local hospital or on transfer. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Is there a head CT or MRI report available from the local hospital or on transfer, and what were the neurological examination findings on admission — pupils, motor power, reflexes, and any meningeal signs?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient (6 years post deceased-donor transplant) on tacrolimus/MMF/prednisone with a prodromal respiratory illness (~2 weeks prior, unresponsive to levofloxacin), followed by tonic-clonic seizure and progressive encephalopathy (~1 week prior). Admission haematology confirms severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L) with thrombocytopenia (92 × 10⁹/L) and acute allograft dysfunction (creatinine 589 μmol/L; tacrolimus trough 7.30 ng/mL, within range). This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow). CNS infection and uraemic encephalopathy remain in the differential but do not explain the microangiopathic picture. The prodromal illness may represent an infectious trigger. Neuroimaging and detailed neurological examination are needed to characterise CNS involvement and refine the differential.",
+            "certainty": "working"
+          },
+          "returned": [
+            {
+              "id": "08.admission_examination",
+              "channel": "record",
+              "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: head CT or MRI report available from the local hospital or on transfer; pupils, motor power, reflexes, and any meningeal signs. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Was any specific pathogen identified from the prodromal respiratory illness (for example, viral PCR or serology), and has she had any prior episodes of haemolytic anaemia or thrombocytopenia before this admission?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient on tacrolimus/MMF/prednisone with a prodromal respiratory illness (~2 weeks prior, unresponsive to levofloxacin), followed by tonic-clonic seizure and progressive encephalopathy (~1 week prior). Admission haematology confirms severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L) with thrombocytopenia (92 × 10⁹/L) and acute allograft dysfunction (creatinine 589 μmol/L; tacrolimus trough 7.30 ng/mL, within range). Day 0 examination: delirious, pale, afebrile, BP 141/85. This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow). CNS infection and uraemic encephalopathy remain in the differential but do not explain the microangiopathic picture. The prodromal illness may represent an infectious trigger. Neuroimaging and detailed neurological examination are not yet available. Pathogen identification from the prodromal illness and any prior TMA episodes would refine the differential.",
+            "certainty": "working"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: Was any specific pathogen identified from the prodromal respiratory illness (for example, viral PCR or serology); has she had any prior episodes of haemolytic anaemia or thrombocytopenia before this admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Has she had any prior episodes of acute or chronic rejection of the transplant, and what was the original cause of her end-stage renal disease before the transplant?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient (6 years post deceased-donor transplant) on tacrolimus/MMF/prednisone with a prodromal respiratory illness (~2 weeks prior, unresponsive to levofloxacin), followed by tonic-clonic seizure and progressive encephalopathy (~1 week prior). Admission haematology confirms severe microangiopathic haemolytic anaemia (Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L) with thrombocytopenia (92 × 10⁹/L) and acute allograft dysfunction (creatinine 589 μmol/L; tacrolimus trough 7.30 ng/mL, within range). Day 0 examination: delirious, pale, afebrile, BP 141/85. This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow). CNS infection and uraemic encephalopathy remain in the differential but do not explain the microangiopathic picture. The prodromal illness may represent an infectious trigger. Neuroimaging, pathogen identification, and detailed neurological examination are not available at this decision point. Prior rejection history and original ESRD aetiology would further refine the differential.",
+            "certainty": "working"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: Has she had any prior episodes of acute or chronic rejection of the transplant; what was the original cause of her end-stage renal disease before the transplant. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
         }
       ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All patient-specific values match the supplied record exactly; documented findings, inferences and general knowledge are appropriately distinguished.",
+          "evidence_quote": "Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L ... creatinine 589 μmol/L",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and values is assessable."
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Each inference is clinically defensible and explicitly tied to the available evidence, with competing explanations weighed.",
+          "evidence_quote": "The combination of microangiopathic haemolytic anaemia, thrombocytopenia, acute graft dysfunction, and encephalopathy is most consistent with TMA",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, so each reasoning step's validity against available evidence is assessable."
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Premises are established before conclusions and each differential item is connected to stated findings and limitations.",
+          "evidence_quote": "Uncertainty: no ADAMTS13, complement, or biopsy data yet; TMA subtype ... is unconfirmed.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A provisional problem representation and prioritised differential require an internally connected reasoning account."
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Every section serves the clinical purpose with no redundancy or tangential content.",
+          "evidence_quote": "Do not delay supportive care (transfusion, haemodynamic monitoring) while awaiting results.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The 180–260 word limit makes the proportion of clinically effective reasoning assessable within the written justification."
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Critical components—unifying TMA hypothesis, dangerous mimics, urgency, subtype-discriminating tests and specialist escalation—are all covered.",
+          "evidence_quote": "Urgent: neuroimaging (CT head, then MRI if stable), repeat haematology with peripheral smear review, ADAMTS13 activity, complement panel, blood cultures, and transplant-nephrology and haematology review.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Completeness of the reasoning covering the neurological, haematological and renal problems is explicitly required."
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "A focused, provisional synthesis integrates the discriminating features and flags the unresolved TMA subtype.",
+          "evidence_quote": "severe microangiopathic haemolytic anaemia ... thrombocytopenia ... acute allograft dysfunction ... prodromal respiratory illness two weeks prior",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requests a provisional problem representation synthesising the supplied evidence."
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings for and against each hypothesis.",
+          "evidence_quote": "1. Thrombotic microangiopathy ... 2. CNS infection (viral encephalitis, PML) ... 3. Uraemic encephalopathy",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty constitute a differential-diagnosis task."
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Tests are prioritised and directly linked to distinguishing TMA subtypes and excluding infection.",
+          "evidence_quote": "ADAMTS13 activity, complement panel, blood cultures, and transplant-nephrology and haematology review",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task asks for next information and specialist assessment, which is a testing/investigation decision to assess."
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Causal claims are appropriately hedged and the response avoids asserting a single cause for all abnormalities.",
+          "evidence_quote": "The prodromal illness may represent an infectious trigger.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The instruction not to assume a single cause explains every abnormality calls for task-relevant causal interpretation across multi-system findings."
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Strictly uses Day 0 admission information with explicit temporal references and no post-decision-point data.",
+          "evidence_quote": "A prodromal respiratory illness two weeks prior was unresponsive to levofloxacin.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The decision point is explicitly bounded to Day 0 admission findings, with later confirmations excluded, creating a meaningful temporal boundary."
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 3,
+          "label": "3",
+          "reason": "The worsening sequence is implicit but the final answer does not explicitly characterise the deteriorating trend or its magnitude.",
+          "evidence_quote": "delirium following a tonic-clonic seizure one week earlier",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The case describes worsening neurological symptoms and progressive deterioration, so identifying directional change is meaningful."
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Events are correctly sequenced with explicit temporal anchors.",
+          "evidence_quote": "two weeks prior ... one week earlier",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The prodrome, seizure, transfer and admission findings form a sequenced timeline the summary must order correctly."
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "A deteriorating trajectory is correctly characterised and directly linked to urgent management decisions.",
+          "evidence_quote": "The patient is at high risk of further neurological deterioration and graft loss.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The trajectory (deteriorating despite treatment) is central to the risk assessment and differential."
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Established, probable and unresolved elements are clearly distinguished, with named sources of uncertainty and proportionate next steps.",
+          "evidence_quote": "Uncertainty: no neuroimaging, CSF, or pathogen data available; does not explain the microangiopathic picture.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requires stating uncertainty alongside evidence in the prioritised explanations."
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Across turns the model proportionately raised TMA from uncertain to working diagnosis after haematology results while retaining alternatives, without overreacting.",
+          "evidence_quote": "This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow).",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active-interview protocol allows up to six actual question turns, providing observable new evidence between requests and the final assessment."
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All three essential requirements were requested early and in a targeted manner: immunosuppression regimen (turn 1-2), renal/haematological evidence (turns 2-3), and current neurological/physiological severity (turns 1 and 4). Unavailable data (neuroimaging, detailed neuro exam, pathogen identification) were appropriately requested and correctly treated as unavailable rather than negative findings, with each request clearly linked to the differential in the assessment notes.",
+          "evidence_quote": "What were the admission renal function results (creatinine and urea), and is there an initial head CT or MRI report available...",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active interview protocol permits six actual questions, so targeted information seeking is actively assessable.",
-          "requirement_checks": []
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "what were the neurological examination findings on admission — pupils, motor power, reflexes, and any meningeal signs?",
+              "status": "requested_not_returned",
+              "reason": "Adequately requested on turn 4 (plus timeline/severity on turn 1); the environment returned only vital signs, so non-fulfilment is not attributable to the model."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "What immunosuppression regimen is the patient currently on, and has it been changed recently?",
+              "status": "requested_satisfied",
+              "reason": "Requested on turns 1 and 2; the full regimen and tacrolimus trough were returned."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "are there existing blood test results available — specifically a full blood count, renal function, LDH, and haptoglobin?",
+              "status": "requested_satisfied",
+              "reason": "Requested on turns 2-3; admission haematology and creatinine were returned."
+            }
+          ]
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Urgency is prominent, the escalation pathway and care level are explicit, and parallel supportive care is mandated.",
+          "evidence_quote": "Urgent: neuroimaging ... transplant-nephrology and haematology review. Do not delay supportive care ... while awaiting results.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires an actual urgency decision: urgent care must not wait, and acute neurological/systemic risk must be assessed."
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "No harmful recommendations and supportive care is prioritised, but no explicit caution regarding transfusion strategy in suspected TMA is given.",
+          "evidence_quote": "Do not delay supportive care (transfusion, haemodynamic monitoring) while awaiting results.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Acute seizure, delirium, severe anaemia and allograft dysfunction create mandatory safety considerations (e.g., seizure precautions, avoiding harmful empiric choices) assessable in the plan."
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Clear headings and signposting match the clinician audience's needs without verbosity.",
+          "evidence_quote": "## Clinical Problem ... ## Prioritised Differential ... ## Acute Risk and Next Actions",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The written clinician-facing assessment with word-count and structural requirements makes clarity and structure assessable."
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Register is precisely matched to a clinician, using appropriate specialist terminology throughout.",
+          "evidence_quote": "ADAMTS13 activity, complement panel, transplant-nephrology and haematology review",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Word count is within the 180–260 range and all format, content and audience instructions are followed.",
+          "evidence_quote": "deterministic_word_count: 228 words",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Explicit constraints on word count, number of explanations, question turns and content scope make instruction following directly assessable."
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [
+        {
+          "id": "E1",
+          "primary_item": "D4b",
+          "other_items": [
+            "D4d"
+          ],
+          "observation": "The final answer implies but does not explicitly state the deteriorating trend, while trajectory-linked management is still correctly handled; this limits D4b without affecting D4d."
+        }
+      ],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Hb 52 g/L, schistocytes 0.8%, haptoglobin 0.126 g/L, LDH 262 U/L ... creatinine 589 μmol/L",
+              "reason": "All patient-specific values match the supplied record exactly; documented findings, inferences and general knowledge are appropriately distinguished."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The combination of microangiopathic haemolytic anaemia, thrombocytopenia, acute graft dysfunction, and encephalopathy is most consistent with TMA",
+              "reason": "Each inference is clinically defensible and explicitly tied to the available evidence, with competing explanations weighed."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Uncertainty: no ADAMTS13, complement, or biopsy data yet; TMA subtype ... is unconfirmed.",
+              "reason": "Premises are established before conclusions and each differential item is connected to stated findings and limitations."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Do not delay supportive care (transfusion, haemodynamic monitoring) while awaiting results.",
+              "reason": "Every section serves the clinical purpose with no redundancy or tangential content."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent: neuroimaging (CT head, then MRI if stable), repeat haematology with peripheral smear review, ADAMTS13 activity, complement panel, blood cultures, and transplant-nephrology and haematology review.",
+              "reason": "Critical components—unifying TMA hypothesis, dangerous mimics, urgency, subtype-discriminating tests and specialist escalation—are all covered."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "severe microangiopathic haemolytic anaemia ... thrombocytopenia ... acute allograft dysfunction ... prodromal respiratory illness two weeks prior",
+              "reason": "A focused, provisional synthesis integrates the discriminating features and flags the unresolved TMA subtype."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "1. Thrombotic microangiopathy ... 2. CNS infection (viral encephalitis, PML) ... 3. Uraemic encephalopathy",
+              "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings for and against each hypothesis."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "ADAMTS13 activity, complement panel, blood cultures, and transplant-nephrology and haematology review",
+              "reason": "Tests are prioritised and directly linked to distinguishing TMA subtypes and excluding infection."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The prodromal illness may represent an infectious trigger.",
+              "reason": "Causal claims are appropriately hedged and the response avoids asserting a single cause for all abnormalities."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A prodromal respiratory illness two weeks prior was unresponsive to levofloxacin.",
+              "reason": "Strictly uses Day 0 admission information with explicit temporal references and no post-decision-point data."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "delirium following a tonic-clonic seizure one week earlier",
+              "reason": "The worsening sequence is implicit but the final answer does not explicitly characterise the deteriorating trend or its magnitude."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "two weeks prior ... one week earlier",
+              "reason": "Events are correctly sequenced with explicit temporal anchors."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The patient is at high risk of further neurological deterioration and graft loss.",
+              "reason": "A deteriorating trajectory is correctly characterised and directly linked to urgent management decisions."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Uncertainty: no neuroimaging, CSF, or pathogen data available; does not explain the microangiopathic picture.",
+              "reason": "Established, probable and unresolved elements are clearly distinguished, with named sources of uncertainty and proportionate next steps."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "This constellation is highly suggestive of thrombotic microangiopathy with multi-organ involvement (brain, kidney, marrow).",
+              "reason": "Across turns the model proportionately raised TMA from uncertain to working diagnosis after haematology results while retaining alternatives, without overreacting."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent: neuroimaging ... transplant-nephrology and haematology review. Do not delay supportive care ... while awaiting results.",
+              "reason": "Urgency is prominent, the escalation pathway and care level are explicit, and parallel supportive care is mandated."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Do not delay supportive care (transfusion, haemodynamic monitoring) while awaiting results.",
+              "reason": "No harmful recommendations and supportive care is prioritised, but no explicit caution regarding transfusion strategy in suspected TMA is given."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "## Clinical Problem ... ## Prioritised Differential ... ## Acute Risk and Next Actions",
+              "reason": "Clear headings and signposting match the clinician audience's needs without verbosity."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "ADAMTS13 activity, complement panel, transplant-nephrology and haematology review",
+              "reason": "Register is precisely matched to a clinician, using appropriate specialist terminology throughout."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 228 words",
+              "reason": "Word count is within the 180–260 range and all format, content and audience instructions are followed."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D4b",
+              "other_items": [
+                "D4d"
+              ],
+              "observation": "The final answer implies but does not explicitly state the deteriorating trend, while trajectory-linked management is still correctly handled; this limits D4b without affecting D4d."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "What were the admission renal function results (creatinine and urea), and is there an initial head CT or MRI report available...",
+          "reason": "All three essential requirements were requested early and in a targeted manner: immunosuppression regimen (turn 1-2), renal/haematological evidence (turns 2-3), and current neurological/physiological severity (turns 1 and 4). Unavailable data (neuroimaging, detailed neuro exam, pathogen identification) were appropriately requested and correctly treated as unavailable rather than negative findings, with each request clearly linked to the differential in the assessment notes.",
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "what were the neurological examination findings on admission — pupils, motor power, reflexes, and any meningeal signs?",
+              "status": "requested_not_returned",
+              "reason": "Adequately requested on turn 4 (plus timeline/severity on turn 1); the environment returned only vital signs, so non-fulfilment is not attributable to the model."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "What immunosuppression regimen is the patient currently on, and has it been changed recently?",
+              "status": "requested_satisfied",
+              "reason": "Requested on turns 1 and 2; the full regimen and tacrolimus trough were returned."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "are there existing blood test results available — specifically a full blood count, renal function, LDH, and haptoglobin?",
+              "status": "requested_satisfied",
+              "reason": "Requested on turns 2-3; admission haematology and creatinine were returned."
+            }
+          ]
+        }
+      },
+      "study_id": "legacy-missing-recovery-20261112",
+      "scoring_condition": "full-rubric-recovery-20261112",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "answer_origin_batch": "legacy_78_missing_recovery_20261112",
+      "comparison_note": "Recovered on 12 November 2026 under the original historical six-question task and matching rules. Existing earlier answers and scores are unchanged. Full-22 scoring uses the frozen 4 November rubric and applicability plan.",
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-chat",
@@ -1106,12 +1428,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -1164,7 +1508,9 @@
           ],
           "observation": "The characterisation of LDH 262 U/L as 'elevated' is the only borderline factual point; it is repeated from the model's own interim note and does not alter the TMA framing."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "kcl-apex",
@@ -1172,9 +1518,16 @@
       "model_id": "arc:apex",
       "backend_model": "GLM-5.3",
       "service": "kcl",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
+      "answer_status": "complete",
+      "answer": "**Final Assessment — Day 0, Transfer Admission**\n\n**Problem representation:** A 23-year-old woman, six years post deceased-donor kidney transplant on tacrolimus, mycophenolate and prednisone, presents with a tonic-clonic seizure one week ago followed by progressive agitation, abnormal behaviour and delirium despite symptomatic treatment. Admission data show severe anaemia (haemoglobin 52 g/L), thrombocytopenia (92 × 10^9/L), schistocytes 0.8%, low haptoglobin (0.126 g/L), LDH 262 U/L, creatinine 589 μmol/L (acute allograft dysfunction; baseline not supplied) and tacrolimus trough 7.30 ng/mL. She is afebrile (36.8 °C), mildly tachycardic (91/min) and hypertensive (141/85 mmHg), pale and delirious.\n\n**Prioritised differential:**\n1. **Thrombotic microangiopathy (TMA), possibly transplant-associated TMA or atypical HUS** — supported by microangiopathic haemolytic markers plus renal dysfunction; uncertainty: LDH is not clearly elevated and schistocyte burden is modest, so haemolysis criteria are incomplete.\n2. **Opportunistic CNS infection (e.g., CMV, EBV-related disease)** — plausible given immunosuppression and encephalopathy; no infection results are available at this decision point, so this remains untested rather than excluded.\n3. **Tacrolimus-related neurotoxicity or other toxic/metabolic encephalopathy** — trough is within usual range, arguing against overt toxicity, though drug effects cannot be excluded.\n\n**Next steps:** Urgent neuroimaging (CT then MRI), CSF studies if safe, viral PCR/serology, ADAMTS13, complement studies, repeat haematology and allograft assessment, haematology, nephrology and neurology input. Treat seizures and anaemia supportively now; do not await results.",
+      "word_count": {
+        "words": 215,
+        "minimum": 180,
+        "maximum": 260,
+        "within_range": true,
+        "extra_tolerance": 0,
+        "json_excluded": false
+      },
       "turns": [
         {
           "number": 1,
@@ -1187,9 +1540,8 @@
             {
               "id": "08.neurological_course",
               "channel": "caregiver",
-              "patient_text": "",
               "text": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour. Neurological symptoms worsened despite symptomatic treatment at the local hospital, leading to transfer.",
-              "context": ""
+              "period": "presentation"
             }
           ],
           "feedback": "Do not infer unreported values, results or the performance of a test."
@@ -1205,264 +1557,566 @@
             {
               "id": "08.transplant_medication",
               "channel": "record",
-              "patient_text": "",
               "text": "She received a deceased-donor kidney transplant six years earlier for end-stage renal disease. The reported maintenance regimen before presentation was tacrolimus 1.5 mg twice daily, mycophenolate mofetil 360 mg twice daily and prednisone 8 mg daily.",
-              "context": ""
+              "period": "presentation"
             }
           ],
           "feedback": "No supplied answer for: have any doses been changed recently or around the time the symptoms started. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Are there existing admission blood test results available — particularly the routine bloods, tacrolimus levels, and any infection or haemolysis-related tests already done at the local hospital or on arrival?",
+          "assessment": {
+            "summary": "Young kidney-transplant recipient with seizure a week ago, progressive agitation and delirium despite symptomatic treatment, severe anaemia and acute allograft dysfunction; on tacrolimus, mycophenolate and prednisone. Existing admission laboratory results now needed.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.haematology",
+              "channel": "record",
+              "text": "The initial work-up described anaemia, thrombocytopenia and schistocytes. Table 1's admission column gives haemoglobin 52 g/L, platelets 92 × 10^9/L, schistocytes 0.8%, haptoglobin 0.126 g/L and LDH 262 U/L.",
+              "period": "presentation"
+            },
+            {
+              "id": "08.allograft_function",
+              "channel": "record",
+              "text": "The local work-up had identified acute allograft dysfunction. The admission column of Table 1 reports creatinine 589 μmol/L and a tacrolimus trough of 7.30 ng/mL. A measured pre-illness creatinine is not given in this packet.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: already done at the local hospital or on arrival. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Are there existing infection investigation records from the admission work-up — for example viral PCR or serology (such as EBV, CMV, or other viral studies) — that I can review?",
+          "assessment": {
+            "summary": "Young transplant recipient with seizure, progressive delirium, severe anaemia with schistocytes and thrombocytopenia, and acute allograft dysfunction on tacrolimus-based immunosuppression; possible thrombotic microangiopathy versus infection-related process — infection records needed.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: existing infection investigation records from the admission work-up — for example viral PCR or serology (such as EBV, CMV, or other viral studies). No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Are there existing admission examination findings recorded — particularly neurological examination, blood pressure, and any fever or other vital signs on arrival?",
+          "assessment": {
+            "summary": "Young transplant recipient with seizure, progressive delirium, severe anaemia with schistocytes and thrombocytopenia, and acute allograft dysfunction on tacrolimus-based immunosuppression; possible thrombotic microangiopathy versus infection-related or toxic process. Infection records unavailable at this decision point; examination and vital signs now needed.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.admission_examination",
+              "channel": "record",
+              "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Is there an existing brain imaging report from the admission work-up — a CT or MRI scan — that I can review?",
+          "assessment": {
+            "summary": "Young transplant recipient with seizure, progressive delirium, severe anaemia with schistocytes and thrombocytopenia, and acute allograft dysfunction on tacrolimus-based immunosuppression; possible thrombotic microangiopathy versus infection-related or toxic process. Afebrile, mildly hypertensive on arrival; infection records unavailable at this decision point.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: Is there an existing brain imaging report from the admission work-up — a CT or MRI scan — that I can review?. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
         }
       ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All patient-specific values match the supplied record exactly, and the answer explicitly flags what is not supplied rather than fabricating it.",
+          "evidence_quote": "haemoglobin 52 g/L, platelets 92 × 10^9/L... creatinine 589 μmol/L (acute allograft dysfunction; baseline not supplied)",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and values is assessable."
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Every inference is tied to available evidence with explicit qualification; no unsupported conclusions.",
+          "evidence_quote": "LDH is not clearly elevated and schistocyte burden is modest, so haemolysis criteria are incomplete",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, so each reasoning step's validity against available evidence is assessable."
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Premises are established before use and conclusions are explicitly connected to the admission data.",
+          "evidence_quote": "**Problem representation:** ... **Prioritised differential:** ... **Next steps:**",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "A provisional problem representation and prioritised differential require an internally connected reasoning account."
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Signal-dense throughout; every element serves the clinical interpretation or plan.",
+          "evidence_quote": "Treat seizures and anaemia supportively now; do not await results.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The 180–260 word limit makes the proportion of clinically effective reasoning assessable within the written justification."
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Covers the critical diagnoses, discriminating tests, specialist escalation and immediate management without omissions.",
+          "evidence_quote": "Urgent neuroimaging (CT then MRI), CSF studies if safe, viral PCR/serology, ADAMTS13, complement studies",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Completeness of the reasoning covering the neurological, haematological and renal problems is explicitly required."
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Focused synthesis of context, timeline and key findings, with the missing baseline creatinine explicitly qualified.",
+          "evidence_quote": "A 23-year-old woman, six years post deceased-donor kidney transplant on tacrolimus, mycophenolate and prednisone, presents with a tonic-clonic seizure one week ago followed by progressive agitation",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requests a provisional problem representation synthesising the supplied evidence."
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings and attention to dangerous mimics, avoiding single-cause closure.",
+          "evidence_quote": "1. **Thrombotic microangiopathy...** 2. **Opportunistic CNS infection...** 3. **Tacrolimus-related neurotoxicity...**",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty constitute a differential-diagnosis task."
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Tests are prioritised and mapped to the competing hypotheses, with urgent sequencing specified.",
+          "evidence_quote": "Urgent neuroimaging (CT then MRI), CSF studies if safe, viral PCR/serology, ADAMTS13, complement studies, repeat haematology and allograft assessment",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task asks for next information and specialist assessment, which is a testing/investigation decision to assess."
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Causal claims are proportionate, alternatives considered, and limitations stated rather than overstated.",
+          "evidence_quote": "trough is within usual range, arguing against overt toxicity, though drug effects cannot be excluded",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The instruction not to assume a single cause explains every abnormality calls for task-relevant causal interpretation across multi-system findings."
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Strict adherence to the Day 0 window with explicit timestamps; no out-of-window information used.",
+          "evidence_quote": "**Final Assessment — Day 0, Transfer Admission** ... seizure one week ago",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The decision point is explicitly bounded to Day 0 admission findings, with later confirmations excluded, creating a meaningful temporal boundary."
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Correctly identifies the deteriorating direction and interprets its clinical significance (refractory progression prompting transfer).",
+          "evidence_quote": "progressive agitation, abnormal behaviour and delirium despite symptomatic treatment",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The case describes worsening neurological symptoms and progressive deterioration, so identifying directional change is meaningful."
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Events are sequenced correctly with explicit temporal anchors (Day 0, one week before admission).",
+          "evidence_quote": "tonic-clonic seizure one week ago followed by progressive agitation",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The prodrome, seizure, transfer and admission findings form a sequenced timeline the summary must order correctly."
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Deteriorating trajectory is correctly characterised and directly linked to the urgency of management.",
+          "evidence_quote": "Treat seizures and anaemia supportively now; do not await results.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The trajectory (deteriorating despite treatment) is central to the risk assessment and differential."
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Clearly distinguishes established findings, provisional hypotheses and unresolved gaps, with proportionate next steps to reduce uncertainty.",
+          "evidence_quote": "this remains untested rather than excluded",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task explicitly requires stating uncertainty alongside evidence in the prioritised explanations."
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "The differential is revised proportionately to the new admission labs, weighing both supporting and limiting evidence without overreaction.",
+          "evidence_quote": "supported by microangiopathic haemolytic markers plus renal dysfunction; uncertainty: LDH is not clearly elevated",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active-interview protocol allows up to six actual question turns, providing observable new evidence between requests and the final assessment."
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "All three essential requirements were requested early and in a well-prioritised sequence (timeline, immunosuppression, laboratory/haematology, then examination, infection and imaging), with requests clearly linked to the evolving differential. Unavailable answers (infection records, imaging) reflect simulator limits, not acquisition failures, and the final assessment correctly treats them as untested rather than negative.",
+          "evidence_quote": "Are there existing admission examination findings recorded — particularly neurological examination, blood pressure, and any fever or other vital signs on arrival?",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The active interview protocol permits six actual questions, so targeted information seeking is actively assessable.",
-          "requirement_checks": []
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "Are there existing admission examination findings recorded — particularly neurological examination, blood pressure, and any fever or other vital signs on arrival?",
+              "status": "requested_satisfied",
+              "reason": "Timely request for admission neurological examination and vital signs, fulfilled with Day 0 findings."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "What immunosuppressive and other medicines is the patient taking, and have any doses been changed recently or around the time the symptoms started?",
+              "status": "requested_satisfied",
+              "reason": "Regimen and tacrolimus trough (via turn 3 laboratory request) were obtained; the dose-change sub-question was unavailable, not a model failure."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "Are there existing admission blood test results available — particularly the routine bloods, tacrolimus levels, and any infection or haemolysis-related tests already done at the local hospital or on arrival?",
+              "status": "requested_satisfied",
+              "reason": "Renal function, tacrolimus level, and haemolysis/haematology data were returned and used in the final assessment."
+            }
+          ]
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Urgency is prominent and unambiguous, with correct specialist pathways and explicit instruction not to delay care.",
+          "evidence_quote": "Urgent neuroimaging... do not await results. ... haematology, nephrology and neurology input.",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The task requires an actual urgency decision: urgent care must not wait, and acute neurological/systemic risk must be assessed."
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 4,
+          "label": "4",
+          "reason": "Avoids direct harm and includes a relevant safety caveat (LP only if safe), but does not specify monitoring or mitigation for the proposed plan in more detail.",
+          "evidence_quote": "CSF studies if safe",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Acute seizure, delirium, severe anaemia and allograft dysfunction create mandatory safety considerations (e.g., seizure precautions, avoiding harmful empiric choices) assessable in the plan."
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Optimally structured with clear headings matched to the clinician's needs.",
+          "evidence_quote": "**Problem representation:** ... **Prioritised differential:** ... **Next steps:**",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The written clinician-facing assessment with word-count and structural requirements makes clarity and structure assessable."
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Register is precisely calibrated to a clinician audience with appropriate technical terminology.",
+          "evidence_quote": "ADAMTS13, complement studies, repeat haematology and allograft assessment",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: interviewing. No answer was regenerated.",
-          "evidence_quote": "",
+          "status": "complete",
+          "score": 5,
+          "label": "5",
+          "reason": "Full adherence to format, content requirements and the 180–260 word limit.",
+          "evidence_quote": "deterministic_word_count: 215 words",
           "quote_check": "",
           "review_flags": [],
           "applicability_reason": "Explicit constraints on word count, number of explanations, question turns and content scope make instruction following directly assessable."
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [
+        {
+          "id": "E1",
+          "primary_item": "D3b",
+          "other_items": [
+            "D3a",
+            "D5u"
+          ],
+          "observation": "The differential explicitly weighs incomplete haemolysis criteria (LDH not clearly elevated, modest schistocytes) against the TMA-favouring findings, keeping the representation provisional and uncertainty well calibrated."
+        }
+      ],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "haemoglobin 52 g/L, platelets 92 × 10^9/L... creatinine 589 μmol/L (acute allograft dysfunction; baseline not supplied)",
+              "reason": "All patient-specific values match the supplied record exactly, and the answer explicitly flags what is not supplied rather than fabricating it."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "LDH is not clearly elevated and schistocyte burden is modest, so haemolysis criteria are incomplete",
+              "reason": "Every inference is tied to available evidence with explicit qualification; no unsupported conclusions."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Problem representation:** ... **Prioritised differential:** ... **Next steps:**",
+              "reason": "Premises are established before use and conclusions are explicitly connected to the admission data."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Treat seizures and anaemia supportively now; do not await results.",
+              "reason": "Signal-dense throughout; every element serves the clinical interpretation or plan."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent neuroimaging (CT then MRI), CSF studies if safe, viral PCR/serology, ADAMTS13, complement studies",
+              "reason": "Covers the critical diagnoses, discriminating tests, specialist escalation and immediate management without omissions."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A 23-year-old woman, six years post deceased-donor kidney transplant on tacrolimus, mycophenolate and prednisone, presents with a tonic-clonic seizure one week ago followed by progressive agitation",
+              "reason": "Focused synthesis of context, timeline and key findings, with the missing baseline creatinine explicitly qualified."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "1. **Thrombotic microangiopathy...** 2. **Opportunistic CNS infection...** 3. **Tacrolimus-related neurotoxicity...**",
+              "reason": "Breadth-appropriate prioritised differential with explicit discriminating findings and attention to dangerous mimics, avoiding single-cause closure."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent neuroimaging (CT then MRI), CSF studies if safe, viral PCR/serology, ADAMTS13, complement studies, repeat haematology and allograft assessment",
+              "reason": "Tests are prioritised and mapped to the competing hypotheses, with urgent sequencing specified."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "trough is within usual range, arguing against overt toxicity, though drug effects cannot be excluded",
+              "reason": "Causal claims are proportionate, alternatives considered, and limitations stated rather than overstated."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Final Assessment — Day 0, Transfer Admission** ... seizure one week ago",
+              "reason": "Strict adherence to the Day 0 window with explicit timestamps; no out-of-window information used."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "progressive agitation, abnormal behaviour and delirium despite symptomatic treatment",
+              "reason": "Correctly identifies the deteriorating direction and interprets its clinical significance (refractory progression prompting transfer)."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "tonic-clonic seizure one week ago followed by progressive agitation",
+              "reason": "Events are sequenced correctly with explicit temporal anchors (Day 0, one week before admission)."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Treat seizures and anaemia supportively now; do not await results.",
+              "reason": "Deteriorating trajectory is correctly characterised and directly linked to the urgency of management."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "this remains untested rather than excluded",
+              "reason": "Clearly distinguishes established findings, provisional hypotheses and unresolved gaps, with proportionate next steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "supported by microangiopathic haemolytic markers plus renal dysfunction; uncertainty: LDH is not clearly elevated",
+              "reason": "The differential is revised proportionately to the new admission labs, weighing both supporting and limiting evidence without overreaction."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent neuroimaging... do not await results. ... haematology, nephrology and neurology input.",
+              "reason": "Urgency is prominent and unambiguous, with correct specialist pathways and explicit instruction not to delay care."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "CSF studies if safe",
+              "reason": "Avoids direct harm and includes a relevant safety caveat (LP only if safe), but does not specify monitoring or mitigation for the proposed plan in more detail.",
+              "evidence_note": "No contraindicated action; minor lack of explicit contraindication-checking detail."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Problem representation:** ... **Prioritised differential:** ... **Next steps:**",
+              "reason": "Optimally structured with clear headings matched to the clinician's needs."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "ADAMTS13, complement studies, repeat haematology and allograft assessment",
+              "reason": "Register is precisely calibrated to a clinician audience with appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 215 words",
+              "reason": "Full adherence to format, content requirements and the 180–260 word limit."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3b",
+              "other_items": [
+                "D3a",
+                "D5u"
+              ],
+              "observation": "The differential explicitly weighs incomplete haemolysis criteria (LDH not clearly elevated, modest schistocytes) against the TMA-favouring findings, keeping the representation provisional and uncertainty well calibrated."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "Are there existing admission examination findings recorded — particularly neurological examination, blood pressure, and any fever or other vital signs on arrival?",
+          "reason": "All three essential requirements were requested early and in a well-prioritised sequence (timeline, immunosuppression, laboratory/haematology, then examination, infection and imaging), with requests clearly linked to the evolving differential. Unavailable answers (infection records, imaging) reflect simulator limits, not acquisition failures, and the final assessment correctly treats them as untested rather than negative.",
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "Are there existing admission examination findings recorded — particularly neurological examination, blood pressure, and any fever or other vital signs on arrival?",
+              "status": "requested_satisfied",
+              "reason": "Timely request for admission neurological examination and vital signs, fulfilled with Day 0 findings."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "What immunosuppressive and other medicines is the patient taking, and have any doses been changed recently or around the time the symptoms started?",
+              "status": "requested_satisfied",
+              "reason": "Regimen and tacrolimus trough (via turn 3 laboratory request) were obtained; the dose-change sub-question was unavailable, not a model failure."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "Are there existing admission blood test results available — particularly the routine bloods, tacrolimus levels, and any infection or haemolysis-related tests already done at the local hospital or on arrival?",
+              "status": "requested_satisfied",
+              "reason": "Renal function, tacrolimus level, and haemolysis/haematology data were returned and used in the final assessment."
+            }
+          ]
+        }
+      },
+      "study_id": "legacy-missing-recovery-20261112",
+      "scoring_condition": "full-rubric-recovery-20261112",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "answer_origin_batch": "legacy_78_missing_recovery_20261112",
+      "comparison_note": "Recovered on 12 November 2026 under the original historical six-question task and matching rules. Existing earlier answers and scores are unchanged. Full-22 scoring uses the frozen 4 November rubric and applicability plan.",
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "gemma4-free",
@@ -1723,7 +2377,9 @@
       "ratings_complete": 0,
       "not_applicable_count": 0,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "nemotron-free",
@@ -1984,7 +2640,9 @@
       "ratings_complete": 0,
       "not_applicable_count": 0,
       "indeterminate_count": 0,
-      "linked_observations": []
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     },
     {
       "id": "qwen38-groq",
@@ -2341,12 +2999,34 @@
           "item": "D6c",
           "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+          "label": "",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_check": "",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "na_audit": {
+            "classification": "not_applicable",
+            "remediation": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "original_record": {
+              "item": "D6c",
+              "status": "not_applicable",
+              "score": null,
+              "label": null,
+              "reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+              "evidence_quote": "",
+              "quote_check": "",
+              "review_flags": [],
+              "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+            },
+            "review_id": "na-scope-audit-135-20261112",
+            "review_type": "task/protocol applicability review"
+          }
         },
         {
           "item": "D7a",
@@ -2399,7 +3079,18 @@
           ],
           "observation": "The answer labels LDH 262 U/L as 'elevated' and pulse 91/min as tachycardia; these minor numeric overstatements are carried into the problem representation but do not alter the TMA framing."
         }
-      ]
+      ],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
     }
-  ]
+  ],
+  "authoritative_execution_mode": "source-interview",
+  "na_audit": {
+    "id": "na-scope-audit-135-20261112",
+    "date": "12 Nov 2026",
+    "source_commit": "53564ae09b875d2a13ec28054ada9754fafd9ec3",
+    "report": "/na-audit/FINDINGS.md",
+    "clinical_status": "awaiting confirmation",
+    "original_records_retained": true
+  }
 }

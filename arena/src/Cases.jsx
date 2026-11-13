@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, BookOpen, Search } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Search } from "lucide-react";
 import { displayData } from "./presentation.mjs";
 import { CaseModelResults } from "./CaseModelResults";
 import { SavedDocument } from "./EvidenceDialog";
@@ -18,21 +18,38 @@ export function Cases({ onUseCase, canLoad, access }) {
   const overview = useRef(null);
   const [data, setData] = useState(null);
   const [id, setId] = useState(selectedCase);
-  const [group, setGroup] = useState("all");
+  const [group, setGroup] = useState(() => window.location.hash === "#cases/workspace" ? "workspace" : "all");
   const [search, setSearch] = useState("");
   const [saved, setSaved] = useState(null);
   const [error, setError] = useState("");
   const [document, setDocument] = useState(null);
   const [fullReview, setFullReview] = useState(null);
+  const [complexReview, setComplexReview] = useState(null);
+  const [naAudit, setNaAudit] = useState(null);
   useEffect(() => {
     getFile("index.json")
-      .then(setData)
+      .then((index) => {
+        setData(index);
+        if (index.cases.find((entry) => entry.id === selectedCase())?.group === "complex-bmj")
+          setGroup("complex-bmj");
+      })
       .catch((e) => setError(e.message));
     fetch("/full-rubric-review/index.json")
       .then((response) => response.ok ? response.json() : null)
       .then(setFullReview)
       .catch(() => {});
-    const update = () => setId(selectedCase());
+    fetch("/complex-cases/index.json")
+      .then((response) => response.ok ? response.json() : null)
+      .then(setComplexReview)
+      .catch(() => {});
+    fetch("/na-audit/index.json")
+      .then((response) => response.ok ? response.json() : null)
+      .then(setNaAudit)
+      .catch(() => {});
+    const update = () => {
+      setId(selectedCase());
+      if (window.location.hash === "#cases/workspace") setGroup("workspace");
+    };
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
@@ -68,6 +85,8 @@ export function Cases({ onUseCase, canLoad, access }) {
         .includes(search.toLowerCase()),
   );
   const record = data.cases.find((c) => c.id === id);
+  const complexCaseCount = data.groups.find((g) => g.id === "complex-bmj")?.count || 0;
+  const earlierCaseCount = data.base_case_count - complexCaseCount;
   function choose(value) {
     setError("");
     window.location.hash = `cases/${value}`;
@@ -111,18 +130,6 @@ export function Cases({ onUseCase, canLoad, access }) {
           References and candidate information requirements are{" "}
           <strong>awaiting confirmation</strong>. Historical runs retain their
           original tasks and scoring rules.
-        </p>
-        {fullReview && (
-          <div className="full-review-update">
-            <strong>Full rubric · 4 Nov 2026</strong>
-            <p>All 22 items checked for {fullReview.complete_answers} saved answers: {fullReview.item_statuses.scored.toLocaleString("en-GB")} numerical ratings. Every unscored item has a reason. Select a case below.</p>
-            <button className="text-button" onClick={() => setDocument({ label: "Full-rubric review: findings and limits", url: "/full-rubric-review/SUMMARY.md" })}>Read findings</button>
-            <a className="text-button" href="/full-rubric-review/ALL_ITEM_RESULTS.csv" download>Download all item results</a>
-          </div>
-        )}
-        <p>
-          <a href="/result-comparison/">Rubric &amp; zero-shot comparison — 78 cases</a>
-          <span className="field-help"> · Workspace sign-in required</span>
         </p>
         <div className="case-groups" aria-label="Filter case sources">
           <button
@@ -211,7 +218,7 @@ export function Cases({ onUseCase, canLoad, access }) {
                 <p>
                   Compare per-item scores across models, including saved Qwen
                   results. Open any score to read the full answer and
-                  evaluation. Historical material can also be read here.
+                  evaluation. Research records and full outputs are available below.
                 </p>
               </div>
             ) : (
@@ -259,7 +266,7 @@ export function Cases({ onUseCase, canLoad, access }) {
                         key={t.id}
                         className="primary"
                         disabled={!canLoad}
-                        onClick={() => onUseCase(t.id)}
+                        onClick={() => onUseCase(record.prepared_template || t.id)}
                       >
                         {t.label}
                         <ArrowRight size={15} />
@@ -375,6 +382,50 @@ export function Cases({ onUseCase, canLoad, access }) {
             )}
           </section>
         </div>
+      )}
+      {group !== "workspace" && (
+        <details className="study-disclosure case-research-history">
+          <summary>
+            <BookOpen size={16} /> Research history &amp; complete outputs
+            <ChevronDown size={16} />
+          </summary>
+        {naAudit && group !== "workspace" && (
+          <div className="full-review-update">
+            <strong>N/A audit · all {naAudit.case_count} research cases · 12 Nov 2026</strong>
+            <p>75 omitted reasoning grades added for BN02, BN08, BN13, BN23 and BN30. The same saved answers were used. Other missing grades and applicability decisions are now labelled separately.</p>
+            <p className="field-help">{naAudit.additional_documentary_backfill} further omitted item assessments completed. Across primary answers, {naAudit.primary_dispositions.awaiting_confirmation} applicability decisions remain awaiting confirmation. Click an item status to see why. Original N/A records and all earlier numerical grades are retained.</p>
+            <button className="text-button" onClick={() => setDocument({ label: "N/A audit: changes, results and decisions", url: "/na-audit/FINDINGS.md" })}>Read audit findings</button>
+            <button className="text-button" onClick={() => setDocument({ label: "Backfill: exact prompts and returned assessments", url: "/na-audit/BACKFILL_OUTPUTS.md" })}>Read full scoring output</button>
+            <a className="text-button" href="/na-audit/ALL_NA_POSITIONS.csv" download>Download item audit</a>
+          </div>
+        )}
+        {fullReview && group !== "all" && group !== "workspace" && group !== "complex-bmj" && record?.group !== "complex-bmj" && (
+          <div className="full-review-update">
+            <strong>Earlier cases · full-rubric review · {fullReview.additional_recovery ? "updated 12 Nov 2026" : "4 Nov 2026"}</strong>
+            <p>This review covers the earlier {earlierCaseCount} cases only. All 22 items were checked for {fullReview.complete_answers} saved answers: {fullReview.item_statuses.scored.toLocaleString("en-GB")} numerical ratings. Every unscored item has a reason. The {complexCaseCount} new complex BMJ cases have a separate comparison.</p>
+            <button className="text-button" onClick={() => setDocument({ label: "Full-rubric review: findings and limits", url: "/full-rubric-review/SUMMARY.md" })}>Read findings</button>
+            <a className="text-button" href="/full-rubric-review/ALL_ITEM_RESULTS.csv" download>Download all item results</a>
+            <button className="text-button" onClick={() => filter("complex-bmj")}>View {complexCaseCount} new cases</button>
+            {fullReview.additional_recovery && <p className="field-help">{fullReview.additional_recovery.new_answers} previously unfinished answers recovered on 12 Nov 2026. Earlier successful answers and scores are unchanged.</p>}
+          </div>
+        )}
+        {complexReview && (group === "all" || group === "complex-bmj" || record?.group === "complex-bmj") && (
+          <div className="full-review-update">
+            <strong>{group === "all" ? `${data.base_case_count} cases · ${earlierCaseCount} earlier + ${complexCaseCount} new complex BMJ` : `${complexCaseCount} new complex BMJ cases · 12 Nov 2026`}</strong>
+            <p>New complex BMJ comparison: {complexReview.completed_answers} of {complexCaseCount * 6} primary model/service answers saved. All 22 item positions are listed for each saved answer; applicable grades, omitted assessments, scope decisions and endpoint failures have separate statuses.</p>
+            {complexReview.latest_retry && <p className="field-help">Last retry: 12 Nov 2026. {complexReview.latest_retry.additional_complete_answers} additional complete answers in this group; provider failures and truncated outputs remain explicitly marked.</p>}
+            {group === "all" && <button className="text-button" onClick={() => filter("complex-bmj")}>View {complexCaseCount} new cases</button>}
+            <button className="text-button" onClick={() => setDocument({ label: "New complex BMJ: batch summary", url: "/complex-cases/SUMMARY.md" })}>Read batch summary</button>
+            <a className="text-button" href="/complex-cases/ITEM_RESULTS.csv" download>Download item results</a>
+            {group === "all" && fullReview && <p className="field-help">The earlier {earlierCaseCount} cases, answers and numerical grades are retained. Applicability labels reflect the audit above. <button className="inline-link" onClick={() => setDocument({ label: "Earlier cases: historical full-rubric review", url: "/full-rubric-review/SUMMARY.md" })}>Read earlier review</button></p>}
+            {group === "all" && fullReview?.additional_recovery && <p className="field-help">Earlier cases: {fullReview.additional_recovery.new_answers} previously unfinished answers recovered on 12 Nov 2026. Select an earlier case to read the recovered output and its full-rubric assessment.</p>}
+          </div>
+        )}
+        <p>
+          <a href="/result-comparison/">Earlier rubric &amp; zero-shot experiment — 78 cases</a>
+          <span className="field-help"> · Workspace sign-in required</span>
+        </p>
+        </details>
       )}
       {document && (
         <SavedDocument

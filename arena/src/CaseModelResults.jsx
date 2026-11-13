@@ -20,20 +20,6 @@ const statusNames = {
   no_complete_answer: "No complete answer",
 };
 
-async function load(path, fallback, signal) {
-  try {
-    const response = await fetch(path, { cache: "no-store", signal });
-    if (!response.ok) throw new Error();
-    return displayData(await response.json());
-  } catch (error) {
-    if (signal.aborted) throw error;
-    const response = await fetch(fallback, { cache: "no-store", signal });
-    if (!response.ok)
-      throw new Error("The saved model comparison could not be loaded.");
-    return displayData(await response.json());
-  }
-}
-
 function cellText(model, score) {
   if (score.status === "complete") return score.label;
   if (["not_applicable", "indeterminate", "no_complete_answer"].includes(score.status))
@@ -372,17 +358,13 @@ function ModelEvidence({ data, model, initialItem, onClose, caseInfo }) {
 }
 
 export function CaseModelResults({ caseId, caseInfo }) {
-  const [historical, setHistorical] = useState(null);
-  const [fullReview, setFullReview] = useState(null);
-  const [condition, setCondition] = useState("full");
-  const [fullError, setFullError] = useState("");
+  const [data, setData] = useState(null);
   const [selection, setSelection] = useState(null);
   const [allOutput, setAllOutput] = useState(false);
   const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(0);
   const [loading, setLoading] = useState(false);
   const [visibleModels, setVisibleModels] = useState(null);
-  const data = condition === "full" && fullReview ? fullReview : historical;
   const reload = useCallback(() => setRefresh((n) => n + 1), []);
   useEffect(() => {
     if (!data) return;
@@ -401,13 +383,21 @@ export function CaseModelResults({ caseId, caseInfo }) {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    load(
-      `/api/comparison/cases/${caseId}`,
-      `/model-comparison/${caseId}.json`,
-      controller.signal,
-    )
+    const directory = caseInfo?.group === "complex-bmj"
+      ? "complex-cases"
+      : "full-rubric-review";
+    fetch(`/${directory}/${caseId}.json`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Full-rubric results could not be loaded. Please retry.");
+        return response.json();
+      })
       .then((record) => {
-        setHistorical(record);
+        if (record.criteria?.length !== 22)
+          throw new Error("The full 22-item assessment is unavailable for this case.");
+        setData(displayData(record));
         setError("");
       })
       .catch((e) => {
@@ -417,25 +407,19 @@ export function CaseModelResults({ caseId, caseInfo }) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [caseId, refresh]);
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`/full-rubric-review/${caseId}.json`, { cache: "no-store", signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error("Full-rubric results could not be loaded. Earlier results remain available.");
-        return response.json();
-      })
-      .then((record) => { setFullReview(displayData(record)); setFullError(""); })
-      .catch((error) => { if (!controller.signal.aborted) setFullError(error.message); });
-    return () => controller.abort();
-  }, [caseId, refresh]);
-  if (!data || (condition === "full" && !fullReview && !fullError))
+  }, [caseId, caseInfo?.group, refresh]);
+  if (!data)
     return (
       <section className="case-model-results" aria-label="Model results">
         <h3>Scores by answering model</h3>
         <p role={error ? "alert" : "status"}>
-          {error || "Loading saved results…"}
+          {error || "Loading full-rubric results…"}
         </p>
+        {error && (
+          <button className="secondary" onClick={reload} disabled={loading}>
+            <RefreshCw size={14} /> Retry loading results
+          </button>
+        )}
       </section>
     );
   const model = selection && data.models.find((m) => m.id === selection.model);
@@ -444,18 +428,7 @@ export function CaseModelResults({ caseId, caseInfo }) {
   );
   return (
     <section className="case-model-results" aria-label="Model results">
-      <div className="scoring-batch-tabs" aria-label="Saved scoring condition">
-        <button className={condition === "full" ? "active" : ""} disabled={!fullReview}
-          aria-pressed={condition === "full"} onClick={() => { setCondition("full"); setSelection(null); }}>
-          Full rubric · 4 Nov 2026
-        </button>
-        <button className={condition === "earlier" ? "active" : ""} disabled={!historical}
-          aria-pressed={condition === "earlier"} onClick={() => { setCondition("earlier"); setSelection(null); }}>
-          Earlier selected items
-        </button>
-      </div>
-      {data.condition_note && <p className="study-note">{data.condition_note}</p>}
-      {fullError && <p className="notice">{fullError}</p>}
+      <p className="case-review-label">Full rubric · {data.criteria.length} items</p>
       <div className="case-results-heading">
         <div>
           <h3>Scores by answering model</h3>
@@ -490,7 +463,7 @@ export function CaseModelResults({ caseId, caseInfo }) {
         {data.mode === "written-record"
           ? data.task_type || "Written-record task"
           : `Patient interview · up to ${data.max_questions} questions`}{" "}
-        · {data.criteria.length} {data.scoring_condition === "full-profile-review-20261104" ? "items checked" : "selected items"} ·{" "}
+        · {data.criteria.length} items checked ·{" "}
         {scoringVersionLabel({
           id: data.rule_version,
           label: data.rule_version,
@@ -659,6 +632,12 @@ export function CaseModelResults({ caseId, caseInfo }) {
           Scores use the supplied facts and task. D3a does not receive the
           reference or hidden outcome.
         </p>
+      )}
+      {data.condition_note && (
+        <details className="model-identity-note">
+          <summary>Scoring record</summary>
+          <p>{data.condition_note}</p>
+        </details>
       )}
       <details className="model-identity-note">
         <summary>About model names</summary>
