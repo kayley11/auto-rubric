@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.217214+00:00",
+  "updated_at": "2026-11-14T13:32:56.451911+00:00",
   "title": "Subacute ocular movements and gait instability with unrevealing initial tests",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Characterise the neurological syndrome, prioritise a differential and explain how the available negative tests affect diagnostic confidence and further assessment. After up to six question turns, provide a clinician-facing final assessment of 180–260 words. A precise final aetiology is not required. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A 60-year-old man has one month of progressively blurred vision, dizziness and gait instability with frequent abnormal eye movements.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fimmu.2026.1844323",
   "source_location": "Saved source blocks: rhombencephalitis-B0052; rhombencephalitis-B0053; rhombencephalitis-B0055; rhombencephalitis-B0055; rhombencephalitis-B0057; rhombencephalitis-B0058",
   "decision_point": "Reconstructed initial-admission review, before immunotherapy or follow-up. History, examination, initial MRI/CSF and standard antibody-panel findings are requestable. The tissue-based assay is deliberately withheld experimentally; the article includes it in the initial diagnostic work-up and does not establish a separate later date.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "09.R1",
@@ -2135,267 +2135,934 @@
       "applicability_pending_count": 1
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Clinical Assessment\n\nA 60-year-old man presents with a one-month subacute progression of a neurological syndrome characterized by ocular flutter, dizziness, and gait instability. Examination confirms a broad-based gait and head/neck tremor, though limb strength, sensation, and reflexes remain preserved.\n\nThe primary clinical problem is a subacute cerebellar-vestibular syndrome with associated ocular motility disorders. Prioritized explanations include:\n\n1. Autoimmune encephalitis or paraneoplastic syndrome: Supported by the subacute onset and CSF pleocytosis (12 × 10^6/L). However, standard commercial antibody panels (neuronal, demyelinating, onconeural, and ganglioside) were negative, and tumor markers (CEA, CA19-9, AFP) are normal.\n2. Non-standard or novel antibody-mediated encephalitis: Possible given the clinical phenotype and CSF inflammation, despite negative standard assays.\n3. Atypical infectious process: Less likely due to negative CSF mNGS, though not entirely excluded.\n\nThe unremarkable brain MRI (no infarct, demyelination, or structural lesions) and negative standard antibody panels reduce confidence in common autoimmune or vascular etiologies but do not rule out antibodies not covered by commercial assays.\n\nNext actions should prioritize a more comprehensive malignancy screen, as PET-CT and endoscopy were deferred. Further diagnostic efforts should include tissue-based assays to detect antibodies missed by fixed cell-based or immunoblot tests. Given the CSF pleocytosis and clinical presentation, these steps are proportionate to investigate a potential paraneoplastic or autoimmune origin.",
+      "word_count": {
+        "words": 208,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words",
+          "180–260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you describe the nature of the abnormal eye movements and any other associated symptoms?",
+          "assessment": {
+            "summary": "60-year-old man with subacute onset of blurred vision, dizziness, and gait instability.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "09.neurological_examination",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Admission vital signs and systemic examination were normal. There was continuous ocular flutter, a mild horizontal head/neck tremor, a broad-based gait and unsteadiness with eyes open or closed. Pupils and eye-movement range were normal; limb strength and pinprick/vibration sensation were preserved, reflexes were symmetric and Babinski signs absent.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "09.symptom_history",
+              "channel": "patient",
+              "patient_text": "",
+              "text": "Blurred vision, dizziness and walking difficulty have progressed over about a month. I have not had double vision, limb weakness or a febrile illness since this began.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide the initial MRI imaging and CSF reports?",
+          "assessment": {
+            "summary": "60-year-old man with subacute progression of ocular flutter, gait instability, and dizziness.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "09.initial_mri",
+              "channel": "record",
+              "patient_text": "",
+              "text": "High-resolution brain MRI with and without contrast showed no acute infarct, demyelination or structural brainstem/cerebellar lesion; the figure description also reports no abnormal contrast enhancement in those regions.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "09.csf",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Initial CSF opening pressure was normal, with white cells 12 × 10^6/L and normal protein, glucose and chloride. CSF pathogen mNGS was negative. Oligoclonal bands and the IgG index were not assessed.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the results of the standard antibody panel?",
+          "assessment": {
+            "summary": "60-year-old man with subacute progression of ocular flutter, gait instability, and dizziness. MRI is unremarkable and CSF shows mild pleocytosis without pathogen detection.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "09.standard_antibody_tests",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The reported commercial fixed cell-based and immunoblot tests for established neural antibodies were negative, including the listed neuronal, demyelinating, onconeural and ganglioside targets. This statement concerns the standard specific-antibody panels; the tissue-based assay is outside this experimental packet.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Does the patient have any known medical conditions or a history of malignancy?",
+          "assessment": {
+            "summary": "60-year-old man with subacute ocular flutter, gait instability, and dizziness. MRI is unremarkable, CSF shows mild pleocytosis, and standard neural antibody panels are negative.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "09.background_exposure",
+              "channel": "patient",
+              "patient_text": "",
+              "text": "The reported earlier medical history is unremarkable. There is no reported smoking, alcohol abuse or neurotoxin exposure, and no reported family history of autoimmune, neurological or neoplastic disease.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Are there any existing reports of monoclonal protein, immunofixation, or free-light-chain testing?",
+          "assessment": {
+            "summary": "60-year-old man with subacute ocular flutter, gait instability, and dizziness. MRI is unremarkable, CSF shows mild pleocytosis, and standard neural antibody panels are negative.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: monoclonal protein; immunofixation; free-light-chain testing. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Are there any existing EEG reports or results from a systemic malignancy screen, such as a CT of the chest, abdomen, and pelvis?",
+          "assessment": {
+            "summary": "60-year-old man with subacute ocular flutter, gait instability, and dizziness. MRI is unremarkable, CSF shows mild pleocytosis, and standard neural antibody panels are negative.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "09.initial_systemic_screen",
+              "channel": "record",
+              "patient_text": "",
+              "text": "At the initial presentation there were no reported weight-loss or gastrointestinal symptoms. Serum CEA, CA19-9 and AFP were within normal limits. Endoscopy and whole-body PET-CT were deferred; they were not negative investigations.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: existing EEG reports; a CT of the chest, abdomen, and pelvis. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and test interpretations is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Supported by the subacute onset and CSF pleocytosis (12 × 10^6/L). However, standard commercial antibody panels... were negative",
+          "reason": "All patient-specific claims match the supplied record, values are reported accurately, and documented findings are distinguished from inference.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and test interpretations is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The requested prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the gathered findings."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The unremarkable brain MRI... and negative standard antibody panels reduce confidence in common autoimmune or vascular etiologies but do not rule out antibodies not covered by commercial assays.",
+          "reason": "Each inference is clinically defensible and explicitly tied to the available evidence without overstating conclusions.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The requested prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the gathered findings.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The primary clinical problem is a subacute cerebellar-vestibular syndrome with associated ocular motility disorders.",
+          "reason": "Premises are established before use and conclusions connect clearly to the evidence in a logical progression.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The final assessment must connect syndrome characterisation, test results and differential into an internally coherent account.",
           "review_flags": [],
-          "applicability_reason": "The final assessment must connect syndrome characterisation, test results and differential into an internally coherent account."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Next actions should prioritize a more comprehensive malignancy screen, as PET-CT and endoscopy were deferred.",
+          "reason": "All content contributes to syndrome characterisation, differential, and next steps with no redundancy.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A 180–260 word clinician-facing assessment requires reasoning that contributes to the differential and next steps without redundancy.",
           "review_flags": [],
-          "applicability_reason": "A 180–260 word clinician-facing assessment requires reasoning that contributes to the differential and next steps without redundancy."
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Further diagnostic efforts should include tissue-based assays to detect antibodies missed by fixed cell-based or immunoblot tests.",
+          "reason": "Covers syndrome, prioritised differential, effect of negative tests, and proportionate next actions; no critical component omitted.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requires covering syndrome characterisation, differential, test interpretation and next actions, so completeness of required reasoning is assessable.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requires covering syndrome characterisation, differential, test interpretation and next actions, so completeness of required reasoning is assessable."
+          "label": "5"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "subacute cerebellar-vestibular syndrome with associated ocular motility disorders",
+          "reason": "Focused synthesis of the discriminating features with appropriate provisional framing given unresolved aetiology.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Clinical synthesis of the presentation into a focused problem representation is explicitly requested for a clinician audience.",
           "review_flags": [],
-          "applicability_reason": "Clinical synthesis of the presentation into a focused problem representation is explicitly requested for a clinician audience."
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "A prioritised differential with evidence and uncertainty is a core deliverable of the task."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "1. Autoimmune encephalitis or paraneoplastic syndrome... 2. Non-standard or novel antibody-mediated encephalitis... 3. Atypical infectious process",
+          "reason": "Breadth-appropriate prioritised differential with evidence, but discriminating findings and dangerous mimics are not as explicitly weighed as they could be.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "A prioritised differential with evidence and uncertainty is a core deliverable of the task.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires stating proportionate next information/actions, which is a testing/investigation decision."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Next actions should prioritize a more comprehensive malignancy screen... tissue-based assays",
+          "reason": "Well-targeted tests justified against the differential and deferred investigations, though cost/yield considerations are not explicit.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires stating proportionate next information/actions, which is a testing/investigation decision.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "reduce confidence in common autoimmune or vascular etiologies but do not rule out antibodies not covered by commercial assays",
+          "reason": "Causal claims are proportionate and supported, with material limitations stated; no unsupported causal assertion.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Explaining how negative tests affect diagnostic confidence is a task-relevant causal interpretation of test evidence.",
           "review_flags": [],
-          "applicability_reason": "Explaining how negative tests affect diagnostic confidence is a task-relevant causal interpretation of test evidence."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "one-month subacute progression",
+          "reason": "Strictly uses only initial-presentation information with explicit temporal reference.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The decision point is explicitly the initial-admission review before immunotherapy or follow-up, giving a meaningful temporal boundary for the assessment.",
           "review_flags": [],
-          "applicability_reason": "The decision point is explicitly the initial-admission review before immunotherapy or follow-up, giving a meaningful temporal boundary for the assessment."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The history describes progressive symptom change over one month, a task-relevant directional change the model should recognise."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Blurred vision, dizziness and walking difficulty have progressed over about a month",
+          "reason": "Correctly identifies deteriorating direction with magnitude (one month) and its subacute clinical significance.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The history describes progressive symptom change over one month, a task-relevant directional change the model should recognise.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "presents with a one-month subacute progression",
+          "reason": "Events are sequenced correctly with an explicit temporal anchor.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The presentation and initial work-up have a meaningful sequence (symptom onset, admission examination, MRI/CSF/antibody testing) that must be ordered correctly.",
           "review_flags": [],
-          "applicability_reason": "The presentation and initial work-up have a meaningful sequence (symptom onset, admission examination, MRI/CSF/antibody testing) that must be ordered correctly."
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The clinical trajectory (progressive deterioration over a month) is central to the syndrome characterisation and differential."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Prioritized explanations include... Next actions should prioritize",
+          "reason": "Deteriorating trajectory is correctly characterised and linked to the prioritised work-up.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The clinical trajectory (progressive deterioration over a month) is central to the syndrome characterisation and differential.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires characterising uncertainty about prioritised explanations and the effect of negative tests on confidence."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "reduce confidence... but do not rule out antibodies not covered by commercial assays",
+          "reason": "Confidence is proportionate, distinguishing established negatives from unresolved possibilities, and identifies next steps to reduce uncertainty.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires characterising uncertainty about prioritised explanations and the effect of negative tests on confidence.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The active-interview protocol allows up to six actual requests whose answers provide new observable evidence for belief updating within the encounter."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "standard commercial antibody panels... were negative, and tumor markers (CEA, CA19-9, AFP) are normal",
+          "reason": "The differential is appropriately adjusted for the negative MRI, antibody panels and tumour markers, with only minor imprecision in degree of updating.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The active-interview protocol allows up to six actual requests whose answers provide new observable evidence for belief updating within the encounter.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Could you describe the nature of the abnormal eye movements and any other associated symptoms?; Could you provide the initial MRI imaging and CSF reports?",
+          "reason": "Both essential requirements were met early with targeted, well-timed requests: syndrome characterisation with examination (turn 1) and MRI/CSF investigation results (turn 2). Subsequent requests for antibody panels, malignancy history and systemic screening were proportionate and directly linked to the autoimmune/paraneoplastic uncertainty, with no unnecessary gathering.",
+          "requirement_checks": [
+            {
+              "id": "09.R1",
+              "request_quote": "Could you describe the nature of the abnormal eye movements and any other associated symptoms?",
+              "status": "requested_satisfied",
+              "reason": "Turn 1 requested symptom course and ocular findings, returning both the neurological examination and symptom history before the final assessment."
+            },
+            {
+              "id": "09.R2",
+              "request_quote": "Could you provide the initial MRI imaging and CSF reports?",
+              "status": "requested_satisfied",
+              "reason": "Turn 2 requested imaging and CSF, which returned MRI, CSF cell count, and mNGS results addressing structural and inflammatory/infectious alternatives."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The saved protocol permits six actual questions, so active information acquisition is in scope and required.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
+          "status": "applicability_pending",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the progressive subacute neurological presentation impose a clinically material urgency or care-level requirement that the final assessment should have recognised and addressed?",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the progressive subacute neurological presentation impose a clinically material urgency or care-level requirement that the final assessment should have recognised and addressed?",
           "review_flags": [],
-          "applicability_reason": "The task does not require an urgency or escalation decision; it asks for a diagnostic summary and next information at a non-emergency decision point."
+          "na_audit": {
+            "case_id": "CAND09",
+            "item": "D6a",
+            "item_name": "Escalation and emergency recognition",
+            "original_scope_reason": "The task does not require an urgency or escalation decision; it asks for a diagnostic summary and next information at a non-emergency decision point.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "Does the progressive subacute neurological presentation impose a clinically material urgency or care-level requirement that the final assessment should have recognised and addressed?",
+            "clinical_status": "awaiting confirmation",
+            "classification": "awaiting_confirmation",
+            "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability.",
+            "remediation": "awaiting_confirmation"
+          },
+          "label": null
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "these steps are proportionate to investigate a potential paraneoplastic or autoimmune origin",
+          "reason": "No harmful action proposed; investigation plan is proportionate, though no explicit safety caveats or monitoring are needed or given.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Proposed next actions could include harmful or unjustified interventions, so harm avoidance in the recommended next steps is assessable.",
           "review_flags": [],
-          "applicability_reason": "Proposed next actions could include harmful or unjustified interventions, so harm avoidance in the recommended next steps is assessable."
+          "label": "4"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the case or task."
+          "na_audit": {
+            "case_id": "CAND09",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the case or task.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### Clinical Assessment",
+          "reason": "Clear headings and numbered differential make content easy to navigate within the word limit.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The clinician-facing assessment with a word limit requires clear, structured prose.",
           "review_flags": [],
-          "applicability_reason": "The clinician-facing assessment with a word limit requires clear, structured prose."
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "CSF pleocytosis (12 × 10^6/L)... fixed cell-based or immunoblot tests",
+          "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task imposes explicit constraints (word count, up to three explanations, up to six question turns, no invented findings) that must be followed."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "deterministic_word_count: 208 words",
+          "reason": "Full adherence to format, content requirements, and the 180–260 word limit.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task imposes explicit constraints (word count, up to three explanations, up to six question turns, no invented findings) that must be followed.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 20,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and test interpretations is assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The requested prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the gathered findings."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The final assessment must connect syndrome characterisation, test results and differential into an internally coherent account."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A 180–260 word clinician-facing assessment requires reasoning that contributes to the differential and next steps without redundancy."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires covering syndrome characterisation, differential, test interpretation and next actions, so completeness of required reasoning is assessable."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Clinical synthesis of the presentation into a focused problem representation is explicitly requested for a clinician audience."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A prioritised differential with evidence and uncertainty is a core deliverable of the task."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires stating proportionate next information/actions, which is a testing/investigation decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Explaining how negative tests affect diagnostic confidence is a task-relevant causal interpretation of test evidence."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The decision point is explicitly the initial-admission review before immunotherapy or follow-up, giving a meaningful temporal boundary for the assessment."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The history describes progressive symptom change over one month, a task-relevant directional change the model should recognise."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The presentation and initial work-up have a meaningful sequence (symptom onset, admission examination, MRI/CSF/antibody testing) that must be ordered correctly."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The clinical trajectory (progressive deterioration over a month) is central to the syndrome characterisation and differential."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires characterising uncertainty about prioritised explanations and the effect of negative tests on confidence."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol allows up to six actual requests whose answers provide new observable evidence for belief updating within the encounter."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The saved protocol permits six actual questions, so active information acquisition is in scope and required.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task does not require an urgency or escalation decision; it asks for a diagnostic summary and next information at a non-emergency decision point."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Proposed next actions could include harmful or unjustified interventions, so harm avoidance in the recommended next steps is assessable."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the case or task."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The clinician-facing assessment with a word limit requires clear, structured prose."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task imposes explicit constraints (word count, up to three explanations, up to six question turns, no invented findings) that must be followed."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Supported by the subacute onset and CSF pleocytosis (12 × 10^6/L). However, standard commercial antibody panels... were negative",
+              "reason": "All patient-specific claims match the supplied record, values are reported accurately, and documented findings are distinguished from inference."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The unremarkable brain MRI... and negative standard antibody panels reduce confidence in common autoimmune or vascular etiologies but do not rule out antibodies not covered by commercial assays.",
+              "reason": "Each inference is clinically defensible and explicitly tied to the available evidence without overstating conclusions."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The primary clinical problem is a subacute cerebellar-vestibular syndrome with associated ocular motility disorders.",
+              "reason": "Premises are established before use and conclusions connect clearly to the evidence in a logical progression."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Next actions should prioritize a more comprehensive malignancy screen, as PET-CT and endoscopy were deferred.",
+              "reason": "All content contributes to syndrome characterisation, differential, and next steps with no redundancy."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Further diagnostic efforts should include tissue-based assays to detect antibodies missed by fixed cell-based or immunoblot tests.",
+              "reason": "Covers syndrome, prioritised differential, effect of negative tests, and proportionate next actions; no critical component omitted."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "subacute cerebellar-vestibular syndrome with associated ocular motility disorders",
+              "reason": "Focused synthesis of the discriminating features with appropriate provisional framing given unresolved aetiology."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "1. Autoimmune encephalitis or paraneoplastic syndrome... 2. Non-standard or novel antibody-mediated encephalitis... 3. Atypical infectious process",
+              "reason": "Breadth-appropriate prioritised differential with evidence, but discriminating findings and dangerous mimics are not as explicitly weighed as they could be."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Next actions should prioritize a more comprehensive malignancy screen... tissue-based assays",
+              "reason": "Well-targeted tests justified against the differential and deferred investigations, though cost/yield considerations are not explicit."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "reduce confidence in common autoimmune or vascular etiologies but do not rule out antibodies not covered by commercial assays",
+              "reason": "Causal claims are proportionate and supported, with material limitations stated; no unsupported causal assertion."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "one-month subacute progression",
+              "reason": "Strictly uses only initial-presentation information with explicit temporal reference."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Blurred vision, dizziness and walking difficulty have progressed over about a month",
+              "reason": "Correctly identifies deteriorating direction with magnitude (one month) and its subacute clinical significance."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "presents with a one-month subacute progression",
+              "reason": "Events are sequenced correctly with an explicit temporal anchor."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Prioritized explanations include... Next actions should prioritize",
+              "reason": "Deteriorating trajectory is correctly characterised and linked to the prioritised work-up."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "reduce confidence... but do not rule out antibodies not covered by commercial assays",
+              "reason": "Confidence is proportionate, distinguishing established negatives from unresolved possibilities, and identifies next steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "standard commercial antibody panels... were negative, and tumor markers (CEA, CA19-9, AFP) are normal",
+              "reason": "The differential is appropriately adjusted for the negative MRI, antibody panels and tumour markers, with only minor imprecision in degree of updating."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "these steps are proportionate to investigate a potential paraneoplastic or autoimmune origin",
+              "reason": "No harmful action proposed; investigation plan is proportionate, though no explicit safety caveats or monitoring are needed or given."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### Clinical Assessment",
+              "reason": "Clear headings and numbered differential make content easy to navigate within the word limit."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "CSF pleocytosis (12 × 10^6/L)... fixed cell-based or immunoblot tests",
+              "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 208 words",
+              "reason": "Full adherence to format, content requirements, and the 180–260 word limit."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3b",
+              "other_items": [
+                "D5b",
+                "D3c"
+              ],
+              "observation": "The answer appropriately downweights common antibody-mediated and paraneoplastic causes after negative panels and normal tumour markers while retaining novel-antibody and paraneoplastic hypotheses via tissue-based assay and malignancy screening."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "Could you describe the nature of the abnormal eye movements and any other associated symptoms?; Could you provide the initial MRI imaging and CSF reports?",
+          "reason": "Both essential requirements were met early with targeted, well-timed requests: syndrome characterisation with examination (turn 1) and MRI/CSF investigation results (turn 2). Subsequent requests for antibody panels, malignancy history and systemic screening were proportionate and directly linked to the autoimmune/paraneoplastic uncertainty, with no unnecessary gathering.",
+          "requirement_checks": [
+            {
+              "id": "09.R1",
+              "request_quote": "Could you describe the nature of the abnormal eye movements and any other associated symptoms?",
+              "status": "requested_satisfied",
+              "reason": "Turn 1 requested symptom course and ocular findings, returning both the neurological examination and symptom history before the final assessment."
+            },
+            {
+              "id": "09.R2",
+              "request_quote": "Could you provide the initial MRI imaging and CSF reports?",
+              "status": "requested_satisfied",
+              "reason": "Turn 2 requested imaging and CSF, which returned MRI, CSF cell count, and mNGS results addressing structural and inflammatory/infectious alternatives."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -3138,5 +3805,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

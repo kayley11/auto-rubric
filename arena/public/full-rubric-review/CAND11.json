@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.223048+00:00",
+  "updated_at": "2026-11-14T13:32:56.470071+00:00",
   "title": "Acute neurological deterioration following complicated retinal surgery",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Make urgent escalation explicit at the first assessment opportunity while retrieving records; the six question turns must not delay emergency care. Reconstruct the operative-to-neurological sequence, state a prioritised provisional differential and identify immediate assessment needs. Give a clinician-facing final assessment of 180–260 words. Distinguish a suspected mechanism from an observed or confirmed finding. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A 61-year-old woman develops sudden altered mental status, slurred speech and gait instability about one hour after retinal surgery, rapidly losing the ability to walk independently. Review the perioperative records for the emergency team.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fnins.2026.1929675",
   "source_location": "Saved source blocks: air_embolism-B0042, opening medical-history sentences; air_embolism-B0042, admission and operative-indication sentences; air_embolism-B0042, April 8 operative-sequence sentences; air_embolism-B0042, intraoperative symptoms and pulse-oximetry sentences; air_embolism-B0042, choroidal observation and blood-loss sentences; air_embolism-B0065, retrospective-mechanism limitation; air_embolism-B0042, operation-halted and immediate-medication sentences; air_embolism-B0042, approximately-one-hour-postoperative neurological-onset sentence",
   "decision_point": "Approximately one hour after the April 8, 2025 retinal operation, at the onset of acute neurological deterioration and before imaging results are supplied. This is a record-based emergency assessment, not a patient interview.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "11.R1",
@@ -2029,267 +2029,918 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Emergency Neurological Assessment\n\nA 61-year-old woman presents with acute neurological deterioration one hour post-retinal surgery. The sequence of events began during a three-port pars plana vitrectomy under local anaesthesia. During the procedure, the patient reported severe ocular pain, sweating, and a near-death sensation, coinciding with a transient pulse oximetry drop to 88%. This was followed by an abrupt onset of altered mental status, slurred speech, and gait instability, rapidly progressing to an inability to walk independently.\n\nPrior history is negative for hypertension, diabetes, stroke, arrhythmia, thrombotic disease, and hereditary disorders.\n\n**Provisional Differential Diagnosis:**\n\n1. **Cerebrovascular Accident (CVA):** Suspected mechanism: Embolic or haemorrhagic event triggered by intraoperative stress or transient hypoxia. Evidence: Acute focal neurological deficits. Uncertainty: No imaging provided.\n2. **Air Embolism:** Air entry during the operation (specifically during heavy-liquid injection or preparation for silicone-oil tamponade) possibile. Evidence: Sudden onset of neurological deficits post-surgery. Evidence: Intraoperative ocular pain and near-death sensation. Evidence: **Transient hypoxia (88% SpO2)**.\n3. **Metabolic/Toxicological Event:** Suspected mechanism: Hypoglycaemia or medication-related. Evidence: Altered mental status. Uncertainty: No glucose or medication records provided.\n\n**Immediate Actions:**\n\n*   **Urgent escalation** to neurology and stroke team.\n*   Immediate bedside glucose measurement.\n*   **Urgent CT/MRI brain imaging** to identify the cause of neurological deterioration.\n\n***\n\n**Word count check:** 228 words.",
+      "word_count": {
+        "words": 201,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words",
+          "180–260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Please provide the perioperative vital signs and the operative report for the retinal surgery on April 8, 2025.",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) one hour post-retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [
+            {
+              "id": "11.operation_sequence",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On April 8, standard three-port pars plana vitrectomy was performed under local anaesthesia with subretinal-fluid drainage. The retina reattached after heavy-liquid injection. Deterioration occurred while the team was preparing for silicone-oil tamponade.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "11.intraoperative_deterioration",
+              "channel": "record",
+              "patient_text": "",
+              "text": "She suddenly reported severe ocular pain, sweating and a near-death sensation during the operation. Pulse oximetry transiently fell to 88%. No post-deterioration full set of vital signs is supplied in this packet.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. No supplied answer for: perioperative vital signs. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Please provide the perioperative vital signs and any existing neurological examination records from the time of deterioration.",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) following intraoperative ocular pain and transient hypoxia during retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [
+            {
+              "id": "11.intraoperative_deterioration",
+              "channel": "record",
+              "patient_text": "",
+              "text": "She suddenly reported severe ocular pain, sweating and a near-death sensation during the operation. Pulse oximetry transiently fell to 88%. No post-deterioration full set of vital signs is supplied in this packet.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "11.postoperative_neurological_event",
+              "channel": "record",
+              "patient_text": "",
+              "text": "About one hour postoperatively she developed abrupt altered mental status, slurred speech and gait instability, quickly progressing to inability to ambulate independently. The packet stops at this emergency review, before the subsequent imaging and laboratory results.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test. Previously returned: 11.intraoperative_deterioration. Repetition does not establish new information."
+        },
+        {
+          "number": 3,
+          "question": "Are there any existing CT or MRI imaging reports from the time of the neurological deterioration?",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) following intraoperative ocular pain, sweating, and transient hypoxia during retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: CT or MRI imaging reports from the time of the neurological deterioration. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Please provide any existing routine laboratory results and glucose measurements from the perioperative period.",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) following intraoperative ocular pain, sweating, and transient hypoxia during retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: routine laboratory results; glucose measurements. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Are there any existing records of the patient's medical history or current medications?",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) following intraoperative ocular pain, sweating, and transient hypoxia during retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [
+            {
+              "id": "11.preoperative_background",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The recorded history included right cataract surgery in 2020 with good recovery. The report records no hypertension, diabetes, stroke, arrhythmia, thrombotic disease, smoking, alcohol use or hereditary disorder.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: current medications. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Are there any existing records of the patient's current medications?",
+          "assessment": {
+            "summary": "61-year-old woman with acute neurological deterioration (altered mental status, slurred speech, gait instability) following intraoperative ocular pain, sweating, and transient hypoxia during retinal surgery. Urgent escalation required.",
+            "certainty": "uncertain",
+            "working": "working"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: current medications. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Suspected mechanism: Embolic or haemorrhagic event triggered by intraoperative stress or transient hypoxia.",
+          "reason": "Patient-specific claims are supported by the record and mechanisms are flagged as suspected rather than observed; minor issues (typo 'possibile', the incorrect self-reported '228 words') are clinically inconsequential.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires using only supplied records and forbids invented findings, values or doses, so factual groundedness is directly assessable.",
           "review_flags": [],
-          "applicability_reason": "The task requires using only supplied records and forbids invented findings, values or doses, so factual groundedness is directly assessable."
+          "label": "4"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Air entry during the operation (specifically during heavy-liquid injection or preparation for silicone-oil tamponade) possibile.",
+          "reason": "Inferences are clinically defensible and qualified, though the air-embolism mechanism is speculative and only loosely tied to the available evidence.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the supplied records.",
           "review_flags": [],
-          "applicability_reason": "A prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the supplied records."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The sequence of events began during a three-port pars plana vitrectomy under local anaesthesia.",
+          "reason": "Premises are established before use and conclusions connect to evidence; the repeated 'Evidence:' fragments and the appended word-count line are minor structural blemishes.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written justification must connect operative events to neurological deterioration in an internally connected account.",
           "review_flags": [],
-          "applicability_reason": "The written justification must connect operative events to neurological deterioration in an internally connected account."
+          "label": "4"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Evidence: Sudden onset of neurological deficits post-surgery. Evidence: Intraoperative ocular pain and near-death sensation.",
+          "reason": "Reasoning is signal-dense overall; the repeated 'Evidence:' labels and the non-contributory word-count line add minor redundancy.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The 180-260 word limit makes clinically efficient reasoning directly relevant to the response quality.",
           "review_flags": [],
-          "applicability_reason": "The 180-260 word limit makes clinically efficient reasoning directly relevant to the response quality."
+          "label": "4"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task demands coverage of the sequence, differential, immediate needs and escalation, so required reasoning content is specified."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Urgent escalation to neurology and stroke team.",
+          "reason": "Critical components (sequence, differential, glucose, imaging, escalation) are covered; omission of local-anaesthetic systemic toxicity as a reasoning step is a non-essential but notable gap.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task demands coverage of the sequence, differential, immediate needs and escalation, so required reasoning content is specified.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "A 61-year-old woman presents with acute neurological deterioration one hour post-retinal surgery.",
+          "reason": "The representation integrates the operative-to-neurological sequence and key negatives with appropriate provisional framing; minor lack of explicit framing of the unresolved post-deterioration vitals gap.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requests a clinical-problem summary for a clinician, which is a synthesis task.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requests a clinical-problem summary for a clinician, which is a synthesis task."
+          "label": "4"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Up to three prioritised explanations with evidence are explicitly requested."
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "1. Cerebrovascular Accident (CVA) ... 2. Air Embolism ... 3. Metabolic/Toxicological Event",
+          "reason": "The differential is plausible and prioritised, but it omits local anaesthetic systemic toxicity, a dangerous mimic strongly suggested by local anaesthesia, severe pain, sweating and transient hypoxia, and lacks discriminating findings between CVA and air embolism.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Up to three prioritised explanations with evidence are explicitly requested.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "3"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires stating proportionate next information/actions, which includes a testing decision at the pre-imaging decision point."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Immediate bedside glucose measurement. Urgent CT/MRI brain imaging",
+          "reason": "First-line tests are well targeted to the differential (glucose for metabolic mimic, imaging for structural causes); justification is brief and no vitals/monitoring reassessment is proposed.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires stating proportionate next information/actions, which includes a testing decision at the pre-imaging decision point.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Suspected mechanism: Embolic or haemorrhagic event triggered by intraoperative stress or transient hypoxia.",
+          "reason": "Causal claims are labelled as suspected mechanisms and tied to observed findings, with material limitations (no imaging) stated; the air-embolism causal link is somewhat overstated relative to evidence.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requires distinguishing a suspected mechanism from an observed finding, a task-relevant causal interpretation.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requires distinguishing a suspected mechanism from an observed finding, a task-relevant causal interpretation."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "acute neurological deterioration one hour post-retinal surgery",
+          "reason": "Explicitly references the operative date and one-hour interval and uses no information beyond the pre-imaging window.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The decision point is explicitly before imaging results, creating a meaningful availability/cutoff boundary the response must respect.",
           "review_flags": [],
-          "applicability_reason": "The decision point is explicitly before imaging results, creating a meaningful availability/cutoff boundary the response must respect."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "transient pulse oximetry drop to 88%",
+          "reason": "Correctly identifies the direction and magnitude of the oxygenation drop and links it to the differential.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The records supply a directional change (intraoperative desaturation, then postoperative neurological decline) that the response should characterise.",
           "review_flags": [],
-          "applicability_reason": "The records supply a directional change (intraoperative desaturation, then postoperative neurological decline) that the response should characterise."
+          "label": "5"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Correct sequencing of the operative-to-neurological events is an explicit task requirement."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "During the procedure, the patient reported severe ocular pain ... This was followed by an abrupt onset of altered mental status",
+          "reason": "Chronology is explicitly reconstructed with temporal anchors from intraoperative events to postoperative deterioration.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Correct sequencing of the operative-to-neurological events is an explicit task requirement.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "rapidly progressing to an inability to walk independently",
+          "reason": "A deteriorating trajectory is correctly characterised and directly linked to urgent escalation and imaging decisions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The case describes rapid deterioration with progression to inability to ambulate, so trajectory interpretation is meaningful.",
           "review_flags": [],
-          "applicability_reason": "The case describes rapid deterioration with progression to inability to ambulate, so trajectory interpretation is meaningful."
+          "label": "5"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires distinguishing confirmed findings from suspected mechanisms and prohibits invented probabilities, making calibrated uncertainty central."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Uncertainty: No imaging provided. ... Uncertainty: No glucose or medication records provided.",
+          "reason": "The answer distinguishes suspected mechanisms from observed findings and names the specific missing data (imaging, glucose, medications) for each hypothesis.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires distinguishing confirmed findings from suspected mechanisms and prohibits invented probabilities, making calibrated uncertainty central.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Prior history is negative for hypertension, diabetes, stroke, arrhythmia, thrombotic disease, and hereditary disorders.",
+          "reason": "The newly returned negative history is incorporated into the final assessment without over-weighting it, though the per-turn summaries show little explicit revision of relative likelihoods.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The active-interview protocol allows sequential record retrieval with potentially observable new evidence across turns, permitting belief updating.",
           "review_flags": [],
-          "applicability_reason": "The active-interview protocol allows sequential record retrieval with potentially observable new evidence across turns, permitting belief updating."
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Are there any existing CT or MRI imaging reports from the time of the neurological deterioration?",
+          "reason": "All three essential requirements were addressed with timely, targeted requests: perioperative vitals and operative record (turns 1-2), existing neurological examination records (turn 2), and imaging (turn 3), plus history/medications (turns 5-6). Requests were appropriately prioritised and linked to the acute deterioration, though the operative-record request did not explicitly target administered medication and bleeding observations, and the imaging request sought existing reports rather than explicitly arranging urgent imaging, keeping this just below the top anchor.",
+          "requirement_checks": [
+            {
+              "id": "11.R1",
+              "request_quote": "Please provide the perioperative vital signs and any existing neurological examination records from the time of deterioration.",
+              "status": "requested_unavailable",
+              "reason": "An adequate request for cardiorespiratory and neurological severity assessment was made early; the simulator could not supply post-deterioration vitals, which is an availability limitation, not an acquisition failure."
+            },
+            {
+              "id": "11.R2",
+              "request_quote": "Please provide the perioperative vital signs and the operative report for the retinal surgery on April 8, 2025.",
+              "status": "requested_satisfied",
+              "reason": "The operative-record review returned the procedure sequence and intraoperative deterioration, satisfying the acceptable alternative, though administered medication and bleeding observations were not separately requested."
+            },
+            {
+              "id": "11.R3",
+              "request_quote": "Are there any existing CT or MRI imaging reports from the time of the neurological deterioration?",
+              "status": "requested_not_returned",
+              "reason": "Imaging was requested promptly at turn 3 and the final answer explicitly calls for urgent CT/MRI; no imaging existed at this pre-result decision point, which does not diminish the adequacy of the request."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The active-interview protocol permits six actual information requests, so targeted acquisition is directly assessable.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task explicitly requires urgent escalation at the first assessment opportunity, an actual urgency decision."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent escalation to neurology and stroke team.",
+          "reason": "Urgency is prominent, unambiguous, and specifies the correct care pathway at the first assessment opportunity.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task explicitly requires urgent escalation at the first assessment opportunity, an actual urgency decision.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "Immediate bedside glucose measurement.",
+          "reason": "No directly harmful actions are proposed, but there is no airway/breathing assessment or monitoring caveat despite documented intraoperative hypoxia, a non-critical but relevant safety omission.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Safety-critical omissions or delays in emergency assessment and imaging are assessable against the case's safety requirements.",
           "review_flags": [],
-          "applicability_reason": "Safety-critical omissions or delays in emergency assessment and imaging are assessable against the case's safety requirements."
+          "label": "3"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the record-based emergency review."
+          "na_audit": {
+            "case_id": "CAND11",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the record-based emergency review.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "**Provisional Differential Diagnosis:**",
+          "reason": "Clear headings and signposting support quick scanning; the repeated 'Evidence:' fragments and appended word-count line slightly reduce polish.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A structured 180-260 word clinician-facing assessment makes clarity and structure assessable.",
           "review_flags": [],
-          "applicability_reason": "A structured 180-260 word clinician-facing assessment makes clarity and structure assessable."
+          "label": "4"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so audience calibration is required."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent CT/MRI brain imaging to identify the cause of neurological deterioration.",
+          "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology and action-oriented phrasing.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly a clinician, so audience calibration is required.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "**Word count check:** 228 words.",
+          "reason": "The body meets the 180–260 word requirement (201 words) and follows content instructions, but it appends an inaccurate self-reported word count that was not requested, a notable format deviation.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task imposes multiple explicit constraints (word count, up to three explanations, no invented data) that must be followed.",
           "review_flags": [],
-          "applicability_reason": "The task imposes multiple explicit constraints (word count, up to three explanations, no invented data) that must be followed."
+          "label": "3"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires using only supplied records and forbids invented findings, values or doses, so factual groundedness is directly assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A prioritised differential with evidence and uncertainty requires clinically defensible inference steps from the supplied records."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The written justification must connect operative events to neurological deterioration in an internally connected account."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The 180-260 word limit makes clinically efficient reasoning directly relevant to the response quality."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task demands coverage of the sequence, differential, immediate needs and escalation, so required reasoning content is specified."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a clinical-problem summary for a clinician, which is a synthesis task."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Up to three prioritised explanations with evidence are explicitly requested."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires stating proportionate next information/actions, which includes a testing decision at the pre-imaging decision point."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires distinguishing a suspected mechanism from an observed finding, a task-relevant causal interpretation."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The decision point is explicitly before imaging results, creating a meaningful availability/cutoff boundary the response must respect."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The records supply a directional change (intraoperative desaturation, then postoperative neurological decline) that the response should characterise."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Correct sequencing of the operative-to-neurological events is an explicit task requirement."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The case describes rapid deterioration with progression to inability to ambulate, so trajectory interpretation is meaningful."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires distinguishing confirmed findings from suspected mechanisms and prohibits invented probabilities, making calibrated uncertainty central."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol allows sequential record retrieval with potentially observable new evidence across turns, permitting belief updating."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol permits six actual information requests, so targeted acquisition is directly assessable.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires urgent escalation at the first assessment opportunity, an actual urgency decision."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Safety-critical omissions or delays in emergency assessment and imaging are assessable against the case's safety requirements."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the record-based emergency review."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A structured 180-260 word clinician-facing assessment makes clarity and structure assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so audience calibration is required."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task imposes multiple explicit constraints (word count, up to three explanations, no invented data) that must be followed."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Suspected mechanism: Embolic or haemorrhagic event triggered by intraoperative stress or transient hypoxia.",
+              "reason": "Patient-specific claims are supported by the record and mechanisms are flagged as suspected rather than observed; minor issues (typo 'possibile', the incorrect self-reported '228 words') are clinically inconsequential."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Air entry during the operation (specifically during heavy-liquid injection or preparation for silicone-oil tamponade) possibile.",
+              "reason": "Inferences are clinically defensible and qualified, though the air-embolism mechanism is speculative and only loosely tied to the available evidence."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The sequence of events began during a three-port pars plana vitrectomy under local anaesthesia.",
+              "reason": "Premises are established before use and conclusions connect to evidence; the repeated 'Evidence:' fragments and the appended word-count line are minor structural blemishes."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Evidence: Sudden onset of neurological deficits post-surgery. Evidence: Intraoperative ocular pain and near-death sensation.",
+              "reason": "Reasoning is signal-dense overall; the repeated 'Evidence:' labels and the non-contributory word-count line add minor redundancy."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Urgent escalation to neurology and stroke team.",
+              "reason": "Critical components (sequence, differential, glucose, imaging, escalation) are covered; omission of local-anaesthetic systemic toxicity as a reasoning step is a non-essential but notable gap."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "A 61-year-old woman presents with acute neurological deterioration one hour post-retinal surgery.",
+              "reason": "The representation integrates the operative-to-neurological sequence and key negatives with appropriate provisional framing; minor lack of explicit framing of the unresolved post-deterioration vitals gap."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "1. Cerebrovascular Accident (CVA) ... 2. Air Embolism ... 3. Metabolic/Toxicological Event",
+              "reason": "The differential is plausible and prioritised, but it omits local anaesthetic systemic toxicity, a dangerous mimic strongly suggested by local anaesthesia, severe pain, sweating and transient hypoxia, and lacks discriminating findings between CVA and air embolism."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Immediate bedside glucose measurement. Urgent CT/MRI brain imaging",
+              "reason": "First-line tests are well targeted to the differential (glucose for metabolic mimic, imaging for structural causes); justification is brief and no vitals/monitoring reassessment is proposed."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Suspected mechanism: Embolic or haemorrhagic event triggered by intraoperative stress or transient hypoxia.",
+              "reason": "Causal claims are labelled as suspected mechanisms and tied to observed findings, with material limitations (no imaging) stated; the air-embolism causal link is somewhat overstated relative to evidence."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "acute neurological deterioration one hour post-retinal surgery",
+              "reason": "Explicitly references the operative date and one-hour interval and uses no information beyond the pre-imaging window."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "transient pulse oximetry drop to 88%",
+              "reason": "Correctly identifies the direction and magnitude of the oxygenation drop and links it to the differential."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "During the procedure, the patient reported severe ocular pain ... This was followed by an abrupt onset of altered mental status",
+              "reason": "Chronology is explicitly reconstructed with temporal anchors from intraoperative events to postoperative deterioration."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "rapidly progressing to an inability to walk independently",
+              "reason": "A deteriorating trajectory is correctly characterised and directly linked to urgent escalation and imaging decisions."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Uncertainty: No imaging provided. ... Uncertainty: No glucose or medication records provided.",
+              "reason": "The answer distinguishes suspected mechanisms from observed findings and names the specific missing data (imaging, glucose, medications) for each hypothesis."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Prior history is negative for hypertension, diabetes, stroke, arrhythmia, thrombotic disease, and hereditary disorders.",
+              "reason": "The newly returned negative history is incorporated into the final assessment without over-weighting it, though the per-turn summaries show little explicit revision of relative likelihoods."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent escalation to neurology and stroke team.",
+              "reason": "Urgency is prominent, unambiguous, and specifies the correct care pathway at the first assessment opportunity."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Immediate bedside glucose measurement.",
+              "reason": "No directly harmful actions are proposed, but there is no airway/breathing assessment or monitoring caveat despite documented intraoperative hypoxia, a non-critical but relevant safety omission."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "**Provisional Differential Diagnosis:**",
+              "reason": "Clear headings and signposting support quick scanning; the repeated 'Evidence:' fragments and appended word-count line slightly reduce polish."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent CT/MRI brain imaging to identify the cause of neurological deterioration.",
+              "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology and action-oriented phrasing."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "**Word count check:** 228 words.",
+              "reason": "The body meets the 180–260 word requirement (201 words) and follows content instructions, but it appends an inaccurate self-reported word count that was not requested, a notable format deviation."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3b",
+              "other_items": [
+                "D2d"
+              ],
+              "observation": "The differential omits local anaesthetic systemic toxicity despite local anaesthesia, severe ocular pain, sweating and transient hypoxia in the record, weakening mimic coverage."
+            },
+            {
+              "id": "E2",
+              "primary_item": "D7c",
+              "other_items": [
+                "D1"
+              ],
+              "observation": "The answer states 'Word count check: 228 words' while the deterministic count is 201; the claim is inaccurate and the line itself was not requested."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 4,
+          "evidence_quote": "Are there any existing CT or MRI imaging reports from the time of the neurological deterioration?",
+          "reason": "All three essential requirements were addressed with timely, targeted requests: perioperative vitals and operative record (turns 1-2), existing neurological examination records (turn 2), and imaging (turn 3), plus history/medications (turns 5-6). Requests were appropriately prioritised and linked to the acute deterioration, though the operative-record request did not explicitly target administered medication and bleeding observations, and the imaging request sought existing reports rather than explicitly arranging urgent imaging, keeping this just below the top anchor.",
+          "requirement_checks": [
+            {
+              "id": "11.R1",
+              "request_quote": "Please provide the perioperative vital signs and any existing neurological examination records from the time of deterioration.",
+              "status": "requested_unavailable",
+              "reason": "An adequate request for cardiorespiratory and neurological severity assessment was made early; the simulator could not supply post-deterioration vitals, which is an availability limitation, not an acquisition failure."
+            },
+            {
+              "id": "11.R2",
+              "request_quote": "Please provide the perioperative vital signs and the operative report for the retinal surgery on April 8, 2025.",
+              "status": "requested_satisfied",
+              "reason": "The operative-record review returned the procedure sequence and intraoperative deterioration, satisfying the acceptable alternative, though administered medication and bleeding observations were not separately requested."
+            },
+            {
+              "id": "11.R3",
+              "request_quote": "Are there any existing CT or MRI imaging reports from the time of the neurological deterioration?",
+              "status": "requested_not_returned",
+              "reason": "Imaging was requested promptly at turn 3 and the final answer explicitly calls for urgent CT/MRI; no imaging existed at this pre-result decision point, which does not diminish the adequacy of the request."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -2967,5 +3618,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

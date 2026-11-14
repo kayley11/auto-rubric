@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.228370+00:00",
+  "updated_at": "2026-11-14T13:32:56.487520+00:00",
   "title": "Recurrent gastrointestinal bleeding four months after liver transplantation",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Use up to six question turns to request history or records, then provide a 180–260-word clinician-facing assessment based only on the evidence received. Prioritise immediate bleeding risk, seek operative and bleeding-localisation evidence, and explain which causes require further confirmation. A specific pseudoaneurysm or fistula is not established at this decision point. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A liver-transplant recipient has recurrent vomiting of blood, dark-red rectal bleeding and right upper abdominal pain four months after transplantation. Bleeding and progressive anaemia have persisted.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fmed.2026.1940000",
   "source_location": "Saved source blocks: hemobilia-B0068; hemobilia-B0053; hemobilia-B0054; hemobilia-B0058; hemobilia-B0067; hemobilia-B0068; hemobilia-B0060",
   "decision_point": "First bleeding episode four months after transplantation, after initial and repeat endoscopy but before the first angiogram or embolization. All available replies are records; the patient is not required to narrate an urgent bleeding episode.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "13.R1",
@@ -1924,267 +1924,923 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google compatible API",
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Clinical Assessment\n\nA liver-transplant recipient presents four months post-surgery with recurrent hematemesis, dark-red rectal bleeding, right upper abdominal pain, and progressive anemia. Initial endoscopy identified a duodenal bulb ulcer. A repeat procedure revealed fresh blood oozing from the major duodenal papilla after clot removal. The patient has a history of alcohol-related cirrhosis, prior variceal bleeding, and early postoperative Enterococcus faecium bacteremia with fluid collections.\n\nPrioritized explanations:\n1. Vascular abnormality: A pseudoaneurysm or arterio-biliary fistula is hypothesized given the bleeding from the papillary orifice and the history of postoperative infection/fluid collections, though this remains unconfirmed.\n2. Peptic ulcer disease: The identified duodenal bulb ulcer is a confirmed finding, but its role in the current papillary bleeding is uncertain.\n3. Recurrent variceal bleeding: Possible given the history of oesophagogastric varices, though the endoscopic finding of papillary oozing suggests a different source.\n\nImmediate actions:\nUrgent angiography is required to localize the bleeding source and evaluate for vascular anomalies, with embolization as the primary intervention if a pseudoaneurysm or fistula is identified. Hemodynamic stabilization and monitoring of hemoglobin levels are necessary to manage the progressive anemia. Further imaging is needed to correlate the endoscopic findings with the postoperative fluid collections. Confirmation of the exact bleeding site is essential before considering operative intervention.",
+      "word_count": {
+        "words": 205,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you provide the reports from the initial and repeat endoscopies?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent hematemesis, hematochezia, and RUQ pain four months post-transplant, complicated by progressive anemia.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "13.endoscopic_localisation",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Initial upper endoscopy found a duodenal bulb ulcer without observed active bleeding; no endoscopic haemostasis was performed. Continued bleeding prompted repeat endoscopy: removing a clot at the major duodenal papilla revealed fresh blood oozing from the papillary orifice.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide the most recent vital signs and routine laboratory results, specifically hemoglobin levels?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent gastrointestinal bleeding and RUQ pain. Endoscopy identified a duodenal bulb ulcer and subsequent blood oozing from the major duodenal papilla.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: most recent vital signs; routine laboratory results; specifically hemoglobin levels. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the patient's medical history and any current medications?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent gastrointestinal bleeding and RUQ pain. Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "13.transplant_and_prior_bleeding",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Orthotopic deceased-donor liver transplantation was performed in 2024 for end-stage alcohol-related cirrhosis. Before transplantation he had repeated decompensation and plasma exchange; oesophagogastric variceal bleeding was treated endoscopically in 2023.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "13.early_postoperative_course",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On postoperative days 6–8 he had fever and Enterococcus faecium bacteraemia, with positive SARS-CoV-2 testing. Fever resolved by day 9 after treatment. Imaging showed fluid collections without definite bile leakage or a localised infectious focus; bile culture was negative.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Could you provide the patient's current medications?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent GI bleeding and RUQ pain. Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla. History includes alcohol-related cirrhosis, prior variceal bleeding, and early postoperative Enterococcus bacteraemia.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: current medications. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Could you provide any existing CT imaging reports of the abdomen and pelvis?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent GI bleeding and RUQ pain. Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla. History includes alcohol-related cirrhosis, prior variceal bleeding, and early postoperative Enterococcus bacteraemia.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: any existing CT imaging reports of the abdomen and pelvis. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Could you provide any existing MRI imaging reports of the abdomen and pelvis?",
+          "assessment": {
+            "summary": "Liver transplant recipient with recurrent GI bleeding and RUQ pain. Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla. History includes alcohol-related cirrhosis, prior variceal bleeding, and early postoperative Enterococcus bacteraemia.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: any existing MRI imaging reports of the abdomen and pelvis. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual grounding of every claim is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "A pseudoaneurysm or arterio-biliary fistula is hypothesized given the bleeding from the papillary orifice... though this remains unconfirmed.",
+          "reason": "All patient-specific claims match the supplied record; the vascular hypothesis is explicitly framed as unconfirmed rather than asserted.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual grounding of every claim is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The identified duodenal bulb ulcer is a confirmed finding, but its role in the current papillary bleeding is uncertain.",
+          "reason": "Each inference is tied to documented findings with appropriate qualification; no unsupported conclusions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The prioritised-differential justification requires clinically defensible inference steps from the record evidence.",
           "review_flags": [],
-          "applicability_reason": "The prioritised-differential justification requires clinically defensible inference steps from the record evidence."
+          "label": "5"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Initial endoscopy identified a duodenal bulb ulcer. A repeat procedure revealed fresh blood oozing from the major duodenal papilla after clot removal.",
+          "reason": "Premises are established in sequence before use in the differential and plan; reasoning is internally connected.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written assessment must connect evidence to conclusions in an intelligible chain.",
           "review_flags": [],
-          "applicability_reason": "The written assessment must connect evidence to conclusions in an intelligible chain."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "A 180–260 word limit makes non-redundant, purpose-contributing reasoning assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent angiography is required to localize the bleeding source and evaluate for vascular anomalies.",
+          "reason": "Every substantive step serves the clinical interpretation; no redundancy or tangential content.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "A 180–260 word limit makes non-redundant, purpose-contributing reasoning assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Hemodynamic stabilization and monitoring of hemoglobin levels are necessary to manage the progressive anemia.",
+          "reason": "Covers the critical components: bleeding localisation, competing hypotheses, stabilisation, and confirmation before surgery.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The assessment must cover the required reasoning: bleeding risk, localisation evidence, and which causes need confirmation.",
           "review_flags": [],
-          "applicability_reason": "The assessment must cover the required reasoning: bleeding risk, localisation evidence, and which causes need confirmation."
+          "label": "5"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "A liver-transplant recipient presents four months post-surgery with recurrent hematemesis, dark-red rectal bleeding, right upper abdominal pain, and progressive anemia.",
+          "reason": "Focused synthesis integrates transplant context, endoscopic localisation, and prior history while keeping the diagnosis provisional.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requests a clinical problem summary, which is a synthesis of the supplied evidence.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requests a clinical problem summary, which is a synthesis of the supplied evidence."
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty is a differential-diagnosis task."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Vascular abnormality... Peptic ulcer disease... Recurrent variceal bleeding...",
+          "reason": "Three prioritised alternatives with explicit discriminating findings (papillary oozing versus ulcer versus varices) and proportionate uncertainty.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty is a differential-diagnosis task.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires stating proportionate next information/actions, including a localisation-testing decision."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent angiography is required to localize the bleeding source... with embolization as the primary intervention.",
+          "reason": "Test selection is directly linked to the leading hypotheses and the decision point; no inappropriate tests proposed.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires stating proportionate next information/actions, including a localisation-testing decision.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Interpreting whether the papillary bleeding indicates a biliary-vascular cause versus ulcer is a task-relevant causal interpretation."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "though this remains unconfirmed... its role in the current papillary bleeding is uncertain.",
+          "reason": "Causal claims are appropriately hedged and alternative explanations are considered; no claim exceeds the evidence.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Interpreting whether the papillary bleeding indicates a biliary-vascular cause versus ulcer is a task-relevant causal interpretation.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "four months post-surgery",
+          "reason": "Explicitly anchors events to the stated timeline and uses only information available at the decision point.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The decision point is bounded (after endoscopies, before first angiogram), so respecting the evidence cutoff is meaningful.",
           "review_flags": [],
-          "applicability_reason": "The decision point is bounded (after endoscopies, before first angiogram), so respecting the evidence cutoff is meaningful."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Progressive anaemia and persistent bleeding are documented directional changes the model should recognise."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Bleeding and progressive anaemia have persisted... progressive anemia.",
+          "reason": "Correctly identifies the deteriorating direction of bleeding/anaemia; magnitude data were not supplied, so no magnitude is required.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Progressive anaemia and persistent bleeding are documented directional changes the model should recognise.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The record supplies a sequenced course (transplant, prior bleeding, endoscopies) that must be ordered correctly."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Initial endoscopy identified... A repeat procedure revealed...",
+          "reason": "Events are sequenced correctly with explicit temporal anchors (initial vs repeat endoscopy, postoperative course).",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The record supplies a sequenced course (transplant, prior bleeding, endoscopies) that must be ordered correctly.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The trajectory (ongoing bleeding with deterioration despite endoscopy) is part of the required assessment."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent angiography is required... Hemodynamic stabilization... are necessary.",
+          "reason": "Deteriorating trajectory is correctly characterised and directly linked to the urgent management decisions.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The trajectory (ongoing bleeding with deterioration despite endoscopy) is part of the required assessment.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires distinguishing established causes from unconfirmed ones, making calibrated uncertainty expression assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "though this remains unconfirmed... Confirmation of the exact bleeding site is essential.",
+          "reason": "Clearly distinguishes confirmed findings from hypotheses and names angiography as the proportionate next step to reduce uncertainty.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires distinguishing established causes from unconfirmed ones, making calibrated uncertainty expression assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The active-interview protocol allows six actual requests, so new evidence can arrive and shift diagnostic likelihoods within the encounter."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla.",
+          "reason": "The turn-by-turn assessments incorporate the new endoscopic finding in the correct direction, but the degree of updating is not made fully explicit.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The active-interview protocol allows six actual requests, so new evidence can arrive and shift diagnostic likelihoods within the encounter.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Could you provide the most recent vital signs and routine laboratory results, specifically hemoglobin levels?",
+          "reason": "All three essential requirements were actively requested within the six turns: resuscitation/severity data (turn 2), transplant and prior bleeding history (turn 3), endoscopic findings (turn 1) plus further localisation imaging (turns 5-6). Unreturned requests were simulator availability limits, not acquisition failures, and the requests were targeted and appropriately timed.",
+          "requirement_checks": [
+            {
+              "id": "13.R1",
+              "request_quote": "Could you provide the most recent vital signs and routine laboratory results, specifically hemoglobin levels?",
+              "status": "requested_unavailable",
+              "reason": "Adequately requested haemodynamics and haemoglobin; the simulator supplied no matching record, which is an environment limitation."
+            },
+            {
+              "id": "13.R2",
+              "request_quote": "Could you provide the patient's medical history and any current medications?",
+              "status": "requested_satisfied",
+              "reason": "Transplant, prior variceal bleeding and postoperative course were returned; medications were separately requested but unavailable."
+            },
+            {
+              "id": "13.R3",
+              "request_quote": "Could you provide the reports from the initial and repeat endoscopies?",
+              "status": "requested_satisfied",
+              "reason": "Endoscopic bleeding-source findings were returned, and further localisation was sought via CT/MRI requests and an urgent angiography recommendation in the final assessment."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The task explicitly permits six actual question turns to request missing history and records.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires an actual urgency decision: prioritising immediate bleeding risk and escalation."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent angiography is required to localize the bleeding source.",
+          "reason": "Timely escalation is prominent and unambiguous with the correct pathway (angiography with embolisation capacity) specified.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires an actual urgency decision: prioritising immediate bleeding risk and escalation.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Confirmation of the exact bleeding site is essential before considering operative intervention.",
+          "reason": "Avoids harm and includes a relevant safety caveat, but does not enumerate case-specific risks such as anticoagulation or transplant-related precautions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Proportionate next actions for an actively bleeding transplant recipient create assessable safety requirements (e.g., resuscitation before definitive localisation).",
           "review_flags": [],
-          "applicability_reason": "Proportionate next actions for an actively bleeding transplant recipient create assessable safety requirements (e.g., resuscitation before definitive localisation)."
+          "label": "4"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the record-review task."
+          "na_audit": {
+            "case_id": "CAND13",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the record-review task.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "A word-bounded clinician-facing written assessment makes clarity and structure assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Prioritized explanations: 1. Vascular abnormality...",
+          "reason": "Well-organised with clear headings and a numbered differential suited to a clinician reader.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "A word-bounded clinician-facing written assessment makes clarity and structure assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so register calibration is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Urgent angiography is required to localize the bleeding source and evaluate for vascular anomalies.",
+          "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly a clinician, so register calibration is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task imposes explicit constraints (word count, question-turn limit, evidence limits) that can be followed or violated."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "deterministic_word_count: 205 words",
+          "reason": "Full adherence: 205 words within 180–260, three prioritised explanations, evidence-based actions, and no invented values.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task imposes explicit constraints (word count, question-turn limit, evidence limits) that can be followed or violated.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual grounding of every claim is assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The prioritised-differential justification requires clinically defensible inference steps from the record evidence."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The written assessment must connect evidence to conclusions in an intelligible chain."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A 180–260 word limit makes non-redundant, purpose-contributing reasoning assessable."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The assessment must cover the required reasoning: bleeding risk, localisation evidence, and which causes need confirmation."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a clinical problem summary, which is a synthesis of the supplied evidence."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty is a differential-diagnosis task."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires stating proportionate next information/actions, including a localisation-testing decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Interpreting whether the papillary bleeding indicates a biliary-vascular cause versus ulcer is a task-relevant causal interpretation."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The decision point is bounded (after endoscopies, before first angiogram), so respecting the evidence cutoff is meaningful."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Progressive anaemia and persistent bleeding are documented directional changes the model should recognise."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The record supplies a sequenced course (transplant, prior bleeding, endoscopies) that must be ordered correctly."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The trajectory (ongoing bleeding with deterioration despite endoscopy) is part of the required assessment."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires distinguishing established causes from unconfirmed ones, making calibrated uncertainty expression assessable."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol allows six actual requests, so new evidence can arrive and shift diagnostic likelihoods within the encounter."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly permits six actual question turns to request missing history and records.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires an actual urgency decision: prioritising immediate bleeding risk and escalation."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Proportionate next actions for an actively bleeding transplant recipient create assessable safety requirements (e.g., resuscitation before definitive localisation)."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the record-review task."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A word-bounded clinician-facing written assessment makes clarity and structure assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so register calibration is assessable."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task imposes explicit constraints (word count, question-turn limit, evidence limits) that can be followed or violated."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A pseudoaneurysm or arterio-biliary fistula is hypothesized given the bleeding from the papillary orifice... though this remains unconfirmed.",
+              "reason": "All patient-specific claims match the supplied record; the vascular hypothesis is explicitly framed as unconfirmed rather than asserted."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The identified duodenal bulb ulcer is a confirmed finding, but its role in the current papillary bleeding is uncertain.",
+              "reason": "Each inference is tied to documented findings with appropriate qualification; no unsupported conclusions."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Initial endoscopy identified a duodenal bulb ulcer. A repeat procedure revealed fresh blood oozing from the major duodenal papilla after clot removal.",
+              "reason": "Premises are established in sequence before use in the differential and plan; reasoning is internally connected."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent angiography is required to localize the bleeding source and evaluate for vascular anomalies.",
+              "reason": "Every substantive step serves the clinical interpretation; no redundancy or tangential content."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Hemodynamic stabilization and monitoring of hemoglobin levels are necessary to manage the progressive anemia.",
+              "reason": "Covers the critical components: bleeding localisation, competing hypotheses, stabilisation, and confirmation before surgery."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A liver-transplant recipient presents four months post-surgery with recurrent hematemesis, dark-red rectal bleeding, right upper abdominal pain, and progressive anemia.",
+              "reason": "Focused synthesis integrates transplant context, endoscopic localisation, and prior history while keeping the diagnosis provisional."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Vascular abnormality... Peptic ulcer disease... Recurrent variceal bleeding...",
+              "reason": "Three prioritised alternatives with explicit discriminating findings (papillary oozing versus ulcer versus varices) and proportionate uncertainty."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent angiography is required to localize the bleeding source... with embolization as the primary intervention.",
+              "reason": "Test selection is directly linked to the leading hypotheses and the decision point; no inappropriate tests proposed."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "though this remains unconfirmed... its role in the current papillary bleeding is uncertain.",
+              "reason": "Causal claims are appropriately hedged and alternative explanations are considered; no claim exceeds the evidence."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "four months post-surgery",
+              "reason": "Explicitly anchors events to the stated timeline and uses only information available at the decision point."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Bleeding and progressive anaemia have persisted... progressive anemia.",
+              "reason": "Correctly identifies the deteriorating direction of bleeding/anaemia; magnitude data were not supplied, so no magnitude is required."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Initial endoscopy identified... A repeat procedure revealed...",
+              "reason": "Events are sequenced correctly with explicit temporal anchors (initial vs repeat endoscopy, postoperative course)."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent angiography is required... Hemodynamic stabilization... are necessary.",
+              "reason": "Deteriorating trajectory is correctly characterised and directly linked to the urgent management decisions."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "though this remains unconfirmed... Confirmation of the exact bleeding site is essential.",
+              "reason": "Clearly distinguishes confirmed findings from hypotheses and names angiography as the proportionate next step to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Endoscopy showed a duodenal bulb ulcer and blood oozing from the major duodenal papilla.",
+              "reason": "The turn-by-turn assessments incorporate the new endoscopic finding in the correct direction, but the degree of updating is not made fully explicit."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent angiography is required to localize the bleeding source.",
+              "reason": "Timely escalation is prominent and unambiguous with the correct pathway (angiography with embolisation capacity) specified."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Confirmation of the exact bleeding site is essential before considering operative intervention.",
+              "reason": "Avoids harm and includes a relevant safety caveat, but does not enumerate case-specific risks such as anticoagulation or transplant-related precautions."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Prioritized explanations: 1. Vascular abnormality...",
+              "reason": "Well-organised with clear headings and a numbered differential suited to a clinician reader."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Urgent angiography is required to localize the bleeding source and evaluate for vascular anomalies.",
+              "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "deterministic_word_count: 205 words",
+              "reason": "Full adherence: 205 words within 180–260, three prioritised explanations, evidence-based actions, and no invented values."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3b",
+              "other_items": [
+                "D3c",
+                "D5u"
+              ],
+              "observation": "The papillary bleeding finding is used consistently to prioritise the vascular hypothesis, justify urgent angiography, and qualify the diagnosis as unconfirmed."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "Could you provide the most recent vital signs and routine laboratory results, specifically hemoglobin levels?",
+          "reason": "All three essential requirements were actively requested within the six turns: resuscitation/severity data (turn 2), transplant and prior bleeding history (turn 3), endoscopic findings (turn 1) plus further localisation imaging (turns 5-6). Unreturned requests were simulator availability limits, not acquisition failures, and the requests were targeted and appropriately timed.",
+          "requirement_checks": [
+            {
+              "id": "13.R1",
+              "request_quote": "Could you provide the most recent vital signs and routine laboratory results, specifically hemoglobin levels?",
+              "status": "requested_unavailable",
+              "reason": "Adequately requested haemodynamics and haemoglobin; the simulator supplied no matching record, which is an environment limitation."
+            },
+            {
+              "id": "13.R2",
+              "request_quote": "Could you provide the patient's medical history and any current medications?",
+              "status": "requested_satisfied",
+              "reason": "Transplant, prior variceal bleeding and postoperative course were returned; medications were separately requested but unavailable."
+            },
+            {
+              "id": "13.R3",
+              "request_quote": "Could you provide the reports from the initial and repeat endoscopies?",
+              "status": "requested_satisfied",
+              "reason": "Endoscopic bleeding-source findings were returned, and further localisation was sought via CT/MRI requests and an urgent angiography recommendation in the final assessment."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -2912,5 +3568,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { evidenceContext, suggestedEvidence } from "./evidenceLinks.mjs";
 import { useContributor } from "./ContributorFields";
+import { itemResultText } from "./resultStatus.mjs";
 import "./scoring-evidence.css";
 
 export function ScoringEvidence({
@@ -33,7 +34,8 @@ export function ScoringEvidence({
     grade.error ||
     "No saved explanation for this item.";
   const criterionText = JSON.stringify(criterion);
-  const label = grade.label ?? grade.score ?? "Not assessed";
+  const label = itemResultText(grade);
+  const hasNumericGrade = label !== "" && Number.isFinite(Number(label));
   const suggestions = useMemo(
     () => suggestedEvidence(answer, reason, grade.evidence_quote),
     [answer, reason, grade.evidence_quote],
@@ -122,7 +124,8 @@ export function ScoringEvidence({
     const anno = createTextAnnotator(textRef.current, {
       annotatingEnabled: true,
       style: (annotation) => {
-        const type = annotation.bodies?.[0]?.value;
+        const type = annotation.bodies?.[0]?.value ||
+          (String(annotation.id).startsWith("auto-") ? "automatic" : "manual");
         return {
           fill: type === "manual" ? "#a7d9c0" : "#b7d5fb",
           fillOpacity: 0.4,
@@ -219,9 +222,9 @@ export function ScoringEvidence({
         <div className="trace-score-heading">
           <button
             type="button"
-            className="trace-score"
+            className={`trace-score${hasNumericGrade ? "" : " is-status"}`}
             onClick={() => setTab("rubric")}
-            aria-label={`View rubric basis for ${criterion.id} score ${label}`}
+            aria-label={`View rubric basis for ${criterion.id}: ${label}`}
           >
             {label}
           </button>
@@ -231,8 +234,9 @@ export function ScoringEvidence({
               {criterion.id} · {criterion.name}
             </h3>
             <p className="field-help">
-              Click the score for its rubric basis, or the reason for evidence
-              links.
+              {grade.status === "applicability_pending"
+                ? "A reviewer needs to decide whether this item can be assessed in this task. Read the saved reason below."
+                : "Open the rubric basis or read the saved reason and its evidence links."}
             </p>
           </div>
         </div>
@@ -268,11 +272,25 @@ export function ScoringEvidence({
         </button>
         <div className="trace-legend">
           <span>
-            <span className="trace-dot auto" /> Suggested quote link
+            <span className="trace-dot auto" /> Blue · matched quotation
           </span>
           <span>
-            <span className="trace-dot manual" /> Reviewer selection
+            <span className="trace-dot manual" /> Green · reviewer selection
           </span>
+        </div>
+        <div className="trace-link-summary" role="note">
+          {located.length ? (
+            <>
+              <p>{new Set(located.map(s => s.id)).size} quotation link{new Set(located.map(s => s.id)).size === 1 ? "" : "s"} found for this item. The highlighted text may be further down the answer.</p>
+              <button type="button" className="text-button" onClick={() => focusQuote(located[0])}>Go to first highlight</button>
+              {suggestions.some(s => s.status !== "located") && <p>Other excerpts could not be linked automatically. See Quoted passages in the evidence panel.</p>}
+            </>
+          ) : (
+            <p>{suggestions.length
+              ? "No automatic highlight: the saved excerpts could not be linked to a unique passage. The evidence panel explains why."
+              : "No automatic highlight: no answer quotation was saved for this item. You can still read the reason and the complete answer."}</p>
+          )}
+          <p className="field-help">Green highlights appear when a reviewer selects text or saved selections are loaded. The colours show link types, not whether the answer is correct.</p>
         </div>
         <h3>Answer being evaluated</h3>
         <p className="field-help">
@@ -326,7 +344,7 @@ export function ScoringEvidence({
         <div className="trace-basis-scroll">
           {tab === "evidence" && (
             <>
-              <p className="trace-pending">Automatic links · awaiting review</p>
+              <p className="trace-pending">{located.length ? "Automatic links · awaiting review" : "No automatic quote link for this item"}</p>
               <p className="field-help">
                 A text match locates a quote. It does not confirm the reasoning
                 or the grade.
@@ -361,7 +379,9 @@ export function ScoringEvidence({
                     </button>
                   ) : (
                     <p className="trace-warning">
-                      {s.status === "ambiguous"
+                      {s.status === "too_short"
+                        ? "This excerpt is too short for automatic linking. Select the intended passage manually."
+                        : s.status === "ambiguous"
                         ? `Appears ${s.count} times. Select the intended passage manually.`
                         : "Not located verbatim in this answer. It may be a paraphrase, refer to other evidence or need correction."}
                     </p>

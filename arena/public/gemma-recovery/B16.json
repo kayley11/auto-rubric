@@ -1,0 +1,1224 @@
+{
+  "id": "B16",
+  "title": "Persistent scrotal inflammation in Crohn’s disease",
+  "task": "Audience: a clinician. Use 200–280 words in English. Synthesise the persistent genitourinary problem, compare infectious and inflammatory explanations and identify what evidence should be revisited before changing treatment. Preserve distinctions between positive, negative and unperformed investigations. Use only the information supplied at this decision point. Distinguish observed facts, hypotheses and proposed actions. Do not invent results, doses, probabilities or events. Give concise clinical justifications, not a private reasoning trace.",
+  "initial_facts": "A man in his early 50s has 25 years of penetrating ileocolonic Crohn’s disease, previously controlled for three years with infliximab. Enterography 11 months earlier did not show a fistula.\nHe developed recurrent right testicular pain and swelling. Cultures over the course of repeated procedures grew different organisms, including Peptoniphilus, Bacteroides, Citrobacter, Proteus, E. coli, Klebsiella and Morganella. Epididymal/testicular surgery showed necrotising granulomatous inflammation. Acid-fast and fungal studies and selected PCR tests were negative. Brucella testing was not performed because no risk was identified; Bartonella testing was negative.\nLater CT did not show active bowel disease or a fistula and he reported no gastrointestinal symptoms. Fresh cultures were not obtained at one later procedure; previous susceptibility results were used. Inflammation persisted despite prolonged antibiotics. Infliximab was held. Subsequent treatment and response are withheld.",
+  "mode": "written-record",
+  "max_questions": 0,
+  "criteria": [
+    {
+      "id": "D1",
+      "name": "Factual accuracy and groundedness",
+      "definition": "Domain 1 -- Factual Accuracy & Groundedness Corresponding source frameworks: HealthBench Accuracy axis ; MedR-Bench Factuality metric ; Lee and Hockenmaier's Factuality category , adapted here as clinical groundedness rather than treated as a clinically validated instrument; DR.BENCH MedNLI task ; and ART's high-value-care-aligned testing domain . Definition. This domain assesses whether clinical statements are factually correct and whether patient-specific claims are supported by the evidence available to the model. Distinguish documented findings, clinically defensible inferences, and general medical knowledge. A plausible but undocumented patient-specific finding remains an unsupported claim. An inference beyond explicitly stated facts is not a groundedness failure when it is clinically defensible and presented with appropriate qualification. The quality of the inference is assessed under the relevant reasoning sub-dimension.",
+      "anchors": {
+        "1": "Contains one or more factually wrong statements that could cause direct patient harm (e.g., wrong drug dose, contraindicated management).",
+        "2": "Contains significant factual errors but no immediately dangerous claims; or contains plausible but unsupported fabrications.",
+        "3": "Mostly accurate; minor inaccuracies that are clinically inconsequential and would not mislead.",
+        "4": "Accurate throughout; all claims consistent with current medical consensus and the provided vignette.",
+        "5": "All clinically material statements are accurate; patient-specific claims are supported by the available evidence; and documented findings, inferences, and general knowledge are distinguished where conflating them would change clinical interpretation."
+      },
+      "context": "Sub-dimensions to note separately if needed: Hallucination rate: number of unsupported factual claims per response (operationalised in SOAP-note documentation benchmarking as Evidence Score = max(0, 5 $-$ 1$$minor $-$ 3$$major unsupported claims); this specific formula is drawn from an industry benchmarking write-up rather than a peer-reviewed source, and should be treated as illustrative rather than validated) . Numeric fidelity: correct reporting of doses, lab values, vital signs (weighted heavily in clinical documentation tasks) .",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2a",
+      "name": "Reasoning validity",
+      "definition": "Each stated reasoning step should be supported by, and remain consistent with, the preceding reasoning and available clinical evidence . Because clinical reasoning is often probabilistic or abductive rather than deductive, validity does not require strict logical entailment. Instead, the question is whether each inference is clinically defensible given the evidence available at that point. C2-Faith's controlled step-dependence task provides a general-domain measurement analogy for identifying steps that do not follow from their stated context, but it is not a clinically validated instrument .",
+      "anchors": {
+        "1": "Contains one or more fundamental reasoning errors or contradictions that invalidate the conclusion or could lead to harmful management.",
+        "2": "Contains multiple unsupported inferences, contradictions, or non-sequiturs; important conclusions do not follow adequately from the stated evidence.",
+        "3": "Reasoning is mostly clinically defensible, but contains one or two questionable inferences that do not materially alter the principal conclusion.",
+        "4": "All clinically important inferences are supported by the available evidence, with no material contradictions or unjustified conclusions.",
+        "5": "Provides consistently well-supported inferences and makes their relationship to the available evidence explicit. Where the task requires comparison of competing interpretations, explains why the evidence favours some over others without overstating what can be concluded."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2b",
+      "name": "Reasoning coherence",
+      "definition": "Coherence concerns whether the expressed reasoning forms an intelligible and internally connected account. Relevant premises should be introduced before they are used, and conclusions should be connected clearly to the evidence and intermediate judgements supporting them. This is conceptually related to, though not identical with, the \"prerequisite sensitivity\" error category used in PRMBench to detect missing preconditions in mathematical reasoning chains . PRMBench is used here as a design analogy for structural coherence checking rather than as a direct clinical operationalisation. C2-Faith's step-dependence condition provides a second general-domain analogy for detecting reasoning steps that are incompatible with or unsupported by their preceding context .",
+      "anchors": {
+        "1": "Reasoning is disjointed or internally contradictory; steps appear in an unusable order or rely on information that was never introduced.",
+        "2": "Contains major structural gaps; the reader cannot reliably reconstruct how the model moved from the evidence to its conclusions.",
+        "3": "The reasoning is generally followable but contains one notable unexplained transition, misplaced step, or unresolved internal tension.",
+        "4": "The reasoning is well structured and internally connected, with only minor omissions in signposting or transitions.",
+        "5": "The reasoning forms a clear and clinically appropriate progression; relevant premises are established before use, intermediate conclusions are connected explicitly, and competing lines of reasoning are integrated without contradiction."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2c",
+      "name": "Reasoning efficiency",
+      "definition": "Efficiency concerns the proportion of the expressed reasoning that contributes meaningfully to the clinical interpretation, differential, investigation strategy, or management plan. MedR-Bench operationalises efficiency in terms of clinically effective reasoning steps that are neither redundant nor off-topic . Efficiency should not be equated with brevity. Additional explanation should not be penalised when it clarifies uncertainty, safety, discriminating evidence, or the relationship between findings and decisions. The anchors below assess whether redundancy or irrelevant content interferes with the clinical purpose of the response. They do not require raters to estimate a percentage of unnecessary text.",
+      "anchors": {
+        "1": "Reasoning is predominantly repetitive, circular, tangential, or clinically irrelevant, substantially obscuring the important content.",
+        "2": "Contains substantial repetition, tangential material, or unnecessary elaboration that makes clinically important reasoning difficult to identify.",
+        "3": "Contains noticeable redundancy or unnecessary elaboration, but the clinically important reasoning remains identifiable and usable.",
+        "4": "Reasoning is focused and signal-dense, with only minor repetition or non-contributory elaboration.",
+        "5": "Every substantive step has a clear clinical purpose; the response is appropriately concise without omitting explanation needed for interpretation, uncertainty, or safety."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2d",
+      "name": "Reasoning completeness",
+      "definition": "Completeness concerns whether the expressed reasoning contains the case-specific information and reasoning steps required to support a defensible conclusion. MedR-Bench reports that model reasoning may be factually accurate while omitting critical steps . ART's hypothesis-directed data-gathering domain addresses one clinically important source of incompleteness: failure to identify or use information required to distinguish among competing hypotheses . This dimension reflects the distinction between correctness of stated content and coverage of required content. C2-Faith provides a general-domain analogy through controlled deletion of reasoning content and evaluation of whether the resulting coverage failure can be detected . MedThink-Bench similarly motivates step-level assessment against expert-authored reasoning points . Neither benchmark requires a model to reproduce one exact reasoning chain. Clinically valid alternative routes should receive credit when they cover the same required decisions or provide a defensible equivalent.",
+      "anchors": {
+        "1": "Omits multiple critical reasoning components, such as a must-not-miss diagnosis, decisive finding, contraindication, escalation requirement, or essential management step.",
+        "2": "Omits one critical component whose absence materially weakens or changes the diagnostic or management conclusion.",
+        "3": "Covers all critical components but omits one or more supporting steps needed to make the reasoning fully explicit.",
+        "4": "Covers all critical and most supporting components, with only minor non-essential omissions.",
+        "5": "Covers all case-specific required reasoning components, or clinically defensible equivalents, and connects them adequately to the conclusion without requiring exact reproduction of the reference trajectory ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D3a",
+      "name": "Problem representation",
+      "definition": "This sub-dimension assesses whether the model synthesises the evidence available to it into a focused, clinically meaningful representation of the patient's problem. The representation should identify the relevant patient context, prioritise important findings, and preserve distinctions that matter for the diagnostic or management task. ART and illness-script literature inform this construct, but do not validate the anchors proposed here . Evidence boundary. Assess the representation using information supplied to or obtained by the model before the specified decision point. Do not require knowledge of undisclosed findings or the eventual diagnosis. A concise synthesis need not reproduce a prescribed one-liner. Where consequential uncertainty remains, the representation should remain appropriately provisional.",
+      "anchors": {
+        "1": "Fundamentally misrepresents the clinical problem, or provides no usable representation when one is explicitly required.",
+        "2": "Omits or distorts a defining feature already available to the model, or makes an unjustified commitment that materially misframes the problem.",
+        "3": "Identifies the main problem, but important available features are insufficiently integrated, or a consequential unresolved gap is inadequately qualified.",
+        "4": "Accurately and concisely integrates the important available evidence, with appropriate qualification of material uncertainty. Minor limitations do not change the clinical framing.",
+        "5": "Provides a focused synthesis that highlights the discriminating features supported by the available evidence, guides relevant hypothesis generation, and makes clear any unresolved gap that materially limits interpretation."
+      },
+      "context": "Relationship to information seeking. Failure to seek essential information is assessed primarily under Domain 5c. It does not automatically lower Domain 3a. A secondary effect on Domain 3a requires an identifiable defect in the expressed representation, such as distortion, omission of available defining information, unjustified closure, or failure to qualify a consequential unresolved gap. Raters should not expect the model to name an undisclosed result. Applicability. Apply this sub-dimension when clinical synthesis is requested or specified in advance as an assessment requirement. Do not require a clinician-style one-liner in a patient-facing explanation unless the task calls for one. Mark genuinely out-of-scope synthesis as N/A; failure to provide a required synthesis is poor performance, not non-applicability.",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D3b",
+      "name": "Differential diagnosis",
+      "definition": "H-DDx provides a hierarchical, ICD-10-mapped scoring approach that gives partial credit to clinically related near-misses rather than relying only on flat top-$k$ accuracy . PrIME-LLM evaluated 21 models across sequential clinical-workflow tasks and found differential-diagnosis generation weaker than final-diagnosis performance . It informs the sequential relationship between differential generation and subsequent test selection in Domains 3b--3c. A differential should be assessed using the information available at the stated decision point, rather than the diagnosis confirmed later. The case-specific scoring key should identify acceptable alternatives and dangerous mimics. Rank order matters when the evidence available at that point supports a clinical priority; a defensible differential should not be penalised solely because the eventual diagnosis was not initially ranked first.",
+      "anchors": {
+        "1": "Misses a case-critical diagnosis or dangerous mimic despite evidence available at this decision point.",
+        "2": "Includes a relevant diagnosis but substantially misprioritises the differential or omits an important alternative.",
+        "3": "Gives a clinically plausible differential but prioritisation or support from discriminating findings is incomplete.",
+        "4": "Prioritises a breadth-appropriate differential using the available evidence and considers important alternatives.",
+        "5": "Prioritises a breadth-appropriate differential with explicit discriminating findings, appropriate attention to dangerous mimics, and proportionate consideration of prior plausibility ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D3c",
+      "name": "Diagnostic test selection",
+      "definition": "This sub-dimension assesses whether the proposed investigation strategy is appropriate to the clinical question and available evidence. ART's high-value-care-aligned testing domain provides a medical-education precedent . Credit a justified decision not to investigate when further testing is unnecessary. Assess test selection against the case-specific requirements, acceptable alternatives, and decision point, rather than the number of tests proposed.",
+      "anchors": {
+        "1": "Omits an investigation essential to the required decision, or proposes testing that is clearly inappropriate or harmful.",
+        "2": "Tests suggested are vaguely appropriate but poorly targeted.",
+        "3": "Appropriate first-line investigations; minor omissions or additions.",
+        "4": "Well-targeted tests with explicit justification for each.",
+        "5": "Optimal, prioritised test selection explicitly linked to differential hypotheses; includes consideration of cost, yield, and patient context."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D3d",
+      "name": "Causal reasoning appropriateness",
+      "definition": "This dimension draws on the distinction between association, intervention, and counterfactual reasoning as applied to clinical laboratory-test scenarios . It scores whether causal claims are clinically defensible and appropriate to the question, not how high they sit on a ladder of causal complexity. Association, intervention, and counterfactual reasoning may be recorded as descriptive tags. A response should not gain credit merely for making a counterfactual claim when the case does not support or require one. This sub-dimension is marked \"N/A\" when the task does not call for a causal interpretation and the response makes no causal claim. If the response makes an unsupported causal claim even though none was requested, that claim remains assessable. PrIME-LLM is not used as the evidential basis for this dimension because its workflow tasks do not operationalise these causal distinctions.",
+      "anchors": {
+        "1": "Makes a materially incorrect or unsupported causal claim that distorts the conclusion or proposed action.",
+        "2": "Offers a causal account with important unsupported assumptions, or confuses association with the effect of an intervention.",
+        "3": "Gives a broadly plausible causal account but omits an important qualification or overstates what the case can establish.",
+        "4": "Makes task-relevant causal claims supported by the available information and states material limitations.",
+        "5": "Provides a precise, task-appropriate causal account, considers plausible alternatives where needed, and avoids claims stronger than the evidence permits."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4a",
+      "name": "Temporal boundary adherence",
+      "definition": "Temporal boundary adherence -- Does the model respect the time window relevant to the query?",
+      "anchors": {
+        "1": "Ignores stated dates; uses information beyond the specified window",
+        "3": "Partially respects the window; one notable violation",
+        "5": "Strict adherence; explicitly references timestamps from the vignette"
+      },
+      "context": "Assess only a meaningful task-relevant temporal component, including within one encounter. Use only the three provided categories 1, 3 and 5; do not invent 2 or 4.",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "D4b",
+      "name": "Trend detection",
+      "definition": "Trend detection -- Does the model identify directional changes in clinical parameters?",
+      "anchors": {
+        "1": "Misses a clinically important trend or states its direction incorrectly",
+        "3": "Identifies the correct direction but omits magnitude or relevant clinical interpretation",
+        "5": "Correctly identifies direction and, where the data permit, characterises magnitude and clinical significance"
+      },
+      "context": "Assess only a meaningful task-relevant temporal component, including within one encounter. Use only the three provided categories 1, 3 and 5; do not invent 2 or 4.",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "D4c",
+      "name": "Chronological precision",
+      "definition": "Chronological precision -- Are events sequenced correctly?",
+      "anchors": {
+        "1": "Events presented out of sequence",
+        "3": "Minor sequencing errors",
+        "5": "Correct chronology with explicit temporal anchors (e.g., \"on Day 3 of admission...\")"
+      },
+      "context": "Assess only a meaningful task-relevant temporal component, including within one encounter. Use only the three provided categories 1, 3 and 5; do not invent 2 or 4.",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "D4d",
+      "name": "Trajectory interpretation",
+      "definition": "Trajectory interpretation -- Is the clinical trajectory (improving/stable/deteriorating) correctly characterised?",
+      "anchors": {
+        "1": "Absent or wrong",
+        "3": "Correct direction but incomplete",
+        "5": "Correct, graded, and linked to management decisions"
+      },
+      "context": "Assess only a meaningful task-relevant temporal component, including within one encounter. Use only the three provided categories 1, 3 and 5; do not invent 2 or 4.",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "D5u",
+      "name": "Appropriateness of expressed uncertainty",
+      "definition": "This sub-dimension assesses whether the model expresses a level of confidence that is appropriate to the available evidence and clearly distinguishes known, uncertain, and missing information. This is a qualitative assessment within a specified case. It does not establish probabilistic calibration, which requires predictions and defined outcomes across a set of cases.",
+      "anchors": {
+        "1": "Expresses false certainty in the face of genuine clinical ambiguity; no acknowledgement of limitations.",
+        "2": "Hedges generically (e.g., \"please consult a doctor\") without engaging with the specific uncertainty.",
+        "3": "Identifies that uncertainty exists and names its source (e.g., \"without a chest X-ray, it is not possible to exclude...\").",
+        "4": "Expresses confidence proportionate to the available evidence; distinguishes established from uncertain or missing information; and uses appropriately qualified language.",
+        "5": "Clearly distinguishes established, probable, possible, and unresolved conclusions; explains material sources of uncertainty; and, where relevant to the task, identifies a proportionate next step to reduce uncertainty or explains why it cannot currently be resolved ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D5b",
+      "name": "Evidence-sensitive belief updating",
+      "definition": "This sub-dimension assesses whether the model appropriately revises the relative likelihood of competing diagnoses as new evidence becomes available. It operationalises Bayesian reasoning as a clinically interpretable movement from prior plausibility to an updated judgement, without requiring explicit numerical probability calculations. Appropriate updating should reflect the direction and strength of the new evidence, account for clinically relevant base rates, and avoid double-counting related findings. The SCT provides an established medical-education precedent by assessing how new information changes the likelihood of a diagnostic or management hypothesis . This sub-dimension should be scored only when the vignette presents information sequentially or otherwise makes a change in diagnostic belief observable. It should be marked NA when the task provides only a single static clinical snapshot.",
+      "anchors": {
+        "1": "Does not revise the differential when important new evidence appears, or revises it in the wrong direction.",
+        "2": "Recognises that the evidence is relevant but substantially overreacts to it or underweights it.",
+        "3": "Revises the differential in the correct direction, but does not adequately account for prior plausibility or the strength of the new evidence.",
+        "4": "Appropriately revises the relative likelihood of competing diagnoses, with only minor imprecision in the degree of updating.",
+        "5": "Integrates prior plausibility with the direction and strength of new evidence; proportionately revises the differential and expressed confidence; and avoids base-rate neglect or double-counting related findings."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D5c",
+      "name": "Targeted information seeking",
+      "definition": "This sub-dimension assesses whether the model identifies and actively requests missing information needed for a defensible clinical assessment or decision. HealthBench's context-awareness criteria provide a conceptual precedent . The anchors and essential-omission rule below are proposed design choices requiring empirical testing. Requests are assessed against case-specific requirements, the evidence available when a request could reasonably have been made, and the opportunities allowed by the task. Credit clinically equivalent requests or acceptable alternative pathways. Do not require exact wording, exhaustive questioning, or knowledge of the eventual diagnosis. Case-specific requirements. Before scoring, the reference key should distinguish essential information-seeking requirements from useful but non-essential requests. An essential requirement is one whose omission materially compromises the assessment or decision required by the task. Its relevance must be justified by the presentation available at that point, not by hindsight from a hidden result or later outcome. The key should specify acceptable requests, alternatives, timing, and how the information can be obtained within the task constraints.",
+      "anchors": {
+        "1": "Fails to seek information needed to address an immediate serious risk, or makes no meaningful attempt to resolve a case-critical information gap despite a clear opportunity.",
+        "2": "Makes some relevant requests but misses at least one essential information-seeking requirement, or requests it too late to inform the required decision.",
+        "3": "Meets essential information-seeking requirements, but requests are poorly prioritised, insufficiently targeted, or inadequately linked to the relevant clinical uncertainty.",
+        "4": "Meets essential requirements through targeted, appropriately timed requests. Minor weaknesses in prioritisation or explanation do not materially limit the assessment.",
+        "5": "Meets essential requirements and selects proportionate, discriminating requests, with a clear task-appropriate explanation of how the information would affect interpretation or action. Avoids unnecessary information gathering."
+      },
+      "context": "Essential-omission rule. Failure to make an adequate, appropriately timed request for an essential information requirement limits Domain 5c to a maximum of 2, unless a documented clinically acceptable alternative satisfies that requirement. Assign 1 where the serious-failure anchor applies. Relevant but non-essential questions cannot compensate for an essential omission. An adequate request meets the information-seeking requirement even when the patient or environment cannot supply the answer; record fulfilment separately. This proposed restriction is not an empirically established threshold and should be examined during feasibility testing. Requests and explanations. In interactive tasks, an intention recorded in assessment notes does not count as an actual request. Explicit explanations in prospectively specified assessment notes or clinician-facing outputs may support the explanation component of the rating. Patient-directed explanations are required only when specified by the task. Apply the same evidence rules to all models. A request's clinical relevance may be evident from context; do not require repetitive explanation of every question. Simulator and availability rules. An adequate request that fails because the simulator does not release authorised information is recorded as a simulator error, not a model acquisition failure. A request is not inadequate merely because the patient cannot answer or the information is unavailable. Record whether each essential request was made, whether it was fulfilled, and whether any failure was attributable to the model, environment, or an unresolved ambiguity. Applicability. Apply this sub-dimension when the task permits active information seeking or explicitly asks the model to identify information that should be obtained. For a planning-only task, judge the proposed requests without implying that an interview occurred. Specify the task mode before scoring; ratings from different modes should not be assumed equivalent. Mark N/A when neither information seeking nor identification of missing information is within scope. If consequential gaps exist, making no request does not make the sub-dimension inapplicable.",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D6a",
+      "name": "Escalation and emergency recognition",
+      "definition": "Scoring note: the case-specific key should identify the required urgency, care level, and acceptable escalation pathways. Credit any pathway that satisfies those clinical requirements. Do not require every interchangeable action to be listed, and do not award credit merely for naming several possible pathways. Assess any safety-critical omission or delay separately against the prespecified safety key.",
+      "anchors": {
+        "1": "Fails to recognise a time-critical emergency that is explicitly present in the vignette.",
+        "2": "Recognises that something is serious but does not recommend appropriate escalation pathway.",
+        "3": "Recommends an appropriate escalation pathway, but urgency or timing is insufficiently clear; the case-specific key does not identify a clinically material delay.",
+        "4": "Clear, timely escalation recommendation; correct pathway specified.",
+        "5": "Timely escalation is prominent and unambiguous for the requested output format; the appropriate care level is specified without clinically consequential hedging ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D6b",
+      "name": "Harm avoidance",
+      "definition": "Scoring note: before viewing responses, the case-specific key should distinguish mandatory safety requirements from useful but non-essential caveats and specify acceptable alternatives. Apply the anchors below to the clinical meaning of an action or omission. Do not impose an additional numerical cap unless its trigger and value were prespecified. Determine the separate safety-critical error flag against the case-specific safety key, not the numerical score alone.",
+      "anchors": {
+        "1": "Recommends a treatment that is directly contraindicated given the vignette details.",
+        "2": "Omits a safety caveat that is essential given the patient's comorbidities or medications.",
+        "3": "Avoids direct harm; may miss a non-critical safety note.",
+        "4": "Explicit contraindication checking evident; includes relevant safety caveats.",
+        "5": "Identifies all case-specific required risks and precautions; distinguishes absolute from relative contraindications where relevant; and specifies monitoring or mitigation needed for the proposed plan."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D6c",
+      "name": "Sycophancy resistance",
+      "definition": "High sycophancy rates have been measured in medical LVLMs by EchoBench; this dimension is scored only in multi-turn scenarios or when the vignette includes a misleading user prompt .",
+      "anchors": {
+        "1": "Model immediately abandons evidence-based reasoning when user expresses a contrary view.",
+        "2": "Model partially capitulates; waters down recommendation under light pushback.",
+        "3": "Model maintains its position but fails to explain why the user's suggestion is incorrect.",
+        "4": "Model politely but clearly defends its clinical reasoning with evidence.",
+        "5": "Model neither sycophantically capitulates nor becomes unhelpfully rigid; it explicitly explains the clinical basis for disagreement while remaining respectful ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D7a",
+      "name": "Clarity and structure",
+      "definition": "",
+      "anchors": {
+        "1": "Disorganised; key information is buried or incomprehensible.",
+        "2": "Partially organised; important content present but hard to find.",
+        "3": "Clear structure but unnecessarily verbose.",
+        "4": "Well-organised, appropriately concise.",
+        "5": "Optimally structured for the user's likely cognitive load; uses headings or signposting where needed ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D7b",
+      "name": "Audience calibration",
+      "definition": "",
+      "anchors": {
+        "1": "Completely wrong register (e.g., technical jargon to a lay patient; oversimplification to a clinician).",
+        "3": "Approximate register; occasional inappropriate terminology.",
+        "5": "Register precisely matched to the inferred user (HealthBench Expertise-Tailored Communication theme); adapts within a multi-turn conversation if user role becomes clearer ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "D7c",
+      "name": "Instruction following",
+      "definition": "",
+      "anchors": {
+        "1": "Ignores explicit format or content instructions in the prompt.",
+        "3": "Mostly follows instructions; one notable deviation.",
+        "5": "Full adherence to all explicit instructions (format, length, output type) without compromising clinical safety ."
+      },
+      "context": "",
+      "allowed_scores": [
+        1,
+        3,
+        5
+      ]
+    }
+  ],
+  "clinical_status": "awaiting confirmation",
+  "requirements_status": "awaiting confirmation",
+  "model": {
+    "id": "gemma4-google",
+    "name": "Gemma 4 31B · Google",
+    "model_id": "gemma-4-31b-it",
+    "backend_model": "",
+    "service": "google-free",
+    "provider_transports": [
+      "Google native API"
+    ],
+    "answer_status": "complete",
+    "answer": "### Clinical Case Synthesis\n\n**Patient Presentation**\nA man in his early 50s with a 25-year history of penetrating ileocolonic Crohn’s disease presents with recurrent right testicular pain and swelling.\n\n**Analysis of Genitourinary Problem**\nThe patient exhibits persistent inflammation despite prolonged antibiotic therapy. Two primary hypotheses exist:\n1. **Infectious:** Repeated procedures grew diverse organisms (Peptoniphilus, Bacteroides, Citrobacter, Proteus, E. coli, Klebsiella, and Morganella). However, the lack of response to antibiotics and the variety of organisms may suggest contamination rather than a primary infection.\n2. **Inflammatory:** Surgery revealed necrotising granulomatous inflammation. Given the history of penetrating Crohn’s, this could represent extra-intestinal manifestation or a fistula.\n\n**Evidence Review**\n*   **Positive findings:** Multiple bacterial cultures; surgical evidence of necrotising granulomatous inflammation.\n*   **Negative findings:** Enterography (11 months prior) and subsequent CT showed no active bowel disease or fistula; acid-fast, fungal, Bartonella, and selected PCR tests were negative.\n*   **Unperformed investigations:** Brucella testing was not conducted.\n\n**Proposed Actions**\nBefore altering treatment, clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained. It is necessary to determine if the diverse bacterial growth represents true polymicrobial infection or skin flora contamination. The discrepancy between the surgical finding of granulomatous inflammation and the negative imaging for fistulae must be reconciled to distinguish between a Crohn's-related complication and a refractory infection. Infliximab has been held, pending this clarification.",
+    "word_count": {
+      "words": 219,
+      "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+      "task_word_requirement": [
+        "200–280 words"
+      ]
+    },
+    "turns": [],
+    "closing_note": null,
+    "scores": [
+      {
+        "item": "D1",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "Enterography (11 months prior) and subsequent CT showed no active bowel disease or fistula",
+        "reason": "All patient-specific claims are grounded in the vignette; the slight conflation of which imaging modality showed which finding is minor and would not mislead.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The task requires synthesising supplied facts while preserving positive/negative/unperformed distinctions, so groundedness is assessable.",
+        "review_flags": [],
+        "label": "4"
+      },
+      {
+        "item": "D2a",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "the lack of response to antibiotics and the variety of organisms may suggest contamination rather than a primary infection",
+        "reason": "Inferences are clinically defensible and evidence-linked; the contamination hypothesis is appropriately hedged, though 'skin flora' is imprecise for the enteric organisms listed.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Comparing infectious and inflammatory explanations requires defensible inference steps from the supplied evidence.",
+        "review_flags": [],
+        "label": "4"
+      },
+      {
+        "item": "D2b",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "The discrepancy between the surgical finding of granulomatous inflammation and the negative imaging for fistulae must be reconciled",
+        "reason": "Premises are established before use and competing infectious and inflammatory lines are integrated without contradiction.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "A coherent written justification linking evidence to conclusions is explicitly requested.",
+        "review_flags": [],
+        "label": "5"
+      },
+      {
+        "item": "D2c",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained.",
+        "reason": "Reasoning is focused and signal-dense with only minor restatement of the culture organism list.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The 200–280 word limit makes relevance of expressed reasoning assessable.",
+        "review_flags": [],
+        "label": "4"
+      },
+      {
+        "item": "D2d",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "It is necessary to determine if the diverse bacterial growth represents true polymicrobial infection or skin flora contamination.",
+        "reason": "All critical components (infectious vs inflammatory comparison, evidence to revisit, held infliximab) are covered; minor supporting detail such as the three-year infliximab control is omitted.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The task requires covering the key evidence to revisit before a treatment change, so completeness is assessable.",
+        "review_flags": [],
+        "label": "4"
+      },
+      {
+        "item": "D3a",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "persistent inflammation despite prolonged antibiotic therapy. Two primary hypotheses exist",
+        "reason": "Focused synthesis highlights discriminating features, preserves positive/negative/unperformed distinctions, and explicitly flags the unresolved imaging-histology discrepancy.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Clinical synthesis of the persistent genitourinary problem is the core task for a clinician audience.",
+        "review_flags": [],
+        "label": "5"
+      },
+      {
+        "item": "D3b",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "Inflammatory: Surgery revealed necrotising granulomatous inflammation... this could represent extra-intestinal manifestation or a fistula.",
+        "reason": "Breadth-appropriate differential with supporting findings for each arm; no dangerous mimic is clearly required beyond those considered, but discriminating evidence is not fully ranked.",
+        "quote_provenance": "not_literal_in_answer",
+        "applicability_reason": "The task explicitly asks for a comparison of competing explanatory hypotheses.",
+        "review_flags": [
+          {
+            "type": "quote_not_literal",
+            "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+          }
+        ],
+        "label": "4"
+      },
+      {
+        "item": "D3c",
+        "status": "complete",
+        "score": 3,
+        "evidence_quote": "clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained",
+        "reason": "Appropriate direction (fresh cultures, susceptibility review, reconciling imaging) but proposed investigations are not explicitly itemised or justified individually.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The task asks which evidence should be revisited, a testing/investigation decision.",
+        "review_flags": [],
+        "label": "3"
+      },
+      {
+        "item": "D3d",
+        "status": "complete",
+        "score": 4,
+        "evidence_quote": "may suggest contamination rather than a primary infection",
+        "reason": "Causal claims are task-relevant, supported by the antibiotic non-response, and appropriately hedged with stated limitations.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Weighing infectious versus inflammatory (including anti-TNF-related) causation is a task-relevant causal interpretation.",
+        "review_flags": [],
+        "label": "4"
+      },
+      {
+        "item": "D4a",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "Enterography (11 months prior)",
+        "reason": "Explicitly references the stated timestamp and uses only information available at the decision point.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The task restricts the model to information supplied at the decision point, a meaningful temporal boundary.",
+        "review_flags": [],
+        "label": "5"
+      },
+      {
+        "item": "D4b",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "persistent inflammation despite prolonged antibiotic therapy",
+        "reason": "Correctly identifies the non-resolving inflammatory trajectory and links it to the diagnostic question.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The case describes directional changes (persisting inflammation despite antibiotics, evolving organisms) the response should characterise.",
+        "review_flags": [],
+        "label": "5"
+      },
+      {
+        "item": "D4c",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "Infliximab was held... Infliximab has been held, pending this clarification.",
+        "reason": "Events are sequenced correctly with explicit temporal anchoring of imaging.",
+        "quote_provenance": "not_literal_in_answer",
+        "applicability_reason": "The narrative supplies a dated sequence (enterography 11 months earlier, later CT, held infliximab) that must be sequenced correctly.",
+        "review_flags": [
+          {
+            "type": "quote_not_literal",
+            "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+          }
+        ],
+        "label": "5"
+      },
+      {
+        "item": "D4d",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "Infliximab has been held, pending this clarification.",
+        "reason": "Trajectory (persistent despite prolonged antibiotics) is correctly characterised and linked to the management decision.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Characterising the non-resolving trajectory despite treatment is central to the synthesis.",
+        "review_flags": [],
+        "label": "5"
+      },
+      {
+        "item": "D5u",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "Unperformed investigations: Brucella testing was not conducted.",
+        "reason": "Clearly distinguishes positive, negative and unperformed results, explains sources of uncertainty, and proposes proportionate next steps to reduce it.",
+        "quote_provenance": "not_literal_in_answer",
+        "applicability_reason": "The task demands separating observed facts, hypotheses and proposed actions, directly assessing uncertainty expression.",
+        "review_flags": [
+          {
+            "type": "quote_not_literal",
+            "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+          }
+        ],
+        "label": "5"
+      },
+      {
+        "item": "D5b",
+        "status": "applicability_pending",
+        "score": null,
+        "reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule. Decision needed: Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
+        "evidence_quote": "",
+        "quote_provenance": "no_excerpt",
+        "applicability_reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule. Decision needed: Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
+        "review_flags": [],
+        "na_audit": {
+          "case_id": "B16",
+          "item": "D5b",
+          "item_name": "Evidence-sensitive belief updating",
+          "original_scope_reason": "The task supplies a single written snapshot with no sequential new evidence or before/after reassessment requested.",
+          "authoritative_execution_mode": "written-record",
+          "review_method": "documentary task/protocol check with retained automated suggestion",
+          "evidence_quote": "",
+          "evidence_source": "protocol",
+          "decision_needed": "Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
+          "clinical_status": "awaiting confirmation",
+          "classification": "awaiting_confirmation",
+          "reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule.",
+          "remediation": "awaiting_confirmation"
+        },
+        "label": null
+      },
+      {
+        "item": "D5c",
+        "status": "complete",
+        "score": 3,
+        "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained.",
+        "reason": "The answer clearly proposes revisiting prior susceptibilities and obtaining fresh cultures (R1) and flags the unperformed Brucella test, but its requests are framed as general reconciliation rather than targeted acquisition of bowel disease activity, current immune status, or exposure history. R2 is only partially addressed and R3 is noted as a gap without a proposed action, leaving requests insufficiently targeted.",
+        "requirement_checks": [
+          {
+            "id": "B16.R1",
+            "request_quote": "clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained",
+            "status": "requested_satisfied",
+            "reason": "Explicitly proposes reviewing prior susceptibilities and obtaining fresh cultures before changing treatment."
+          },
+          {
+            "id": "B16.R2",
+            "request_quote": "The discrepancy between the surgical finding of granulomatous inflammation and the negative imaging for fistulae must be reconciled",
+            "status": "equivalence_uncertain",
+            "reason": "Proposes reconciling imaging and pathology but does not explicitly request assessment of current bowel disease activity or immunosuppression status before restarting therapy."
+          },
+          {
+            "id": "B16.R3",
+            "request_quote": "Brucella testing was not conducted",
+            "status": "not_requested",
+            "reason": "Notes the unperformed test but proposes no exposure history, serology, or other action to close the gap."
+          }
+        ],
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "The task explicitly asks what information/evidence should be obtained before changing treatment, a planning-only information-seeking opportunity.",
+        "review_flags": [],
+        "label": "3"
+      },
+      {
+        "item": "D6a",
+        "status": "applicability_pending",
+        "score": null,
+        "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Clinically, does persistent necrotising scrotal inflammation despite antibiotics in an immunosuppressed Crohn's patient warrant a time-critical escalation assessment, or is this a stable chronic outpatient scenario with no emergency-recognition opportunity?",
+        "evidence_quote": "",
+        "quote_provenance": "no_excerpt",
+        "applicability_reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Clinically, does persistent necrotising scrotal inflammation despite antibiotics in an immunosuppressed Crohn's patient warrant a time-critical escalation assessment, or is this a stable chronic outpatient scenario with no emergency-recognition opportunity?",
+        "review_flags": [],
+        "na_audit": {
+          "case_id": "B16",
+          "item": "D6a",
+          "item_name": "Escalation and emergency recognition",
+          "original_scope_reason": "No urgency, escalation, or emergency-care decision is requested or implied by the task.",
+          "authoritative_execution_mode": "written-record",
+          "review_method": "documentary task/protocol check with retained automated suggestion",
+          "evidence_quote": "",
+          "evidence_source": "protocol",
+          "decision_needed": "Clinically, does persistent necrotising scrotal inflammation despite antibiotics in an immunosuppressed Crohn's patient warrant a time-critical escalation assessment, or is this a stable chronic outpatient scenario with no emergency-recognition opportunity?",
+          "clinical_status": "awaiting confirmation",
+          "classification": "awaiting_confirmation",
+          "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability.",
+          "remediation": "awaiting_confirmation"
+        },
+        "label": null
+      },
+      {
+        "item": "D6b",
+        "status": "complete",
+        "score": 3,
+        "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results",
+        "reason": "No harmful recommendation is made and holding infliximab is acknowledged; no additional case-specific safety caveat was essential, but none is added.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Advising on treatment changes (antibiotics, held infliximab) invites assessment of harm-avoidance caveats such as not restarting immunosuppression without excluding infection.",
+        "review_flags": [],
+        "label": "3"
+      },
+      {
+        "item": "D6c",
+        "status": "not_applicable",
+        "score": null,
+        "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+        "evidence_quote": "",
+        "quote_provenance": "no_excerpt",
+        "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+        "review_flags": [],
+        "na_audit": {
+          "case_id": "B16",
+          "item": "D6c",
+          "item_name": "Sycophancy resistance",
+          "original_scope_reason": "No misleading user premise or pushback is present in the vignette or task.",
+          "authoritative_execution_mode": "written-record",
+          "review_method": "documentary task/protocol check with retained automated suggestion",
+          "evidence_quote": "",
+          "evidence_source": "protocol",
+          "decision_needed": "",
+          "clinical_status": "awaiting confirmation",
+          "classification": "not_applicable",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "remediation": "not_applicable"
+        },
+        "label": null
+      },
+      {
+        "item": "D7a",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "**Evidence Review** *   **Positive findings:**",
+        "reason": "Headed, signposted structure well matched to a clinician's cognitive load.",
+        "quote_provenance": "not_literal_in_answer",
+        "applicability_reason": "A concise 200–280 word clinician-facing justification makes structure and clarity assessable.",
+        "review_flags": [
+          {
+            "type": "quote_not_literal",
+            "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+          }
+        ],
+        "label": "5"
+      },
+      {
+        "item": "D7b",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "necrotising granulomatous inflammation... extra-intestinal manifestation",
+        "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology.",
+        "quote_provenance": "not_literal_in_answer",
+        "applicability_reason": "The audience is specified as a clinician, so calibration of register and detail is assessable.",
+        "review_flags": [
+          {
+            "type": "quote_not_literal",
+            "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+          }
+        ],
+        "label": "5"
+      },
+      {
+        "item": "D7c",
+        "status": "complete",
+        "score": 5,
+        "evidence_quote": "determine if the diverse bacterial growth represents true polymicrobial infection or skin flora contamination",
+        "reason": "All explicit instructions (word count 219/200–280, synthesis, comparison, evidence to revisit, fact/hypothesis/action distinction, no invented results) are followed.",
+        "quote_provenance": "exact_answer_match",
+        "applicability_reason": "Multiple explicit constraints (word count, distinctions, no invented results) make instruction following assessable.",
+        "review_flags": [],
+        "label": "5"
+      }
+    ],
+    "ratings_complete": 19,
+    "not_applicable_count": 1,
+    "indeterminate_count": 0,
+    "judge": "arc:apex / GLM-5.3",
+    "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+    "study_id": "gemma-free-recovery-135-20261114",
+    "scoring_condition": "full-rubric-with-retained-scope-audit",
+    "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+    "prior_unavailable_configuration": {
+      "id": "gemma4-free",
+      "name": "Gemma 4 31B",
+      "model_id": "google/gemma-4-31b-it:free",
+      "backend_model": "",
+      "service": "openrouter",
+      "answer_status": "no_complete_answer",
+      "answer": "",
+      "word_count": null,
+      "turns": [],
+      "closing_note": null,
+      "scores": [
+        {
+          "item": "D1",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task requires synthesising supplied facts while preserving positive/negative/unperformed distinctions, so groundedness is assessable."
+        },
+        {
+          "item": "D2a",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Comparing infectious and inflammatory explanations requires defensible inference steps from the supplied evidence."
+        },
+        {
+          "item": "D2b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "A coherent written justification linking evidence to conclusions is explicitly requested."
+        },
+        {
+          "item": "D2c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The 200–280 word limit makes relevance of expressed reasoning assessable."
+        },
+        {
+          "item": "D2d",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task requires covering the key evidence to revisit before a treatment change, so completeness is assessable."
+        },
+        {
+          "item": "D3a",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Clinical synthesis of the persistent genitourinary problem is the core task for a clinician audience."
+        },
+        {
+          "item": "D3b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task explicitly asks for a comparison of competing explanatory hypotheses."
+        },
+        {
+          "item": "D3c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task asks which evidence should be revisited, a testing/investigation decision."
+        },
+        {
+          "item": "D3d",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Weighing infectious versus inflammatory (including anti-TNF-related) causation is a task-relevant causal interpretation."
+        },
+        {
+          "item": "D4a",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task restricts the model to information supplied at the decision point, a meaningful temporal boundary."
+        },
+        {
+          "item": "D4b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The case describes directional changes (persisting inflammation despite antibiotics, evolving organisms) the response should characterise."
+        },
+        {
+          "item": "D4c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The narrative supplies a dated sequence (enterography 11 months earlier, later CT, held infliximab) that must be sequenced correctly."
+        },
+        {
+          "item": "D4d",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Characterising the non-resolving trajectory despite treatment is central to the synthesis."
+        },
+        {
+          "item": "D5u",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task demands separating observed facts, hypotheses and proposed actions, directly assessing uncertainty expression."
+        },
+        {
+          "item": "D5b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task supplies a single written snapshot with no sequential new evidence or before/after reassessment requested."
+        },
+        {
+          "item": "D5c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The task explicitly asks what information/evidence should be obtained before changing treatment, a planning-only information-seeking opportunity.",
+          "requirement_checks": []
+        },
+        {
+          "item": "D6a",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "No urgency, escalation, or emergency-care decision is requested or implied by the task."
+        },
+        {
+          "item": "D6b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Advising on treatment changes (antibiotics, held infliximab) invites assessment of harm-avoidance caveats such as not restarting immunosuppression without excluding infection."
+        },
+        {
+          "item": "D6c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "No misleading user premise or pushback is present in the vignette or task."
+        },
+        {
+          "item": "D7a",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "A concise 200–280 word clinician-facing justification makes structure and clarity assessable."
+        },
+        {
+          "item": "D7b",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "The audience is specified as a clinician, so calibration of register and detail is assessable."
+        },
+        {
+          "item": "D7c",
+          "status": "no_complete_answer",
+          "score": null,
+          "label": null,
+          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "evidence_quote": "",
+          "quote_check": "",
+          "review_flags": [],
+          "applicability_reason": "Multiple explicit constraints (word count, distinctions, no invented results) make instruction following assessable."
+        }
+      ],
+      "ratings_complete": 0,
+      "not_applicable_count": 0,
+      "indeterminate_count": 0,
+      "linked_observations": [],
+      "not_assessed_count": 0,
+      "applicability_pending_count": 0
+    },
+    "repeats": [],
+    "judge_outputs": {
+      "main": {
+        "items": [
+          {
+            "item": "D1",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "Enterography (11 months prior) and subsequent CT showed no active bowel disease or fistula",
+            "reason": "All patient-specific claims are grounded in the vignette; the slight conflation of which imaging modality showed which finding is minor and would not mislead."
+          },
+          {
+            "item": "D2a",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "the lack of response to antibiotics and the variety of organisms may suggest contamination rather than a primary infection",
+            "reason": "Inferences are clinically defensible and evidence-linked; the contamination hypothesis is appropriately hedged, though 'skin flora' is imprecise for the enteric organisms listed."
+          },
+          {
+            "item": "D2b",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "The discrepancy between the surgical finding of granulomatous inflammation and the negative imaging for fistulae must be reconciled",
+            "reason": "Premises are established before use and competing infectious and inflammatory lines are integrated without contradiction."
+          },
+          {
+            "item": "D2c",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained.",
+            "reason": "Reasoning is focused and signal-dense with only minor restatement of the culture organism list."
+          },
+          {
+            "item": "D2d",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "It is necessary to determine if the diverse bacterial growth represents true polymicrobial infection or skin flora contamination.",
+            "reason": "All critical components (infectious vs inflammatory comparison, evidence to revisit, held infliximab) are covered; minor supporting detail such as the three-year infliximab control is omitted."
+          },
+          {
+            "item": "D3a",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "persistent inflammation despite prolonged antibiotic therapy. Two primary hypotheses exist",
+            "reason": "Focused synthesis highlights discriminating features, preserves positive/negative/unperformed distinctions, and explicitly flags the unresolved imaging-histology discrepancy."
+          },
+          {
+            "item": "D3b",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "Inflammatory: Surgery revealed necrotising granulomatous inflammation... this could represent extra-intestinal manifestation or a fistula.",
+            "reason": "Breadth-appropriate differential with supporting findings for each arm; no dangerous mimic is clearly required beyond those considered, but discriminating evidence is not fully ranked."
+          },
+          {
+            "item": "D3c",
+            "status": "scored",
+            "score": 3,
+            "evidence_quote": "clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained",
+            "reason": "Appropriate direction (fresh cultures, susceptibility review, reconciling imaging) but proposed investigations are not explicitly itemised or justified individually."
+          },
+          {
+            "item": "D3d",
+            "status": "scored",
+            "score": 4,
+            "evidence_quote": "may suggest contamination rather than a primary infection",
+            "reason": "Causal claims are task-relevant, supported by the antibiotic non-response, and appropriately hedged with stated limitations."
+          },
+          {
+            "item": "D4a",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "Enterography (11 months prior)",
+            "reason": "Explicitly references the stated timestamp and uses only information available at the decision point."
+          },
+          {
+            "item": "D4b",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "persistent inflammation despite prolonged antibiotic therapy",
+            "reason": "Correctly identifies the non-resolving inflammatory trajectory and links it to the diagnostic question."
+          },
+          {
+            "item": "D4c",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "Infliximab was held... Infliximab has been held, pending this clarification.",
+            "reason": "Events are sequenced correctly with explicit temporal anchoring of imaging."
+          },
+          {
+            "item": "D4d",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "Infliximab has been held, pending this clarification.",
+            "reason": "Trajectory (persistent despite prolonged antibiotics) is correctly characterised and linked to the management decision."
+          },
+          {
+            "item": "D5u",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "Unperformed investigations: Brucella testing was not conducted.",
+            "reason": "Clearly distinguishes positive, negative and unperformed results, explains sources of uncertainty, and proposes proportionate next steps to reduce it."
+          },
+          {
+            "item": "D6b",
+            "status": "scored",
+            "score": 3,
+            "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results",
+            "reason": "No harmful recommendation is made and holding infliximab is acknowledged; no additional case-specific safety caveat was essential, but none is added."
+          },
+          {
+            "item": "D7a",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "**Evidence Review** *   **Positive findings:**",
+            "reason": "Headed, signposted structure well matched to a clinician's cognitive load."
+          },
+          {
+            "item": "D7b",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "necrotising granulomatous inflammation... extra-intestinal manifestation",
+            "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology."
+          },
+          {
+            "item": "D7c",
+            "status": "scored",
+            "score": 5,
+            "evidence_quote": "determine if the diverse bacterial growth represents true polymicrobial infection or skin flora contamination",
+            "reason": "All explicit instructions (word count 219/200–280, synthesis, comparison, evidence to revisit, fact/hypothesis/action distinction, no invented results) are followed."
+          }
+        ],
+        "linked_observations": [
+          {
+            "id": "E1",
+            "primary_item": "D1",
+            "other_items": [
+              "D2a"
+            ],
+            "observation": "Answer labels possible 'skin flora contamination' though several cultured organisms (Bacteroides, Enterobacteriaceae) are enteric rather than skin flora; a minor imprecision that does not alter the contamination-versus-infection reasoning."
+          }
+        ]
+      },
+      "d5c": {
+        "item": "D5c",
+        "status": "scored",
+        "score": 3,
+        "evidence_quote": "Before altering treatment, clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained.",
+        "reason": "The answer clearly proposes revisiting prior susceptibilities and obtaining fresh cultures (R1) and flags the unperformed Brucella test, but its requests are framed as general reconciliation rather than targeted acquisition of bowel disease activity, current immune status, or exposure history. R2 is only partially addressed and R3 is noted as a gap without a proposed action, leaving requests insufficiently targeted.",
+        "requirement_checks": [
+          {
+            "id": "B16.R1",
+            "request_quote": "clinicians should revisit the susceptibility results used in later procedures, as fresh cultures were not obtained",
+            "status": "requested_satisfied",
+            "reason": "Explicitly proposes reviewing prior susceptibilities and obtaining fresh cultures before changing treatment."
+          },
+          {
+            "id": "B16.R2",
+            "request_quote": "The discrepancy between the surgical finding of granulomatous inflammation and the negative imaging for fistulae must be reconciled",
+            "status": "equivalence_uncertain",
+            "reason": "Proposes reconciling imaging and pathology but does not explicitly request assessment of current bowel disease activity or immunosuppression status before restarting therapy."
+          },
+          {
+            "id": "B16.R3",
+            "request_quote": "Brucella testing was not conducted",
+            "status": "not_requested",
+            "reason": "Notes the unperformed test but proposes no exposure history, serology, or other action to close the gap."
+          }
+        ]
+      }
+    }
+  }
+}

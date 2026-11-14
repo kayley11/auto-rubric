@@ -3,7 +3,7 @@
   "study_id": "complex-bmj-all-models-20261112",
   "study_date": "2026-11-12",
   "source": "source-linked November BMJ comparison",
-  "updated_at": "2026-11-12T17:32:26.462042+00:00",
+  "updated_at": "2026-11-14T13:32:56.923780+00:00",
   "title": "Highly suspicious breast imaging with an indeterminate core biopsy",
   "audience": "Clinician",
   "mode": "written-record",
@@ -2909,255 +2909,860 @@
       "applicability_pending_count": 3
     },
     {
-      "id": "gemma4-nim",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it",
-      "backend_model": "Gemma 4 31B",
-      "service": "nvidia-nim",
-      "answer_status": "provider_unavailable",
-      "answer": "",
-      "word_count": null,
-      "historical_word_count": null,
-      "word_count_note": "",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
+      "backend_model": "",
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### 1. Problem Representation\nA woman in her late 70s presents with a 3-cm painless, solitary left breast mass. There is a significant discordance between the radiological assessment (M5/U5), which is highly suspicious for malignancy, and the core biopsy results (B3), which show a benign-appearing but indeterminate epithelial proliferation with squamous differentiation and no cytological atypia. The primary uncertainty is whether the biopsy represents the entire lesion or is a result of superficial sampling of a cutaneous adnexal tumour, thereby missing a deeper malignancy.\n\n### 2. Prioritised Explanations\n*   **Cutaneous Adnexal Tumour (e.g., Nodular Hidradenoma):** Supported by the biopsy findings of lobulated nests with squamous differentiation and the pathologist's note regarding superficial sampling. This would explain the lack of breast acini and the B3 classification.\n*   **Breast Malignancy (e.g., Invasive Carcinoma):** Supported by the patient's age and the highly suspicious radiological features (M5/U5), specifically the focal reduced border definition and marked posterior acoustic shadowing. The biopsy may be a false negative due to sampling error or heterogeneity.\n*   **Benign Breast Lesion (e.g., Papilloma):** Considered if the lesion originates from deeper breast tissue. Supported by the absence of atypia on biopsy, though conflicting with the highly suspicious radiological classification.\n\n### 3. Timeline and Evidence Limits\nThe sequence of events followed a standard diagnostic pathway: physical examination $\\rightarrow$ mammography $\\rightarrow$ ultrasound $\\rightarrow$ core biopsy. The records establish a clear conflict between imaging and pathology. However, the records lack critical technical details: the exact number and gauge of biopsy needles, the precise depth of the biopsy tracks relative to the skin, and whether a second pathology opinion was sought. The exact timeframe between the initial presentation and the decision for excision is not provided.\n\n### 4. Information to Obtain\n*   **Biopsy Procedure Report:** Request the radiology report detailing the number of cores taken and the depth of the biopsy. This would determine if the \"superficial sampling\" was a limitation of the technique or a characteristic of the lesion's location.\n*   **Pathology Slide Review:** A formal second opinion from a breast pathology specialist to confirm the B3 classification and the presence/absence of myoepithelial cells. This would clarify if the lesion is truly indeterminate or if a more specific benign/malignant diagnosis can be reached.\n\n### 5. Priorities and Next Decisions\nThe priority is to resolve the clinicopathological discordance. Given the M5/U5 radiological classification, the biopsy cannot be relied upon to exclude malignancy. The recorded decision to proceed to surgical excision is clinically justified and necessary. The urgency is moderate to high; while the biopsy showed no atypia, the radiological suspicion in an elderly patient necessitates a definitive histological diagnosis to rule out invasive carcinoma.",
+      "word_count": {
+        "words": 429,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "350–500 words"
+        ]
+      },
       "turns": [],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "There is a significant discordance between the radiological assessment (M5/U5), which is highly suspicious for malignancy, and the core biopsy results (B3), which show a benign-appearing but indeterminate epithelial proliferation with squamous differentiation and no cytological atypia.",
+          "reason": "All patient-specific claims match the supplied record; documented findings, inferences and unknowns (biopsy technical details, timeframe) are correctly distinguished.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written clinical answer makes assessable factual and patient-evidence claims.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The biopsy may be a false negative due to sampling error or heterogeneity.",
+          "reason": "Each inference is clinically defensible from the pre-excision evidence; the imaging–pathology discordance is explicitly weighed without overstating conclusions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Reasoning about discordant imaging and limited histology is assessable from the visible record.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The primary uncertainty is whether the biopsy represents the entire lesion or is a result of superficial sampling of a cutaneous adnexal tumour, thereby missing a deeper malignancy.",
+          "reason": "Premises are established before use and each explanation is connected to the stated evidence; no structural gaps or contradictions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D2b",
+            "item_name": "Reasoning coherence",
+            "original_scope_reason": "Not in the selected item list for this case.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "Give brief clinical justifications",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+            "remediation": "backfilled"
+          },
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The priority is to resolve the clinicopathological discordance. Given the M5/U5 radiological classification, the biopsy cannot be relied upon to exclude malignancy.",
+          "reason": "Signal-dense throughout; every section contributes to the diagnostic reconciliation and next-step decision.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D2c",
+            "item_name": "Reasoning efficiency",
+            "original_scope_reason": "Not in the selected item list for this case.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "Give brief clinical justifications",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+            "remediation": "backfilled"
+          },
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "A formal second opinion from a breast pathology specialist to confirm the B3 classification and the presence/absence of myoepithelial cells.",
+          "reason": "All critical components (discordance, sampling limitation, malignancy risk, excision justification) are covered; minor omissions such as multidisciplinary review or explicit comparison of repeat biopsy versus excision.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D2d",
+            "item_name": "Reasoning completeness",
+            "original_scope_reason": "Not in the selected item list for this case.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "Give brief clinical justifications",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "This written task asks for structured clinical justifications. The only exclusion was that the item was not selected; the fixed answer provides assessable reasoning.",
+            "remediation": "backfilled"
+          },
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "A woman in her late 70s presents with a 3-cm painless, solitary left breast mass.",
+          "reason": "Focused synthesis of age, lesion characteristics, imaging–pathology discordance and the sampling-depth uncertainty; appropriately provisional.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Clinical synthesis is explicitly requested.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "**Breast Malignancy (e.g., Invasive Carcinoma):** Supported by the patient's age and the highly suspicious radiological features (M5/U5), specifically the focal reduced border definition and marked posterior acoustic shadowing.",
+          "reason": "Three defensible explanations with explicit supporting and conflicting evidence; the dangerous mimic (carcinoma missed by sampling) is retained with age-based prior plausibility.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Section 2 requires prioritised explanations of discordant imaging and an indeterminate biopsy. The earlier reason only said that the differential was not separately selected.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D3b",
+            "item_name": "Differential diagnosis",
+            "original_scope_reason": "Not in the selected item list; the differential is partially embedded in the record but not scored separately.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "2. Prioritised explanations",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "Section 2 requires prioritised explanations of discordant imaging and an indeterminate biopsy. The earlier reason only said that the differential was not separately selected.",
+            "remediation": "backfilled"
+          },
+          "label": "5"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "**Biopsy Procedure Report:** Request the radiology report detailing the number of cores taken and the depth of the biopsy.",
+          "reason": "Well-targeted requests (procedure report, specialist slide review) each justified by how they would change interpretation; no explicit yield/cost weighting, so not full marks.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Selection between repeat biopsy and diagnostic excision is a core decision at this point.",
+          "review_flags": [],
+          "label": "4"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
+          "status": "applicability_pending",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "Causal applicability depends on both the task and the actual answer. Hiding the final causal diagnosis is not a valid blanket exclusion. Decision needed: For each saved answer, identify any causal claim and decide whether it is assessable. N/A is appropriate only if no causal interpretation is required and no causal claim is made.",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "Causal applicability depends on both the task and the actual answer. Hiding the final causal diagnosis is not a valid blanket exclusion. Decision needed: For each saved answer, identify any causal claim and decide whether it is assessable. N/A is appropriate only if no causal interpretation is required and no causal claim is made.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D3d",
+            "item_name": "Causal reasoning appropriateness",
+            "original_scope_reason": "Not in the selected item list; causal conclusions are withheld with the hidden material.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "For each saved answer, identify any causal claim and decide whether it is assessable. N/A is appropriate only if no causal interpretation is required and no causal claim is made.",
+            "clinical_status": "awaiting confirmation",
+            "classification": "awaiting_confirmation",
+            "reason": "Causal applicability depends on both the task and the actual answer. Hiding the final causal diagnosis is not a valid blanket exclusion.",
+            "remediation": "awaiting_confirmation"
+          },
+          "label": null
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+          "reason": "Strictly assesses the pre-excision decision point; no post-excision pathology, margins or outcome information is used or inferred.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Section 3 requires evidence limits at the pre-excision assessment. Handling the boundary by packet design does not assess whether the answer respects it.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D4a",
+            "item_name": "Temporal boundary adherence",
+            "original_scope_reason": "Not in the selected item list; the packet is a constructed selected-record review and temporal boundary is handled by design rather than scored.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "3. Timeline and evidence limits",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "Section 3 requires evidence limits at the pre-excision assessment. Handling the boundary by packet design does not assess whether the answer respects it.",
+            "remediation": "backfilled"
+          },
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "No serial clinical parameters are supplied; the lesion is characterised once at a single assessment and there are no repeated measurements whose direction could be identified.",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "No serial clinical parameters are supplied; the lesion is characterised once at a single assessment and there are no repeated measurements whose direction could be identified.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D4b",
+            "item_name": "Trend detection",
+            "original_scope_reason": "Static written task; no serial measurements or temporal trend data are supplied beyond a 6-week lump history, so meaningful trend detection is not assessable.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "No serial clinical parameters are supplied; the lesion is characterised once at a single assessment and there are no repeated measurements whose direction could be identified.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The sequence of events followed a standard diagnostic pathway: physical examination $\\rightarrow$ mammography $\\rightarrow$ ultrasound $\\rightarrow$ core biopsy.",
+          "reason": "Correct chronology with explicit ordering; correctly notes exact dates are unavailable rather than inventing them.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Presentation, imaging and core biopsy are explicitly ordered. Missing exact dates does not remove the chronological task.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D4c",
+            "item_name": "Chronological precision",
+            "original_scope_reason": "Not in the selected item list; exact dates are not reported in the source.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "presentation, imaging, core biopsy",
+            "evidence_source": "record",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "missed_assessment",
+            "reason": "Presentation, imaging and core biopsy are explicitly ordered. Missing exact dates does not remove the chronological task.",
+            "remediation": "backfilled"
+          },
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "The record provides no data on patient improvement, stability or deterioration over time; the lesion is described at one point with no prior comparison or documented clinical course beyond a static 6-week history.",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "The record provides no data on patient improvement, stability or deterioration over time; the lesion is described at one point with no prior comparison or documented clinical course beyond a static 6-week history.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D4d",
+            "item_name": "Trajectory interpretation",
+            "original_scope_reason": "Not in the selected item list; trajectory interpretation would require withheld outcome data.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The record provides no data on patient improvement, stability or deterioration over time; the lesion is described at one point with no prior comparison or documented clinical course beyond a static 6-week history.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "while the biopsy showed no atypia, the radiological suspicion in an elderly patient necessitates a definitive histological diagnosis to rule out invasive carcinoma.",
+          "reason": "Established, uncertain and missing information are clearly distinguished; residual malignancy risk is expressed proportionately with a concrete step (excision) to resolve it.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Appropriate expression of residual malignancy risk without declaring cancer or benignity is central to the review question.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
+          "status": "applicability_pending",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule. Decision needed: Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule. Decision needed: Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D5b",
+            "item_name": "Evidence-sensitive belief updating",
+            "original_scope_reason": "Static written task; belief updating over time cannot be assessed without sequential evidence releases.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "Does this particular task make a before/after change in diagnostic or management belief observable, or does it ask only for one final synthesis? Specify which comparison would count.",
+            "clinical_status": "awaiting confirmation",
+            "classification": "awaiting_confirmation",
+            "reason": "This fixed written packet includes prior findings and later evidence, but a patient timeline alone does not demonstrate a change in the model’s judgement. The updating opportunity needs a consistent rule.",
+            "remediation": "awaiting_confirmation"
+          },
+          "label": null
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "**Biopsy Procedure Report:** Request the radiology report detailing the number of cores taken and the depth of the biopsy. This would determine if the \"superficial sampling\" was a limitation of the technique or a characteristic of the lesion's location.",
+          "reason": "The answer makes targeted, well-explained requests addressing both candidate essential requirements: a biopsy procedure report covering sampling depth and adequacy (R1, partially via radiology review), a formal second-opinion breast pathology review to confirm the B3 classification and clarify lesion origin (R1), and it explicitly endorses the recorded decision to proceed to surgical excision for definitive histology (R2). Requests are linked to the imaging–pathology discordance and explain how the information would change interpretation. Minor weakness: the radiology review request is framed as a procedural report rather than an explicit MDT/radiology–pathology correlation meeting, and the choice between repeat biopsy and excision is not separately explored, but the excision pathway is documented as the recorded decision and is an acceptable alternative.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written task explicitly requests targeted proposed information requests; this assesses planning, not an executed interview.",
+          "review_flags": [],
+          "requirement_checks": [
+            {
+              "id": "R1",
+              "status": "adequate",
+              "request_quote": "**Pathology Slide Review:** A formal second opinion from a breast pathology specialist to confirm the B3 classification and the presence/absence of myoepithelial cells. This would clarify if the lesion is truly indeterminate or if a more specific benign/malignant diagnosis can be reached.",
+              "reason": "A second-opinion pathology review of the core biopsy, together with the request for the biopsy procedure report detailing sampling depth, addresses the essential elements of R1: lesion origin, sample adequacy, and reconciliation of the B3 histology with the M5/U5 imaging. The radiology component is addressed via the biopsy procedure report rather than an explicit MDT meeting, which is a clinically acceptable alternative pathway."
+            },
+            {
+              "id": "R2",
+              "status": "adequate",
+              "request_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+              "reason": "The answer explicitly endorses diagnostic surgical excision with definitive histological assessment as the means to resolve the radiological–pathological discordance, which is an acceptable alternative under R2 (diagnostic wide local excision). It also notes the biopsy cannot exclude malignancy given M5/U5, directly linking the additional-tissue decision to the discordance. A repeat core biopsy alternative is not separately proposed, but the excision pathway satisfies the requirement."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
+          "status": "applicability_pending",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the case-specific safety key treat a highly suspicious (M5/U5) breast lesion with an indeterminate B3 core biopsy as requiring time-critical escalation, or as a non-emergency scheduled excision?",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the case-specific safety key treat a highly suspicious (M5/U5) breast lesion with an indeterminate B3 core biopsy as requiring time-critical escalation, or as a non-emergency scheduled excision?",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D6a",
+            "item_name": "Escalation and emergency recognition",
+            "original_scope_reason": "No current emergency opportunity is documented; historical presence of a lump alone does not establish acute deterioration, so escalation recognition is out of scope.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "Does the case-specific safety key treat a highly suspicious (M5/U5) breast lesion with an indeterminate B3 core biopsy as requiring time-critical escalation, or as a non-emergency scheduled excision?",
+            "clinical_status": "awaiting confirmation",
+            "classification": "awaiting_confirmation",
+            "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability.",
+            "remediation": "awaiting_confirmation"
+          },
+          "label": null
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+          "reason": "Avoids premature oncological labelling while explicitly not dismissing the malignancy risk implied by M5/U5; endorses the recorded excision decision as evidence-based, matching the safety key's two required concerns.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Avoiding overtreatment and unsafe premature labelling is assessable.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
           "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+          "review_flags": [],
+          "na_audit": {
+            "case_id": "BN23",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "Static written task with no interactive pressure or sycophancy trigger.",
+            "authoritative_execution_mode": "written-record",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### 1. Problem Representation",
+          "reason": "All five required sections with clear headings; well organised and appropriately concise.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Clarity and structure are observable in the required written output.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Given the M5/U5 radiological classification, the biopsy cannot be relied upon to exclude malignancy.",
+          "reason": "Register is precisely matched to a clinician audience; appropriate technical terminology throughout.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Clinical communication is assessable for the stated clinician audience.",
+          "review_flags": [],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-          "evidence_quote": "",
-          "quote_provenance": "no_excerpt",
-          "review_flags": []
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### 5. Priorities and Next Decisions",
+          "reason": "All five required sections present in order, headings used, 429 words within the 350–500 range, retrospective framing respected.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task has explicit content, format and length requirements.",
+          "review_flags": [],
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 16,
+      "not_applicable_count": 3,
       "indeterminate_count": 0,
-      "judge": "arc:apex",
+      "judge": "arc:apex / GLM-5.3",
       "rule_version": "overleaf-20261024-retrieved-20261104-full22",
-      "study_id": "complex-bmj-all-models-20261112",
-      "comparison_note": "First saved complete answer; same supplied case and written task.",
-      "configuration_note": "",
-      "failure_reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
-      "retained_unchanged": false,
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-nim",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it",
+        "backend_model": "Gemma 4 31B",
+        "service": "nvidia-nim",
+        "answer_status": "provider_unavailable",
+        "answer": "",
+        "word_count": null,
+        "historical_word_count": null,
+        "word_count_note": "",
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+            "evidence_quote": "",
+            "quote_provenance": "no_excerpt",
+            "review_flags": []
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "judge": "arc:apex",
+        "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+        "study_id": "complex-bmj-all-models-20261112",
+        "comparison_note": "First saved complete answer; same supplied case and written task.",
+        "configuration_note": "",
+        "failure_reason": "NVIDIA NIM: HTTP404 for the selected model. OpenRouter alternative: HTTP429 (free daily request quota exhausted). No clinical score is assigned; no paid fallback was used.",
+        "retained_unchanged": false,
+        "repeats": [],
+        "incomplete_outputs": [],
+        "judge_outputs": {},
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
       "repeats": [],
-      "incomplete_outputs": [],
-      "judge_outputs": {},
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge_outputs": {
+        "main": {
+          "items": {
+            "D1": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "There is a significant discordance between the radiological assessment (M5/U5), which is highly suspicious for malignancy, and the core biopsy results (B3), which show a benign-appearing but indeterminate epithelial proliferation with squamous differentiation and no cytological atypia.",
+              "reason": "All patient-specific claims match the supplied record; documented findings, inferences and unknowns (biopsy technical details, timeframe) are correctly distinguished."
+            },
+            "D2a": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The biopsy may be a false negative due to sampling error or heterogeneity.",
+              "reason": "Each inference is clinically defensible from the pre-excision evidence; the imaging–pathology discordance is explicitly weighed without overstating conclusions."
+            },
+            "D2b": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The primary uncertainty is whether the biopsy represents the entire lesion or is a result of superficial sampling of a cutaneous adnexal tumour, thereby missing a deeper malignancy.",
+              "reason": "Premises are established before use and each explanation is connected to the stated evidence; no structural gaps or contradictions."
+            },
+            "D2c": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The priority is to resolve the clinicopathological discordance. Given the M5/U5 radiological classification, the biopsy cannot be relied upon to exclude malignancy.",
+              "reason": "Signal-dense throughout; every section contributes to the diagnostic reconciliation and next-step decision."
+            },
+            "D2d": {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "A formal second opinion from a breast pathology specialist to confirm the B3 classification and the presence/absence of myoepithelial cells.",
+              "reason": "All critical components (discordance, sampling limitation, malignancy risk, excision justification) are covered; minor omissions such as multidisciplinary review or explicit comparison of repeat biopsy versus excision."
+            },
+            "D3a": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A woman in her late 70s presents with a 3-cm painless, solitary left breast mass.",
+              "reason": "Focused synthesis of age, lesion characteristics, imaging–pathology discordance and the sampling-depth uncertainty; appropriately provisional."
+            },
+            "D3b": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Breast Malignancy (e.g., Invasive Carcinoma):** Supported by the patient's age and the highly suspicious radiological features (M5/U5), specifically the focal reduced border definition and marked posterior acoustic shadowing.",
+              "reason": "Three defensible explanations with explicit supporting and conflicting evidence; the dangerous mimic (carcinoma missed by sampling) is retained with age-based prior plausibility."
+            },
+            "D3c": {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "**Biopsy Procedure Report:** Request the radiology report detailing the number of cores taken and the depth of the biopsy.",
+              "reason": "Well-targeted requests (procedure report, specialist slide review) each justified by how they would change interpretation; no explicit yield/cost weighting, so not full marks."
+            },
+            "D4a": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+              "reason": "Strictly assesses the pre-excision decision point; no post-excision pathology, margins or outcome information is used or inferred."
+            },
+            "D4c": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The sequence of events followed a standard diagnostic pathway: physical examination $\\rightarrow$ mammography $\\rightarrow$ ultrasound $\\rightarrow$ core biopsy.",
+              "reason": "Correct chronology with explicit ordering; correctly notes exact dates are unavailable rather than inventing them."
+            },
+            "D5u": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "while the biopsy showed no atypia, the radiological suspicion in an elderly patient necessitates a definitive histological diagnosis to rule out invasive carcinoma.",
+              "reason": "Established, uncertain and missing information are clearly distinguished; residual malignancy risk is expressed proportionately with a concrete step (excision) to resolve it."
+            },
+            "D6b": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+              "reason": "Avoids premature oncological labelling while explicitly not dismissing the malignancy risk implied by M5/U5; endorses the recorded excision decision as evidence-based, matching the safety key's two required concerns."
+            },
+            "D7a": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### 1. Problem Representation",
+              "reason": "All five required sections with clear headings; well organised and appropriately concise."
+            },
+            "D7b": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Given the M5/U5 radiological classification, the biopsy cannot be relied upon to exclude malignancy.",
+              "reason": "Register is precisely matched to a clinician audience; appropriate technical terminology throughout."
+            },
+            "D7c": {
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### 5. Priorities and Next Decisions",
+              "reason": "All five required sections present in order, headings used, 429 words within the 350–500 range, retrospective framing respected."
+            }
+          },
+          "observations": {
+            "C1": {
+              "status": "present",
+              "evidence_quote": "specifically the focal reduced border definition and marked posterior acoustic shadowing",
+              "reason": "M5/U5 classifications and the two discriminating imaging features are cited specifically rather than generically; limitation: exact lesion dimensions (20x27x27 mm, 29x19x24 mm) are not quoted, only the clinical 3-cm size."
+            },
+            "C2": {
+              "status": "present",
+              "evidence_quote": "the core biopsy results (B3), which show a benign-appearing but indeterminate epithelial proliferation with squamous differentiation and no cytological atypia.",
+              "reason": "B3 without atypia and squamous differentiation are reported accurately; the result is not upgraded to definitive benignity or malignancy."
+            },
+            "C3": {
+              "status": "present",
+              "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+              "reason": "Malignancy is treated as a residual risk requiring excision, not a declared diagnosis; benignity is not declared and no excision outcome, margins or follow-up are revealed or inferred."
+            }
+          },
+          "assessment_limits": "All in-scope items were assessable from the supplied record and the fixed answer; no material evidence gap required an indeterminate rating. Judgements are exploratory and do not clinically validate the awaiting-confirmation safety key or any recorded fact. C1 was met in substance, with the noted limitation that exact imaging dimensions were not restated."
+        },
+        "d5c": {
+          "items": {
+            "D5c": {
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "**Biopsy Procedure Report:** Request the radiology report detailing the number of cores taken and the depth of the biopsy. This would determine if the \"superficial sampling\" was a limitation of the technique or a characteristic of the lesion's location.",
+              "reason": "The answer makes targeted, well-explained requests addressing both candidate essential requirements: a biopsy procedure report covering sampling depth and adequacy (R1, partially via radiology review), a formal second-opinion breast pathology review to confirm the B3 classification and clarify lesion origin (R1), and it explicitly endorses the recorded decision to proceed to surgical excision for definitive histology (R2). Requests are linked to the imaging–pathology discordance and explain how the information would change interpretation. Minor weakness: the radiology review request is framed as a procedural report rather than an explicit MDT/radiology–pathology correlation meeting, and the choice between repeat biopsy and excision is not separately explored, but the excision pathway is documented as the recorded decision and is an acceptable alternative."
+            }
+          },
+          "requirements": {
+            "R1": {
+              "status": "adequate",
+              "evidence_quote": "**Pathology Slide Review:** A formal second opinion from a breast pathology specialist to confirm the B3 classification and the presence/absence of myoepithelial cells. This would clarify if the lesion is truly indeterminate or if a more specific benign/malignant diagnosis can be reached.",
+              "reason": "A second-opinion pathology review of the core biopsy, together with the request for the biopsy procedure report detailing sampling depth, addresses the essential elements of R1: lesion origin, sample adequacy, and reconciliation of the B3 histology with the M5/U5 imaging. The radiology component is addressed via the biopsy procedure report rather than an explicit MDT meeting, which is a clinically acceptable alternative pathway."
+            },
+            "R2": {
+              "status": "adequate",
+              "evidence_quote": "The recorded decision to proceed to surgical excision is clinically justified and necessary.",
+              "reason": "The answer explicitly endorses diagnostic surgical excision with definitive histological assessment as the means to resolve the radiological–pathological discordance, which is an acceptable alternative under R2 (diagnostic wide local excision). It also notes the biopsy cannot exclude malignancy given M5/U5, directly linking the additional-tissue decision to the discordance. A repeat core biopsy alternative is not separately proposed, but the excision pathway satisfies the requirement."
+            }
+          },
+          "assessment_limits": "Both candidate essential requirements are pending external clinical confirmation; scores reflect the fixed operational criteria as supplied. R1 was credited via a second-opinion pathology review plus a biopsy procedure report rather than an explicit MDT meeting; if clinical review requires a formal radiology–pathology MDT specifically, R1 adequacy and the D5c score would need reassessment."
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -4776,5 +5381,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

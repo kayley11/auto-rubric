@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.214207+00:00",
+  "updated_at": "2026-11-14T13:32:56.443144+00:00",
   "title": "Seizure, behavioural change and kidney allograft dysfunction",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Assess the acute neurological and systemic risk, construct a provisional problem representation and prioritised differential, and identify the next information or specialist assessment needed. Do not assume a single cause explains every abnormality. After up to six question turns, give a clinician-facing final assessment of 180–260 words. Urgent care must not wait for completion of the questions. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A 23-year-old kidney-transplant recipient is transferred with a recent tonic-clonic seizure, worsening agitation and abnormal behaviour, severe anaemia and acute allograft dysfunction. The patient is delirious; use caregiver observations and clinical records.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fmed.2026.1981467",
   "source_location": "Saved source blocks: BK_overlap-B0051, opening maintenance-treatment sentences; BK_overlap-B0051, two-weeks-before-admission history; BK_overlap-B0051, one-week-before-admission and transfer sentences; BK_overlap-B0051, Day 0 vital-sign and examination sentences; BK_overlap-B0051, initial-work-up sentence; BK_overlap-B0056, B0059-B0060, B0063, B0066, B0068; BK_overlap-B0051, local-hospital-work-up sentence; BK_overlap-B0056, B0067, B0069; BK_overlap-B0051, initial-work-up sentence; BK_overlap-B0056, B0079-B0082; BK_overlap-B0051, initial lumbar-puncture sentence; BK_overlap-B0083-B0086",
   "decision_point": "Transfer admission, designated Day 0 in the report. Only the presenting history, examination and clearly identified initial/admission findings are requestable; subsequent viral confirmation, complement investigation and biopsy are outside this decision point.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "08.R1",
@@ -2119,267 +2119,959 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Clinical Assessment\n\nA 23-year-old kidney-transplant recipient presents with acute neurological deterioration, including a tonic-clonic seizure, progressive delirium, and raised intracranial pressure (opening pressure >320 mmH2O) without pleocytosis. Systemic findings include acute allograft dysfunction (creatinine 589 μmol/L), severe anaemia (haemoglobin 52 g/L), thrombocytopenia (92 × 10^9/L), and evidence of microangiopathic haemolysis (schistocytes 0.8%, haptoglobin 0.126 g/L). Profound CD4 lymphopenia (20 cells/μL) is noted.\n\nThe acute neurological risk is high due to severe intracranial hypertension and delirium. Systemic risk is critical given the combined renal failure and severe anaemia.\n\nPrioritised explanations:\n1. Thrombotic Microangiopathy (TMA): Suggested by the triad of acute kidney injury, thrombocytopenia, and schistocytes. The cause remains uncertain.\n2. Opportunistic CNS Infection: Possible given profound CD4 lymphopenia and neurological symptoms, though the absence of CSF pleocytosis makes this less certain.\n3. Tacrolimus Toxicity: Possible contributor to renal dysfunction, though the trough (7.30 ng/mL) requires clinical correlation.\n\nThe patient may have concurrent processes; for example, an opportunistic infection triggering a systemic inflammatory response or TMA.\n\nImmediate next steps:\n1. Urgent neuroimaging (MRI/CT) to evaluate for intracranial masses or infarcts.\n2. Specialist nephrology assessment for TMA management.\n3. Infectious disease consultation for targeted opportunistic pathogen screening.\n4. Stabilization of haemoglobin and management of intracranial pressure.",
+      "word_count": {
+        "words": 196,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words",
+          "180–260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you describe the current symptoms and the timeline of these neurological and renal changes?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient presenting with delirium, seizure, severe anaemia, and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.admission_examination",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "08.neurological_course",
+              "channel": "caregiver",
+              "patient_text": "",
+              "text": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour. Neurological symptoms worsened despite symptomatic treatment at the local hospital, leading to transfer.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "What are the current routine laboratory results and the most recent glucose measurements?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with a one-week history of seizure and progressive delirium, associated with severe anaemia and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.haematology",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The initial work-up described anaemia, thrombocytopenia and schistocytes. Table 1's admission column gives haemoglobin 52 g/L, platelets 92 × 10^9/L, schistocytes 0.8%, haptoglobin 0.126 g/L and LDH 262 U/L.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "08.allograft_function",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The local work-up had identified acute allograft dysfunction. The admission column of Table 1 reports creatinine 589 μmol/L and a tacrolimus trough of 7.30 ng/mL. A measured pre-illness creatinine is not given in this packet.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: the most recent glucose measurements. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the existing glucose measurements and any available routine laboratory results beyond the haematology and creatinine already provided?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with a one-week history of seizure and progressive delirium, associated with severe anaemia, thrombocytopenia, schistocytes, and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.initial_immune_status",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Profound CD4 T-cell lymphopenia was described in the initial work-up. Table 1's admission values include CD3 58 cells/μL, CD4 20 cells/μL, CD8 37 cells/μL and CD4/CD8 ratio 0.53.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "08.initial_csf",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The initial lumbar-puncture account describes raised intracranial pressure without pleocytosis. The table records an opening pressure above 320 mmH2O. CSF protein is not reproduced because the narrative and table do not agree on the biochemical description.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: existing glucose measurements. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Are there any existing MRI or CT imaging reports of the brain?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with profound CD4 lymphopenia, presenting with seizure, progressive delirium, raised intracranial pressure without pleocytosis, microangiopathic haemolytic anaemia, thrombocytopenia, and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: existing MRI or CT imaging reports of the brain. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Could you provide the existing physical and neurological examination findings, and any available vital signs from admission?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with profound CD4 lymphopenia, presenting with seizure, progressive delirium, raised intracranial pressure without pleocytosis, microangiopathic haemolytic anaemia, thrombocytopenia, and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.admission_examination",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On Day 0 she was delirious and appeared pale. Temperature was 36.8 °C, pulse 91/min, respiratory rate 19/min and blood pressure 141/85 mmHg.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "08.neurological_course",
+              "channel": "caregiver",
+              "patient_text": "",
+              "text": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour. Neurological symptoms worsened despite symptomatic treatment at the local hospital, leading to transfer.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test. Previously returned: 08.admission_examination, 08.neurological_course. Repetition does not establish new information."
+        },
+        {
+          "number": 6,
+          "question": "Could you provide the patient's medical history, including the reason for the kidney transplant and current medications?",
+          "assessment": {
+            "summary": "23-year-old kidney transplant recipient with profound CD4 lymphopenia, presenting with seizure, progressive delirium, raised intracranial pressure without pleocytosis, microangiopathic haemolytic anaemia, thrombocytopenia, and acute allograft dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "08.transplant_medication",
+              "channel": "record",
+              "patient_text": "",
+              "text": "She received a deceased-donor kidney transplant six years earlier for end-stage renal disease. The reported maintenance regimen before presentation was tacrolimus 1.5 mg twice daily, mycophenolate mofetil 360 mg twice daily and prednisone 8 mg daily.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and values is assessable."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "creatinine 589 μmol/L, severe anaemia (haemoglobin 52 g/L), thrombocytopenia (92 × 10^9/L), and evidence of microangiopathic haemolysis (schistocytes 0.8%, haptoglobin 0.126 g/L)",
+          "reason": "All reported values match the supplied record and no unsupported patient-specific claims appear. Inferences are qualified, though documented findings and inferences are not always explicitly separated.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and values is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Thrombotic Microangiopathy (TMA): Suggested by the triad of acute kidney injury, thrombocytopenia, and schistocytes.",
+          "reason": "Each inference is clinically defensible and supported by the supplied evidence, with no material contradictions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, so each reasoning step's validity against available evidence is assessable.",
           "review_flags": [],
-          "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, so each reasoning step's validity against available evidence is assessable."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The patient may have concurrent processes; for example, an opportunistic infection triggering a systemic inflammatory response or TMA.",
+          "reason": "The account progresses logically from findings to risk assessment to differential to actions, with only minor signposting omissions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A provisional problem representation and prioritised differential require an internally connected reasoning account.",
           "review_flags": [],
-          "applicability_reason": "A provisional problem representation and prioritised differential require an internally connected reasoning account."
+          "label": "4"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The 180–260 word limit makes the proportion of clinically effective reasoning assessable within the written justification."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Immediate next steps: 1. Urgent neuroimaging (MRI/CT)...",
+          "reason": "Every substantive element contributes to interpretation, prioritisation, or management without redundancy.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The 180–260 word limit makes the proportion of clinically effective reasoning assessable within the written justification.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Tacrolimus Toxicity: Possible contributor to renal dysfunction, though the trough (7.30 ng/mL) requires clinical correlation.",
+          "reason": "Critical components are covered, including the multi-process caveat, but supporting steps such as explicit consideration of PRES or ADAMTS13 testing are omitted.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Completeness of the reasoning covering the neurological, haematological and renal problems is explicitly required.",
           "review_flags": [],
-          "applicability_reason": "Completeness of the reasoning covering the neurological, haematological and renal problems is explicitly required."
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task explicitly requests a provisional problem representation synthesising the supplied evidence."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "A 23-year-old kidney-transplant recipient presents with acute neurological deterioration... Profound CD4 lymphopenia (20 cells/μL) is noted.",
+          "reason": "The synthesis accurately integrates the key available findings and frames the problem well, with appropriate uncertainty; minor features (e.g., immunosuppression regimen) are not woven in.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task explicitly requests a provisional problem representation synthesising the supplied evidence.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "2. Opportunistic CNS Infection: Possible given profound CD4 lymphopenia and neurological symptoms, though the absence of CSF pleocytosis makes this less certain.",
+          "reason": "A breadth-appropriate prioritised differential with evidence links is given; discriminating findings are partly explicit but prior plausibility and dangerous mimics such as PRES are not fully addressed.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty constitute a differential-diagnosis task.",
           "review_flags": [],
-          "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty constitute a differential-diagnosis task."
+          "label": "4"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "1. Urgent neuroimaging (MRI/CT) to evaluate for intracranial masses or infarcts.",
+          "reason": "First-line investigations and specialist referrals are appropriate, but tests are listed without individual justification and some targeted tests (e.g., ADAMTS13, repeat CSF studies) are absent.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task asks for next information and specialist assessment, which is a testing/investigation decision to assess.",
           "review_flags": [],
-          "applicability_reason": "The task asks for next information and specialist assessment, which is a testing/investigation decision to assess."
+          "label": "3"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "an opportunistic infection triggering a systemic inflammatory response or TMA",
+          "reason": "Causal claims are hedged and proportionate to the evidence, with limitations acknowledged; the multi-cause framing is appropriate.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The instruction not to assume a single cause explains every abnormality calls for task-relevant causal interpretation across multi-system findings.",
           "review_flags": [],
-          "applicability_reason": "The instruction not to assume a single cause explains every abnormality calls for task-relevant causal interpretation across multi-system findings."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The decision point is explicitly bounded to Day 0 admission findings, with later confirmations excluded, creating a meaningful temporal boundary."
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "A tonic-clonic seizure occurred about one week before admission... opening pressure above 320 mmH2O",
+          "reason": "The answer stays within the Day 0 decision point and uses no out-of-window information, but does not explicitly reference the vignette's timestamps.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The decision point is explicitly bounded to Day 0 admission findings, with later confirmations excluded, creating a meaningful temporal boundary.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "3"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "acute neurological deterioration, including a tonic-clonic seizure, progressive delirium",
+          "reason": "The deteriorating direction is correctly identified, but magnitude and fuller clinical interpretation of the trends are limited.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The case describes worsening neurological symptoms and progressive deterioration, so identifying directional change is meaningful.",
           "review_flags": [],
-          "applicability_reason": "The case describes worsening neurological symptoms and progressive deterioration, so identifying directional change is meaningful."
+          "label": "3"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The prodrome, seizure, transfer and admission findings form a sequenced timeline the summary must order correctly."
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour.",
+          "reason": "Sequencing is correct with a relative temporal anchor, but explicit day-level chronological anchors are not used.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The prodrome, seizure, transfer and admission findings form a sequenced timeline the summary must order correctly.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "3"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The trajectory (deteriorating despite treatment) is central to the risk assessment and differential."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The acute neurological risk is high due to severe intracranial hypertension and delirium. Systemic risk is critical...",
+          "reason": "The deteriorating trajectory is correctly characterised, graded, and directly linked to urgent management priorities.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The trajectory (deteriorating despite treatment) is central to the risk assessment and differential.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task explicitly requires stating uncertainty alongside evidence in the prioritised explanations."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The cause remains uncertain... though the trough (7.30 ng/mL) requires clinical correlation.",
+          "reason": "Confidence is proportionate and sources of uncertainty are named for each hypothesis, though a fully graded distinction of established versus possible conclusions is not fully explicit.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task explicitly requires stating uncertainty alongside evidence in the prioritised explanations.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "though the absence of CSF pleocytosis makes this less certain",
+          "reason": "Across turns the assessments incorporated new evidence (lymphopenia, ICP findings) in the correct direction, and the final answer weighs these appropriately with only minor imprecision in degree.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The active-interview protocol allows up to six actual question turns, providing observable new evidence between requests and the final assessment.",
           "review_flags": [],
-          "applicability_reason": "The active-interview protocol allows up to six actual question turns, providing observable new evidence between requests and the final assessment."
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "What are the current routine laboratory results and the most recent glucose measurements?",
+          "reason": "All three essential requirements were requested within the six turns: acute neurological/physiological assessment (turns 1 and 5), transplant and immunosuppression history (turn 6), and renal/haematological evidence (turns 2 and 3). Requests were targeted, appropriately timed, and proportionate, with unavailable answers (glucose, imaging) reflecting simulator limits rather than acquisition failure.",
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "Could you describe the current symptoms and the timeline of these neurological and renal changes?",
+              "status": "requested_satisfied",
+              "reason": "Neurological timeline and admission vital signs/delirium status were requested early and returned."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "Could you provide the patient's medical history, including the reason for the kidney transplant and current medications?",
+              "status": "requested_satisfied",
+              "reason": "Transplant history and immunosuppressive regimen were requested and returned, with tacrolimus trough obtained in turn 2."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "What are the current routine laboratory results and the most recent glucose measurements?",
+              "status": "requested_satisfied",
+              "reason": "Renal function, haematology and haemolysis data were requested and returned in turns 2-3."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The active interview protocol permits six actual questions, so targeted information seeking is actively assessable.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires an actual urgency decision: urgent care must not wait, and acute neurological/systemic risk must be assessed."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Immediate next steps: 1. Urgent neuroimaging (MRI/CT)... 2. Specialist nephrology assessment... 3. Infectious disease consultation",
+          "reason": "Urgency is prominent and unambiguous, with correct specialist pathways and immediate stabilisation steps specified.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires an actual urgency decision: urgent care must not wait, and acute neurological/systemic risk must be assessed.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "Stabilization of haemoglobin and management of intracranial pressure.",
+          "reason": "No harmful recommendations are made, but case-specific safety caveats such as anticoagulation/platelet considerations in TMA or drug-level monitoring are not addressed.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Acute seizure, delirium, severe anaemia and allograft dysfunction create mandatory safety considerations (e.g., seizure precautions, avoiding harmful empiric choices) assessable in the plan.",
           "review_flags": [],
-          "applicability_reason": "Acute seizure, delirium, severe anaemia and allograft dysfunction create mandatory safety considerations (e.g., seizure precautions, avoiding harmful empiric choices) assessable in the plan."
+          "label": "3"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          "na_audit": {
+            "case_id": "CAND08",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The written clinician-facing assessment with word-count and structural requirements makes clarity and structure assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### Clinical Assessment ... Prioritised explanations: ... Immediate next steps:",
+          "reason": "Clear headings and numbered lists structure the content optimally for a clinician reader.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The written clinician-facing assessment with word-count and structural requirements makes clarity and structure assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Thrombotic Microangiopathy (TMA)... tacrolimus trough of 7.30 ng/mL",
+          "reason": "The register is precisely matched to a clinician, using appropriate technical terminology and specialist referral language.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Explicit constraints on word count, number of explanations, question turns and content scope make instruction following directly assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Prioritised explanations: 1... 2... 3...",
+          "reason": "The 196-word answer falls within the 180–260 range and follows the required structure: summary, three prioritised explanations with uncertainty, and proportionate next steps.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Explicit constraints on word count, number of explanations, question turns and content scope make instruction following directly assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task demands a clinician-facing summary using only supplied information, so factual groundedness of all stated findings and values is assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, so each reasoning step's validity against available evidence is assessable."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A provisional problem representation and prioritised differential require an internally connected reasoning account."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The 180–260 word limit makes the proportion of clinically effective reasoning assessable within the written justification."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Completeness of the reasoning covering the neurological, haematological and renal problems is explicitly required."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a provisional problem representation synthesising the supplied evidence."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Up to three prioritised explanations with evidence and uncertainty constitute a differential-diagnosis task."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task asks for next information and specialist assessment, which is a testing/investigation decision to assess."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The instruction not to assume a single cause explains every abnormality calls for task-relevant causal interpretation across multi-system findings."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The decision point is explicitly bounded to Day 0 admission findings, with later confirmations excluded, creating a meaningful temporal boundary."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The case describes worsening neurological symptoms and progressive deterioration, so identifying directional change is meaningful."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The prodrome, seizure, transfer and admission findings form a sequenced timeline the summary must order correctly."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The trajectory (deteriorating despite treatment) is central to the risk assessment and differential."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires stating uncertainty alongside evidence in the prioritised explanations."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol allows up to six actual question turns, providing observable new evidence between requests and the final assessment."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active interview protocol permits six actual questions, so targeted information seeking is actively assessable.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires an actual urgency decision: urgent care must not wait, and acute neurological/systemic risk must be assessed."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Acute seizure, delirium, severe anaemia and allograft dysfunction create mandatory safety considerations (e.g., seizure precautions, avoiding harmful empiric choices) assessable in the plan."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the caregiver/record channels or task instructions."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The written clinician-facing assessment with word-count and structural requirements makes clarity and structure assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail to that audience is assessable."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Explicit constraints on word count, number of explanations, question turns and content scope make instruction following directly assessable."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "creatinine 589 μmol/L, severe anaemia (haemoglobin 52 g/L), thrombocytopenia (92 × 10^9/L), and evidence of microangiopathic haemolysis (schistocytes 0.8%, haptoglobin 0.126 g/L)",
+              "reason": "All reported values match the supplied record and no unsupported patient-specific claims appear. Inferences are qualified, though documented findings and inferences are not always explicitly separated."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Thrombotic Microangiopathy (TMA): Suggested by the triad of acute kidney injury, thrombocytopenia, and schistocytes.",
+              "reason": "Each inference is clinically defensible and supported by the supplied evidence, with no material contradictions."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The patient may have concurrent processes; for example, an opportunistic infection triggering a systemic inflammatory response or TMA.",
+              "reason": "The account progresses logically from findings to risk assessment to differential to actions, with only minor signposting omissions."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Immediate next steps: 1. Urgent neuroimaging (MRI/CT)...",
+              "reason": "Every substantive element contributes to interpretation, prioritisation, or management without redundancy."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Tacrolimus Toxicity: Possible contributor to renal dysfunction, though the trough (7.30 ng/mL) requires clinical correlation.",
+              "reason": "Critical components are covered, including the multi-process caveat, but supporting steps such as explicit consideration of PRES or ADAMTS13 testing are omitted."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "A 23-year-old kidney-transplant recipient presents with acute neurological deterioration... Profound CD4 lymphopenia (20 cells/μL) is noted.",
+              "reason": "The synthesis accurately integrates the key available findings and frames the problem well, with appropriate uncertainty; minor features (e.g., immunosuppression regimen) are not woven in."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "2. Opportunistic CNS Infection: Possible given profound CD4 lymphopenia and neurological symptoms, though the absence of CSF pleocytosis makes this less certain.",
+              "reason": "A breadth-appropriate prioritised differential with evidence links is given; discriminating findings are partly explicit but prior plausibility and dangerous mimics such as PRES are not fully addressed."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "1. Urgent neuroimaging (MRI/CT) to evaluate for intracranial masses or infarcts.",
+              "reason": "First-line investigations and specialist referrals are appropriate, but tests are listed without individual justification and some targeted tests (e.g., ADAMTS13, repeat CSF studies) are absent."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "an opportunistic infection triggering a systemic inflammatory response or TMA",
+              "reason": "Causal claims are hedged and proportionate to the evidence, with limitations acknowledged; the multi-cause framing is appropriate."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "A tonic-clonic seizure occurred about one week before admission... opening pressure above 320 mmH2O",
+              "reason": "The answer stays within the Day 0 decision point and uses no out-of-window information, but does not explicitly reference the vignette's timestamps."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "acute neurological deterioration, including a tonic-clonic seizure, progressive delirium",
+              "reason": "The deteriorating direction is correctly identified, but magnitude and fuller clinical interpretation of the trends are limited."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "A tonic-clonic seizure occurred about one week before admission, followed by progressively agitated and abnormal behaviour.",
+              "reason": "Sequencing is correct with a relative temporal anchor, but explicit day-level chronological anchors are not used."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The acute neurological risk is high due to severe intracranial hypertension and delirium. Systemic risk is critical...",
+              "reason": "The deteriorating trajectory is correctly characterised, graded, and directly linked to urgent management priorities."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The cause remains uncertain... though the trough (7.30 ng/mL) requires clinical correlation.",
+              "reason": "Confidence is proportionate and sources of uncertainty are named for each hypothesis, though a fully graded distinction of established versus possible conclusions is not fully explicit."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "though the absence of CSF pleocytosis makes this less certain",
+              "reason": "Across turns the assessments incorporated new evidence (lymphopenia, ICP findings) in the correct direction, and the final answer weighs these appropriately with only minor imprecision in degree."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Immediate next steps: 1. Urgent neuroimaging (MRI/CT)... 2. Specialist nephrology assessment... 3. Infectious disease consultation",
+              "reason": "Urgency is prominent and unambiguous, with correct specialist pathways and immediate stabilisation steps specified."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Stabilization of haemoglobin and management of intracranial pressure.",
+              "reason": "No harmful recommendations are made, but case-specific safety caveats such as anticoagulation/platelet considerations in TMA or drug-level monitoring are not addressed."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### Clinical Assessment ... Prioritised explanations: ... Immediate next steps:",
+              "reason": "Clear headings and numbered lists structure the content optimally for a clinician reader."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Thrombotic Microangiopathy (TMA)... tacrolimus trough of 7.30 ng/mL",
+              "reason": "The register is precisely matched to a clinician, using appropriate technical terminology and specialist referral language."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Prioritised explanations: 1... 2... 3...",
+              "reason": "The 196-word answer falls within the 180–260 range and follows the required structure: summary, three prioritised explanations with uncertainty, and proportionate next steps."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3c",
+              "other_items": [
+                "D2d",
+                "D6b"
+              ],
+              "observation": "The plan lists appropriate urgent actions but omits targeted investigations (e.g., ADAMTS13, repeat CSF/viral studies) and specific safety caveats, which limits test-selection and completeness scoring without indicating harm."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "What are the current routine laboratory results and the most recent glucose measurements?",
+          "reason": "All three essential requirements were requested within the six turns: acute neurological/physiological assessment (turns 1 and 5), transplant and immunosuppression history (turn 6), and renal/haematological evidence (turns 2 and 3). Requests were targeted, appropriately timed, and proportionate, with unavailable answers (glucose, imaging) reflecting simulator limits rather than acquisition failure.",
+          "requirement_checks": [
+            {
+              "id": "08.R1",
+              "request_quote": "Could you describe the current symptoms and the timeline of these neurological and renal changes?",
+              "status": "requested_satisfied",
+              "reason": "Neurological timeline and admission vital signs/delirium status were requested early and returned."
+            },
+            {
+              "id": "08.R2",
+              "request_quote": "Could you provide the patient's medical history, including the reason for the kidney transplant and current medications?",
+              "status": "requested_satisfied",
+              "reason": "Transplant history and immunosuppressive regimen were requested and returned, with tacrolimus trough obtained in turn 2."
+            },
+            {
+              "id": "08.R3",
+              "request_quote": "What are the current routine laboratory results and the most recent glucose measurements?",
+              "status": "requested_satisfied",
+              "reason": "Renal function, haematology and haemolysis data were requested and returned in turns 2-3."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -3092,5 +3784,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

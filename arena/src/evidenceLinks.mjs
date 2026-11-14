@@ -52,7 +52,9 @@ export function suggestedEvidence(answer, reason = "", supplied = "") {
       selectors: matches.length === 1 ? matches : [],
       count: matches.length,
       status:
-        matches.length === 1
+        canonical(quote.trim()).value.length < 12
+          ? "too_short"
+          : matches.length === 1
           ? "located"
           : matches.length
             ? "ambiguous"

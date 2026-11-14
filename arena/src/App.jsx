@@ -741,7 +741,7 @@ export function App() {
           <BookOpen size={17} />
           <span>
             Case review
-            <small>{config?.case_count || "Saved cases"} · Model results</small>
+            <small>Saved cases · Model results</small>
           </span>
         </button>
         <button

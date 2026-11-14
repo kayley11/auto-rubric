@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.179026+00:00",
+  "updated_at": "2026-11-14T13:32:56.287772+00:00",
   "title": "Renal syndrome in a medication context",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Write 250–350 words in English using five numbered sections: 1. One-sentence problem representation; 2. Up to three prioritised diagnostic possibilities, with supporting evidence and limitations; 3. Prioritised investigations with brief purposes; 4. Important missing information and the questions you would ask; 5. Safety and next steps. Give brief evidence-based justifications, not a private internal reasoning trace. Distinguish suspected from confirmed findings. Do not invent patient observations, test results, drug doses or examination findings. Do not prescribe a new drug or a dose. Conditional advice must be clearly distinguished from findings actually present.",
   "opening": "My ankles have become swollen.",
@@ -15,7 +15,7 @@
   "source_url": "https://studylib.net/doc/26229020/cases-for-paces-3rd-edition",
   "source_location": "Station 2, Case 1, printed p.32",
   "decision_point": "Final assessment after the six-question interview; no later diagnosis or outcome supplied.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "C01.symptoms",
@@ -1820,267 +1820,893 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "**Clinical Case Review**\n\n1. **Problem Representation**\nAn adult with rheumatoid arthritis taking methotrexate and intermittent NSAIDs presents with ankle swelling, morning facial puffiness, and frothy urine, without shortness of breath.\n\n2. **Diagnostic Possibilities**\n*   **Nephrotic Syndrome:** Suspected due to the triad of peripheral edema, facial puffiness, and frothy urine (suggestive of significant proteinuria). The patient's rheumatoid arthritis and NSAID use are potential contributing factors.\n*   **Drug-Induced Nephrotoxicity:** Suspected given the use of NSAIDs and methotrexate, which can cause interstitial nephritis or glomerular damage leading to edema.\n*   **Heart Failure:** Less likely as the patient reports normal breathing, but remains a possibility for bilateral ankle swelling.\n\n3. **Prioritised Investigations**\n*   **Urinalysis and Protein/Creatinine Ratio:** To confirm and quantify proteinuria.\n*   **Serum Creatinine and Electrolytes:** To assess current glomerular filtration rate and renal function.\n*   **Serum Albumin:** To evaluate for hypoalbuminemia consistent with nephrotic-range loss.\n\n4. **Missing Information**\n*   **Medical History:** Does the patient have a history of hypertension or diabetes?\n*   **Medication Details:** What is the frequency and dose of NSAID use?\n*   **Physical Examination:** Is the swelling pitting? Is there evidence of hypertension or joint inflammation?\n*   **Symptom Progression:** How rapidly did the facial puffiness and ankle swelling develop?\n\n5. **Safety and Next Steps**\nImmediate priority is the assessment of renal function and protein loss to prevent acute kidney injury or severe complications of nephrotic syndrome. If renal impairment is confirmed, a review of NSAID and methotrexate therapy is indicated. The patient should be monitored for signs of pulmonary edema or thromboembolism, which are risks associated with nephrotic syndrome. Further diagnostic steps, such as a renal biopsy, may be necessary if the etiology of the proteinuria remains unclear after initial labs.",
+      "word_count": {
+        "words": 266,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "250–350 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you describe when the swelling started and if you have any other symptoms, such as shortness of breath or chest pain?",
+          "assessment": {
+            "summary": "Patient presents with ankle swelling; etiology currently unknown.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "C01_F03",
+              "channel": "patient",
+              "patient_text": "My ankles are swollen, my face is puffy in the morning, and my urine is frothy.",
+              "text": "ankle swelling, morning facial puffiness and frothy urine",
+              "context": "Selected history; exact dates are not supplied.",
+              "period": "any"
+            },
+            {
+              "id": "C01_F04",
+              "channel": "patient",
+              "patient_text": "My breathing is normal.",
+              "text": "Breathing is normal",
+              "context": "Selected history; exact dates are not supplied.",
+              "period": "any"
+            }
+          ],
+          "feedback": "Only the displayed statements have been supplied. Any other requested detail remains unknown."
+        },
+        {
+          "number": 2,
+          "question": "Do you have any known medical conditions or take any regular medications?",
+          "assessment": {
+            "summary": "Patient presents with ankle swelling, morning facial puffiness, and frothy urine; no shortness of breath.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "C01_F01",
+              "channel": "patient",
+              "patient_text": "I am an adult and have rheumatoid arthritis.",
+              "text": "Adult with rheumatoid arthritis",
+              "context": "Selected history; exact dates are not supplied.",
+              "period": "any"
+            },
+            {
+              "id": "C01_F02",
+              "channel": "patient",
+              "patient_text": "I take methotrexate and use NSAIDs intermittently.",
+              "text": "taking methotrexate and intermittent NSAIDs",
+              "context": "Selected history; exact dates are not supplied.",
+              "period": "any"
+            }
+          ],
+          "feedback": "Only the displayed statements have been supplied. Any other requested detail remains unknown."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the most recent routine blood tests and a urinalysis report?",
+          "assessment": {
+            "summary": "Patient with rheumatoid arthritis taking methotrexate and NSAIDs presents with ankle swelling, facial puffiness, and frothy urine.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No microbiology report returned: the actual question did not request that report type. No matching selected statement or report is available for this request at this decision point. This is not a negative result or evidence that testing was never performed. Change to another useful question or finish with this limitation recorded."
+        },
+        {
+          "number": 4,
+          "question": "Could you provide the most recent routine laboratory results and any existing urinalysis or protein reports?",
+          "assessment": {
+            "summary": "Patient with rheumatoid arthritis on methotrexate and NSAIDs presents with ankle swelling, facial puffiness, and frothy urine, suggestive of nephrotic-range proteinuria or renal dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "A broad tests request releases no results. Please specify the type of existing examination or investigation. No matching selected statement or report is available for this request at this decision point. This is not a negative result or evidence that testing was never performed. Change to another useful question or finish with this limitation recorded."
+        },
+        {
+          "number": 5,
+          "question": "Could you provide the most recent routine biochemistry results and any existing reports on urine protein or albumin?",
+          "assessment": {
+            "summary": "Patient with rheumatoid arthritis on methotrexate and NSAIDs presents with ankle swelling, facial puffiness, and frothy urine, raising suspicion of nephrotic syndrome or renal impairment.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "The specifically requested report or detail is not available in the selected materials for this scope. This is not a negative result or evidence that testing was never performed. No matching selected statement or report is available for this request at this decision point. This is not a negative result or evidence that testing was never performed. Change to another useful question or finish with this limitation recorded."
+        },
+        {
+          "number": 6,
+          "question": "Could you provide the most recent routine laboratory results and any existing reports on monoclonal proteins or immunofixation?",
+          "assessment": {
+            "summary": "Patient with rheumatoid arthritis on methotrexate and NSAIDs presents with ankle swelling, facial puffiness, and frothy urine, suggestive of nephrotic syndrome or renal dysfunction.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No matching selected statement or report is available for this request at this decision point. This is not a negative result or evidence that testing was never performed. Change to another useful question or finish with this limitation recorded."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Suspected due to the triad of peripheral edema, facial puffiness, and frothy urine (suggestive of significant proteinuria).",
+          "reason": "All patient-specific claims match the supplied history; findings are labelled as suspected rather than confirmed and no fabricated results appear.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written justification must ground all patient-specific claims in the supplied records and interview answers.",
           "review_flags": [],
-          "applicability_reason": "The written justification must ground all patient-specific claims in the supplied records and interview answers."
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "which can cause interstitial nephritis or glomerular damage leading to edema",
+          "reason": "Inferences are clinically defensible and evidence-linked; the drug-induced mechanism is stated generically but not unjustifiably.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires evidence-based justifications linking findings to diagnostic possibilities and investigations.",
           "review_flags": [],
-          "applicability_reason": "The task requires evidence-based justifications linking findings to diagnostic possibilities and investigations."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "An adult with rheumatoid arthritis taking methotrexate and intermittent NSAIDs presents with ankle swelling, morning facial puffiness, and frothy urine, without shortness of breath.",
+          "reason": "Premises are established first and each section builds coherently on the representation, differential, tests, and plan.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A five-section structured clinical justification requires premises to be introduced before conclusions.",
           "review_flags": [],
-          "applicability_reason": "A five-section structured clinical justification requires premises to be introduced before conclusions."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The patient should be monitored for signs of pulmonary edema or thromboembolism",
+          "reason": "Reasoning is signal-dense; the monitoring aside is a minor addition but clinically relevant rather than redundant.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The 250–350 word limit makes non-redundant reasoning directly assessable.",
           "review_flags": [],
-          "applicability_reason": "The 250–350 word limit makes non-redundant reasoning directly assessable."
+          "label": "4"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Completeness of differential, investigations, missing information and safety steps is explicitly required."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Drug-Induced Nephrotoxicity: Suspected given the use of NSAIDs and methotrexate",
+          "reason": "Covers critical components but omits RA-associated glomerular disease (e.g., membranous nephropathy or amyloidosis) as a competing cause, a supporting rather than critical omission.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Completeness of differential, investigations, missing information and safety steps is explicitly required.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "An adult with rheumatoid arthritis taking methotrexate and intermittent NSAIDs presents with ankle swelling, morning facial puffiness, and frothy urine, without shortness of breath.",
+          "reason": "Focused synthesis integrating all available discriminating features and preserving the negative finding.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Section 1 explicitly requires a one-sentence problem representation.",
           "review_flags": [],
-          "applicability_reason": "Section 1 explicitly requires a one-sentence problem representation."
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Section 2 explicitly requests prioritised diagnostic possibilities with evidence and limitations."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Heart Failure: Less likely as the patient reports normal breathing, but remains a possibility for bilateral ankle swelling.",
+          "reason": "Breadth-appropriate prioritised differential with some discriminating findings, but lacks explicit mention of RA-related secondary amyloidosis/glomerulonephritis as an important alternative.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Section 2 explicitly requests prioritised diagnostic possibilities with evidence and limitations.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Section 3 is an explicit prioritised-investigation decision."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Urinalysis and Protein/Creatinine Ratio: To confirm and quantify proteinuria.",
+          "reason": "Well-targeted first-line tests with brief purposes for each; lacks explicit linkage of each test to competing hypotheses.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Section 3 is an explicit prioritised-investigation decision.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The patient's rheumatoid arthritis and NSAID use are potential contributing factors.",
+          "reason": "Causal claims are appropriately hedged as suspected/potential and tied to available medication history, though mechanism detail is generic.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Interpreting causes of oedema (e.g., NSAID-related renal injury, nephrotic-range protein loss) is a task-relevant causal interpretation.",
           "review_flags": [],
-          "applicability_reason": "Interpreting causes of oedema (e.g., NSAID-related renal injury, nephrotic-range protein loss) is a task-relevant causal interpretation."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The task provides no dates, availability cutoff or time-window decision; the only temporal content is a generic prohibition on inventing unspecified times, which is not a meaningful temporal task.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The task provides no dates, availability cutoff or time-window decision; the only temporal content is a generic prohibition on inventing unspecified times, which is not a meaningful temporal task.",
           "review_flags": [],
-          "applicability_reason": "No task-relevant temporal window, availability cutoff or before/after time boundary is specified; the prohibition on inventing later results is not itself a temporal task."
+          "na_audit": {
+            "case_id": "C01",
+            "item": "D4a",
+            "item_name": "Temporal boundary adherence",
+            "original_scope_reason": "No task-relevant temporal window, availability cutoff or before/after time boundary is specified; the prohibition on inventing later results is not itself a temporal task.",
+            "authoritative_execution_mode": "prepared-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "task",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The task provides no dates, availability cutoff or time-window decision; the only temporal content is a generic prohibition on inventing unspecified times, which is not a meaningful temporal task.",
+            "quote_note": "No verbatim local excerpt retained; inspect the linked original input.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
+          "status": "indeterminate",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
           "evidence_quote": "",
-          "quote_check": "",
+          "reason": "No temporal or serial clinical parameter data were ever supplied, so no meaningful trend can be assessed.",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The record of recent furosemide not helping is a directional change the model should recognise.",
           "review_flags": [],
-          "applicability_reason": "The record of recent furosemide not helping is a directional change the model should recognise."
+          "label": null
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
+          "status": "indeterminate",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
           "evidence_quote": "",
-          "quote_check": "",
+          "reason": "No dated or sequenced events were supplied; chronology cannot be assessed.",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "Sequencing of symptom onset relative to medication use and RA history is assessable within the encounter.",
           "review_flags": [],
-          "applicability_reason": "Sequencing of symptom onset relative to medication use and RA history is assessable within the encounter."
+          "label": null
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
+          "status": "indeterminate",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
           "evidence_quote": "",
-          "quote_check": "",
+          "reason": "No information on symptom evolution or trajectory was returned; trajectory characterisation is not assessable.",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The non-response to recently started furosemide characterises a worsening/uncorrected trajectory that should be interpreted.",
           "review_flags": [],
-          "applicability_reason": "The non-response to recently started furosemide characterises a worsening/uncorrected trajectory that should be interpreted."
+          "label": null
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "If renal impairment is confirmed, a review of NSAID and methotrexate therapy is indicated.",
+          "reason": "Clearly separates suspected from confirmed findings, names missing information explicitly, and gives proportionate next steps to reduce uncertainty.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requires distinguishing suspected from confirmed findings and conditional advice.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requires distinguishing suspected from confirmed findings and conditional advice."
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The authoritative active-interview protocol allows sequential questions whose answers can observably shift diagnostic likelihoods."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Nephrotic Syndrome: Suspected due to the triad of peripheral edema, facial puffiness, and frothy urine",
+          "reason": "The record shows the differential moved from unspecified ankle swelling to nephrotic-range proteinuria after frothy urine and medication history emerged, an appropriately proportionate update with minor imprecision.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The authoritative active-interview protocol allows sequential questions whose answers can observably shift diagnostic likelihoods.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Could you provide the most recent routine biochemistry results and any existing reports on urine protein or albumin?",
+          "reason": "All three essential requirements were actively requested before the final assessment: symptom clarification, disease/medication context, and named urine-protein/albumin and renal-function evidence; the laboratory requests failed only because the environment held no matching records, which is not an acquisition failure. Minor weaknesses in prioritisation, including a broad initial request and a less-essential monoclonal-protein query, keep this below the top anchor.",
+          "requirement_checks": [
+            {
+              "id": "C01.symptoms",
+              "request_quote": "Could you describe when the swelling started and if you have any other symptoms, such as shortness of breath or chest pain?",
+              "status": "requested_satisfied",
+              "reason": "The open symptom enquiry was made and returned the urinary/facial symptoms and normal breathing."
+            },
+            {
+              "id": "C01.context",
+              "request_quote": "Do you have any known medical conditions or take any regular medications?",
+              "status": "requested_satisfied",
+              "reason": "The general medical-history and medication question returned rheumatoid arthritis, methotrexate and NSAID use."
+            },
+            {
+              "id": "C01.renal_evidence",
+              "request_quote": "Could you provide the most recent routine biochemistry results and any existing reports on urine protein or albumin?",
+              "status": "requested_not_returned",
+              "reason": "A named, adequate request for urine-protein/albumin and biochemistry results was made but the environment held no matching records, so non-fulfilment is not attributable to the model."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The active interview protocol permits up to six actual requests, and section 4 also asks for missing-information questions.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Immediate priority is the assessment of renal function and protein loss to prevent acute kidney injury or severe complications of nephrotic syndrome.",
+          "reason": "No time-critical emergency is present in the vignette; timely priority assessment and escalation to renal workup are clearly specified.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Section 5 requires an explicit safety and next-steps decision where escalation urgency can be judged.",
           "review_flags": [],
-          "applicability_reason": "Section 5 requires an explicit safety and next-steps decision where escalation urgency can be judged."
+          "label": "4"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "a review of NSAID and methotrexate therapy is indicated",
+          "reason": "Identifies the key medication-related risks and monitoring for complications; does not explicitly flag methotrexate dosing/renal-adjustment nuances, a minor gap.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Harm avoidance is assessable, e.g., not prescribing new drugs and flagging NSAID risk in a patient on methotrexate.",
           "review_flags": [],
-          "applicability_reason": "Harm avoidance is assessable, e.g., not prescribing new drugs and flagging NSAID risk in a patient on methotrexate."
+          "label": "4"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the case materials."
+          "na_audit": {
+            "case_id": "C01",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the case materials.",
+            "authoritative_execution_mode": "prepared-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "1. **Problem Representation**",
+          "reason": "Five clearly numbered sections with headings match the requested structure and aid clinician navigation.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The five numbered sections and word limit make clarity and structure directly assessable.",
           "review_flags": [],
-          "applicability_reason": "The five numbered sections and word limit make clarity and structure directly assessable."
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is specified as a clinician, so register and depth must be calibrated accordingly."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Serum Creatinine and Electrolytes: To assess current glomerular filtration rate and renal function.",
+          "reason": "Register is appropriately technical and concise for a clinician audience throughout.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is specified as a clinician, so register and depth must be calibrated accordingly.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "**Clinical Case Review**",
+          "reason": "All five required numbered sections are present, word count is 266 (within 250–350), and no prescriptions or invented findings appear.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Multiple explicit format constraints (word count, sections, no prescribing, conditional-advice labelling) are given.",
           "review_flags": [],
-          "applicability_reason": "Multiple explicit format constraints (word count, sections, no prescribing, conditional-advice labelling) are given."
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
-      "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "ratings_complete": 17,
+      "not_applicable_count": 2,
+      "indeterminate_count": 3,
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The written justification must ground all patient-specific claims in the supplied records and interview answers."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires evidence-based justifications linking findings to diagnostic possibilities and investigations."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A five-section structured clinical justification requires premises to be introduced before conclusions."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The 250–350 word limit makes non-redundant reasoning directly assessable."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Completeness of differential, investigations, missing information and safety steps is explicitly required."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Section 1 explicitly requires a one-sentence problem representation."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Section 2 explicitly requests prioritised diagnostic possibilities with evidence and limitations."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Section 3 is an explicit prioritised-investigation decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Interpreting causes of oedema (e.g., NSAID-related renal injury, nephrotic-range protein loss) is a task-relevant causal interpretation."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No task-relevant temporal window, availability cutoff or before/after time boundary is specified; the prohibition on inventing later results is not itself a temporal task."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The record of recent furosemide not helping is a directional change the model should recognise."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Sequencing of symptom onset relative to medication use and RA history is assessable within the encounter."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The non-response to recently started furosemide characterises a worsening/uncorrected trajectory that should be interpreted."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires distinguishing suspected from confirmed findings and conditional advice."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The authoritative active-interview protocol allows sequential questions whose answers can observably shift diagnostic likelihoods."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active interview protocol permits up to six actual requests, and section 4 also asks for missing-information questions.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Section 5 requires an explicit safety and next-steps decision where escalation urgency can be judged."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Harm avoidance is assessable, e.g., not prescribing new drugs and flagging NSAID risk in a patient on methotrexate."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the case materials."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The five numbered sections and word limit make clarity and structure directly assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is specified as a clinician, so register and depth must be calibrated accordingly."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Multiple explicit format constraints (word count, sections, no prescribing, conditional-advice labelling) are given."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Suspected due to the triad of peripheral edema, facial puffiness, and frothy urine (suggestive of significant proteinuria).",
+              "reason": "All patient-specific claims match the supplied history; findings are labelled as suspected rather than confirmed and no fabricated results appear."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "which can cause interstitial nephritis or glomerular damage leading to edema",
+              "reason": "Inferences are clinically defensible and evidence-linked; the drug-induced mechanism is stated generically but not unjustifiably."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "An adult with rheumatoid arthritis taking methotrexate and intermittent NSAIDs presents with ankle swelling, morning facial puffiness, and frothy urine, without shortness of breath.",
+              "reason": "Premises are established first and each section builds coherently on the representation, differential, tests, and plan."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The patient should be monitored for signs of pulmonary edema or thromboembolism",
+              "reason": "Reasoning is signal-dense; the monitoring aside is a minor addition but clinically relevant rather than redundant."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Drug-Induced Nephrotoxicity: Suspected given the use of NSAIDs and methotrexate",
+              "reason": "Covers critical components but omits RA-associated glomerular disease (e.g., membranous nephropathy or amyloidosis) as a competing cause, a supporting rather than critical omission."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "An adult with rheumatoid arthritis taking methotrexate and intermittent NSAIDs presents with ankle swelling, morning facial puffiness, and frothy urine, without shortness of breath.",
+              "reason": "Focused synthesis integrating all available discriminating features and preserving the negative finding."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Heart Failure: Less likely as the patient reports normal breathing, but remains a possibility for bilateral ankle swelling.",
+              "reason": "Breadth-appropriate prioritised differential with some discriminating findings, but lacks explicit mention of RA-related secondary amyloidosis/glomerulonephritis as an important alternative."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Urinalysis and Protein/Creatinine Ratio: To confirm and quantify proteinuria.",
+              "reason": "Well-targeted first-line tests with brief purposes for each; lacks explicit linkage of each test to competing hypotheses."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The patient's rheumatoid arthritis and NSAID use are potential contributing factors.",
+              "reason": "Causal claims are appropriately hedged as suspected/potential and tied to available medication history, though mechanism detail is generic."
+            },
+            {
+              "item": "D4b",
+              "status": "indeterminate",
+              "score": null,
+              "evidence_quote": "",
+              "reason": "No temporal or serial clinical parameter data were ever supplied, so no meaningful trend can be assessed."
+            },
+            {
+              "item": "D4c",
+              "status": "indeterminate",
+              "score": null,
+              "evidence_quote": "",
+              "reason": "No dated or sequenced events were supplied; chronology cannot be assessed."
+            },
+            {
+              "item": "D4d",
+              "status": "indeterminate",
+              "score": null,
+              "evidence_quote": "",
+              "reason": "No information on symptom evolution or trajectory was returned; trajectory characterisation is not assessable."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "If renal impairment is confirmed, a review of NSAID and methotrexate therapy is indicated.",
+              "reason": "Clearly separates suspected from confirmed findings, names missing information explicitly, and gives proportionate next steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Nephrotic Syndrome: Suspected due to the triad of peripheral edema, facial puffiness, and frothy urine",
+              "reason": "The record shows the differential moved from unspecified ankle swelling to nephrotic-range proteinuria after frothy urine and medication history emerged, an appropriately proportionate update with minor imprecision."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Immediate priority is the assessment of renal function and protein loss to prevent acute kidney injury or severe complications of nephrotic syndrome.",
+              "reason": "No time-critical emergency is present in the vignette; timely priority assessment and escalation to renal workup are clearly specified."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "a review of NSAID and methotrexate therapy is indicated",
+              "reason": "Identifies the key medication-related risks and monitoring for complications; does not explicitly flag methotrexate dosing/renal-adjustment nuances, a minor gap."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "1. **Problem Representation**",
+              "reason": "Five clearly numbered sections with headings match the requested structure and aid clinician navigation."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Serum Creatinine and Electrolytes: To assess current glomerular filtration rate and renal function.",
+              "reason": "Register is appropriately technical and concise for a clinician audience throughout."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "**Clinical Case Review**",
+              "reason": "All five required numbered sections are present, word count is 266 (within 250–350), and no prescriptions or invented findings appear."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D2d",
+              "other_items": [
+                "D3b"
+              ],
+              "observation": "The differential omits RA-associated glomerular disease (membranous nephropathy, amyloidosis) despite RA being a known available feature; this limits completeness and differential breadth but does not invalidate the prioritised nephrotic-syndrome framing."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 4,
+          "evidence_quote": "Could you provide the most recent routine biochemistry results and any existing reports on urine protein or albumin?",
+          "reason": "All three essential requirements were actively requested before the final assessment: symptom clarification, disease/medication context, and named urine-protein/albumin and renal-function evidence; the laboratory requests failed only because the environment held no matching records, which is not an acquisition failure. Minor weaknesses in prioritisation, including a broad initial request and a less-essential monoclonal-protein query, keep this below the top anchor.",
+          "requirement_checks": [
+            {
+              "id": "C01.symptoms",
+              "request_quote": "Could you describe when the swelling started and if you have any other symptoms, such as shortness of breath or chest pain?",
+              "status": "requested_satisfied",
+              "reason": "The open symptom enquiry was made and returned the urinary/facial symptoms and normal breathing."
+            },
+            {
+              "id": "C01.context",
+              "request_quote": "Do you have any known medical conditions or take any regular medications?",
+              "status": "requested_satisfied",
+              "reason": "The general medical-history and medication question returned rheumatoid arthritis, methotrexate and NSAID use."
+            },
+            {
+              "id": "C01.renal_evidence",
+              "request_quote": "Could you provide the most recent routine biochemistry results and any existing reports on urine protein or albumin?",
+              "status": "requested_not_returned",
+              "reason": "A named, adequate request for urine-protein/albumin and biochemistry results was made but the environment held no matching records, so non-fulfilment is not attributable to the model."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -2961,5 +3587,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

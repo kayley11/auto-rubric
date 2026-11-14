@@ -46,6 +46,11 @@ test("unquoted omission does not invent a supporting quotation", () => {
     [],
   );
 });
+test("a short saved excerpt is distinguished from text absent from the answer", () => {
+  const [link] = suggestedEvidence("Two unprovoked episodes.", "", "unprovoked");
+  assert.equal(link.status, "too_short");
+  assert.deepEqual(link.selectors, []);
+});
 test("context fingerprints change with answer, reason and rubric version", async () => {
   const input = {
     caseId: "B03",

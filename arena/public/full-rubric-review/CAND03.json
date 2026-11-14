@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.199785+00:00",
+  "updated_at": "2026-11-14T13:32:56.398290+00:00",
   "title": "New symptoms during long-stable osilodrostat treatment",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. After at most six information-request turns, write a clinician-facing final assessment of 180–260 words. The record system is the information source; the clinical team is the audience. Assess the immediate risk and the possible medication relationship. Explain whether a long-stable dose changes the assessment, what contemporary evidence is needed and how the documented actions affect interpretation. Do not assume the biochemical sample preceded hydrocortisone. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A woman receiving long-term treatment for Cushing’s disease has new nausea, abdominal pain, muscle pain, fatigue and low home blood pressure. Symptoms persisted after telephone advice, and she is now being assessed in hospital.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fendo.2026.1962865",
   "source_location": "Saved source blocks: B0044; B0075; B0075; B0078; B0088; B0078; B0079; B0055-B0058; B0073-B0074; B0079",
   "decision_point": "Early hospital assessment of the symptomatic episode after documented telephone advice and a 20-mg oral hydrocortisone dose, before release of the episode’s endocrine test packet or subsequent response.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "03.R1",
@@ -1925,267 +1925,868 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Clinical Assessment: Symptomatic Episode\n\nA woman with Cushing's disease on a stable 4 mg daily dose of osilodrostat presents with nausea, abdominal pain, myalgia, fatigue, and home hypotension (98/67 mmHg, HR >100). The immediate risk is adrenal crisis, given the symptomatic presentation and biochemical evidence of adrenal insufficiency.\n\nThe primary hypothesis is osilodrostat-induced adrenal insufficiency. Evidence includes low cortisol (0.38 micrograms/dL) and low DHEA-S (0.09 micromol/L), with elevated ACTH (66.3 pg/mL). The fact that the dose was long-stable does not exclude this possibility, as insufficiency can occur without recent dose escalation.\n\nThe documented administration of 20 mg oral hydrocortisone complicates the interpretation of the biochemical results. Because the timing of the endocrine samples relative to this dose is unknown, it is uncertain if the low cortisol reflects the baseline state or persisted despite treatment.\n\nContemporary evidence required includes current hospital vital signs and physical examination findings to assess hemodynamic stability. The relationship between the medication and the episode is highly probable given the drug's mechanism and the biochemical profile. Immediate management must prioritize stabilizing the patient while awaiting further endocrine data. The combination of hypotension and low cortisol necessitates urgent steroid replacement to mitigate the risk of cardiovascular collapse.",
+      "word_count": {
+        "words": 199,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words",
+          "180–260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on long-term treatment presenting with nausea, abdominal pain, muscle pain, fatigue, and hypotension. Suspected adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "03.stable_course",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The symptoms began two years after osilodrostat initiation while she was receiving a stable total dose of 4 mg daily, without recent dose escalation. Earlier treatment had produced substantial biochemical and clinical improvement.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "03.home_observations",
+              "channel": "record",
+              "patient_text": "",
+              "text": "At symptom onset she reported nausea, abdominal pain, myalgia and fatigue. Home blood pressure was 98/67 mmHg, with heart rate over 100 beats per minute. No hospital vital-sign values are supplied in this source packet.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide the current hospital vital signs and any existing routine laboratory reports?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on stable osilodrostat presenting with symptoms and home hypotension suggestive of adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: current hospital vital signs; any existing routine laboratory reports. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Are there any existing MRI or CT imaging reports of the pituitary or adrenal glands?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on stable osilodrostat presenting with symptoms and home hypotension suggestive of adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: existing MRI or CT imaging reports of the pituitary or adrenal glands. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Are there any existing glucose measurements or routine laboratory results from the current admission?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on stable osilodrostat presenting with symptoms and home hypotension suggestive of adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: existing glucose measurements from the current admission; routine laboratory results from the current admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Are there any existing endocrine test reports or biochemical results from this episode?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on stable osilodrostat presenting with symptoms and home hypotension suggestive of adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "03.episode_endocrine",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The episode’s Table 1B reports 08:00 cortisol 0.38 micrograms/dL (reference 4.82–19.5), ACTH 66.3 pg/mL (6.0–56.0) and DHEA-S 0.09 micromol/L (0.51–5.56). The narrative places confirmation during hospitalisation, without giving sample timing relative to the prior hydrocortisone dose.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Are there any existing physical examination findings or current hospital vital signs from this admission?",
+          "assessment": {
+            "summary": "Patient with Cushing's disease on stable osilodrostat presenting with symptoms and home hypotension, low cortisol and high ACTH, consistent with adrenal insufficiency.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: existing physical examination findings; current hospital vital signs from this admission. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "low cortisol (0.38 micrograms/dL) and low DHEA-S (0.09 micromol/L), with elevated ACTH (66.3 pg/mL)",
+          "reason": "All patient-specific values and history are reported accurately and grounded in the supplied record. The 'highly probable' causal phrasing is a mild overstatement but not a factual error.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The clinician-facing synthesis must stay grounded in supplied facts and avoid invented values, doses or probabilities.",
           "review_flags": [],
-          "applicability_reason": "The clinician-facing synthesis must stay grounded in supplied facts and avoid invented values, doses or probabilities."
+          "label": "4"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The fact that the dose was long-stable does not exclude this possibility, as insufficiency can occur without recent dose escalation.",
+          "reason": "Inferences are clinically defensible and evidence-linked; the causal strength is slightly overstated relative to the timing uncertainty the answer itself acknowledges.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires defensible inference linking symptoms, medication actions and test timing.",
           "review_flags": [],
-          "applicability_reason": "The task requires defensible inference linking symptoms, medication actions and test timing."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Because the timing of the endocrine samples relative to this dose is unknown, it is uncertain if the low cortisol reflects the baseline state or persisted despite treatment.",
+          "reason": "The reasoning progresses clearly from presentation to biochemistry to interpretation limits without structural gaps.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A prioritised explanation with evidence and uncertainty requires an internally connected reasoning chain.",
           "review_flags": [],
-          "applicability_reason": "A prioritised explanation with evidence and uncertainty requires an internally connected reasoning chain."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Contemporary evidence required includes current hospital vital signs and physical examination findings to assess hemodynamic stability.",
+          "reason": "Every substantive step serves the clinical interpretation; there is no repetition or tangential content.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A 180–260 word synthesis requires reasoning that contributes to the clinical interpretation without redundancy.",
           "review_flags": [],
-          "applicability_reason": "A 180–260 word synthesis requires reasoning that contributes to the clinical interpretation without redundancy."
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+          "reason": "Critical components (crisis risk, medication relationship, stable-dose question, hydrocortisone timing) are covered, but the task's request for up to three prioritised explanations is met with only one hypothesis and no alternatives.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The response must cover risk, medication relationship, stable-dose question, needed evidence and effect of documented actions.",
           "review_flags": [],
-          "applicability_reason": "The response must cover risk, medication relationship, stable-dose question, needed evidence and effect of documented actions."
+          "label": "3"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The immediate risk is adrenal crisis, given the symptomatic presentation and biochemical evidence of adrenal insufficiency.",
+          "reason": "Focused synthesis with discriminating features and explicit qualification of the unresolved sample-timing gap.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician audience.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician audience."
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+          "reason": "The leading diagnosis is correct and supported, but no alternative explanations or dangerous mimics are offered despite the task requesting up to three prioritised possibilities.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Up to three prioritised explanations with evidence constitute a differential diagnosis task.",
           "review_flags": [],
-          "applicability_reason": "Up to three prioritised explanations with evidence constitute a differential diagnosis task."
+          "label": "3"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "Contemporary evidence required includes current hospital vital signs and physical examination findings to assess hemodynamic stability.",
+          "reason": "Vital signs and examination are appropriate first-line requests, but electrolytes, glucose and repeat/timed cortisol are omitted without justification.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task asks what contemporary evidence is needed, i.e., a testing decision.",
           "review_flags": [],
-          "applicability_reason": "The task asks what contemporary evidence is needed, i.e., a testing decision."
+          "label": "3"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The relationship between the medication and the episode is highly probable given the drug's mechanism and the biochemical profile.",
+          "reason": "The causal claim is task-relevant and supported by the low cortisol/high ACTH profile on osilodrostat, though 'highly probable' slightly overstates what the un-timed samples establish.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requests causal interpretation of a possible medication relationship and the effect of documented actions.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requests causal interpretation of a possible medication relationship and the effect of documented actions."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "the timing of the endocrine samples relative to this dose is unknown",
+          "reason": "The answer strictly respects the episode window and explicitly flags the temporal ambiguity rather than assuming timing.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly raises a temporal boundary issue about sample timing relative to hydrocortisone.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly raises a temporal boundary issue about sample timing relative to hydrocortisone."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Home blood pressure and heart rate represent a directional change from the documented prior hypertension."
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "symptomatic presentation... home hypotension (98/67 mmHg, HR >100)",
+          "reason": "The abnormal home readings are identified but no directional change is characterised, and no hospital trend data were available to the model.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Home blood pressure and heart rate represent a directional change from the documented prior hypertension.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "3"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The documented administration of 20 mg oral hydrocortisone complicates the interpretation of the biochemical results.",
+          "reason": "Events are sequenced correctly and the unknown sample-versus-dose ordering is explicitly preserved.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The sequence of telephone advice, hydrocortisone dose, persistent symptoms and hospital assessment must be ordered correctly.",
           "review_flags": [],
-          "applicability_reason": "The sequence of telephone advice, hydrocortisone dose, persistent symptoms and hospital assessment must be ordered correctly."
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "it is uncertain if the low cortisol reflects the baseline state or persisted despite treatment.",
+          "reason": "The trajectory (symptoms persisting after telephone advice and hydrocortisone) is only partially addressed; the answer flags the uncertainty but does not characterise the clinical course direction.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The episode's trajectory (symptoms persisting despite rescue hydrocortisone) is explicitly part of the interpretation.",
           "review_flags": [],
-          "applicability_reason": "The episode's trajectory (symptoms persisting despite rescue hydrocortisone) is explicitly part of the interpretation."
+          "label": "3"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires distinguishing known, uncertain and missing information such as sample timing."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Because the timing of the endocrine samples relative to this dose is unknown, it is uncertain...",
+          "reason": "Established, probable and missing information are clearly distinguished, but 'highly probable' is marginally more confident than the acknowledged timing uncertainty supports.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires distinguishing known, uncertain and missing information such as sample timing.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The active interview protocol allows up to six actual requests whose answers can change diagnostic likelihoods across turns."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "low cortisol (0.38 micrograms/dL)... with elevated ACTH (66.3 pg/mL)",
+          "reason": "The record shows the assessment moved from suspected to biochemically supported adrenal insufficiency after the endocrine results, and the final answer integrates this proportionately with the prior suspicion.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The active interview protocol allows up to six actual requests whose answers can change diagnostic likelihoods across turns.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+          "reason": "All essential requirements were requested within the six turns: the medication/timing regimen (turn 1, fulfilled), and current haemodynamic and biochemical assessment (turns 2, 4, 5, 6), with the endocrine panel successfully returned and unavailable data recorded as environment non-supply rather than model failure. Prioritisation is slightly weakened by repeated requests for already-unanswered hospital vitals/examination (turns 2 and 6) that consumed turns without new targeting, and prior treatment history was only indirectly covered.",
+          "requirement_checks": [
+            {
+              "id": "03.R1",
+              "request_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+              "status": "requested_satisfied",
+              "reason": "The regimen request returned the stable 4 mg osilodrostat course and symptom onset, covering current exposure and treatment context."
+            },
+            {
+              "id": "03.R2",
+              "request_quote": "Could you provide the current hospital vital signs and any existing routine laboratory reports?",
+              "status": "requested_unavailable",
+              "reason": "Urgent haemodynamic and laboratory assessment was requested early (turns 2 and 4) and the endocrine results were obtained in turn 5; unreturned vitals reflect simulator non-supply, not acquisition failure."
+            },
+            {
+              "id": "03.R3",
+              "request_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+              "status": "requested_satisfied",
+              "reason": "The broad medication/treatment question returned prior treatment response and the two-year stable course, providing an acceptable longitudinal review, though no dedicated prior-history request was made."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The saved protocol permits six actual information requests, making this active information acquisition.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "necessitates urgent steroid replacement to mitigate the risk of cardiovascular collapse.",
+          "reason": "Urgency and the immediate action are clear and timely, but the specific care level (e.g., monitored/escalation setting) is not specified.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires an immediate-risk assessment with proportionate actions, an urgency decision.",
           "review_flags": [],
-          "applicability_reason": "The task requires an immediate-risk assessment with proportionate actions, an urgency decision."
+          "label": "4"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "Immediate management must prioritize stabilizing the patient while awaiting further endocrine data.",
+          "reason": "No harmful recommendation is made, but case-relevant caveats such as electrolyte/glucose monitoring during steroid replacement are not addressed.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Proportionate next actions for a possibly adrenal-insufficient patient on cortisol-lowering therapy involve safety-relevant management.",
           "review_flags": [],
-          "applicability_reason": "Proportionate next actions for a possibly adrenal-insufficient patient on cortisol-lowering therapy involve safety-relevant management."
+          "label": "3"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the task or record."
+          "na_audit": {
+            "case_id": "CAND03",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the task or record.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### Clinical Assessment: Symptomatic Episode",
+          "reason": "Clear heading and logical paragraph structure suited to a clinician's quick review.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A word-limited clinician-facing synthesis requires clear structure.",
           "review_flags": [],
-          "applicability_reason": "A word-limited clinician-facing synthesis requires clear structure."
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "biochemical evidence of adrenal insufficiency",
+          "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The audience is explicitly a clinician, so calibration to that audience is assessable.",
           "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so calibration to that audience is assessable."
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+          "reason": "Word count (199) and format are compliant, but the task requested up to three prioritised explanations and only one was provided.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task imposes explicit constraints on word count, content, exclusions and turn limits.",
           "review_flags": [],
-          "applicability_reason": "The task imposes explicit constraints on word count, content, exclusions and turn limits."
+          "label": "3"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The clinician-facing synthesis must stay grounded in supplied facts and avoid invented values, doses or probabilities."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires defensible inference linking symptoms, medication actions and test timing."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A prioritised explanation with evidence and uncertainty requires an internally connected reasoning chain."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A 180–260 word synthesis requires reasoning that contributes to the clinical interpretation without redundancy."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The response must cover risk, medication relationship, stable-dose question, needed evidence and effect of documented actions."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician audience."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Up to three prioritised explanations with evidence constitute a differential diagnosis task."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task asks what contemporary evidence is needed, i.e., a testing decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests causal interpretation of a possible medication relationship and the effect of documented actions."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly raises a temporal boundary issue about sample timing relative to hydrocortisone."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Home blood pressure and heart rate represent a directional change from the documented prior hypertension."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The sequence of telephone advice, hydrocortisone dose, persistent symptoms and hospital assessment must be ordered correctly."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The episode's trajectory (symptoms persisting despite rescue hydrocortisone) is explicitly part of the interpretation."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires distinguishing known, uncertain and missing information such as sample timing."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active interview protocol allows up to six actual requests whose answers can change diagnostic likelihoods across turns."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The saved protocol permits six actual information requests, making this active information acquisition.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires an immediate-risk assessment with proportionate actions, an urgency decision."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Proportionate next actions for a possibly adrenal-insufficient patient on cortisol-lowering therapy involve safety-relevant management."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the task or record."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A word-limited clinician-facing synthesis requires clear structure."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so calibration to that audience is assessable."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task imposes explicit constraints on word count, content, exclusions and turn limits."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "low cortisol (0.38 micrograms/dL) and low DHEA-S (0.09 micromol/L), with elevated ACTH (66.3 pg/mL)",
+              "reason": "All patient-specific values and history are reported accurately and grounded in the supplied record. The 'highly probable' causal phrasing is a mild overstatement but not a factual error."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The fact that the dose was long-stable does not exclude this possibility, as insufficiency can occur without recent dose escalation.",
+              "reason": "Inferences are clinically defensible and evidence-linked; the causal strength is slightly overstated relative to the timing uncertainty the answer itself acknowledges."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Because the timing of the endocrine samples relative to this dose is unknown, it is uncertain if the low cortisol reflects the baseline state or persisted despite treatment.",
+              "reason": "The reasoning progresses clearly from presentation to biochemistry to interpretation limits without structural gaps."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Contemporary evidence required includes current hospital vital signs and physical examination findings to assess hemodynamic stability.",
+              "reason": "Every substantive step serves the clinical interpretation; there is no repetition or tangential content."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+              "reason": "Critical components (crisis risk, medication relationship, stable-dose question, hydrocortisone timing) are covered, but the task's request for up to three prioritised explanations is met with only one hypothesis and no alternatives."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The immediate risk is adrenal crisis, given the symptomatic presentation and biochemical evidence of adrenal insufficiency.",
+              "reason": "Focused synthesis with discriminating features and explicit qualification of the unresolved sample-timing gap."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+              "reason": "The leading diagnosis is correct and supported, but no alternative explanations or dangerous mimics are offered despite the task requesting up to three prioritised possibilities."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Contemporary evidence required includes current hospital vital signs and physical examination findings to assess hemodynamic stability.",
+              "reason": "Vital signs and examination are appropriate first-line requests, but electrolytes, glucose and repeat/timed cortisol are omitted without justification."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The relationship between the medication and the episode is highly probable given the drug's mechanism and the biochemical profile.",
+              "reason": "The causal claim is task-relevant and supported by the low cortisol/high ACTH profile on osilodrostat, though 'highly probable' slightly overstates what the un-timed samples establish."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "the timing of the endocrine samples relative to this dose is unknown",
+              "reason": "The answer strictly respects the episode window and explicitly flags the temporal ambiguity rather than assuming timing."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "symptomatic presentation... home hypotension (98/67 mmHg, HR >100)",
+              "reason": "The abnormal home readings are identified but no directional change is characterised, and no hospital trend data were available to the model."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The documented administration of 20 mg oral hydrocortisone complicates the interpretation of the biochemical results.",
+              "reason": "Events are sequenced correctly and the unknown sample-versus-dose ordering is explicitly preserved."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "it is uncertain if the low cortisol reflects the baseline state or persisted despite treatment.",
+              "reason": "The trajectory (symptoms persisting after telephone advice and hydrocortisone) is only partially addressed; the answer flags the uncertainty but does not characterise the clinical course direction."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Because the timing of the endocrine samples relative to this dose is unknown, it is uncertain...",
+              "reason": "Established, probable and missing information are clearly distinguished, but 'highly probable' is marginally more confident than the acknowledged timing uncertainty supports."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "low cortisol (0.38 micrograms/dL)... with elevated ACTH (66.3 pg/mL)",
+              "reason": "The record shows the assessment moved from suspected to biochemically supported adrenal insufficiency after the endocrine results, and the final answer integrates this proportionately with the prior suspicion."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "necessitates urgent steroid replacement to mitigate the risk of cardiovascular collapse.",
+              "reason": "Urgency and the immediate action are clear and timely, but the specific care level (e.g., monitored/escalation setting) is not specified."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Immediate management must prioritize stabilizing the patient while awaiting further endocrine data.",
+              "reason": "No harmful recommendation is made, but case-relevant caveats such as electrolyte/glucose monitoring during steroid replacement are not addressed."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### Clinical Assessment: Symptomatic Episode",
+              "reason": "Clear heading and logical paragraph structure suited to a clinician's quick review."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "biochemical evidence of adrenal insufficiency",
+              "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "The primary hypothesis is osilodrostat-induced adrenal insufficiency.",
+              "reason": "Word count (199) and format are compliant, but the task requested up to three prioritised explanations and only one was provided."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3b",
+              "other_items": [
+                "D2d",
+                "D7c"
+              ],
+              "observation": "The answer gives a single well-supported hypothesis (osilodrostat-induced adrenal insufficiency) instead of the up-to-three prioritised explanations the task requested, which lowers differential breadth, completeness and instruction adherence."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 4,
+          "evidence_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+          "reason": "All essential requirements were requested within the six turns: the medication/timing regimen (turn 1, fulfilled), and current haemodynamic and biochemical assessment (turns 2, 4, 5, 6), with the endocrine panel successfully returned and unavailable data recorded as environment non-supply rather than model failure. Prioritisation is slightly weakened by repeated requests for already-unanswered hospital vitals/examination (turns 2 and 6) that consumed turns without new targeting, and prior treatment history was only indirectly covered.",
+          "requirement_checks": [
+            {
+              "id": "03.R1",
+              "request_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+              "status": "requested_satisfied",
+              "reason": "The regimen request returned the stable 4 mg osilodrostat course and symptom onset, covering current exposure and treatment context."
+            },
+            {
+              "id": "03.R2",
+              "request_quote": "Could you provide the current hospital vital signs and any existing routine laboratory reports?",
+              "status": "requested_unavailable",
+              "reason": "Urgent haemodynamic and laboratory assessment was requested early (turns 2 and 4) and the endocrine results were obtained in turn 5; unreturned vitals reflect simulator non-supply, not acquisition failure."
+            },
+            {
+              "id": "03.R3",
+              "request_quote": "Could you describe the onset and progression of your symptoms, and what is your current medication regimen?",
+              "status": "requested_satisfied",
+              "reason": "The broad medication/treatment question returned prior treatment response and the two-year stable course, providing an acceptable longitudinal review, though no dedicated prior-history request was made."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -2916,5 +3517,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

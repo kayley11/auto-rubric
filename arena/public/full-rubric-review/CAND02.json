@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.196682+00:00",
+  "updated_at": "2026-11-14T13:32:56.389341+00:00",
   "title": "Changing thyroid tests during pembrolizumab treatment",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. After at most six information-request turns, write a clinician-facing final assessment of 180–260 words. The record system is the information source; the clinical team is the audience. Integrate paired hormone results, the replacement regimen and cancer-treatment chronology. Explain the main interpretations and the further evidence needed before changing treatment; a low TSH alone is not the complete clinical problem. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "Records for a man treated for oesophageal cancer show a marked earlier TSH rise during thyroid replacement, followed by a suppressed TSH. Review the changing thyroid profile through 27 January 2023.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.3389/fonc.2026.1978296",
   "source_location": "Saved source blocks: B0051; B0053-B0054; B0065; B0055-B0056; B0065; B0057-B0061; B0064-B0065; B0057-B0058; B0064; B0059; B0064; B0060-B0061; B0064; B0066",
   "decision_point": "Researcher-defined review of records through 27 January 2023, before the March 2023 endocrine assessment and later treatment changes.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "02.R1",
@@ -1826,267 +1826,933 @@
       "applicability_pending_count": 1
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Thyroid Profile Synthesis: 27 January 2023\n\nThis patient with Hashimoto’s thyroiditis and oesophageal cancer exhibits a volatile thyroid profile. Following the start of pembrolizumab and chemotherapy in April 2022 and a radical oesophagectomy in July 2022, he developed severe primary hypothyroidism. Despite 100 micrograms of levothyroxine, TSH peaked at 119.96 mIU/L (August 2022) with TT4 <3.9 nmol/L. By October 2022, the same dose achieved euthyroidism (TSH 2.36 mIU/L). However, after increasing the dose to 125 micrograms in November 2022, TSH became suppressed (0.06–0.08 mIU/L) through January 2023, while TT4 declined from 64.1 to 45.8 nmol/L.\n\nPrioritised explanations:\n1. Immune-related adverse event: Pembrolizumab may have induced thyroiditis, explaining the initial TSH surge and subsequent suppression.\n2. Absorption changes: The radical oesophagectomy may have caused fluctuating levothyroxine absorption, though the recent TSH suppression despite falling TT4 makes this less certain.\n3. Central hypothyroidism: The combination of suppressed TSH and low TT4 (45.8 nmol/L) in January suggests a possible shift toward central dysfunction.\n\nFurther evidence is required before adjusting treatment. Specifically, clinical records of thyroid-related symptoms and a full medication review are needed to distinguish between medication-induced suppression and pituitary dysfunction. The current low TSH is paradoxical given the falling TT4, necessitating a cautious approach to dose titration.",
+      "word_count": {
+        "words": 202,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words",
+          "180–260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you provide the thyroid function tests and the thyroid replacement medication regimen used up to 27 January 2023?",
+          "assessment": {
+            "summary": "Review of thyroid profile in a patient with oesophageal cancer on replacement therapy.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "02.baseline",
+              "channel": "record",
+              "patient_text": "",
+              "text": "In 2019, TT4 was 51 nmol/L with TSH 0.938 mIU/L; thyroid antibodies were elevated and ultrasound suggested Hashimoto’s thyroiditis. No intervention was undertaken. On 11 April 2022, before treatment and without replacement, TT3 was 0.93 nmol/L, TT4 53.87 nmol/L and TSH 0.82 mIU/L.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "02.early_change",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On 6 May 2022, TT4 was 164.49 nmol/L and TSH <0.004 mIU/L. On 27 May, TT4 was 14.31 nmol/L and TSH 6.032 mIU/L; levothyroxine was started at 50 micrograms once daily.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide the thyroid function tests and the levothyroxine dose changes from June 2022 through 27 January 2023?",
+          "assessment": {
+            "summary": "Patient with Hashimoto's thyroiditis and oesophageal cancer showing fluctuating thyroid function; currently on levothyroxine after an initial TSH rise.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "02.replacement",
+              "channel": "record",
+              "patient_text": "",
+              "text": "The narrative reports good levothyroxine adherence, taken fasting and separately from other medicines. Table 1 identifies the dose at sampling: 100 micrograms daily on 22 August, 22 September and 27 October 2022, then 125 micrograms daily on 21 November 2022 and 27 January 2023.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "02.primary_phase",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On 22 August 2022, TT4 was <3.9 nmol/L and TSH 119.96 mIU/L. On 22 September, TT4 was 31.2 nmol/L and TSH 71.86 mIU/L. Both samples were recorded during 100-microgram daily levothyroxine treatment.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the thyroid function tests from 27 October 2022 through 27 January 2023?",
+          "assessment": {
+            "summary": "Patient with Hashimoto's thyroiditis and oesophageal cancer showing severe primary hypothyroidism (TSH 119.96) despite 100mcg levothyroxine, with subsequent dose increase to 125mcg.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "02.october_pair",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On 27 October 2022, TT4 was 68.0 nmol/L and TSH 2.36 mIU/L during 100-microgram daily replacement. Table 1 reference intervals are TT4 55.34–160.88 nmol/L and TSH 0.35–4.94 mIU/L.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "02.latest_pairs",
+              "channel": "record",
+              "patient_text": "",
+              "text": "On 21 November 2022, TT4 was 64.1 nmol/L and TSH 0.06 mIU/L. On 27 January 2023, TT4 was 45.8 nmol/L and TSH 0.08 mIU/L. Both samples were recorded during 125-microgram daily replacement. TT4 was within the reported interval in November and below it in January, while TSH was suppressed at both points.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "What were the dates and types of treatments received for oesophageal cancer during this period?",
+          "assessment": {
+            "summary": "Patient with Hashimoto's thyroiditis and oesophageal cancer showed severe hypothyroidism (TSH 119.96) on 100mcg levothyroxine, followed by TSH suppression (0.06-0.08) after increasing to 125mcg, despite a falling TT4.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "02.cancer_timeline",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Pembrolizumab 200 mg with nab-paclitaxel 400 mg and carboplatin 400 mg every 21 days began on 15 April 2022. Radical oesophagectomy was performed on 7 July 2022, followed by adjuvant pembrolizumab, paclitaxel and carboplatin. The last chemotherapy cycle was completed on 23 September 2022; pembrolizumab continued.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Were there any other medications started or changed between August and January 2023, and are there any records of symptoms related to thyroid function?",
+          "assessment": {
+            "summary": "Patient with Hashimoto's thyroiditis and oesophageal cancer treated with pembrolizumab and chemotherapy. He experienced severe primary hypothyroidism (TSH 119.96) on 100mcg levothyroxine in August 2022, followed by TSH suppression (0.06-0.08) by November 2022 and January 2023 despite a dose increase to 125mcg and falling TT4.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "02.cancer_timeline",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Pembrolizumab 200 mg with nab-paclitaxel 400 mg and carboplatin 400 mg every 21 days began on 15 April 2022. Radical oesophagectomy was performed on 7 July 2022, followed by adjuvant pembrolizumab, paclitaxel and carboplatin. The last chemotherapy cycle was completed on 23 September 2022; pembrolizumab continued.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: records of symptoms related to thyroid function. Do not infer unreported values, results or the performance of a test. Previously returned: 02.cancer_timeline. Repetition does not establish new information."
+        },
+        {
+          "number": 6,
+          "question": "Are there any records of symptoms related to thyroid function or any other medications started between August 2022 and January 2023?",
+          "assessment": {
+            "summary": "Patient with Hashimoto's thyroiditis and oesophageal cancer treated with pembrolizumab and chemotherapy. He experienced severe primary hypothyroidism (TSH 119.96) on 100mcg levothyroxine in August 2022, followed by TSH suppression (0.06-0.08) by November 2022 and January 2023 despite a dose increase to 125mcg and falling TT4.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: records of symptoms related to thyroid function; other medications started between August 2022 and January 2023. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "TSH peaked at 119.96 mIU/L (August 2022) with TT4 <3.9 nmol/L",
+          "reason": "All reported values, doses and dates match the record; inferences (immune-related thyroiditis, central dysfunction) are explicitly qualified rather than asserted as documented findings.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires a grounded clinician-facing summary using only supplied record data, so factual accuracy and numeric fidelity are assessable.",
           "review_flags": [],
-          "applicability_reason": "The task requires a grounded clinician-facing summary using only supplied record data, so factual accuracy and numeric fidelity are assessable."
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "The combination of suppressed TSH and low TT4 (45.8 nmol/L) in January suggests a possible shift toward central dysfunction.",
+          "reason": "Inferences are clinically defensible and evidence-linked; the central hypothyroidism inference rests on a single paired result and is appropriately hedged, leaving minor imprecision rather than unsupported conclusions.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The requested prioritised explanations with evidence require clinically defensible inference steps from the supplied hormone and treatment data.",
           "review_flags": [],
-          "applicability_reason": "The requested prioritised explanations with evidence require clinically defensible inference steps from the supplied hormone and treatment data."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Following the start of pembrolizumab and chemotherapy in April 2022 and a radical oesophagectomy in July 2022, he developed severe primary hypothyroidism.",
+          "reason": "Premises (cancer chronology, hormone pairs, dose changes) are established before use and conclusions connect clearly to them.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The written justification must connect paired hormone results, regimen and cancer chronology into a coherent account.",
           "review_flags": [],
-          "applicability_reason": "The written justification must connect paired hormone results, regimen and cancer chronology into a coherent account."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Further evidence is required before adjusting treatment.",
+          "reason": "Every substantive step serves the differential or management caution; no repetition or tangential content.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A 180–260 word synthesis with prioritised explanations makes relevance and non-redundancy of the reasoning assessable.",
           "review_flags": [],
-          "applicability_reason": "A 180–260 word synthesis with prioritised explanations makes relevance and non-redundancy of the reasoning assessable."
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Specifically, clinical records of thyroid-related symptoms and a full medication review are needed",
+          "reason": "Covers critical components (paired hormones, regimen, cancer chronology, competing explanations), but omits the documented good adherence/fasting administration as a factor weighing against the absorption hypothesis.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Completeness is assessable because the task demands covering the changing profile, its interpretations and needed further evidence.",
           "review_flags": [],
-          "applicability_reason": "Completeness is assessable because the task demands covering the changing profile, its interpretations and needed further evidence."
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task explicitly requests a clinical synthesis of the problem for a clinician audience."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "This patient with Hashimoto's thyroiditis and oesophageal cancer exhibits a volatile thyroid profile.",
+          "reason": "Focused synthesis integrating the discriminating features (TSH surge then suppression with falling TT4 on rising dose, checkpoint-inhibitor context) and explicitly flags the unresolved paradox.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task explicitly requests a clinical synthesis of the problem for a clinician audience.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task explicitly asks for up to three prioritised explanations, i.e., a differential."
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "1. Immune-related adverse event... 2. Absorption changes... 3. Central hypothyroidism",
+          "reason": "Breadth-appropriate, prioritised differential with brief evidence and uncertainty; discriminating support for the central-hypothyroidism versus over-replacement distinction is only partially developed.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task explicitly asks for up to three prioritised explanations, i.e., a differential.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 2,
+          "evidence_quote": "clinical records of thyroid-related symptoms and a full medication review are needed",
+          "reason": "The proposed next information is vaguely appropriate but poorly targeted; no specific investigations (e.g., repeat paired TFTs, free T4, pituitary assessment) are proposed to distinguish the competing hypotheses.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task asks for further evidence needed before changing treatment, which is a testing/investigation decision.",
           "review_flags": [],
-          "applicability_reason": "The task asks for further evidence needed before changing treatment, which is a testing/investigation decision."
+          "label": "2"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Pembrolizumab may have induced thyroiditis, explaining the initial TSH surge and subsequent suppression.",
+          "reason": "Causal claims are task-relevant, qualified with 'may' and 'possible', and material limitations (falling TT4 making absorption less certain) are stated.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Interpreting why TSH rose then became suppressed during replacement and cancer treatment requires task-relevant causal interpretation.",
           "review_flags": [],
-          "applicability_reason": "Interpreting why TSH rose then became suppressed during replacement and cancer treatment requires task-relevant causal interpretation."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "through January 2023, while TT4 declined from 64.1 to 45.8 nmol/L",
+          "reason": "Strict adherence to the 27 January 2023 boundary with explicit timestamps throughout.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The review is explicitly bounded to records through 27 January 2023, a meaningful cutoff the response must respect.",
           "review_flags": [],
-          "applicability_reason": "The review is explicitly bounded to records through 27 January 2023, a meaningful cutoff the response must respect."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "TSH became suppressed (0.06–0.08 mIU/L) through January 2023, while TT4 declined from 64.1 to 45.8 nmol/L.",
+          "reason": "Correct direction, magnitude and clinical significance of both the TSH swing and the falling TT4.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The core task is identifying directional changes in TSH and TT4 across serial samples.",
           "review_flags": [],
-          "applicability_reason": "The core task is identifying directional changes in TSH and TT4 across serial samples."
+          "label": "5"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "Correct sequencing of cancer therapy, surgery and dose changes against hormone results is explicitly required."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "began on 15 April 2022... performed on 7 July 2022... last chemotherapy cycle was completed on 23 September 2022",
+          "reason": "Events are sequenced correctly with explicit temporal anchors.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "Correct sequencing of cancer therapy, surgery and dose changes against hormone results is explicitly required.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The current low TSH is paradoxical given the falling TT4, necessitating a cautious approach to dose titration.",
+          "reason": "Trajectory is correctly characterised as unstable/paradoxical and explicitly linked to the management decision of cautious titration pending further evidence.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Characterising whether the thyroid trajectory is improving, stable or deteriorating across the sampled period is part of the requested review.",
           "review_flags": [],
-          "applicability_reason": "Characterising whether the thyroid trajectory is improving, stable or deteriorating across the sampled period is part of the requested review."
+          "label": "5"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Further evidence is required before adjusting treatment.",
+          "reason": "Established findings, possible explanations and missing information (symptoms, medication review) are clearly distinguished, with proportionate next steps to reduce uncertainty.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requires distinguishing known results from uncertainty and missing information in the clinician-facing assessment.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requires distinguishing known results from uncertainty and missing information in the clinician-facing assessment."
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "the recent TSH suppression despite falling TT4 makes this less certain",
+          "reason": "The differential is appropriately revised as sequential evidence arrives (irAE rising, absorption downweighted, central dysfunction newly considered), with only minor imprecision in degree of updating.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The active-interview protocol supplies sequential record information across up to six turns, so belief updating across newly obtained evidence is observable.",
           "review_flags": [],
-          "applicability_reason": "The active-interview protocol supplies sequential record information across up to six turns, so belief updating across newly obtained evidence is observable."
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Could you provide the thyroid function tests and the levothyroxine dose changes from June 2022 through 27 January 2023?",
+          "reason": "Both essential requirements (paired serial thyroid results and replacement/cancer-treatment chronology) were requested early, targeted, and fulfilled within the turn limit. The helpful requirement for assay clarification and pituitary/adrenal evidence was not requested, but it is non-essential and the model did note in the final assessment that further endocrine evidence was needed.",
+          "requirement_checks": [
+            {
+              "id": "02.R1",
+              "request_quote": "Could you provide the thyroid function tests and the thyroid replacement medication regimen used up to 27 January 2023?",
+              "status": "requested_satisfied",
+              "reason": "Dated paired TT4/TSH results across the whole period were requested and returned across turns 1-3."
+            },
+            {
+              "id": "02.R2",
+              "request_quote": "Could you provide the thyroid function tests and the levothyroxine dose changes from June 2022 through 27 January 2023? ... What were the dates and types of treatments received for oesophageal cancer during this period?",
+              "status": "requested_satisfied",
+              "reason": "Replacement dosing/adherence and the cancer-treatment/surgical timeline were both explicitly requested and returned."
+            },
+            {
+              "id": "02.R3",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No request for assay/units verification or pituitary/adrenal evaluation was made, though the final assessment did identify the need for further endocrine evidence; this is a helpful, non-essential gap."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The protocol allows six actual information-request turns to a record system, so active targeted acquisition is in scope and required.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "4"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
+          "status": "applicability_pending",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the case-specific key treat the suppressed TSH (or any record finding through 27 January 2023) as requiring an urgency or escalation judgement, or is this purely a retrospective record synthesis with no time-critical element at the decision point?",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability. Decision needed: Does the case-specific key treat the suppressed TSH (or any record finding through 27 January 2023) as requiring an urgency or escalation judgement, or is this purely a retrospective record synthesis with no time-critical element at the decision point?",
           "review_flags": [],
-          "applicability_reason": "No urgency or escalation decision is required; the task is a record review and information plan before elective treatment changes."
+          "na_audit": {
+            "case_id": "CAND02",
+            "item": "D6a",
+            "item_name": "Escalation and emergency recognition",
+            "original_scope_reason": "No urgency or escalation decision is required; the task is a record review and information plan before elective treatment changes.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "Does the case-specific key treat the suppressed TSH (or any record finding through 27 January 2023) as requiring an urgency or escalation judgement, or is this purely a retrospective record synthesis with no time-critical element at the decision point?",
+            "clinical_status": "awaiting confirmation",
+            "classification": "awaiting_confirmation",
+            "reason": "A clinical decision is needed on whether escalation is part of this patient-specific task. A stable description or an already treated earlier emergency does not settle applicability.",
+            "remediation": "awaiting_confirmation"
+          },
+          "label": null
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "necessitating a cautious approach to dose titration",
+          "reason": "No harmful recommendation is made and dose change is explicitly deferred pending evidence, but no specific safety caveats (e.g., risk of overtreatment, adrenal consideration before pituitary testing) are provided.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Recommending actions around levothyroxine dose changes based on a suppressed TSH involves assessable harm-avoidance considerations.",
           "review_flags": [],
-          "applicability_reason": "Recommending actions around levothyroxine dose changes based on a suppressed TSH involves assessable harm-avoidance considerations."
+          "label": "3"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the record-review scenario."
+          "na_audit": {
+            "case_id": "CAND02",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the record-review scenario.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "A structured 180–260 word clinician-facing written assessment makes clarity and organisation assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Prioritised explanations: 1... 2... 3",
+          "reason": "Clear structure with heading, chronology, numbered differential and closing plan, well matched to clinician cognitive load.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "A structured 180–260 word clinician-facing written assessment makes clarity and organisation assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly the clinical team, so calibration of register and detail to clinicians is required."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "severe primary hypothyroidism... immune-related adverse event",
+          "reason": "Register is precisely calibrated to a clinician audience using appropriate technical terminology.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly the clinical team, so calibration of register and detail to clinicians is required.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task imposes explicit word-count, turn-limit and content constraints that must be followed."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "(202 words per deterministic count)",
+          "reason": "Word count (202) is within 180–260; three prioritised explanations, uncertainty, next actions and required integrations are all present.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task imposes explicit word-count, turn-limit and content constraints that must be followed.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 20,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires a grounded clinician-facing summary using only supplied record data, so factual accuracy and numeric fidelity are assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The requested prioritised explanations with evidence require clinically defensible inference steps from the supplied hormone and treatment data."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The written justification must connect paired hormone results, regimen and cancer chronology into a coherent account."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A 180–260 word synthesis with prioritised explanations makes relevance and non-redundancy of the reasoning assessable."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Completeness is assessable because the task demands covering the changing profile, its interpretations and needed further evidence."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a clinical synthesis of the problem for a clinician audience."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly asks for up to three prioritised explanations, i.e., a differential."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task asks for further evidence needed before changing treatment, which is a testing/investigation decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Interpreting why TSH rose then became suppressed during replacement and cancer treatment requires task-relevant causal interpretation."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The review is explicitly bounded to records through 27 January 2023, a meaningful cutoff the response must respect."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The core task is identifying directional changes in TSH and TT4 across serial samples."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Correct sequencing of cancer therapy, surgery and dose changes against hormone results is explicitly required."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Characterising whether the thyroid trajectory is improving, stable or deteriorating across the sampled period is part of the requested review."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requires distinguishing known results from uncertainty and missing information in the clinician-facing assessment."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol supplies sequential record information across up to six turns, so belief updating across newly obtained evidence is observable."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The protocol allows six actual information-request turns to a record system, so active targeted acquisition is in scope and required.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No urgency or escalation decision is required; the task is a record review and information plan before elective treatment changes."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Recommending actions around levothyroxine dose changes based on a suppressed TSH involves assessable harm-avoidance considerations."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the record-review scenario."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A structured 180–260 word clinician-facing written assessment makes clarity and organisation assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly the clinical team, so calibration of register and detail to clinicians is required."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task imposes explicit word-count, turn-limit and content constraints that must be followed."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "TSH peaked at 119.96 mIU/L (August 2022) with TT4 <3.9 nmol/L",
+              "reason": "All reported values, doses and dates match the record; inferences (immune-related thyroiditis, central dysfunction) are explicitly qualified rather than asserted as documented findings."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "The combination of suppressed TSH and low TT4 (45.8 nmol/L) in January suggests a possible shift toward central dysfunction.",
+              "reason": "Inferences are clinically defensible and evidence-linked; the central hypothyroidism inference rests on a single paired result and is appropriately hedged, leaving minor imprecision rather than unsupported conclusions."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Following the start of pembrolizumab and chemotherapy in April 2022 and a radical oesophagectomy in July 2022, he developed severe primary hypothyroidism.",
+              "reason": "Premises (cancer chronology, hormone pairs, dose changes) are established before use and conclusions connect clearly to them."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Further evidence is required before adjusting treatment.",
+              "reason": "Every substantive step serves the differential or management caution; no repetition or tangential content."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Specifically, clinical records of thyroid-related symptoms and a full medication review are needed",
+              "reason": "Covers critical components (paired hormones, regimen, cancer chronology, competing explanations), but omits the documented good adherence/fasting administration as a factor weighing against the absorption hypothesis."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "This patient with Hashimoto's thyroiditis and oesophageal cancer exhibits a volatile thyroid profile.",
+              "reason": "Focused synthesis integrating the discriminating features (TSH surge then suppression with falling TT4 on rising dose, checkpoint-inhibitor context) and explicitly flags the unresolved paradox."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "1. Immune-related adverse event... 2. Absorption changes... 3. Central hypothyroidism",
+              "reason": "Breadth-appropriate, prioritised differential with brief evidence and uncertainty; discriminating support for the central-hypothyroidism versus over-replacement distinction is only partially developed."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 2,
+              "evidence_quote": "clinical records of thyroid-related symptoms and a full medication review are needed",
+              "reason": "The proposed next information is vaguely appropriate but poorly targeted; no specific investigations (e.g., repeat paired TFTs, free T4, pituitary assessment) are proposed to distinguish the competing hypotheses."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Pembrolizumab may have induced thyroiditis, explaining the initial TSH surge and subsequent suppression.",
+              "reason": "Causal claims are task-relevant, qualified with 'may' and 'possible', and material limitations (falling TT4 making absorption less certain) are stated."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "through January 2023, while TT4 declined from 64.1 to 45.8 nmol/L",
+              "reason": "Strict adherence to the 27 January 2023 boundary with explicit timestamps throughout."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "TSH became suppressed (0.06–0.08 mIU/L) through January 2023, while TT4 declined from 64.1 to 45.8 nmol/L.",
+              "reason": "Correct direction, magnitude and clinical significance of both the TSH swing and the falling TT4."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "began on 15 April 2022... performed on 7 July 2022... last chemotherapy cycle was completed on 23 September 2022",
+              "reason": "Events are sequenced correctly with explicit temporal anchors."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The current low TSH is paradoxical given the falling TT4, necessitating a cautious approach to dose titration.",
+              "reason": "Trajectory is correctly characterised as unstable/paradoxical and explicitly linked to the management decision of cautious titration pending further evidence."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Further evidence is required before adjusting treatment.",
+              "reason": "Established findings, possible explanations and missing information (symptoms, medication review) are clearly distinguished, with proportionate next steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "the recent TSH suppression despite falling TT4 makes this less certain",
+              "reason": "The differential is appropriately revised as sequential evidence arrives (irAE rising, absorption downweighted, central dysfunction newly considered), with only minor imprecision in degree of updating."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "necessitating a cautious approach to dose titration",
+              "reason": "No harmful recommendation is made and dose change is explicitly deferred pending evidence, but no specific safety caveats (e.g., risk of overtreatment, adrenal consideration before pituitary testing) are provided."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Prioritised explanations: 1... 2... 3",
+              "reason": "Clear structure with heading, chronology, numbered differential and closing plan, well matched to clinician cognitive load."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "severe primary hypothyroidism... immune-related adverse event",
+              "reason": "Register is precisely calibrated to a clinician audience using appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "(202 words per deterministic count)",
+              "reason": "Word count (202) is within 180–260; three prioritised explanations, uncertainty, next actions and required integrations are all present."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D3c",
+              "other_items": [
+                "D2d"
+              ],
+              "observation": "The answer defers treatment change appropriately but the proposed next steps are limited to record review (symptoms, medications) without targeted investigations to discriminate the stated hypotheses, weakening the otherwise complete reasoning."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 4,
+          "evidence_quote": "Could you provide the thyroid function tests and the levothyroxine dose changes from June 2022 through 27 January 2023?",
+          "reason": "Both essential requirements (paired serial thyroid results and replacement/cancer-treatment chronology) were requested early, targeted, and fulfilled within the turn limit. The helpful requirement for assay clarification and pituitary/adrenal evidence was not requested, but it is non-essential and the model did note in the final assessment that further endocrine evidence was needed.",
+          "requirement_checks": [
+            {
+              "id": "02.R1",
+              "request_quote": "Could you provide the thyroid function tests and the thyroid replacement medication regimen used up to 27 January 2023?",
+              "status": "requested_satisfied",
+              "reason": "Dated paired TT4/TSH results across the whole period were requested and returned across turns 1-3."
+            },
+            {
+              "id": "02.R2",
+              "request_quote": "Could you provide the thyroid function tests and the levothyroxine dose changes from June 2022 through 27 January 2023? ... What were the dates and types of treatments received for oesophageal cancer during this period?",
+              "status": "requested_satisfied",
+              "reason": "Replacement dosing/adherence and the cancer-treatment/surgical timeline were both explicitly requested and returned."
+            },
+            {
+              "id": "02.R3",
+              "request_quote": "",
+              "status": "not_requested",
+              "reason": "No request for assay/units verification or pituitary/adrenal evaluation was made, though the final assessment did identify the need for further endocrine evidence; this is a helpful, non-essential gap."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -3077,5 +3743,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }

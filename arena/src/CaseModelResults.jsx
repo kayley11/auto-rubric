@@ -7,6 +7,7 @@ import { CaseContext } from "./CaseContext";
 import { ScoringEvidence } from "./ScoringEvidence.jsx";
 import { displayData } from "./presentation.mjs";
 import { scoringVersionLabel } from "./caseIdentity.mjs";
+import { itemResultText } from "./resultStatus.mjs";
 
 const statusNames = {
   complete: "Answer saved",
@@ -14,19 +15,15 @@ const statusNames = {
   partial: "Interview in progress",
   rate_limited: "Rate limited",
   needs_retry: "Needs retry",
-  pending: "Awaiting scoring",
+  pending: "Answer not started",
   not_applicable: "Not applicable",
   indeterminate: "Cannot assess",
   no_complete_answer: "No complete answer",
+  provider_unavailable: "Provider unavailable",
 };
 
 function cellText(model, score) {
-  if (score.status === "complete") return score.label;
-  if (["not_applicable", "indeterminate", "no_complete_answer"].includes(score.status))
-    return statusNames[score.status];
-  if (score.status === "needs_retry") return "Needs retry";
-  if (model.answer_status === "complete") return "Awaiting scoring";
-  return statusNames[model.answer_status];
+  return itemResultText(score, model.answer_status);
 }
 
 function exportCase(data, format) {
@@ -40,6 +37,9 @@ function exportCase(data, format) {
       [
         "case",
         "answer_model",
+        "service",
+        "saved_batch",
+        "provider_transports",
         "judge",
         "rules",
         "scoring_condition",
@@ -56,9 +56,12 @@ function exportCase(data, format) {
         rows.push([
           data.id,
           m.model_id,
+          m.service || m.id,
+          m.study_id || data.study_id,
+          (m.provider_transports || []).join("; "),
           data.judge,
           data.rule_version,
-          data.scoring_condition || "retained",
+          m.scoring_condition || data.scoring_condition || "retained",
           s.item,
           s.status === "complete" ? "complete" : cellText(m, s),
           s.label ?? "",
@@ -90,7 +93,11 @@ function exportCase(data, format) {
     data.models.forEach((m) => {
       parts.push(
         `\n${"=".repeat(60)}\n${m.name} (${m.model_id})\n${statusNames[m.answer_status]}`,
+        `Service: ${m.service || m.id}\nSaved batch: ${m.study_id || data.study_id}\nScoring condition: ${m.scoring_condition || data.scoring_condition || "retained"}`,
       );
+      if (m.provider_transports?.length)
+        parts.push(`Google transport: ${m.provider_transports.join("; ")}`);
+      if (m.comparison_note) parts.push(m.comparison_note);
       m.turns.forEach((t) =>
         parts.push(
           `\nTurn ${t.number}\nQuestion: ${t.question}\nAssessment notes: ${JSON.stringify(t.assessment)}\nReturned:\n${t.returned.map((f) => `${f.channel}: ${f.patient_text || f.text}${f.context ? ` [${f.context}]` : ""}`).join("\n")}\nFeedback: ${t.feedback}`,
@@ -474,16 +481,28 @@ export function CaseModelResults({ caseId, caseInfo }) {
         <summary>
           Choose models · {shownModels.length} shown <ChevronDown size={14} />
         </summary>
-        <button className="text-button" onClick={() => setVisibleModels(null)}>
-          Show all models
-        </button>
-        <div>
-          {data.models.map((m) => (
-            <div key={m.id} className="model-choice-row">
-              <label>
+        <div className="model-choice-toolbar">
+          <span>Select one or more answering models.</span>
+          <button className="text-button" disabled={shownModels.length === data.models.length} onClick={() => setVisibleModels(null)}>
+            Show all models
+          </button>
+        </div>
+        <div className="model-choice-grid" role="group" aria-label="Answering models to compare">
+          {data.models.map((m) => {
+            const checked = !visibleModels || visibleModels.includes(m.id);
+            const isGroq = m.service?.startsWith("groq") || m.id.startsWith("qwen38-groq");
+            const title = isGroq ? m.name.replace(/\s*·\s*Groq$/i, "") : m.name;
+            const backend = backendName(m.model_id, m.backend_model);
+            const normalise = (text) => text.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const subtitle = isGroq
+              ? "Groq"
+              : normalise(backend) === normalise(m.name) ? "" : backend;
+            return (
+            <div key={m.id} className={`model-choice-row${checked ? " is-selected" : ""}`}>
+              <label className="model-choice-label">
                 <input
                   type="checkbox"
-                  checked={!visibleModels || visibleModels.includes(m.id)}
+                  checked={checked}
                   disabled={
                     shownModels.length === 1 && shownModels[0].id === m.id
                   }
@@ -500,25 +519,22 @@ export function CaseModelResults({ caseId, caseInfo }) {
                     )
                   }
                 />
-                {m.name}
-                {backendName(m.model_id, m.backend_model)
-                  ? ` · ${backendName(m.model_id, m.backend_model)}`
-                  : ""}
+                <span className="model-choice-name">
+                  <strong>{title}</strong>
+                  {subtitle && <small>{subtitle}</small>}
+                </span>
               </label>
               <button
                 className="text-button"
+                aria-label={`Show only ${m.name}`}
                 onClick={() => setVisibleModels([m.id])}
               >
-                Only this model
+                Only
               </button>
             </div>
-          ))}
+          );})}
         </div>
       </details>
-      <p className="field-help">
-        Choose one model for a focused view, or compare several side by side.
-        Scroll sideways when showing all models.
-      </p>
       <p className="matrix-instruction">
         Click a score to open the model’s answer, rubric anchors and judge
         explanation. Click a model name for its full saved output.
@@ -567,6 +583,7 @@ export function CaseModelResults({ caseId, caseInfo }) {
                   </small>
                   {m.not_applicable_count > 0 && <small>{m.not_applicable_count} not applicable</small>}
                   {m.indeterminate_count > 0 && <small>{m.indeterminate_count} cannot assess</small>}
+                  {m.scores.some(s => s.status === "applicability_pending") && <small>{m.scores.filter(s => s.status === "applicability_pending").length} awaiting confirmation</small>}
                   {m.supplemental && <small>Additional run · 1 Nov</small>}
                 </th>
               ))}
@@ -609,9 +626,8 @@ export function CaseModelResults({ caseId, caseInfo }) {
           </tbody>
         </table>
       </div>
-      {data.scoring_condition === "full-profile-review-20261104" && (
-        <p className="field-help">Click N/A or Cannot assess for the specific reason. † = judge output needs checking; its original score is retained. Clinical references and candidate requirements are awaiting confirmation.</p>
-      )}
+      <p className="field-help">Awaiting confirmation = this item's applicability needs a reviewer decision. Not yet scored = no assessment is saved. No answer = no complete model answer is saved. Click a status for its reason.</p>
+      <p className="field-help">† = judge output needs checking; its original score is retained. Clinical references and candidate requirements are awaiting confirmation.</p>
       {data.models.some((m) => m.id === "qwen38-groq") && (
         <p className="study-note">
           arc:lite and Groq Qwen use the same declared Qwen3.8-27B family. They

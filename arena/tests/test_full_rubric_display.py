@@ -1,13 +1,10 @@
-"""Keep the original 4 November packet verifiable after later display updates."""
+"""Audit the public result packet, including missingness and source boundaries."""
 
 import json
 from collections import Counter
 from pathlib import Path
 
-ROOT = (
-    Path(__file__).resolve().parents[1]
-    / "study-data/case-review-before-20261113/full-rubric-review"
-)
+ROOT = Path(__file__).resolve().parents[1] / "public/full-rubric-review"
 
 
 def test_full_review_keeps_every_case_model_item_and_unscored_reason():
@@ -38,19 +35,15 @@ def test_full_review_keeps_every_case_model_item_and_unscored_reason():
             )
         )
     assert len(index["cases"]) == 78
-    assert counts == {
-        "complete": 6342,
-        "not_applicable": 1225,
-        "indeterminate": 23,
-        "no_complete_answer": 2706,
-    }
+    assert counts == index["item_statuses"]
+    assert sum(counts.values()) == 78 * 6 * 22
 
 
 def test_new_packet_preserves_scope_exclusion_and_flags_without_changing_scores():
     n06 = json.loads((ROOT / "N06.json").read_text(encoding="utf-8"))
     for model in n06["models"]:
         score = next(s for s in model["scores"] if s["item"] == "D3a")
-        assert score["status"] in {"not_applicable", "no_complete_answer"}
+        assert score["status"] in {"not_applicable", "applicability_pending", "no_complete_answer"}
         assert score["score"] is None
     b09 = json.loads((ROOT / "B09.json").read_text(encoding="utf-8"))
     lite = next(m for m in b09["models"] if m["id"] == "kcl-lite")
@@ -60,12 +53,24 @@ def test_new_packet_preserves_scope_exclusion_and_flags_without_changing_scores(
     assert score["requirement_checks"]
 
 
-def test_missing_gemma_answers_do_not_gain_numerical_scores():
+def test_gemma_recovery_keeps_missingness_and_score_categories_explicit():
     index = json.loads((ROOT / "index.json").read_text(encoding="utf-8"))
     for row in index["cases"]:
         packet = json.loads((ROOT / f"{row['id']}.json").read_text(encoding="utf-8"))
-        gemma = next(m for m in packet["models"] if m["id"] == "gemma4-free")
-        assert not gemma["answer"] and gemma["answer_status"] == "no_complete_answer"
-        assert all(
-            s["status"] == "no_complete_answer" and s["score"] is None for s in gemma["scores"]
-        )
+        gemma = next(m for m in packet["models"] if m["id"].startswith("gemma"))
+        if gemma["answer_status"] != "complete":
+            assert not gemma["answer"]
+            assert all(
+                s["status"] == "no_complete_answer" and s["score"] is None for s in gemma["scores"]
+            )
+        else:
+            assert gemma["answer"].strip()
+            assert gemma["model_id"] == "gemma-4-31b-it"
+            assert gemma["prior_unavailable_configuration"]["answer_status"] == "no_complete_answer"
+            allowed = {c["id"]: c["allowed_scores"] for c in packet["criteria"]}
+            for score in gemma["scores"]:
+                assert (
+                    score["score"] in allowed[score["item"]]
+                    if score["status"] == "complete"
+                    else score["score"] is None
+                )

@@ -35,8 +35,14 @@ def test_every_published_case_has_a_complete_item_profile_and_pending_references
 
 def test_all_updated_data_and_original_files_match_the_sync_manifest():
     manifest = read_json(ARCHIVE / "MANIFEST.json")
+    recovery = read_json(ROOT / "study-data/gemma-recovery-before-20261114/MANIFEST.json")
+    later_versions = {entry["path"]: entry for entry in recovery["files"]}
     for entry in manifest["files"]:
         current = ROOT.parent / entry["path"]
+        if hashlib.sha256(current.read_bytes()).hexdigest() != entry["current_sha256"]:
+            retained = later_versions[entry["path"]]
+            assert retained["previous_sha256"] == entry["current_sha256"]
+            current = ROOT.parent / retained["archive"]
         assert hashlib.sha256(current.read_bytes()).hexdigest() == entry["current_sha256"]
         if entry["archive"]:
             old = ROOT.parent / entry["archive"]
@@ -52,6 +58,10 @@ def test_previously_saved_answers_and_numerical_grades_are_unchanged():
         after = read_json(ROOT / "public/full-rubric-review" / path.name)
         models = {model["id"]: model for model in after["models"]}
         for original in before["models"]:
+            if not original["answer"] and not any(
+                score["status"] == "complete" for score in original["scores"]
+            ):
+                continue
             current = models[original["id"]]
             if original["answer"]:
                 answers += 1

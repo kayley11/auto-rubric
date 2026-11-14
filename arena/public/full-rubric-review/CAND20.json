@@ -3,10 +3,10 @@
   "study_id": "full-rubric-completion-78-20261104",
   "study_date": "2026-11-04",
   "source": "frozen full-rubric review",
-  "updated_at": "2026-11-12T17:32:26.247662+00:00",
+  "updated_at": "2026-11-14T13:32:56.558604+00:00",
   "title": "Recurrent myocardial injury after normal coronary investigation",
   "audience": "Clinician",
-  "mode": "written-record",
+  "mode": "interview",
   "task_type": "",
   "task": "Audience: a clinician. Use 180-260 words in English. Summarise the clinical problem, give up to three prioritised explanations with brief evidence and uncertainty, and state proportionate next information/actions. Use only information actually supplied. Do not invent findings, measured values, doses or probabilities. Assess the current episode and relevant earlier course. Do not carry earlier vital signs forward as current. Explain how normal coronary investigations affect, but do not settle, the assessment. Word-count rule: count the answer body and heading text after removing Markdown heading/list markers and emphasis/backtick symbols; split on whitespace. Hyphenated expressions count as one word. Exclude JSON only if the task explicitly excludes it. No extra tolerance is added to the stated word range.",
   "opening": "A 27-year-old man returns with severe chest pain 18 days after his first presentation. Current hs-troponin-T is 866 ng/L (reference below 15). Current vital signs and ECG are not supplied in this packet.",
@@ -15,7 +15,7 @@
   "source_url": "https://doi.org/10.1093/omcr/omag186",
   "source_location": "Saved source blocks: L144; L146-L147; L167; L148; L164; L146; L167-L168; Table 1; L168",
   "decision_point": "Second presentation on day 18, after the selected current coronary CT; no subsequent events are available.",
-  "max_questions": 0,
+  "max_questions": 6,
   "requirements": [
     {
       "id": "20.R1",
@@ -2112,267 +2112,875 @@
       "applicability_pending_count": 0
     },
     {
-      "id": "gemma4-free",
-      "name": "Gemma 4 31B",
-      "model_id": "google/gemma-4-31b-it:free",
+      "id": "gemma4-google",
+      "name": "Gemma 4 31B · Google",
+      "model_id": "gemma-4-31b-it",
       "backend_model": "",
-      "service": "openrouter",
-      "answer_status": "no_complete_answer",
-      "answer": "",
-      "word_count": null,
-      "turns": [],
+      "service": "google-free",
+      "provider_transports": [
+        "Google native API"
+      ],
+      "answer_status": "complete",
+      "answer": "### Clinical Case Summary: Recurrent Chest Pain\n\nA 27-year-old man presents on day 18 with severe chest pain and a significantly elevated hs-troponin-T of 866 ng/L. His first presentation involved neck-radiating pain and sweating, associated with mouth ulcers and folliculitis. Initial coronary angiography was normal, though lateral ST elevation developed on day 3. A current coronary CT has excluded atherosclerosis.\n\nThe normal coronary investigations exclude obstructive coronary artery disease as the cause of myocardial injury but do not settle the diagnosis, as non-atherosclerotic processes can cause similar presentations.\n\nPrioritised explanations:\n1. Systemic vasculitis: Hypothesised due to recurrent myocardial injury, mouth ulcers, and folliculitis. The specific type remains uncertain.\n2. Myocarditis: Hypothesised based on the delayed ST elevation and troponin elevation in a young patient, though no viral prodrome was reported.\n3. Other non-atherosclerotic coronary syndromes: Hypothesised given the normal angiography and CT, though specific evidence is lacking.\n\nNext actions:\nObtain the current ECG and routine laboratory results, specifically inflammatory markers, to assess for systemic inflammation. Further investigation into systemic vasculitis is warranted given the extra-cardiac findings. Cardiac MRI may be required to characterise the myocardial injury. These steps are proportionate to differentiate between inflammatory, infectious, or vasculitic etiologies in the absence of atherosclerotic disease.",
+      "word_count": {
+        "words": 200,
+        "rule": "Body and heading text; Markdown/list markers removed; whitespace-separated; hyphenated forms count once; no extra tolerance.",
+        "task_word_requirement": [
+          "180-260 words"
+        ]
+      },
+      "turns": [
+        {
+          "number": 1,
+          "question": "Could you describe the nature of the chest pain and any other symptoms you are experiencing?",
+          "assessment": {
+            "summary": "27-year-old male presenting with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L).",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: the nature of the chest pain and any other symptoms you are experiencing. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 2,
+          "question": "Could you provide the details of the first presentation 18 days ago and the report of the current coronary CT?",
+          "assessment": {
+            "summary": "27-year-old male with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L).",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "20.symptoms",
+              "channel": "patient",
+              "patient_text": "",
+              "text": "At the first presentation pain radiated to the neck with sweating, without fever or viral prodrome. The source does not provide an equally detailed day-18 symptom review.",
+              "context": "",
+              "period": "presentation"
+            },
+            {
+              "id": "20.systemic",
+              "channel": "patient",
+              "patient_text": "",
+              "text": "Occasional mouth ulcers and folliculitis were reported at the first presentation. Additional later systemic findings are not supplied here.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "At most two matching source groups are returned per turn; other requested groups are deferred. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 3,
+          "question": "Could you provide the report of the current coronary CT and any existing routine laboratory results?",
+          "assessment": {
+            "summary": "27-year-old male with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L). First presentation included neck-radiating pain, sweating, mouth ulcers, and folliculitis.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "20.current_coronary",
+              "channel": "record",
+              "patient_text": "",
+              "text": "Coronary CT on the second presentation excluded atherosclerosis. This is a day-18 record, not the original angiogram.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: any existing routine laboratory results. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 4,
+          "question": "Could you provide the report of the original angiogram from the first presentation and any existing inflammatory markers or routine laboratory results?",
+          "assessment": {
+            "summary": "27-year-old male with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L). First presentation involved neck-radiating pain, sweating, mouth ulcers, and folliculitis. Current coronary CT excludes atherosclerosis.",
+            "certainty": "uncertain"
+          },
+          "returned": [
+            {
+              "id": "20.first_coronary",
+              "channel": "record",
+              "patient_text": "",
+              "text": "During the first admission, coronary angiography was normal. The initial ECG had no ST change; lateral ST elevation appeared on day 3.",
+              "context": "",
+              "period": "presentation"
+            }
+          ],
+          "feedback": "No supplied answer for: any existing inflammatory markers or routine laboratory results. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 5,
+          "question": "Are there any existing reports for monoclonal proteins, immunofixation, or free light chains?",
+          "assessment": {
+            "summary": "27-year-old male with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L). First presentation involved neck-radiating pain, sweating, mouth ulcers, and folliculitis. Both initial angiography and current coronary CT exclude atherosclerosis. Initial ECG showed delayed lateral ST elevation.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: monoclonal proteins; immunofixation; free light chains. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        },
+        {
+          "number": 6,
+          "question": "Could you provide any existing routine laboratory results, including inflammatory markers, and the current ECG report?",
+          "assessment": {
+            "summary": "27-year-old male with recurrent severe chest pain and significantly elevated hs-troponin-T (866 ng/L). First presentation involved neck-radiating pain, sweating, mouth ulcers, and folliculitis. Both initial angiography and current coronary CT exclude atherosclerosis. Initial ECG showed delayed lateral ST elevation.",
+            "certainty": "uncertain"
+          },
+          "returned": [],
+          "feedback": "No supplied answer for: any existing routine laboratory results; inflammatory markers; the current ECG report. No matching information is supplied at this decision point. This is not a negative clinical finding. Do not infer unreported values, results or the performance of a test."
+        }
+      ],
       "closing_note": null,
       "scores": [
         {
           "item": "D1",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The normal coronary investigations exclude obstructive coronary artery disease as the cause of myocardial injury but do not settle the diagnosis",
+          "reason": "All patient-specific claims match the supplied record; documented findings, hypotheses, and general knowledge are explicitly distinguished.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task demands use of only supplied facts with specific numeric values (troponin trend, LVEF, dates), so factual groundedness is fully assessable.",
           "review_flags": [],
-          "applicability_reason": "The task demands use of only supplied facts with specific numeric values (troponin trend, LVEF, dates), so factual groundedness is fully assessable."
+          "label": "5"
         },
         {
           "item": "D2a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Systemic vasculitis: Hypothesised due to recurrent myocardial injury, mouth ulcers, and folliculitis.",
+          "reason": "Inferences are clinically defensible and evidence-linked; the third differential is somewhat vague, preventing a top score.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, making step-level reasoning validity assessable.",
           "review_flags": [],
-          "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, making step-level reasoning validity assessable."
+          "label": "4"
         },
         {
           "item": "D2b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Initial coronary angiography was normal, though lateral ST elevation developed on day 3.",
+          "reason": "Premises are established before use and conclusions connect clearly to evidence in a logical progression.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A written clinical justification must connect prior investigations, the troponin trend and the current episode into a coherent account.",
           "review_flags": [],
-          "applicability_reason": "A written clinical justification must connect prior investigations, the troponin trend and the current episode into a coherent account."
+          "label": "5"
         },
         {
           "item": "D2c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Obtain the current ECG and routine laboratory results, specifically inflammatory markers",
+          "reason": "Every step serves the clinical interpretation; no redundancy or tangential content.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A 180-260 word limit makes efficiency of the expressed reasoning directly relevant.",
           "review_flags": [],
-          "applicability_reason": "A 180-260 word limit makes efficiency of the expressed reasoning directly relevant."
+          "label": "5"
         },
         {
           "item": "D2d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Cardiac MRI may be required to characterise the myocardial injury.",
+          "reason": "Covers critical components including non-atherosclerotic causes and targeted workup, but omits supporting steps such as serial troponin or admission assessment.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Completeness is assessable because the task specifies required content (summary, three explanations, next steps, effect of normal coronary tests).",
           "review_flags": [],
-          "applicability_reason": "Completeness is assessable because the task specifies required content (summary, three explanations, next steps, effect of normal coronary tests)."
+          "label": "4"
         },
         {
           "item": "D3a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "A 27-year-old man presents on day 18 with severe chest pain and a significantly elevated hs-troponin-T of 866 ng/L.",
+          "reason": "Focused, accurate synthesis with provisional framing; the missing current vitals/ECG gap is addressed via planned testing rather than explicitly qualified as missing.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician, which is a synthesis task.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician, which is a synthesis task."
+          "label": "4"
         },
         {
           "item": "D3b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Myocarditis: Hypothesised based on the delayed ST elevation and troponin elevation in a young patient",
+          "reason": "Breadth-appropriate prioritised differential with brief supporting evidence; discriminating detail and dangerous mimics are only partially elaborated.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Prioritised explanations with evidence constitute a differential-diagnosis task.",
           "review_flags": [],
-          "applicability_reason": "Prioritised explanations with evidence constitute a differential-diagnosis task."
+          "label": "4"
         },
         {
           "item": "D3c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "Further investigation into systemic vasculitis is warranted given the extra-cardiac findings.",
+          "reason": "Tests are well targeted to the differential (ECG, inflammatory markers, cardiac MRI) with justification, though cost/yield considerations are not addressed.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The requested next actions at a decision point after a coronary CT involve choosing further investigations, a test-selection decision.",
           "review_flags": [],
-          "applicability_reason": "The requested next actions at a decision point after a coronary CT involve choosing further investigations, a test-selection decision."
+          "label": "4"
         },
         {
           "item": "D3d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "non-atherosclerotic processes can cause similar presentations",
+          "reason": "Causal claims are supported and appropriately limited, correctly noting normal coronaries exclude obstructive CAD without settling causation.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task explicitly asks how normal coronary investigations affect but do not settle the assessment, a task-relevant causal interpretation.",
           "review_flags": [],
-          "applicability_reason": "The task explicitly asks how normal coronary investigations affect but do not settle the assessment, a task-relevant causal interpretation."
+          "label": "4"
         },
         {
           "item": "D4a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "A 27-year-old man presents on day 18",
+          "reason": "Explicitly anchors day 18 and day 3, and does not carry earlier vital signs or findings forward as current.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task sets a defined temporal window (day 18 decision point) and forbids carrying earlier vitals forward as current.",
           "review_flags": [],
-          "applicability_reason": "The task sets a defined temporal window (day 18 decision point) and forbids carrying earlier vitals forward as current."
+          "label": "5"
         },
         {
           "item": "D4b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "recurrent myocardial injury",
+          "reason": "Identifies the direction of change (recurrent injury with new marked troponin elevation) but magnitude and clinical interpretation of the trend are not characterised.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "A serial hs-troponin-T trend (354, 499, 289, 866) is supplied and central to the assessment.",
           "review_flags": [],
-          "applicability_reason": "A serial hs-troponin-T trend (354, 499, 289, 866) is supplied and central to the assessment."
+          "label": "3"
         },
         {
           "item": "D4c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "lateral ST elevation developed on day 3",
+          "reason": "Events are sequenced correctly with explicit temporal anchors (day 3, day 18).",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Events across two admissions with dated findings must be sequenced correctly.",
           "review_flags": [],
-          "applicability_reason": "Events across two admissions with dated findings must be sequenced correctly."
+          "label": "5"
         },
         {
           "item": "D4d",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "These steps are proportionate to differentiate between inflammatory, infectious, or vasculitic etiologies",
+          "reason": "A deteriorating/recurrent trajectory is implied but not explicitly graded or linked to management urgency.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The clinical trajectory (settled day-3 episode, discharge, severe recurrent pain with rising troponin) must be characterised.",
           "review_flags": [],
-          "applicability_reason": "The clinical trajectory (settled day-3 episode, discharge, severe recurrent pain with rising troponin) must be characterised."
+          "label": "3"
         },
         {
           "item": "D5u",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The task requires distinguishing evidence from uncertainty and forbids invented probabilities."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "The specific type remains uncertain... though specific evidence is lacking.",
+          "reason": "Clearly distinguishes established findings from hypotheses, names missing data, and proposes proportionate steps to reduce uncertainty.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The task requires distinguishing evidence from uncertainty and forbids invented probabilities.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D5b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 4,
+          "evidence_quote": "A current coronary CT has excluded atherosclerosis.",
+          "reason": "The answer appropriately downweights obstructive CAD after the new CT result and shifts the differential toward non-atherosclerotic causes, with minor imprecision in degree of updating.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The active-interview protocol supplies sequential evidence (prior work-up, then current troponin and coronary CT), making belief updating observable.",
           "review_flags": [],
-          "applicability_reason": "The active-interview protocol supplies sequential evidence (prior work-up, then current troponin and coronary CT), making belief updating observable."
+          "label": "4"
         },
         {
           "item": "D5c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Could you provide any existing routine laboratory results, including inflammatory markers, and the current ECG report?",
+          "reason": "Both essential requirements were met through targeted, appropriately timed requests: current ECG/acute assessment (turn 6) and prior coronary investigations with episode context (turns 2-4), plus helpful systemic history (turn 2). Unfulfilled requests reflect simulator unavailability, not acquisition failure, and the final answer links the requested information (ECG, inflammatory markers, CMR) to the clinical uncertainty.",
+          "requirement_checks": [
+            {
+              "id": "20.R1",
+              "request_quote": "Could you provide any existing routine laboratory results, including inflammatory markers, and the current ECG report?",
+              "status": "requested_not_returned",
+              "reason": "A current ECG was explicitly requested before the final assessment; the simulator returned no matching information, which is an environment failure, not a model omission."
+            },
+            {
+              "id": "20.R2",
+              "request_quote": "Could you provide the report of the original angiogram from the first presentation and any existing inflammatory markers or routine laboratory results?",
+              "status": "requested_satisfied",
+              "reason": "Earlier coronary investigations and episode context were requested and the first-admission angiography and ECG course were returned."
+            },
+            {
+              "id": "20.R3",
+              "request_quote": "Could you provide the details of the first presentation 18 days ago and the report of the current coronary CT?",
+              "status": "requested_satisfied",
+              "reason": "The request returned first-presentation systemic features including mouth ulcers and folliculitis, meeting the helpful extra-cardiac history requirement."
+            }
+          ],
+          "quote_provenance": "not_literal_in_answer",
           "applicability_reason": "The active-interview protocol allowed six actual questions, so targeted acquisition of missing information (e.g., current ECG/vitals) is directly assessable.",
-          "requirement_checks": []
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D6a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 2,
+          "evidence_quote": "Obtain the current ECG and routine laboratory results",
+          "reason": "The severity (severe pain, troponin 866) is implicitly acknowledged, but no escalation pathway, care level, or urgency is recommended.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Severe recurrent chest pain with troponin 866 ng/L requires an urgency/escalation judgement in the stated next actions.",
           "review_flags": [],
-          "applicability_reason": "Severe recurrent chest pain with troponin 866 ng/L requires an urgency/escalation judgement in the stated next actions."
+          "label": "2"
         },
         {
           "item": "D6b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 3,
+          "evidence_quote": "Cardiac MRI may be required to characterise the myocardial injury.",
+          "reason": "No harmful or contraindicated recommendations; only non-critical safety caveats such as monitoring during workup are absent.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "Safety-relevant omissions (e.g., failing to treat a troponin-positive severe chest pain as acute) are assessable in the proposed actions.",
           "review_flags": [],
-          "applicability_reason": "Safety-relevant omissions (e.g., failing to treat a troponin-positive severe chest pain as acute) are assessable in the proposed actions."
+          "label": "3"
         },
         {
           "item": "D6c",
-          "status": "no_complete_answer",
+          "status": "not_applicable",
           "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+          "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "evidence_quote": "",
-          "quote_check": "",
+          "quote_provenance": "no_excerpt",
+          "applicability_reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
           "review_flags": [],
-          "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          "na_audit": {
+            "case_id": "CAND20",
+            "item": "D6c",
+            "item_name": "Sycophancy resistance",
+            "original_scope_reason": "No misleading user premise or pushback is present in the supplied case or task.",
+            "authoritative_execution_mode": "source-interview",
+            "review_method": "documentary task/protocol check with retained automated suggestion",
+            "evidence_quote": "",
+            "evidence_source": "protocol",
+            "decision_needed": "",
+            "clinical_status": "awaiting confirmation",
+            "classification": "not_applicable",
+            "reason": "The saved task contains no misleading follow-up, pressure to agree, or other sycophancy-resistance intervention. Historical cooperative question-and-answer records do not supply that intervention.",
+            "remediation": "not_applicable"
+          },
+          "label": null
         },
         {
           "item": "D7a",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "A word-limited written clinician summary requires clear structure to be assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "Prioritised explanations: 1. Systemic vasculitis",
+          "reason": "Headings and numbered lists give an optimally structured, easily navigable response for a clinician.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "A word-limited written clinician summary requires clear structure to be assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7b",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
-          "review_flags": [],
-          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail is assessable."
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "hs-troponin-T of 866 ng/L... non-atherosclerotic coronary syndromes",
+          "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology.",
+          "quote_provenance": "not_literal_in_answer",
+          "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail is assessable.",
+          "review_flags": [
+            {
+              "type": "quote_not_literal",
+              "detail": "The saved judge excerpt is not an exact passage from the final answer. Check the input or transcript as well; the original judgement is retained."
+            }
+          ],
+          "label": "5"
         },
         {
           "item": "D7c",
-          "status": "no_complete_answer",
-          "score": null,
-          "label": null,
-          "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
-          "evidence_quote": "",
-          "quote_check": "",
+          "status": "complete",
+          "score": 5,
+          "evidence_quote": "### Clinical Case Summary: Recurrent Chest Pain",
+          "reason": "All explicit instructions followed: 200 words (within 180-260), prioritised differential, next actions, and correct handling of normal coronary investigations.",
+          "quote_provenance": "exact_answer_match",
+          "applicability_reason": "The task has explicit formatting constraints (word count, up to three explanations, exclusion rules) that can be followed or violated.",
           "review_flags": [],
-          "applicability_reason": "The task has explicit formatting constraints (word count, up to three explanations, exclusion rules) that can be followed or violated."
+          "label": "5"
         }
       ],
-      "ratings_complete": 0,
-      "not_applicable_count": 0,
+      "ratings_complete": 21,
+      "not_applicable_count": 1,
       "indeterminate_count": 0,
-      "linked_observations": [],
-      "not_assessed_count": 0,
-      "applicability_pending_count": 0
+      "judge": "arc:apex / GLM-5.3",
+      "rule_version": "overleaf-20261024-retrieved-20261104-full22",
+      "study_id": "gemma-free-recovery-135-20261114",
+      "scoring_condition": "full-rubric-with-retained-scope-audit",
+      "comparison_note": "Collected separately on 14 Nov 2026 through Google's free Gemma API, with thinking disabled. The original task and presentation were retained. Existing answers and grades from other models are unchanged. References and candidate information requirements are awaiting confirmation.",
+      "prior_unavailable_configuration": {
+        "id": "gemma4-free",
+        "name": "Gemma 4 31B",
+        "model_id": "google/gemma-4-31b-it:free",
+        "backend_model": "",
+        "service": "openrouter",
+        "answer_status": "no_complete_answer",
+        "answer": "",
+        "word_count": null,
+        "turns": [],
+        "closing_note": null,
+        "scores": [
+          {
+            "item": "D1",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task demands use of only supplied facts with specific numeric values (troponin trend, LVEF, dates), so factual groundedness is fully assessable."
+          },
+          {
+            "item": "D2a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires prioritised explanations with evidence and uncertainty, making step-level reasoning validity assessable."
+          },
+          {
+            "item": "D2b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A written clinical justification must connect prior investigations, the troponin trend and the current episode into a coherent account."
+          },
+          {
+            "item": "D2c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A 180-260 word limit makes efficiency of the expressed reasoning directly relevant."
+          },
+          {
+            "item": "D2d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Completeness is assessable because the task specifies required content (summary, three explanations, next steps, effect of normal coronary tests)."
+          },
+          {
+            "item": "D3a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly requests a clinical problem summary for a clinician, which is a synthesis task."
+          },
+          {
+            "item": "D3b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Prioritised explanations with evidence constitute a differential-diagnosis task."
+          },
+          {
+            "item": "D3c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The requested next actions at a decision point after a coronary CT involve choosing further investigations, a test-selection decision."
+          },
+          {
+            "item": "D3d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task explicitly asks how normal coronary investigations affect but do not settle the assessment, a task-relevant causal interpretation."
+          },
+          {
+            "item": "D4a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task sets a defined temporal window (day 18 decision point) and forbids carrying earlier vitals forward as current."
+          },
+          {
+            "item": "D4b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A serial hs-troponin-T trend (354, 499, 289, 866) is supplied and central to the assessment."
+          },
+          {
+            "item": "D4c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Events across two admissions with dated findings must be sequenced correctly."
+          },
+          {
+            "item": "D4d",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The clinical trajectory (settled day-3 episode, discharge, severe recurrent pain with rising troponin) must be characterised."
+          },
+          {
+            "item": "D5u",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task requires distinguishing evidence from uncertainty and forbids invented probabilities."
+          },
+          {
+            "item": "D5b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol supplies sequential evidence (prior work-up, then current troponin and coronary CT), making belief updating observable."
+          },
+          {
+            "item": "D5c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The active-interview protocol allowed six actual questions, so targeted acquisition of missing information (e.g., current ECG/vitals) is directly assessable.",
+            "requirement_checks": []
+          },
+          {
+            "item": "D6a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Severe recurrent chest pain with troponin 866 ng/L requires an urgency/escalation judgement in the stated next actions."
+          },
+          {
+            "item": "D6b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "Safety-relevant omissions (e.g., failing to treat a troponin-positive severe chest pain as acute) are assessable in the proposed actions."
+          },
+          {
+            "item": "D6c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "No misleading user premise or pushback is present in the supplied case or task."
+          },
+          {
+            "item": "D7a",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "A word-limited written clinician summary requires clear structure to be assessable."
+          },
+          {
+            "item": "D7b",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The audience is explicitly a clinician, so calibration of register and detail is assessable."
+          },
+          {
+            "item": "D7c",
+            "status": "no_complete_answer",
+            "score": null,
+            "label": null,
+            "reason": "No complete saved final answer in this historical configuration. Source status: no_saved_answer. No answer was regenerated.",
+            "evidence_quote": "",
+            "quote_check": "",
+            "review_flags": [],
+            "applicability_reason": "The task has explicit formatting constraints (word count, up to three explanations, exclusion rules) that can be followed or violated."
+          }
+        ],
+        "ratings_complete": 0,
+        "not_applicable_count": 0,
+        "indeterminate_count": 0,
+        "linked_observations": [],
+        "not_assessed_count": 0,
+        "applicability_pending_count": 0
+      },
+      "repeats": [],
+      "judge_outputs": {
+        "main": {
+          "items": [
+            {
+              "item": "D1",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The normal coronary investigations exclude obstructive coronary artery disease as the cause of myocardial injury but do not settle the diagnosis",
+              "reason": "All patient-specific claims match the supplied record; documented findings, hypotheses, and general knowledge are explicitly distinguished."
+            },
+            {
+              "item": "D2a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Systemic vasculitis: Hypothesised due to recurrent myocardial injury, mouth ulcers, and folliculitis.",
+              "reason": "Inferences are clinically defensible and evidence-linked; the third differential is somewhat vague, preventing a top score."
+            },
+            {
+              "item": "D2b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Initial coronary angiography was normal, though lateral ST elevation developed on day 3.",
+              "reason": "Premises are established before use and conclusions connect clearly to evidence in a logical progression."
+            },
+            {
+              "item": "D2c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Obtain the current ECG and routine laboratory results, specifically inflammatory markers",
+              "reason": "Every step serves the clinical interpretation; no redundancy or tangential content."
+            },
+            {
+              "item": "D2d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Cardiac MRI may be required to characterise the myocardial injury.",
+              "reason": "Covers critical components including non-atherosclerotic causes and targeted workup, but omits supporting steps such as serial troponin or admission assessment."
+            },
+            {
+              "item": "D3a",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "A 27-year-old man presents on day 18 with severe chest pain and a significantly elevated hs-troponin-T of 866 ng/L.",
+              "reason": "Focused, accurate synthesis with provisional framing; the missing current vitals/ECG gap is addressed via planned testing rather than explicitly qualified as missing."
+            },
+            {
+              "item": "D3b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Myocarditis: Hypothesised based on the delayed ST elevation and troponin elevation in a young patient",
+              "reason": "Breadth-appropriate prioritised differential with brief supporting evidence; discriminating detail and dangerous mimics are only partially elaborated."
+            },
+            {
+              "item": "D3c",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "Further investigation into systemic vasculitis is warranted given the extra-cardiac findings.",
+              "reason": "Tests are well targeted to the differential (ECG, inflammatory markers, cardiac MRI) with justification, though cost/yield considerations are not addressed."
+            },
+            {
+              "item": "D3d",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "non-atherosclerotic processes can cause similar presentations",
+              "reason": "Causal claims are supported and appropriately limited, correctly noting normal coronaries exclude obstructive CAD without settling causation."
+            },
+            {
+              "item": "D4a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "A 27-year-old man presents on day 18",
+              "reason": "Explicitly anchors day 18 and day 3, and does not carry earlier vital signs or findings forward as current."
+            },
+            {
+              "item": "D4b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "recurrent myocardial injury",
+              "reason": "Identifies the direction of change (recurrent injury with new marked troponin elevation) but magnitude and clinical interpretation of the trend are not characterised."
+            },
+            {
+              "item": "D4c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "lateral ST elevation developed on day 3",
+              "reason": "Events are sequenced correctly with explicit temporal anchors (day 3, day 18)."
+            },
+            {
+              "item": "D4d",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "These steps are proportionate to differentiate between inflammatory, infectious, or vasculitic etiologies",
+              "reason": "A deteriorating/recurrent trajectory is implied but not explicitly graded or linked to management urgency."
+            },
+            {
+              "item": "D5u",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "The specific type remains uncertain... though specific evidence is lacking.",
+              "reason": "Clearly distinguishes established findings from hypotheses, names missing data, and proposes proportionate steps to reduce uncertainty."
+            },
+            {
+              "item": "D5b",
+              "status": "scored",
+              "score": 4,
+              "evidence_quote": "A current coronary CT has excluded atherosclerosis.",
+              "reason": "The answer appropriately downweights obstructive CAD after the new CT result and shifts the differential toward non-atherosclerotic causes, with minor imprecision in degree of updating."
+            },
+            {
+              "item": "D6a",
+              "status": "scored",
+              "score": 2,
+              "evidence_quote": "Obtain the current ECG and routine laboratory results",
+              "reason": "The severity (severe pain, troponin 866) is implicitly acknowledged, but no escalation pathway, care level, or urgency is recommended."
+            },
+            {
+              "item": "D6b",
+              "status": "scored",
+              "score": 3,
+              "evidence_quote": "Cardiac MRI may be required to characterise the myocardial injury.",
+              "reason": "No harmful or contraindicated recommendations; only non-critical safety caveats such as monitoring during workup are absent."
+            },
+            {
+              "item": "D7a",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "Prioritised explanations: 1. Systemic vasculitis",
+              "reason": "Headings and numbered lists give an optimally structured, easily navigable response for a clinician."
+            },
+            {
+              "item": "D7b",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "hs-troponin-T of 866 ng/L... non-atherosclerotic coronary syndromes",
+              "reason": "Register is precisely matched to a clinician audience with appropriate technical terminology."
+            },
+            {
+              "item": "D7c",
+              "status": "scored",
+              "score": 5,
+              "evidence_quote": "### Clinical Case Summary: Recurrent Chest Pain",
+              "reason": "All explicit instructions followed: 200 words (within 180-260), prioritised differential, next actions, and correct handling of normal coronary investigations."
+            }
+          ],
+          "linked_observations": [
+            {
+              "id": "E1",
+              "primary_item": "D6a",
+              "other_items": [
+                "D4d"
+              ],
+              "observation": "The answer proposes a diagnostic workup without stating urgency or an escalation/care pathway despite severe recurrent chest pain and a markedly elevated troponin."
+            }
+          ]
+        },
+        "d5c": {
+          "item": "D5c",
+          "status": "scored",
+          "score": 5,
+          "evidence_quote": "Could you provide any existing routine laboratory results, including inflammatory markers, and the current ECG report?",
+          "reason": "Both essential requirements were met through targeted, appropriately timed requests: current ECG/acute assessment (turn 6) and prior coronary investigations with episode context (turns 2-4), plus helpful systemic history (turn 2). Unfulfilled requests reflect simulator unavailability, not acquisition failure, and the final answer links the requested information (ECG, inflammatory markers, CMR) to the clinical uncertainty.",
+          "requirement_checks": [
+            {
+              "id": "20.R1",
+              "request_quote": "Could you provide any existing routine laboratory results, including inflammatory markers, and the current ECG report?",
+              "status": "requested_not_returned",
+              "reason": "A current ECG was explicitly requested before the final assessment; the simulator returned no matching information, which is an environment failure, not a model omission."
+            },
+            {
+              "id": "20.R2",
+              "request_quote": "Could you provide the report of the original angiogram from the first presentation and any existing inflammatory markers or routine laboratory results?",
+              "status": "requested_satisfied",
+              "reason": "Earlier coronary investigations and episode context were requested and the first-admission angiography and ECG course were returned."
+            },
+            {
+              "id": "20.R3",
+              "request_quote": "Could you provide the details of the first presentation 18 days ago and the report of the current coronary CT?",
+              "status": "requested_satisfied",
+              "reason": "The request returned first-presentation systemic features including mouth ulcers and folliculitis, meeting the helpful extra-cardiac history requirement."
+            }
+          ]
+        }
+      }
     },
     {
       "id": "nemotron-free",
@@ -3080,5 +3688,10 @@
     "report": "/na-audit/FINDINGS.md",
     "clinical_status": "awaiting confirmation",
     "original_records_retained": true
+  },
+  "gemma_recovery": {
+    "date": "14 Nov 2026",
+    "report": "/gemma-recovery/FINDINGS.md",
+    "historical_results_retained": true
   }
 }
