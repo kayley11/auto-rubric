@@ -22,3 +22,7 @@ The GitHub update includes the recovery packets, per-model export provenance, co
 All five other model configurations are unchanged across the 135 packets. Earlier study archives remain intact. The complete ZIP has 3,811 files; its internal manifest verifies 3,810 captured files. No new model requests are made by these verification checks. Existing accounts and access settings are unchanged. API keys, login passwords, private workspace records and deployment bundles are excluded.
 
 Clinical references and candidate information requirements remain **awaiting confirmation**. Automatic quotation associations remain **awaiting review**.
+
+## Windows checkout correction
+
+The [first GitHub run](FIRST_GITHUB_RUN.json) passed lint, the website checks and all Linux test jobs. Windows identified line-ending conversion in an existing frozen audit document. The follow-up adds Git byte-preservation attributes for the ten `public/na-audit` files. A [checkout with `core.autocrlf=true`](WINDOWS_CHECKOUT_CHECK.json) confirms all ten still match their original checksums. The document contents, answers and grades were not changed.
