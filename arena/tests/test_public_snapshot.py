@@ -11,7 +11,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hosting.prepare_site import prepare
 
 
-def test_every_exported_review_opens_without_exposing_examiner_or_machine_data(tmp_path):
+def test_every_exported_review_opens_without_exposing_examiner_or_machine_data(
+    tmp_path, monkeypatch
+):
+    # Copy the saved public evidence into this isolated test Site. Refreshing
+    # production exports here would overwrite research snapshots during tests.
+    monkeypatch.setattr("hosting.prepare_site.comparison.refresh_display_snapshots", lambda: None)
+    monkeypatch.setattr("hosting.prepare_site.export_full_rubric.refresh", lambda: None)
     manifest = tmp_path / ".openai/hosting.json"
     manifest.parent.mkdir()
     manifest.write_text(json.dumps({"project_id": "test-only-site"}), encoding="utf-8")

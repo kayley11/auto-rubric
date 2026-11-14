@@ -79,6 +79,12 @@ class Application:
         self.reviews = Reviews(self.directory / "_reviews")
         self.cases = WorkspaceCases(self.directory)
         self.evidence_annotations = EvidenceAnnotations(self.directory / "_evidence_annotations")
+        from literature import LiteratureStore
+
+        self.literature = LiteratureStore(self)
+        from literature_questions import LiteratureQuestions
+
+        self.literature_questions = LiteratureQuestions(self.literature)
         # A restart must never leave the UI claiming an old request is still running.
         for path in self.directory.glob("*.json"):
             run = json.loads(path.read_text(encoding="utf-8"))
@@ -450,7 +456,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def body(self):
         size = int(self.headers.get("Content-Length", "0"))
-        if size <= 0 or size > 512000:
+        limit = 12000000 if urlparse(self.path).path == "/api/literature/sources" else 512000
+        if size <= 0 or size > limit:
             raise ValueError("Request is empty or too large.")
         value = json.loads(self.rfile.read(size))
         if not isinstance(value, dict):
@@ -467,6 +474,79 @@ class Handler(BaseHTTPRequestHandler):
         try:
             self.guarded(mutation)
             path = urlparse(self.path).path
+            if path == "/api/literature" and not mutation:
+                return self.send(
+                    200,
+                    {
+                        "drafts": self.app.literature.catalogue(),
+                        "reference_status": "awaiting confirmation",
+                    },
+                )
+            if path == "/api/literature/sources" and mutation:
+                return self.send(201, self.app.literature.create_source(self.body()))
+            if path == "/api/literature/drafts" and mutation:
+                return self.send(202, self.app.literature.start(self.body()))
+            questions_match = re.fullmatch(r"/api/literature/drafts/([a-f0-9]{24})/questions", path)
+            if questions_match:
+                if mutation:
+                    return self.send(
+                        202, self.app.literature_questions.start(questions_match[1], self.body())
+                    )
+                return self.send(
+                    200, {"sets": self.app.literature_questions.catalogue(questions_match[1])}
+                )
+            question_set_match = re.fullmatch(
+                r"/api/literature/questions/([a-f0-9]{24})(?:/(save|confirm|output))?", path
+            )
+            if question_set_match:
+                identifier, action = question_set_match.groups()
+                if not mutation and action == "output":
+                    return self.send(
+                        200,
+                        self.app.literature_questions.output(identifier),
+                        filename=f"article-questions-{identifier}.json",
+                    )
+                if not mutation and not action:
+                    return self.send(200, self.app.literature_questions.load(identifier))
+                if mutation and action in {"save", "confirm"}:
+                    return self.send(
+                        200,
+                        self.app.literature_questions.update(
+                            identifier, self.body(), confirm=action == "confirm"
+                        ),
+                    )
+                raise ValueError("Use the question-set read, save, confirm or output action.")
+            source_match = re.fullmatch(r"/api/literature/sources/([a-f0-9]{24})(/pdf)?", path)
+            if source_match and not mutation:
+                if source_match[2]:
+                    pdf = self.app.literature.root / "sources" / (source_match[1] + ".pdf")
+                    if not pdf.exists():
+                        raise FileNotFoundError("This source has no saved PDF.")
+                    return self.send(200, pdf.read_bytes(), "application/pdf", "article-source.pdf")
+                return self.send(200, self.app.literature.load("sources", source_match[1]))
+            draft_match = re.fullmatch(
+                r"/api/literature/drafts/([a-f0-9]{24})(?:/(save|confirm|output|add-quote))?", path
+            )
+            if draft_match:
+                identifier, action = draft_match.groups()
+                if not mutation and action == "output":
+                    return self.send(
+                        200,
+                        self.app.literature.output(identifier),
+                        filename=f"article-extraction-{identifier}.json",
+                    )
+                if not mutation and not action:
+                    return self.send(200, self.app.literature.load("drafts", identifier))
+                if mutation and action in {"save", "confirm"}:
+                    return self.send(
+                        200,
+                        self.app.literature.update(
+                            identifier, self.body(), confirm=action == "confirm"
+                        ),
+                    )
+                if mutation and action == "add-quote":
+                    return self.send(200, self.app.literature.add_quote(identifier, self.body()))
+                raise ValueError("Use the draft read, save or confirm action.")
             if path == "/api/evidence-annotations" and mutation:
                 member = getattr(self, "member", None)
                 return self.send(

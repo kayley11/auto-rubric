@@ -40,6 +40,19 @@ jobs:
       - name: Ruff format
         run: uv run --locked ruff format --diff .
 
+  article-extraction:
+    name: Article extraction and question drafts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install 3.12
+      - run: uv sync --locked --python 3.12
+      - name: Install optional article extraction dependencies
+        run: uv pip install -r arena/requirements-extraction.txt
+      - name: Check source grounding, review gates and protected workflows
+        run: uv run --no-sync pytest arena/tests
+
   test:
     name: Run tests
     strategy:

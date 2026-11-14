@@ -113,8 +113,9 @@ class HostedHandler(Handler):
                     "online": True,
                 },
             }
-        # Annotation intervals and hashes refer to the exact saved text.
-        if urlparse(self.path).path.startswith("/api/evidence-annotations"):
+        # Source intervals address immutable text. Presentation substitutions must
+        # never rewrite article quotations or extraction records.
+        if urlparse(self.path).path.startswith(("/api/literature", "/api/evidence-annotations")):
             return super().send(status, body, content_type, filename)
         if isinstance(body, (dict, list)):
             body = display_data(body)
@@ -163,6 +164,13 @@ class HostedHandler(Handler):
         member = self.member
         if path.startswith("/api/evidence-annotations") and not member:
             raise PermissionError("Sign in to view or save workspace evidence notes.")
+        if path.startswith("/api/literature"):
+            if not member:
+                raise PermissionError("Sign in to read article sources or extraction drafts.")
+            if mutation and member["role"] not in {"admin", "evaluator"}:
+                raise PermissionError(
+                    "Evaluation access is required to extract or confirm article cases."
+                )
         if mutation and not member:
             raise PermissionError("Sign in to generate, score or save a review.")
         if path in {"/api/rubrics/manage", "/api/decisions"} or (

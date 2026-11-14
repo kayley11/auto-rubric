@@ -184,7 +184,7 @@ export function SubmittedCases({ access }) {
               <p className="case-count">
                 {loading
                   ? "Loading workspace cases…"
-                  : `${matching.length} of ${rows.length} saved cases`}
+                  : `${matching.length} of ${rows.length} saved records (cases and question tasks)`}
               </p>
               <div className="case-list">
                 {matching.map((r) => (
@@ -194,6 +194,12 @@ export function SubmittedCases({ access }) {
                     onClick={() => setSelected(r.id)}
                   >
                     <small>{r.code || r.input.case_code || "Saved case"}</small>
+                    {r.question_task && (
+                      <small>
+                        Question {r.question_task.id} · shared case{" "}
+                        {r.question_task.parent_case_code}
+                      </small>
+                    )}
                     <b>
                       {r.input.title !== r.input.case_code
                         ? r.input.title
@@ -282,6 +288,42 @@ export function SubmittedCases({ access }) {
                         <p className="case-prewrap">{value}</p>
                       </section>
                     ))}
+                  {!!record.literature_sources?.length && (
+                    <section className="case-submission-history">
+                      <h3>Article evidence</h3>
+                      {record.question_task && (
+                        <p>
+                          Question {record.question_task.id} belongs to case{" "}
+                          {record.question_task.parent_case_code}. Other
+                          questions from this patient are separate tasks, not
+                          separate patients.
+                        </p>
+                      )}
+                      <p>
+                        Confirmed visible facts are saved here. The original
+                        article, hidden results and review history stay in the
+                        protected extraction record.
+                      </p>
+                      {record.literature_sources.map((entry) => (
+                        <button
+                          className="secondary"
+                          key={entry.draft_id}
+                          onClick={() =>
+                            window.dispatchEvent(
+                              new CustomEvent("arena-open-article-draft", {
+                                detail: { id: entry.draft_id },
+                              }),
+                            )
+                          }
+                        >
+                          Read source & confirmed draft <ArrowRight size={14} />
+                        </button>
+                      ))}
+                      <p className="field-help">
+                        Clinical reference · awaiting confirmation
+                      </p>
+                    </section>
+                  )}
                   <h3>Model evaluations</h3>
                   <button
                     className="primary"

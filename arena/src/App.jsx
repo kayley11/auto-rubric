@@ -29,6 +29,7 @@ import { HigherDecisions } from "./HigherDecisions";
 import { Review } from "./Review";
 import { Cases } from "./Cases";
 import { BatchImport } from "./BatchImport";
+import { LiteratureExtractor } from "./LiteratureExtractor";
 import { EvaluationSetup, clinicalRubricId } from "./EvaluationSetup";
 import { CaseContext } from "./CaseContext";
 import { ScoringEvidence } from "./ScoringEvidence.jsx";
@@ -215,6 +216,8 @@ export function App() {
     }
   });
   const [batchRunning, setBatchRunning] = useState(false);
+  const [articleRunning, setArticleRunning] = useState(false);
+  const [articleDraftId, setArticleDraftId] = useState("");
   const [batchRevision, setBatchRevision] = useState(0);
   const [readingComparison, setReadingComparison] = useState(() => {
     try {
@@ -232,7 +235,7 @@ export function App() {
     [sidebar, setSidebar] = useState(false);
   const seen = useRef(new Set()),
     resultRef = useRef(null);
-  const busy = pending || running(run) || batchRunning,
+  const busy = pending || running(run) || batchRunning || articleRunning,
     frozen = !!run,
     hasGrades = !!Object.keys(run?.grades || {}).length;
   const scored = Object.values(run?.grades || {}).filter((g) =>
@@ -375,6 +378,14 @@ export function App() {
   }, []);
   useEffect(() => {
     const open = (e) => openRun(e.detail.id);
+    const article = (e) => {
+      setRun(null);
+      setEntryMode("article");
+      setArticleDraftId(e.detail.id);
+      setPasteComparison(false);
+      window.location.hash = "evaluate";
+      setView("evaluation");
+    };
     const compare = (e) => openComparison(e.detail.records);
     const useCase = (e) => {
       if (!config) return;
@@ -393,10 +404,12 @@ export function App() {
     window.addEventListener("arena-open-evaluation", open);
     window.addEventListener("arena-open-comparison", compare);
     window.addEventListener("arena-use-workspace-case", useCase);
+    window.addEventListener("arena-open-article-draft", article);
     return () => {
       window.removeEventListener("arena-open-evaluation", open);
       window.removeEventListener("arena-open-comparison", compare);
       window.removeEventListener("arena-use-workspace-case", useCase);
+      window.removeEventListener("arena-open-article-draft", article);
     };
   }, [config]);
   useEffect(() => {
@@ -437,7 +450,11 @@ export function App() {
   }
   function loadCase(id) {
     const prepared =
-      id === "pilot" ? sample : config.cases.find((c) => c.case_id === id);
+      typeof id === "object"
+        ? id
+        : id === "pilot"
+          ? sample
+          : config.cases.find((c) => c.case_id === id);
     if (!prepared) return;
     setForm({
       ...empty,
@@ -451,7 +468,7 @@ export function App() {
       answer: "",
       reference_status: "draft",
     });
-    setSelectedCase(id);
+    setSelectedCase(typeof id === "object" ? id.case_id : id);
     setEntryMode("paste");
     setPreset(id === "pilot" ? "Clinical reasoning" : "Custom");
     setMode("generate");
@@ -876,7 +893,7 @@ export function App() {
                   ? "Case, saved answer and item-by-item assessment."
                   : readingComparison
                     ? "Saved case-by-model results. Open an answer, review its item scores or download the full comparison."
-                    : "Add your own case or import a batch. Choose a rubric and models, then generate or score answers."}
+                    : "Paste a case, import a batch or create source-linked questions from an article. Then choose a rubric and models to evaluate answers."}
               </p>
               {form.requirements_review?.reviewer && (
                 <p className="review-receipt">
@@ -901,12 +918,18 @@ export function App() {
                     "Import cases",
                     "Compare models across a CSV, JSON or JSONL file",
                   ],
+                  [
+                    "article",
+                    BookOpen,
+                    "Extract from article",
+                    "Upload a PDF or link, then review cases, questions and references",
+                  ],
                 ].map(([id, Icon, title, description]) => (
                   <button
                     key={id}
                     className={`entry-method ${entryMode === id ? "selected" : ""}`}
                     aria-pressed={entryMode === id}
-                    disabled={busy}
+                    disabled={busy || !config}
                     onClick={() => {
                       if (id === "paste" && entryMode !== "paste") {
                         newCase(false);
@@ -933,40 +956,49 @@ export function App() {
                 ))}
               </div>
             )}
-            {!run && entryMode !== "batch" && !pasteComparison && (
-              <>
-                <EvaluationSetup
-                  config={config}
-                  form={form}
-                  change={change}
-                  multiple
-                  disabled={busy}
-                  pasted={mode === "paste"}
-                  onCriteria={() => setDialog("criteria")}
-                  onViewCriteria={() => setDialog("rubric")}
-                />
-                <div
-                  className="segmented answer-source-choice"
-                  aria-label="Answer source"
-                >
-                  <button
-                    className={mode === "generate" ? "selected" : ""}
+            {!run &&
+              entryMode !== "batch" &&
+              entryMode !== "article" &&
+              !pasteComparison && (
+                <>
+                  <EvaluationSetup
+                    config={config}
+                    form={form}
+                    change={change}
+                    multiple
                     disabled={busy}
-                    onClick={() => setMode("generate")}
+                    pasted={mode === "paste"}
+                    onCriteria={() => setDialog("criteria")}
+                    onViewCriteria={() => setDialog("rubric")}
+                  />
+                  <div
+                    className="segmented answer-source-choice"
+                    aria-label="Answer source"
                   >
-                    <FlaskConical size={15} /> Generate an answer
-                  </button>
-                  <button
-                    className={mode === "paste" ? "selected" : ""}
-                    disabled={busy}
-                    onClick={() => setMode("paste")}
-                  >
-                    <Clipboard size={15} /> Paste an existing answer
-                  </button>
-                </div>
-              </>
-            )}
-            {!run && (entryMode === "batch" || pasteComparison) ? (
+                    <button
+                      className={mode === "generate" ? "selected" : ""}
+                      disabled={busy}
+                      onClick={() => setMode("generate")}
+                    >
+                      <FlaskConical size={15} /> Generate an answer
+                    </button>
+                    <button
+                      className={mode === "paste" ? "selected" : ""}
+                      disabled={busy}
+                      onClick={() => setMode("paste")}
+                    >
+                      <Clipboard size={15} /> Paste an existing answer
+                    </button>
+                  </div>
+                </>
+              )}
+            {!run && entryMode === "article" ? (
+              <LiteratureExtractor
+                access={config?.access}
+                onBusy={setArticleRunning}
+                initialDraftId={articleDraftId}
+              />
+            ) : !run && (entryMode === "batch" || pasteComparison) ? (
               <>
                 {pasteComparison && (
                   <button
@@ -1672,7 +1704,9 @@ export function App() {
                 <ol>
                   <li>
                     <b>Enter a case and a task.</b> Say who the answer is for
-                    and what it should contain.
+                    and what it should contain. You can also import a batch,
+                    or create several question drafts from an article. Check
+                    each question’s source, input and reference before saving it.
                   </li>
                   <li>
                     <b>Generate or paste an answer.</b> The answering model

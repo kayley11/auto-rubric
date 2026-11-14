@@ -50,7 +50,7 @@ class WorkspaceCases:
         self.root.mkdir(parents=True, exist_ok=True)
         self.lock = threading.RLock()
 
-    def save(self, rows, submission=None):
+    def save(self, rows, submission=None, *, literature_provenance=None):
         if not isinstance(rows, list) or not 1 <= len(rows) <= 200:
             raise ValueError("Supply 1–200 cases.")
         # Validate the complete import before saving any row.
@@ -96,7 +96,13 @@ class WorkspaceCases:
                 before = list(record.get("submissions", []))
                 if submission:
                     merge_submissions(record, [submission])
-                if not exists or before != record.get("submissions", []):
+                provenance_changed = False
+                if literature_provenance:
+                    record.setdefault("literature_sources", [])
+                    if literature_provenance not in record["literature_sources"]:
+                        record["literature_sources"].append(literature_provenance)
+                        provenance_changed = True
+                if not exists or before != record.get("submissions", []) or provenance_changed:
                     temporary = path.with_suffix(".tmp")
                     temporary.write_text(
                         json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -174,6 +180,20 @@ class WorkspaceCases:
                 )
         for key, record in records.items():
             record["code"] = record["input"].get("case_code") or "LEGACY-" + key[:10].upper()
+            question_sources = [
+                entry
+                for entry in record.get("literature_sources", [])
+                if entry.get("kind") == "article_question_set"
+            ]
+            if question_sources:
+                provenance = question_sources[-1]
+                record["question_task"] = {
+                    "id": record["input"].get("case_number", ""),
+                    "parent_case_code": provenance["parent_case_code"],
+                    "question_set_id": provenance["question_set_id"],
+                    "patient_group": provenance["patient_group"],
+                    "reference_status": "awaiting confirmation",
+                }
             if not record.get("submissions"):
                 record["submissions"] = [
                     {
