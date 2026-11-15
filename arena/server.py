@@ -14,7 +14,7 @@ from copy import deepcopy
 from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import comparison
 import evidence
@@ -481,6 +481,19 @@ class Handler(BaseHTTPRequestHandler):
                         "drafts": self.app.literature.catalogue(),
                         "reference_status": "awaiting confirmation",
                     },
+                )
+            case_source_match = re.fullmatch(
+                r"/api/literature/cases/([A-Za-z0-9_-]{1,60})/source-evidence", path
+            )
+            if case_source_match and not mutation:
+                from source_evidence import case_source_evidence
+
+                query = parse_qs(urlparse(self.path).query)
+                return self.send(
+                    200,
+                    case_source_evidence(
+                        self.app, case_source_match[1], query.get("draft_id", [""])[0]
+                    ),
                 )
             if path == "/api/literature/sources" and mutation:
                 return self.send(201, self.app.literature.create_source(self.body()))

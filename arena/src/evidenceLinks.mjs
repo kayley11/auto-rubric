@@ -1,3 +1,5 @@
+import { prepareClinicalText, displaySelectorsToRaw } from "./clinicalTextProjection.mjs";
+
 // Literal links only. Locating text does not establish clinical support or a grade.
 function canonical(text) {
   let value = "",
@@ -14,7 +16,7 @@ function canonical(text) {
   return { value, positions };
 }
 
-export function locateQuote(answer, quote) {
+function literalMatches(answer, quote) {
   const needle = canonical(quote.trim()).value;
   if (needle.length < 12) return [];
   const hay = canonical(answer),
@@ -29,6 +31,16 @@ export function locateQuote(answer, quote) {
   return matches;
 }
 
+export function locateQuote(answer, quote) {
+  const literal = literalMatches(answer, quote);
+  if (literal.length) return literal;
+  const document = prepareClinicalText(answer);
+  const readingQuote = prepareClinicalText(quote).text;
+  return literalMatches(document.text, readingQuote).flatMap(selector =>
+    displaySelectorsToRaw(document, [selector]).map(raw => ({...raw, match_method: "formatting_only"})),
+  );
+}
+
 export function suggestedEvidence(answer, reason = "", supplied = "") {
   const quotes = [];
   if (typeof supplied === "string" && supplied.trim())
@@ -38,7 +50,7 @@ export function suggestedEvidence(answer, reason = "", supplied = "") {
       if (typeof q === "string") quotes.push(q.trim());
     });
   const regex =
-    /“([^”\n]{12,2000})”|"([^"\n]{12,2000})"|‘([^’\n]{12,2000})’|'([^'\n]{12,2000})'/g;
+    /“([^”\n]{1,2000})”|"([^"\n]{1,2000})"|(?<![\p{L}\p{N}])‘([^\n]{1,2000}?)’(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])'([^\n]{1,2000}?)'(?![\p{L}\p{N}])/gu;
   for (const match of reason.matchAll(regex))
     quotes.push(match.slice(1).find(Boolean).trim());
   return [...new Set(quotes)].slice(0, 16).map((quote, index) => {

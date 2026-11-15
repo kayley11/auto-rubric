@@ -2,6 +2,7 @@
 export function sourceMatchLabel(item) {
   if (item.grounding !== "exact") return "Not a verbatim source match · review before use";
   const labels = {
+    archived_exact_passage: "Saved source paragraph · exact position",
     unique_whitespace_match: "Source match · whitespace aligned",
     unique_pdf_layout_match: "Source match · PDF layout aligned",
     unique_typography_match: "Source match · typography aligned",

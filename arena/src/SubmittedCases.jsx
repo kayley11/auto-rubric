@@ -3,6 +3,8 @@ import { ArrowRight, RefreshCw, Search } from "lucide-react";
 import { request } from "./StudyTools";
 import { savedComparisonGroups } from "./evaluationHistory.mjs";
 import { scoringVersionLabel } from "./caseIdentity.mjs";
+import { ClinicalText } from "./ClinicalText";
+import { SourceEvidence } from "./SourceEvidence";
 import { ContributorField, useContributor } from "./ContributorFields";
 import {
   caseSubmissions,
@@ -285,12 +287,13 @@ export function SubmittedCases({ access }) {
                     .map(([name, value]) => (
                       <section key={name}>
                         <h3>{name}</h3>
-                        <p className="case-prewrap">{value}</p>
+                        <ClinicalText as="p" text={value} />
                       </section>
                     ))}
+                  <SourceEvidence key={record.id} caseId={record.id} caseInfo={{source:record.input.source}} access={access} />
                   {!!record.literature_sources?.length && (
                     <section className="case-submission-history">
-                      <h3>Article evidence</h3>
+                      <h3>Extraction record</h3>
                       {record.question_task && (
                         <p>
                           Question {record.question_task.id} belongs to case{" "}
@@ -300,9 +303,9 @@ export function SubmittedCases({ access }) {
                         </p>
                       )}
                       <p>
-                        Confirmed visible facts are saved here. The original
-                        article, hidden results and review history stay in the
-                        protected extraction record.
+                        Confirmed visible facts remain in this saved case. Open
+                        the extraction record to inspect its review history or
+                        prepare a separate draft. Source evidence above is read-only.
                       </p>
                       {record.literature_sources.map((entry) => (
                         <button
@@ -316,7 +319,7 @@ export function SubmittedCases({ access }) {
                             )
                           }
                         >
-                          Read source & confirmed draft <ArrowRight size={14} />
+                          Open extraction record <ArrowRight size={14} />
                         </button>
                       ))}
                       <p className="field-help">

@@ -102,3 +102,9 @@ Saved score details link quoted answer passages to the saved rubric definition a
 ## Article extraction and question drafts
 
 Upload a PDF or article URL, retain source-linked facts, and generate several question/reference drafts for the same patient. Each question has its own visible/hidden boundary and exact input preview. Explicit per-question preparation checks are required before selected tasks enter Workspace cases. Clinical references remain **awaiting confirmation**; automatic evidence associations remain **awaiting review**. [Usage](docs/article-questions.md) · [B03 findings and validation](validation/20261114-article-questions/FINDINGS.md) · [Complete saved output](study-data/article-questions-b03-20261114/README.md).
+
+## Saved source passages in Case review
+
+Open **Source evidence** on a saved research or workspace case to compare linked passages with the original saved article text. Click **Read original passage** or a source highlight to move between them. Full text requires workspace sign-in; partial excerpts and missing full text have separate labels. Source review does not change case inputs, answers or grades, or send later outcomes to answering models.
+
+The 15 November archive backfill checked 131 previously unmapped cases: 90 now have full-text candidates, five have excerpt-only candidates and 36 still lack usable saved text. With the four earlier mappings retained, 99 of 135 cases have source passages. All automatic case associations and clinical references remain **awaiting confirmation**. [Findings and exceptions](validation/20261115-source-passages/FINDINGS.md) · [Method, preservation and validation](validation/20261115-source-passages/README.md).

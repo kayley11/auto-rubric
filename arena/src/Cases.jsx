@@ -4,6 +4,8 @@ import { displayData } from "./presentation.mjs";
 import { CaseModelResults } from "./CaseModelResults";
 import { SavedDocument } from "./EvidenceDialog";
 import { SubmittedCases } from "./SubmittedCases";
+import { ClinicalText } from "./ClinicalText";
+import { SourceEvidence } from "./SourceEvidence";
 import { FullReviewSummary } from "./ReviewSummary";
 
 function selectedCase() {
@@ -236,29 +238,12 @@ export function Cases({ onUseCase, canLoad, access }) {
                 </p>
                 <h3>Case</h3>
                 <p>{record.summary}</p>
+                <SourceEvidence key={`source-${record.id}`} caseId={record.id} caseInfo={record} access={access} />
                 <CaseModelResults
                   key={record.id}
                   caseId={record.id}
                   caseInfo={record}
                 />
-                <details className="study-disclosure">
-                  <summary>Case source and selection</summary>
-                  <h3>Why it was selected</h3>
-                  <p>{record.purpose}</p>
-                  <a
-                    className="case-source"
-                    href={record.source}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <BookOpen size={15} /> {record.source_label}
-                  </a>
-                  <details className="study-disclosure">
-                    <summary>Source location and adaptation</summary>
-                    <p>{record.source_location}</p>
-                    <p>{record.source_note}</p>
-                  </details>
-                </details>
                 <details className="study-disclosure">
                   <summary>Start a new evaluation with this case</summary>
                   <div className="case-template-actions">
@@ -343,17 +328,17 @@ export function Cases({ onUseCase, canLoad, access }) {
                           <h3>{c.label}</h3>
                           <p className="study-note">{c.rules}</p>
                           <h4>Case facts supplied</h4>
-                          <div className="case-prewrap">{c.facts}</div>
+                          <ClinicalText text={c.facts} />
                           <h4>Task supplied</h4>
-                          <div className="case-prewrap">{c.task}</div>
+                          <ClinicalText text={c.task} />
                           {c.history && (
                             <details>
                               <summary>Conversation supplied</summary>
-                              <div className="case-prewrap">{c.history}</div>
+                              <ClinicalText text={c.history} />
                             </details>
                           )}
                           <h4>Saved answer — unchanged</h4>
-                          <div className="case-prewrap">{c.answer}</div>
+                          <ClinicalText text={c.answer} />
                           <h4>Saved item scores and explanations</h4>
                           {c.scores.map((s) => (
                             <details className="case-item-result" key={s.item}>
@@ -373,7 +358,7 @@ export function Cases({ onUseCase, canLoad, access }) {
                           ))}
                           <details>
                             <summary>Provisional scoring reference</summary>
-                            <div className="case-prewrap">{c.reference}</div>
+                            <ClinicalText text={c.reference} />
                           </details>
                         </section>
                       ))}
