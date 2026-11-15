@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-15",
+  "issue": "Selecting Book cases 5 cleared the rendered application until refresh",
+  "root_cause": {
+    "error": "Cannot read properties of undefined (reading 'toLocaleString')",
+    "old_field": "fullReview.item_statuses.scored",
+    "current_index_field": "fullReview.item_statuses.complete",
+    "trigger": "Rendering the earlier-case history summary when a source filter is active"
+  },
+  "fix": [
+    "Read current complete counts with a legacy scored fallback",
+    "Treat the two count keys as aliases rather than summing them",
+    "Render an explicit unavailable message for missing or invalid counts",
+    "Guard optional historical audit metadata"
+  ],
+  "checks": {
+    "frontend_tests_passed": 73,
+    "interface_regression_tests_passed": 4,
+    "production_build": "passed",
+    "browser_groups_passed": 9,
+    "book_cases_opened": 5,
+    "rubric_table_rows_per_book_case": 22,
+    "refresh_and_group_switching": "passed",
+    "browser_console_errors": 0,
+    "original_public_files_sha256_verified": 2029,
+    "changed_original_public_files": 0,
+    "sites_hosting_tests_passed": 16
+  },
+  "data_preservation": {
+    "new_model_or_scoring_calls": 0,
+    "original_answers_scores_and_raw_outputs_changed": false,
+    "clinical_confirmation_labels_changed": false
+  },
+  "publication": {
+    "version": 52,
+    "commit_sha": "1634ebd8cb95943b6a25b574a7cf5f56714aa391",
+    "deployment_id": "appgdep_6af9940d09a88191bf91e5fd62c12056",
+    "status": "succeeded",
+    "url": "https://auto-rubric.kayley1026lzt.chatgpt.site",
+    "live_checks": "passed",
+    "website_access_unchanged": true
+  },
+  "live_browser": {
+    "url": "https://auto-rubric.kayley1026lzt.chatgpt.site/#cases/C01",
+    "bookCases": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05"
+    ],
+    "C01RubricRows": 22,
+    "otherGroupCount": 6,
+    "newConsoleErrors": [],
+    "scripts": [
+      "/assets/index-_BAgENLJ.js"
+    ]
+  }
+}

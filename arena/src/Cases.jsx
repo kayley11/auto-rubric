@@ -4,6 +4,7 @@ import { displayData } from "./presentation.mjs";
 import { CaseModelResults } from "./CaseModelResults";
 import { SavedDocument } from "./EvidenceDialog";
 import { SubmittedCases } from "./SubmittedCases";
+import { FullReviewSummary } from "./ReviewSummary";
 
 function selectedCase() {
   return window.location.hash.match(/^#cases\/([A-Z0-9]+)$/)?.[1] || "";
@@ -393,7 +394,7 @@ export function Cases({ onUseCase, canLoad, access }) {
           <div className="full-review-update">
             <strong>N/A audit · all {naAudit.case_count} research cases · 12 Nov 2026</strong>
             <p>75 omitted reasoning grades added for BN02, BN08, BN13, BN23 and BN30. The same saved answers were used. Other missing grades and applicability decisions are now labelled separately.</p>
-            <p className="field-help">{naAudit.additional_documentary_backfill} further omitted item assessments completed. Across primary answers, {naAudit.primary_dispositions.awaiting_confirmation} applicability decisions remain awaiting confirmation. Click an item status to see why. Original N/A records and all earlier numerical grades are retained.</p>
+            <p className="field-help">{naAudit.additional_documentary_backfill} further omitted item assessments completed. Across primary answers, {naAudit.primary_dispositions?.awaiting_confirmation ?? "an unrecorded number of"} applicability decisions remain awaiting confirmation. Click an item status to see why. Original N/A records and all earlier numerical grades are retained.</p>
             <button className="text-button" onClick={() => setDocument({ label: "N/A audit: changes, results and decisions", url: "/na-audit/FINDINGS.md" })}>Read audit findings</button>
             <button className="text-button" onClick={() => setDocument({ label: "Backfill: exact prompts and returned assessments", url: "/na-audit/BACKFILL_OUTPUTS.md" })}>Read full scoring output</button>
             <a className="text-button" href="/na-audit/ALL_NA_POSITIONS.csv" download>Download item audit</a>
@@ -402,7 +403,7 @@ export function Cases({ onUseCase, canLoad, access }) {
         {fullReview && group !== "all" && group !== "workspace" && group !== "complex-bmj" && record?.group !== "complex-bmj" && (
           <div className="full-review-update">
             <strong>Earlier cases · full-rubric review · {fullReview.additional_recovery ? "updated 12 Nov 2026" : "4 Nov 2026"}</strong>
-            <p>This review covers the earlier {earlierCaseCount} cases only. All 22 items were checked for {fullReview.complete_answers} saved answers: {fullReview.item_statuses.scored.toLocaleString("en-GB")} numerical ratings. Every unscored item has a reason. The {complexCaseCount} new complex BMJ cases have a separate comparison.</p>
+            <FullReviewSummary index={fullReview} earlierCaseCount={earlierCaseCount} complexCaseCount={complexCaseCount} />
             <button className="text-button" onClick={() => setDocument({ label: "Full-rubric review: findings and limits", url: "/full-rubric-review/SUMMARY.md" })}>Read findings</button>
             <a className="text-button" href="/full-rubric-review/ALL_ITEM_RESULTS.csv" download>Download all item results</a>
             <button className="text-button" onClick={() => filter("complex-bmj")}>View {complexCaseCount} new cases</button>
