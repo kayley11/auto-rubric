@@ -1,3 +1,4 @@
+import { ClinicalText } from "./ClinicalText";
 import { useEffect, useRef, useState } from "react";
 import { displayData, displayText } from "./presentation.mjs";
 import { requestSignIn } from "./AccessControl";
@@ -51,15 +52,12 @@ export function RuleView({ cid, rule }) {
         {cid} · {rule.name}
         <ChevronDown size={15} />
       </summary>
-      <p>{rule.definition}</p>
+      <ClinicalText as="p" text={rule.definition} />
       <dl className="study-anchors">
         {[1, 2, 3, 4, 5].map((score) => (
           <div key={score}>
             <dt>{score}</dt>
-            <dd>
-              {rule.anchors[String(score)] ||
-                "No original descriptor supplied."}
-            </dd>
+            <ClinicalText as="dd" text={rule.anchors[String(score)] || "No original descriptor supplied."} />
           </div>
         ))}
       </dl>

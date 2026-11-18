@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import time
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from unittest.mock import patch
@@ -379,6 +380,9 @@ class VerifiedJudgment(MultiChoiceJudgment):
     selected_label: str = Field(description="Exact label from the displayed option position")
 
 
+_GRADING_TRANSPORT_LOCK = threading.Lock()
+
+
 class Provider:
     def __init__(self, settings):
         self.settings = settings
@@ -401,6 +405,7 @@ class Provider:
             if response.status_code >= 400:
                 # Keep provider error bodies local, with credentials redacted.
                 capture["provider_error"] = redact(response.text[:3000], self.settings.api_key)
+                capture["retryable"] = response.status_code == 429 or response.status_code >= 500
                 raise ValueError(f"Model service returned HTTP {response.status_code}. Try again.")
             raw = response.json()
             # Preserve visible outputs and usage, without returning hidden reasoning fields.
@@ -428,10 +433,12 @@ class Provider:
                 raise ValueError("The model service returned no visible answer.")
             return raw
         except httpx.TimeoutException as exc:
+            capture["retryable"] = True
             raise ValueError(
                 "The model service timed out. Saved answers and grades are retained."
             ) from exc
         except httpx.RequestError as exc:
+            capture["retryable"] = True
             raise ValueError("Could not connect to the model service. Try again.") from exc
         finally:
             capture["elapsed_seconds"] = round(time.monotonic() - started, 2)
@@ -494,34 +501,39 @@ class Provider:
             raw = await self.completion(payload, capture)
             return litellm.ModelResponse(**raw)
 
-        # The app serialises provider calls; no concurrent patch or grading operation is allowed.
-        with patch("autorubric.llm.litellm.acompletion", new=transport):
-            query = judge_query(data, cid)
-            if cid == "D7c":
-                query += (
-                    "\n\nVerified word-count check (computed locally, not estimated):\n"
-                    + json.dumps(word_count_info(data["answer"], data["task"]))
-                    + "\n"
-                    + WORD_COUNT_RULE
-                    + " Use this count rather than estimating length. Apply the original "
-                    "rubric to the complete task; the count does not automatically "
-                    "determine a grade."
+        # Other workers may generate concurrently. The library's global transport
+        # patch must remain isolated so personal credentials cannot cross jobs.
+        await asyncio.to_thread(_GRADING_TRANSPORT_LOCK.acquire)
+        try:
+            with patch("autorubric.llm.litellm.acompletion", new=transport):
+                query = judge_query(data, cid)
+                if cid == "D7c":
+                    query += (
+                        "\n\nVerified word-count check (computed locally, not estimated):\n"
+                        + json.dumps(word_count_info(data["answer"], data["task"]))
+                        + "\n"
+                        + WORD_COUNT_RULE
+                        + " Use this count rather than estimating length. Apply the original "
+                        "rubric to the complete task; the count does not automatically "
+                        "determine a grade."
+                    )
+                capture["rules_version"] = data.get("rules_version", "original")
+                capture["evidence_version"] = data.get("evidence_version", "website-evidence-20261024")
+                capture["criterion"] = make_criterion(cid, data).model_dump(mode="json")
+                capture["evidence_query"] = query
+                # D5c grades the executed requests/notes. Final-answer text is explicitly separate,
+                # so a recommendation cannot silently become an earlier request.
+                submission = data["answer"]
+                if revised and cid == "D5c":
+                    submission = revised_submission(data, cid)
+                capture["submission"] = submission
+                report = await Rubric([make_criterion(cid, data)]).grade(
+                    submission,
+                    grader=grader,
+                    query=query,
                 )
-            capture["rules_version"] = data.get("rules_version", "original")
-            capture["evidence_version"] = data.get("evidence_version", "website-evidence-20261024")
-            capture["criterion"] = make_criterion(cid, data).model_dump(mode="json")
-            capture["evidence_query"] = query
-            # D5c grades the executed requests/notes. Final-answer text is explicitly separate,
-            # so a recommendation cannot silently become an earlier request.
-            submission = data["answer"]
-            if revised and cid == "D5c":
-                submission = revised_submission(data, cid)
-            capture["submission"] = submission
-            report = await Rubric([make_criterion(cid, data)]).grade(
-                submission,
-                grader=grader,
-                query=query,
-            )
+        finally:
+            _GRADING_TRANSPORT_LOCK.release()
         obj = report.model_dump(mode="json")
         capture["autorubric_report"] = obj
         rows = obj.get("report") or []

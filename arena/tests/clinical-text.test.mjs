@@ -67,3 +67,41 @@ test("possessive apostrophes inside a quotation do not create truncated quote li
   assert.equal(links[0].status,"located");
   assert.deepEqual(suggestedEvidence("One answer.", "The patient's symptoms and the doctor's notes are discussed."),[]);
 });
+
+test("scientific notation is readable and still maps to unchanged UTF-16 source spans", () => {
+  const raw = String.raw`🙂 Creatinine 311 $\mu$mol/L; $\beta$-hCG; $\ge$ 40; $DO_2$; $10^{9}$; \(\mathrm{mmol/L}\).`;
+  const document = prepareClinicalText(raw);
+  assert.equal(document.text, "🙂 Creatinine 311 μmol/L; β-hCG; ≥ 40; DO₂; 10⁹; mmol/L.");
+  for (const quote of ["311 μmol/L", "DO₂", "10⁹", "β-hCG"]) {
+    const start = document.text.indexOf(quote), end = start + quote.length;
+    const [source] = displaySelectorsToRaw(document, [{start,end}]);
+    assert.equal(source.quote, raw.slice(source.start,source.end));
+    assert.equal(rawSelectorsToDisplay(document, [source])[0].quote, quote);
+  }
+  const [located] = locateQuote(raw, "Creatinine 311 μmol/L;");
+  assert.equal(located.match_method,"formatting_only");
+  assert.equal(document.raw, raw);
+  assert.equal(document.notationWarnings.length,0);
+});
+
+test("notation parsing preserves prices and flags unknown formula syntax rather than guessing", () => {
+  const raw = String.raw`Costs $5 and $10. Unknown $\invented{x}$ and malformed 1$$minor.`;
+  const document = prepareClinicalText(raw);
+  assert.equal(document.text, raw);
+  assert.equal(document.notationWarnings.length,2);
+});
+
+test("only the source-verified legacy rubric formula restores its missing multiplication signs", () => {
+  const raw = "Evidence Score = max(0, 5 $-$ 1$$minor $-$ 3$$major unsupported claims)";
+  const document = prepareClinicalText(raw);
+  assert.equal(document.text,"Evidence Score = max(0, 5 - 1×minor - 3×major unsupported claims)");
+  assert.equal(document.notationWarnings.length,0);
+  assert.equal(document.raw,raw);
+  assert.equal(prepareClinicalText("Unverified 1$$minor").text,"Unverified 1$$minor");
+});
+
+test("clipped quote formatting is hidden without dropping clinical wording or numeric operators", () => {
+  const raw="Treatment Gap:** The records end before the decision.\nDifferential Mechanisms 1. **Drug-Induced Capillary Leak Syndrome (CLS)...\n2**3 and A * B";
+  assert.equal(prepareClinicalText(raw).text,"Treatment Gap: The records end before the decision.\nDifferential Mechanisms 1. Drug-Induced Capillary Leak Syndrome (CLS)...\n2**3 and A * B");
+  assert.equal(prepareClinicalText("** Required urgent actions.").text,"Required urgent actions.");
+});

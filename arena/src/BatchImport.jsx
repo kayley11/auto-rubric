@@ -1,3 +1,4 @@
+import { backgroundJobs, applyBackgroundSnapshot, restoreBackgroundBatch } from "./backgroundBatch.mjs";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownToLine,
@@ -53,6 +54,10 @@ const modelLabel = (id) => (id === PROVIDED_ANSWER ? "Provided answer" : id);
 const statusLabel = (s) =>
   ({
     ready: "Ready",
+    preparing: "Preparing task…",
+    queued: "Queued",
+    retry_wait: "Waiting to retry",
+    connection_required: "Connection required",
     generating: "Generating…",
     scoring: "Scoring…",
     answer_ready: "Answer saved",
@@ -238,10 +243,11 @@ export function BatchImport({
   onViewCriteria,
   origin = "import",
   onReset,
+  initialBatchId = "",
   onReadOnlyChange,
 }) {
   const [initial] = useState(restore);
-  const [contributor, setContributor] = useContributor();
+  const [contributor, setContributor] = useContributor(config?.access);
   const [submission, setSubmission] = useState(
     () =>
       initial.case_submission ||
@@ -249,6 +255,9 @@ export function BatchImport({
       newSubmission("Imported cases"),
   );
   const [rows, setRows] = useState(() => restoreComparison(initial));
+  const [serverBatchId,setServerBatchId] = useState(initialBatchId || initial.serverBatchId || "");
+  const [serverRequestId,setServerRequestId] = useState(initial.serverRequestId || "");
+  const [serverActive,setServerActive] = useState(false);
   const [locked, setLocked] = useState(initial.defaults || null);
   const [readOnly, setReadOnly] = useState(!!initial.readOnly);
   const [filename, setFilename] = useState(initial.filename || "");
@@ -303,6 +312,8 @@ export function BatchImport({
           origin,
           readOnly,
           filename,
+          serverBatchId,
+          serverRequestId,
           case_submission: submission,
         }),
       );
@@ -311,7 +322,7 @@ export function BatchImport({
         "This batch exceeds this tab’s storage. Completed runs are saved on the server; keep the tab open or export the batch before leaving.",
       );
     }
-  }, [rows, locked, readOnly, filename, submission]);
+  }, [rows, locked, readOnly, filename, submission, serverBatchId, serverRequestId]);
   useEffect(() => {
     for (const row of rows) {
       for (const [model, cell] of Object.entries(row.results || {})) {
@@ -332,14 +343,14 @@ export function BatchImport({
     };
   }, []);
   useEffect(() => {
-    if (!busy) return;
+    if (!busy || config?.access?.durable_queue) return;
     const warn = (e) => {
       e.preventDefault();
       e.returnValue = "";
     };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [busy]);
+  }, [busy,config?.access?.durable_queue]);
   function updateRow(id, patch) {
     if (alive.current)
       setRows((current) =>
@@ -364,6 +375,7 @@ export function BatchImport({
   }
   function preview(value, fileName) {
     try {
+      setServerBatchId(""); setServerRequestId(""); setServerActive(false);
       setRows(parseCases(value, fileName).map((r) => ({ ...r, results: {} })));
       setLocked(null);
       setReadOnly(false);
@@ -385,9 +397,43 @@ export function BatchImport({
       setError(e.message);
     }
   }
+  async function watchBackground(identifier) {
+    let snapshot;
+    while (alive.current && !stop.current) {
+      snapshot = await api(`/api/batches/${identifier}`);
+      if (!alive.current) return;
+      setRows(current => applyBackgroundSnapshot(current,snapshot));
+      setServerActive(snapshot.active);
+      const done = snapshot.cells.filter(c => c.status === "complete").length;
+      setMessage(snapshot.active ? `${done}/${snapshot.cells.length} tasks complete. The backend continues if you leave this page.` : `Batch finished: ${done}/${snapshot.cells.length} tasks complete. Open unfinished cells for their saved errors.`);
+      if (!snapshot.active) return snapshot;
+      await new Promise(resolve => setTimeout(resolve,1800));
+    }
+    return snapshot;
+  }
+  useEffect(() => {
+    if (!serverBatchId || readOnly || !config?.access?.durable_queue) return;
+    let current = true;
+    async function reopen() {
+      try {
+        const snapshot = await api(`/api/batches/${serverBatchId}?include_inputs=1`);
+        if (!current || !alive.current) return;
+        const restored = restoreBackgroundBatch(snapshot);
+        setRows(restored.rows); setLocked(restored.defaults); setFilename(restored.filename);
+        setServerActive(snapshot.active);
+        if (snapshot.active) {setBusy(true); onBusy(true); stop.current=false; await watchBackground(serverBatchId);}
+      } catch(e) {if(current)setError(e.message);} finally {if(current && alive.current)setBusy(false);onBusy(false);}
+    }
+    reopen(); return () => {current=false;};
+  }, [serverBatchId,config?.access?.durable_queue]);
   async function start() {
     if (!canEvaluate) {
       window.dispatchEvent(new Event("arena-sign-in"));
+      return;
+    }
+    if (serverBatchId && serverActive) {
+      setBusy(true); onBusy(true); stop.current=false; setError("");
+      try {await watchBackground(serverBatchId);} catch(e){if(alive.current)setError(e.message);} finally {if(alive.current)setBusy(false);onBusy(false);}
       return;
     }
     if (!valid) return;
@@ -420,6 +466,17 @@ export function BatchImport({
         })),
       });
       window.dispatchEvent(new Event("arena-cases-saved"));
+      if (config?.access?.durable_queue) {
+        const requestId = serverBatchId ? crypto.randomUUID().replaceAll("-", "") : serverRequestId || crypto.randomUUID().replaceAll("-", "");
+        setServerRequestId(requestId);
+        sessionStorage.setItem(BATCH_STORAGE,JSON.stringify({rows,defaults:fixed,origin,filename,case_submission:submission,serverBatchId:"",serverRequestId:requestId}));
+        const submitted = await api("/api/batches",{request_id:requestId,jobs:backgroundJobs(remaining,fixed)});
+        setServerActive(submitted.active);
+        setRows(current => applyBackgroundSnapshot(current,submitted));
+        // The effect above reopens this saved batch and watches progress.
+        setServerBatchId(submitted.id);
+        return;
+      }
       const cells = new Map(
         remaining.map(({ row, model }) => [
           `${row.id}/${model}`,
@@ -583,12 +640,20 @@ export function BatchImport({
               ? "Only saved evaluations are shown. Opening or exporting results makes no model calls."
               : "Settings are fixed for this comparison. Completed results remain available while other answers are being assessed."}
           </p>
+          {!readOnly && !allComplete && config?.access?.personal_connections && <details>
+            <summary>Replace API connections for unfinished tasks</summary>
+            <p className="field-help">Choose a replacement if a key expires or is revoked, then retry unfinished tasks. Case text, answers, model IDs and scoring rules stay fixed.</p>
+            <EvaluationSetup config={config} form={settings} multiple disabled connectionLocked={busy}
+              change={(key,value) => {if(key.endsWith("_connection_id"))setLocked(previous => ({...previous,[key]:value}));}}
+              onCriteria={onCriteria} onViewCriteria={onViewCriteria}/>
+          </details>}
         </div>
       ) : (
         <EvaluationSetup
           config={config}
           form={settings}
-          change={change}
+          change={(key,value) => {if(locked && key.endsWith("_connection_id"))setLocked(previous => ({...previous,[key]:value}));else change(key,value);}}
+          connectionLocked={busy}
           multiple
           disabled={!!locked || busy}
           onCriteria={onCriteria}
@@ -598,6 +663,7 @@ export function BatchImport({
       {!locked && !readOnly && (
         <div className="panel">
           <SubmissionFields
+                accountId={config?.access?.member_id}
             contributor={contributor}
             onContributor={setContributor}
             submission={submission}
@@ -1047,7 +1113,9 @@ export function BatchImport({
                   ? "Open a result to read the answer and item explanations, or export this table."
                   : invalid.length
                     ? `${invalid.length} selected cases need attention.`
-                    : "Keep this tab open. Temporary failures move to the end, with up to two retries; other cases continue. Saved answers are reused."}
+                    : config?.access?.durable_queue
+                      ? "The backend continues after you leave. Reopen this batch from Saved evaluations. Temporary failures retry up to twice; saved answers and completed grades are reused."
+                      : "Keep this tab open. Temporary failures move to the end, with up to two retries; other cases continue. Saved answers are reused."}
               </p>
             </div>
             <div className="batch-action-buttons">
@@ -1092,17 +1160,19 @@ export function BatchImport({
                   </div>
                 </details>
               )}
+              {serverBatchId && <a className="text-button" href={`/#evaluate/batch/${serverBatchId}`}>Saved background batch · {serverBatchId.slice(0,8)}</a>}
+              {serverBatchId && serverActive && <button className="secondary" onClick={async () => {try {await api(`/api/batches/${serverBatchId}/cancel`,{});setMessage("Cancellation requested. Saved output is retained.");} catch(e){setError(e.message);}}}>Cancel unfinished tasks</button>}
               {busy ? (
                 <button
                   className="secondary"
                   onClick={() => {
                     stop.current = true;
                     setMessage(
-                      "Pausing after the current evaluation finishes…",
+                      serverBatchId ? "Stopped watching. Submitted tasks continue on the backend; reopen the saved batch to see progress." : "Pausing after the current evaluation finishes…",
                     );
                   }}
                 >
-                  <Pause size={15} /> Pause after this evaluation
+                  <Pause size={15} /> {serverBatchId ? "Stop watching" : "Pause after this evaluation"}
                 </button>
               ) : !readOnly && !allComplete ? (
                 <button

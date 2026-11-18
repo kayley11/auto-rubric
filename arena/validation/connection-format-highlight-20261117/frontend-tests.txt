@@ -1,0 +1,142 @@
+
+> arena@0.0.0 build
+> vite build && node scripts/prepare-sites-build.mjs
+
+vite v6.4.5 building for production...
+transforming...
+✓ 2019 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/client/index.html                              0.42 kB │ gzip:   0.29 kB
+dist/client/assets/ArticleQuestions-DWtPQDZm.css    3.58 kB │ gzip:   1.17 kB
+dist/client/assets/index-BcSfvJQ6.css             102.15 kB │ gzip:  20.16 kB
+dist/client/assets/ArticleQuestions-DTtSLolF.js    15.99 kB │ gzip:   5.22 kB
+dist/client/assets/index-DH9CGxak.js              534.64 kB │ gzip: 163.35 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.63s
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json
+
+> arena@0.0.0 test:sites
+> node --test tests/hosting-worker.test.mjs
+
+✔ public study snapshots work without a backend or login (20.799083ms)
+✔ zero-shot comparison never uses public snapshots and requires a workspace session (1.009208ms)
+✔ five-model comparison is public and falls back to saved case results (1.0355ms)
+✔ case-series results are public offline and unknown task IDs are rejected (0.371ms)
+✔ cross-origin writes fail before contacting the backend (0.171958ms)
+✔ offline writes fail clearly, private runs never fall back to public snapshots (0.36075ms)
+✔ a retained login cookie does not block public study browsing during an outage (0.407542ms)
+✔ proxy sets its own bridge header and forwards only the application session (0.16475ms)
+✔ logout clears the application cookie even when the computer is offline (0.125209ms)
+✔ recovery rejects unsigned, altered and expired updates (4.272334ms)
+✔ a verified new address replaces the connection without republishing (0.922042ms)
+✔ expired connections never fall back to an old static tunnel (0.20325ms)
+✔ recovery rejects stale updates and disallowed addresses before probing (0.5545ms)
+✔ an unverified backend cannot change the registered address (0.503209ms)
+✔ public recovery status exposes no connection address or secret (0.131625ms)
+✔ oversized recovery bodies are rejected without a database update (0.250292ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.716208
+✔ layout repairs and source restorations are never labelled verbatim model quotes (0.660375ms)
+✔ overlapping source highlights preserve text and UTF-16 positions (0.184042ms)
+✔ case preview excludes hidden outcomes, unresolved facts and source metadata (0.636083ms)
+✔ question preview contains only that question's visible case and task (0.738042ms)
+✔ selection and confirmation count tasks under one parent case (0.6575ms)
+✔ editing evidence or reference clears review checks; selecting a task does not (0.093125ms)
+✔ save payload preserves question IDs without accepting source snapshots from the client (0.100916ms)
+✔ reopening a batch preserves each model and accepts a replacement connection without relabelling answers (0.926458ms)
+✔ batch polling retains earlier completed results while later cells queue or fail (0.094334ms)
+✔ Explicit duplicate case codes are rejected instead of silently merging inputs (1.007208ms)
+✔ Saved comparisons reopen the actual case–model records with their original rules (7.381042ms)
+✔ Comparison groups retain source records and distinct cases without losing model labels (0.168167ms)
+✔ Timeouts move to the queue tail while untouched cases finish first (0.294042ms)
+✔ Queue retries are bounded and permanent errors do not block the next case (0.691459ms)
+✔ CSV preserves quoted commas, line breaks and escaped quotes (4.286958ms)
+✔ Malformed CSV and non-text fields are rejected before a run (0.173834ms)
+✔ JSON, wrapped JSON and JSONL use the same fields (0.15675ms)
+✔ Preview checks required text, common task, server limits and revised D5c evidence (4.132834ms)
+✔ An imported case never inherits another case's reference or interview (0.25825ms)
+✔ A generated answer is scored only after generation finishes (0.268334ms)
+✔ Pasted answers go directly to scoring (0.062958ms)
+✔ Resuming a partial saved run retries it without creating a duplicate (0.0785ms)
+✔ A failed case retains its run ID for a later retry (0.108125ms)
+✔ A batch compares each generated case across selected models but scores a supplied answer once (0.149208ms)
+✔ Legacy single-model batches keep their saved run IDs when opened as a comparison (0.072666ms)
+✔ Matrix findings quote an assessed item rather than inventing a total score (0.055334ms)
+✔ Comparison CSV preserves case numbers, item grades, model columns and quoted explanations (0.232083ms)
+✔ Unnamed cases receive distinct codes which survive model expansion and resume (0.180334ms)
+✔ Written-case defaults leave actual acquisition optional without changing saved presets (0.075208ms)
+✔ Current study defaults apply to empty forms while populated or explicitly configured drafts keep their version (0.1005ms)
+✔ The full case context preserves returned records and source details without adding hidden evidence to blind review (0.20725ms)
+✔ Deployment checks stay accessible separately without changing clinical records or scores (0.251ms)
+✔ contributor and batch filters match the same submission, not unrelated events (1.225333ms)
+✔ source search, legacy records and filter options remain available (6.009708ms)
+✔ contributor IDs accept stable short identifiers and reject empty or invalid values (0.103875ms)
+✔ reading view formats headings, list labels and malformed summary labels (1.82975ms)
+✔ page controls, rules and excess blank lines become ordinary paragraph breaks (0.163125ms)
+✔ selection across formatting and an emoji maps back to the exact unchanged raw answer (1.003833ms)
+✔ old raw annotations remain locatable, including a whole bold span (0.123833ms)
+✔ format-only links are explicit and keep raw offsets; paraphrases remain unlinked (4.004125ms)
+✔ formatting preserves clinical numbers, negation, standalone symbols and raw fingerprints (10.22225ms)
+✔ possessive apostrophes inside a quotation do not create truncated quote links (0.507667ms)
+✔ scientific notation is readable and still maps to unchanged UTF-16 source spans (0.444333ms)
+✔ notation parsing preserves prices and flags unknown formula syntax rather than guessing (0.091084ms)
+✔ only the source-verified legacy rubric formula restores its missing multiplication signs (0.177583ms)
+✔ clipped quote formatting is hidden without dropping clinical wording or numeric operators (0.09775ms)
+✔ links only a literal span and preserves exact answer wording (0.780667ms)
+✔ does not silently link changed negation, numbers, ellipses or paraphrases (1.375667ms)
+✔ repeated excerpts are ambiguous and receive no automatic annotation (1.27825ms)
+✔ unquoted omission does not invent a supporting quotation (2.731583ms)
+✔ a short saved excerpt is distinguished from text absent from the answer (0.993708ms)
+✔ context fingerprints change with answer, reason and rubric version (9.410584ms)
+✔ selecting text prepares a prompt, with exact raw evidence and no annotation or save action (2.021542ms)
+✔ empty, external and whitespace-only selections do not offer a highlight (0.398667ms)
+✔ public study snapshots work without a backend or login (25.954208ms)
+✔ zero-shot comparison never uses public snapshots and requires a workspace session (1.032375ms)
+✔ five-model comparison is public and falls back to saved case results (0.768084ms)
+✔ case-series results are public offline and unknown task IDs are rejected (0.356792ms)
+✔ cross-origin writes fail before contacting the backend (0.1715ms)
+✔ offline writes fail clearly, private runs never fall back to public snapshots (0.352084ms)
+✔ a retained login cookie does not block public study browsing during an outage (0.41675ms)
+✔ proxy sets its own bridge header and forwards only the application session (0.170834ms)
+✔ logout clears the application cookie even when the computer is offline (0.135417ms)
+✔ recovery rejects unsigned, altered and expired updates (4.82925ms)
+✔ a verified new address replaces the connection without republishing (1.07675ms)
+✔ expired connections never fall back to an old static tunnel (0.200084ms)
+✔ recovery rejects stale updates and disallowed addresses before probing (0.662417ms)
+✔ an unverified backend cannot change the registered address (0.44725ms)
+✔ public recovery status exposes no connection address or secret (0.140375ms)
+✔ oversized recovery bodies are rejected without a database update (0.268917ms)
+(node:81235) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a saved batch renders while the configuration request is still pending (55.2275ms)
+✔ reading text renders escaped content and bold headings without Markdown delimiters (4.334625ms)
+✔ case source review starts collapsed and keeps full article text behind workspace access (5.229292ms)
+✔ filtered case history renders the current index, legacy counts and missing counts without crashing (11.630209ms)
+✔ personal account attribution is read-only while legacy shared attribution stays editable (2.948916ms)
+✔ an unfinished saved batch can replace its API connections without reopening clinical settings (11.122459ms)
+✔ pending labels use generic confirmation wording (1.030208ms)
+✔ display copies retain clinical facts, scores, IDs and the untouched source (0.210375ms)
+✔ reviewer IDs remain usable without displaying personal names (0.243ms)
+✔ source notes retain their DOI, date and licence (0.056417ms)
+✔ displayed JSON and plain-text previews remove the old named version label (0.177917ms)
+✔ a saved applicability decision is not displayed as an unfinished scoring job (1.86625ms)
+✔ missing assessment, unavailable answer, scope and numeric grades remain distinct (0.071042ms)
+ℹ tests 83
+ℹ suites 0
+ℹ pass 83
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.635875

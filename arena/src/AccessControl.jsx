@@ -7,13 +7,14 @@ export function requestSignIn(response) {
     window.dispatchEvent(new Event("arena-sign-in"));
 }
 
-export function AccessControl({ access }) {
+export function AccessControl({ access, onRefresh }) {
   const dialogRef = useRef(null);
   const [open, setOpen] = useState(false),
-    [id, setId] = useState("workspace"),
+    [id, setId] = useState(""),
     [password, setPassword] = useState(""),
     [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [checking, setChecking] = useState(false);
   useEffect(() => {
     const show = () => {
       if (access?.hosted && !access.authenticated) setOpen(true);
@@ -46,6 +47,18 @@ export function AccessControl({ access }) {
     };
   }, [open]);
   if (!access?.hosted) return null;
+  const connectionMessage = "The website cannot reach the evaluation server. Its backend or temporary tunnel may be reconnecting. Saved study results remain available.";
+  async function checkConnection() {
+    setChecking(true);
+    try {
+      const value = await onRefresh?.();
+      setError(value?.access?.online ? "" : connectionMessage);
+    } catch {
+      setError(connectionMessage);
+    } finally {
+      setChecking(false);
+    }
+  }
   async function signIn(event) {
     event.preventDefault();
     setBusy(true);
@@ -59,9 +72,10 @@ export function AccessControl({ access }) {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Sign-in failed.");
       setPassword("");
+      if (result.role === "reviewer") window.location.hash = "review";
       window.location.reload();
     } catch (e) {
-      setError(e.message);
+      setError(/Evaluations are offline|host computer must be online/i.test(e.message) ? connectionMessage : e.message);
     } finally {
       setBusy(false);
     }
@@ -83,11 +97,13 @@ export function AccessControl({ access }) {
       <div className="access-control">
         <span>
           {access.online === false
-            ? "Evaluations offline"
+            ? "Evaluation server unavailable"
             : access.authenticated
               ? "Workspace access"
               : "Public view"}
         </span>
+        {access.online === false && <button className="secondary" disabled={checking} onClick={checkConnection}>{checking ? "Checking…" : "Check connection"}</button>}
+        {access.authenticated && <a className="subtle-button" href="/#account">Account & API</a>}
         <button
           className="secondary"
           disabled={access.online === false}
@@ -119,17 +135,18 @@ export function AccessControl({ access }) {
               </div>
               <form onSubmit={signIn} className="access-form">
                 <p>
-                  Saved cases are public. Sign in to the shared workspace to
+                  Saved cases are public. Sign in with your invited account to
                   generate answers, score cases and save reviews.
                 </p>
                 <p className="field-help">
-                  Workspace members can evaluate and review. The rubric editor
-                  account alone can change scoring rules. Review forms keep a
-                  reviewer ID.
+                  Each clinician has an individual account. Reviewers can rate
+                  saved answers without an API key. Evaluators can also run models;
+                  administrators manage members and scoring rules.
                 </p>
                 <label className="field">
                   Account ID
                   <input
+                    placeholder="Your invited account ID"
                     autoComplete="username"
                     value={id}
                     onChange={(e) => setId(e.target.value)}
@@ -154,6 +171,8 @@ export function AccessControl({ access }) {
                     {error}
                   </p>
                 )}
+                {access.online === false && !error && <p className="error-banner" role="status">{connectionMessage}</p>}
+                {access.online === false && <button type="button" className="secondary" disabled={checking} onClick={checkConnection}>{checking ? "Checking…" : "Check connection"}</button>}
                 <button className="primary" disabled={busy}>
                   {busy ? "Signing in…" : "Sign in"}
                 </button>

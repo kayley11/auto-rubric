@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, RefreshCw, Search } from "lucide-react";
 import { EvidenceDialog } from "./EvidenceDialog";
 import {
@@ -11,6 +11,7 @@ import { scoringVersionLabel } from "./caseIdentity.mjs";
 import { backendName } from "./modelIdentity.mjs";
 
 const statuses = {
+  queued:"Queued", retry_wait:"Waiting to retry", connection_required:"Connection needed",
   generating: "Generating answer",
   answer_ready: "Answer ready",
   scoring: "Scoring",
@@ -32,6 +33,11 @@ export function SavedEvaluations({
   onSignIn,
 }) {
   const [group, setGroup] = useState("evaluations");
+  const [batches,setBatches] = useState([]);
+  useEffect(() => {
+    if(needsSignIn)return;
+    fetch("/api/batches",{cache:"no-store"}).then(r => r.ok ? r.json() : []).then(value => {if(Array.isArray(value))setBatches(value);}).catch(() => {});
+  },[needsSignIn,records.length]);
   const [search, setSearch] = useState("");
   const technical = records.filter(isTechnicalCheck).length;
   const rows = filterEvaluations(records, group, search);
@@ -54,6 +60,7 @@ export function SavedEvaluations({
         Reopen a comparison table or an individual answer. Results belong to
         this workspace; opening them does not call a model or change scores.
       </p>
+      {!!batches.length && <details className="study-disclosure"><summary>Saved background batches · {batches.length}</summary><p>These batches keep their full case list on the backend. Reopen one to see progress and results.</p>{batches.map(batch => <p key={batch.id}><a href={`/#evaluate/batch/${batch.id}`} onClick={onClose}>Batch {batch.id.slice(0,8)} · {batch.tasks} case–model tasks · {new Date(batch.created_at*1000).toLocaleDateString()}</a>{batch.cancelled ? " · cancelled" : ""}</p>)}</details>}
       <nav
         className="saved-evaluation-tabs"
         aria-label="Saved evaluation groups"

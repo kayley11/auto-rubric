@@ -17,6 +17,9 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from engine import Settings
+from job_queue import JobQueue
+from membership import Membership
+from personal_connections import Connections, PROVIDERS
 from public_access import (
     COOKIE_NAME,
     SESSION_SECONDS,
@@ -34,6 +37,9 @@ RESULT_COMPARISON_PATH = Path(__file__).resolve().parent / ".data/result-compari
 
 class HostedServer(ThreadingHTTPServer):
     daemon_threads = True
+    request_queue_size = 64
+    max_request_threads = 64
+    request_timeout = 30
 
     def __init__(
         self,
@@ -49,28 +55,80 @@ class HostedServer(ThreadingHTTPServer):
         if not isinstance(secret, str) or len(secret) < 32:
             raise ValueError("Configure a session signing secret of at least 32 characters.")
         self.public_origin = origin(public_origin)
-        self.users = members(users)
+        seeds = members(users)
         self.secret = secret
         if bridge_secret is not None and len(bridge_secret) < 32:
             raise ValueError("Configure a bridge secret of at least 32 characters.")
         self.bridge_secret = bridge_secret
+        self.request_slots = threading.BoundedSemaphore(self.max_request_threads)
         self.attempts = {}
         self.access_lock = threading.Lock()
         settings = settings or Settings.load()
         directory = Path(data_dir)
-        self.public_app = Application(directory / "public-empty", settings, provider)
-        workspaces = {}
+        self.directory = directory
+        self.member_lock = threading.RLock()
+        self.membership = Membership(directory / "_identity/members.sqlite3", seeds)
+        self.users = self.membership.users()
+        self.connections = Connections(directory / "_identity/api")
+        self.queue = JobQueue(directory / "_jobs.sqlite3", workers=os.getenv("ARENA_JOB_WORKERS", "2"))
+        self.project_settings = settings
+        self.project_provider = provider
+        self.public_app = Application(directory / "public-empty", settings, provider, self.queue)
+        self.workspaces = {}
         self.apps = {}
-        for identifier, member in self.users.items():
-            space = member.get("workspace", identifier)
-            if space not in workspaces:
-                workspaces[space] = Application(directory / "members" / space, settings, provider)
-            self.apps[identifier] = workspaces[space]
-        # Preserve the existing single-job restriction across member accounts.
-        job_lock = threading.Lock()
-        for app in self.apps.values():
-            app.job_lock = job_lock
+        self.extraction_lock = threading.Lock()
+        self.refresh_members()
         super().__init__(address, HostedHandler)
+
+    def get_request(self):
+        request, address = super().get_request()
+        request.settimeout(self.request_timeout)
+        return request, address
+
+    def process_request(self, request, client_address):
+        # A blocked database or slow client must not exhaust all OS threads.
+        if not self.request_slots.acquire(blocking=False):
+            try:
+                request.sendall(
+                    b"HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
+                    b"Retry-After: 5\r\nContent-Length: 0\r\n\r\n"
+                )
+            except OSError:
+                pass
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self.request_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self.request_slots.release()
+
+    def refresh_members(self):
+        with self.member_lock:
+            self.users = self.membership.users()
+            for identifier, member in self.users.items():
+                space = member.get("workspace", identifier)
+                if space not in self.workspaces:
+                    app = Application(self.directory / "members" / space, self.project_settings,
+                                      self.project_provider, self.queue, self.connections,
+                                      lambda actor: self.membership.users().get(actor))
+                    app.job_lock = self.extraction_lock
+                    app.member_resolver = lambda actor: self.membership.users().get(actor)
+                    self.workspaces[space] = app
+                self.apps[identifier] = self.workspaces[space]
+
+    def server_close(self):
+        for app in self.workspaces.values():
+            app.batches.close()
+        self.public_app.batches.close()
+        self.queue.close()
+        super().server_close()
 
 
 class HostedHandler(Handler):
@@ -78,6 +136,7 @@ class HostedHandler(Handler):
 
     @property
     def member(self):
+        self.server.refresh_members()
         cookie = SimpleCookie()
         try:
             cookie.load(self.headers.get("Cookie", ""))
@@ -89,7 +148,11 @@ class HostedHandler(Handler):
     @property
     def app(self):
         member = self.member
-        return self.server.apps[member["id"]] if member else self.server.public_app
+        if member:
+            app = self.server.apps[member["id"]]
+            app._local.reviewer = member["id"]
+            return app
+        return self.server.public_app
 
     def end_headers(self):
         if getattr(self, "session_cookie", None):
@@ -102,8 +165,16 @@ class HostedHandler(Handler):
     def send(self, status, body, content_type="application/json; charset=utf-8", filename=None):
         if urlparse(self.path).path == "/api/config" and isinstance(body, dict) and status == 200:
             member = self.member
+            own_active = None
+            if member:
+                for row in self.app.queue.pending(self.app.queue_space):
+                    job = self.app.queue.latest(self.app.queue_space,row["run_id"])
+                    if job and job["actor"] == member["id"]:
+                        own_active = row["run_id"]
+                        break
             body = {
                 **body,
+                "active_run":own_active,
                 "access": {
                     "hosted": True,
                     "authenticated": bool(member),
@@ -111,6 +182,10 @@ class HostedHandler(Handler):
                     "can_review": bool(member),
                     "can_manage_rubric": bool(member and member["role"] == "admin"),
                     "online": True,
+                    "member_id": member["id"] if member else "",
+                    "role": member["role"] if member else "",
+                    "personal_connections": bool(member),
+                    "durable_queue": True,
                 },
             }
         # Source intervals address immutable text. Presentation substitutions must
@@ -159,7 +234,7 @@ class HostedHandler(Handler):
         if mutation and self.headers.get("Origin") != self.server.public_origin:
             raise PermissionError("Use the website’s own sign-in and review forms.")
         path = urlparse(self.path).path
-        if path in {"/api/access/login", "/api/access/logout"}:
+        if path in {"/api/access/login", "/api/access/logout", "/api/access/accept-invite"}:
             return
         member = self.member
         if path.startswith("/api/evidence-annotations") and not member:
@@ -181,13 +256,13 @@ class HostedHandler(Handler):
                     "Higher-level decision access is required "
                     "to change rubric rules or confirm requirements."
                 )
-        if mutation and path.startswith("/api/runs"):
+        if mutation and (path.startswith(("/api/runs", "/api/batches")) or path == "/api/cases/submitted"):
             is_review = path.endswith("/review")
             if not is_review and member["role"] not in {"admin", "evaluator"}:
                 raise PermissionError(
                     "This account can review; evaluation access is required to run models."
                 )
-        if not mutation and path.startswith("/api/runs/") and not member:
+        if not mutation and path.startswith(("/api/runs/", "/api/batches")) and not member:
             raise PermissionError("Sign in to view your saved evaluations.")
 
     def body(self):
@@ -195,6 +270,8 @@ class HostedHandler(Handler):
         path = urlparse(self.path).path
         if isinstance(body.get("case_submission"), dict):
             body["case_submission"]["account_id"] = self.member["id"] if self.member else ""
+            if self.member and self.member["id"] != "workspace":
+                body["case_submission"]["contributor_id"] = self.member["id"]
         if self.member and (
             path.startswith(("/api/review/", "/api/requirements/")) or path.endswith("/review")
         ):
@@ -215,6 +292,55 @@ class HostedHandler(Handler):
 
     def dispatch(self, mutation):
         path = urlparse(self.path).path
+        if path == "/api/access/accept-invite":
+            try:
+                self.guarded(mutation)
+                if not mutation:
+                    return self.send(405, {"error":"Use POST."})
+                body = self.body()
+                member = self.server.membership.accept(body.get("token"), body.get("password"))
+                self.server.refresh_members()
+                self.set_session(sign_session(member, self.server.secret))
+                return self.send(201, {"signed_in":True, "member_id":member["id"], "role":member["role"]})
+            except (ValueError, PermissionError) as exc:
+                return self.send(403, {"error":str(exc)})
+        if path.startswith("/api/members") or path.startswith("/api/connections"):
+            try:
+                self.guarded(mutation)
+                member = self.member
+                if not member:
+                    raise PermissionError("Sign in to manage your account connections.")
+                if path.startswith("/api/members"):
+                    if member["role"] != "admin":
+                        raise PermissionError("Administrator access is required to manage invitations.")
+                    if path == "/api/members" and not mutation:
+                        return self.send(200, self.server.membership.catalogue())
+                    if path == "/api/members/invitations" and mutation:
+                        body = self.body()
+                        return self.send(201, self.server.membership.invite(member["id"], body.get("member_id"), body.get("role", "reviewer")))
+                member_action = re.fullmatch(r"/api/members/([A-Za-z0-9_-]{1,40})/(update|reset-invite)",path)
+                if member_action and mutation:
+                    body = self.body()
+                    if member_action[2] == "reset-invite":
+                        return self.send(201,self.server.membership.invite(member["id"],member_action[1],reset=True))
+                    result = self.server.membership.update(member["id"],member_action[1],body)
+                    self.server.refresh_members()
+                    return self.send(200,result)
+                if path == "/api/connections":
+                    if mutation:
+                        return self.send(201, self.server.connections.add(member["id"], self.body()))
+                    return self.send(200, {"connections":self.server.connections.list(member["id"]), "providers":PROVIDERS})
+                match = re.fullmatch(r"/api/connections/([a-f0-9]{32})/(test|remove)", path)
+                if match and mutation:
+                    if match[2] == "remove":
+                        self.server.connections.remove(member["id"], match[1])
+                        return self.send(200, {"removed":True})
+                    return self.send(200, self.server.connections.test(member["id"], match[1], self.server.project_settings))
+                return self.send(404, {"error":"Account operation not found."})
+            except PermissionError as exc:
+                return self.send(403, {"error":str(exc)})
+            except ValueError as exc:
+                return self.send(400, {"error":str(exc)})
         if path == "/api/result-comparison":
             try:
                 self.guarded(mutation)
@@ -247,7 +373,7 @@ class HostedHandler(Handler):
                 ).hexdigest()
                 return self.send(200, {"ok": True, "proof": proof})
             return self.send(200, {"ok": True})
-        if path in {"/api/access/login", "/api/access/logout"}:
+        if path in {"/api/access/login", "/api/access/logout", "/api/access/accept-invite"}:
             try:
                 self.guarded(mutation)
                 if not mutation:
@@ -285,7 +411,7 @@ class HostedHandler(Handler):
                 with self.server.access_lock:
                     self.server.attempts.pop(identifier, None)
                 self.set_session(sign_session(member, self.server.secret))
-                return self.send(200, {"signed_in": True})
+                return self.send(200, {"signed_in": True, "member_id":member["id"], "role":member["role"]})
             except (ValueError, PermissionError) as exc:
                 return self.send(403, {"error": str(exc)})
         return super().dispatch(mutation)

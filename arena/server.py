@@ -20,6 +20,8 @@ import comparison
 import evidence
 import exports
 import patient
+from job_queue import ACTIVE as JOB_ACTIVE
+from job_queue import BlockedJob, FailedJob, JobQueue, RetryJob
 import scoring
 from engine import (
     APP_ROOT,
@@ -67,15 +69,20 @@ class BusyError(ValueError):
 class Application:
     now = staticmethod(now)
 
-    def __init__(self, directory, settings=None, provider=None):
+    def __init__(self, directory, settings=None, provider=None, queue=None, connections=None, member_resolver=None):
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         self.settings = settings or Settings.load()
         self.provider = provider or Provider(self.settings)
         self.lock = threading.RLock()
         self.job_lock = threading.Lock()
-        self.stop = threading.Event()
-        self.active_id = None
+        self._local = threading.local()
+        self._fallback_stop = threading.Event()
+        self._stops = {}
+        self.connections = connections
+        self.member_resolver = member_resolver
+        self.queue_space = self.directory.name
+        self.queue = queue or JobQueue(self.directory / "_jobs.sqlite3", workers=2)
         self.reviews = Reviews(self.directory / "_reviews")
         self.cases = WorkspaceCases(self.directory)
         self.evidence_annotations = EvidenceAnnotations(self.directory / "_evidence_annotations")
@@ -88,12 +95,139 @@ class Application:
         # A restart must never leave the UI claiming an old request is still running.
         for path in self.directory.glob("*.json"):
             run = json.loads(path.read_text(encoding="utf-8"))
-            if run.get("status") in {"generating", "scoring", "interviewing"}:
+            if (run.get("status") in {"generating", "scoring", "interviewing"}
+                    and not self.queue.latest(self.queue_space, run["id"])):
                 run.update(
                     status="interrupted",
                     message="The server restarted. Saved results are retained.",
                 )
                 self.save(run)
+
+        self.queue.register(self.queue_space, self.queued_work)
+        from batches import Batches
+        self.batches = Batches(self)
+
+    @property
+    def reviews(self):
+        actor = getattr(getattr(self, "_local", None), "reviewer", None)
+        return self._reviews.scoped(actor) if actor else self._reviews
+
+    @reviews.setter
+    def reviews(self, value):
+        self._reviews = value
+
+    @property
+    def settings(self):
+        return getattr(getattr(self, "_local", None), "settings", self._settings)
+
+    @settings.setter
+    def settings(self, value):
+        self._settings = value
+
+    @property
+    def provider(self):
+        return getattr(getattr(self, "_local", None), "provider", self._provider)
+
+    @provider.setter
+    def provider(self, value):
+        self._provider = value
+
+    @property
+    def stop(self):
+        return getattr(getattr(self, "_local", None), "stop", self._fallback_stop)
+
+    @property
+    def active_id(self):
+        jobs = self.queue.pending(self.queue_space)
+        return jobs[0]["run_id"] if jobs else None
+
+    def bind_queue(self, queue):
+        old = self.queue
+        self.queue = queue
+        queue.register(self.queue_space, self.queued_work)
+        if old is not queue:
+            old.close()
+
+    def connection_bindings(self, body, run, actor, action):
+        saved = run.get("execution_connections", {}) if run.get("submitted_by") == actor else {}
+        chosen = {}
+        for role in ("answer", "judge"):
+            identifier = body.get(role+"_connection_id", saved.get(role, ""))
+            if not isinstance(identifier, str) or (identifier and not re.fullmatch(r"[a-f0-9]{32}", identifier)):
+                raise ValueError("Choose one of your saved API connections.")
+            if identifier and (not self.connections or not self.connections.belongs_to(actor, identifier)):
+                raise PermissionError("Choose an API connection belonging to your account.")
+            if identifier and role == ("answer" if action in {"generate", "interview"} else "judge"):
+                if not self.connections:
+                    raise ValueError("Personal API connections are not available on this backend.")
+                selected = self.connections.resolve(actor, identifier, self._settings)
+            else:
+                selected = self._settings
+            if role == ("answer" if action in {"generate", "interview"} else "judge") and not selected.api_key:
+                raise ValueError("Choose a personal API connection or configure the project connection.")
+            chosen[role] = identifier
+        return chosen
+
+    def queued_work(self, job):
+        run_id, action, actor = job["run_id"], job["action"], job["actor"]
+        stop = threading.Event()
+        self._stops[run_id] = stop
+        self._local.stop = stop
+        try:
+            current = self.queue.latest(self.queue_space, run_id)
+            if current and current["cancel_requested"]:
+                run = self.load(run_id)
+                run.update(status="stopped", message="Queued task cancelled. Saved output is retained.")
+                self.save(run)
+                return
+            if self.member_resolver:
+                member = self.member_resolver(actor)
+                if not member or member["role"] not in {"admin", "evaluator"}:
+                    raise BlockedJob("Evaluation permission is no longer available for this account.")
+            stages = ["generate", "evaluate"] if action == "generate_evaluate" else [action]
+            for stage in stages:
+                for name in ("provider", "settings"):
+                    if hasattr(self._local, name):
+                        delattr(self._local, name)
+                role = "answer" if stage in {"generate", "interview"} else "judge"
+                identifier = job["metadata"].get("connections", {}).get(role, "")
+                if identifier:
+                    try:
+                        self._local.settings = self.connections.resolve(actor, identifier, self._settings)
+                    except PermissionError as exc:
+                        raise BlockedJob(str(exc)) from exc
+                    self._local.provider = Provider(self._local.settings)
+                run = self.load(run_id)
+                if stop.is_set():
+                    run.update(status="stopped",message="Stopped. Completed output is retained.")
+                    self.save(run)
+                    return
+                if (job["attempt"] > 1 and stage == "generate" and run.get("generated_answer")
+                        and run["input"].get("answer") == run["generated_answer"]):
+                    continue
+                run.update(status={"generate":"generating", "interview":"interviewing", "evaluate":"scoring"}[stage],
+                           message="Generating answer…" if stage == "generate" else "Running saved model task…", error=None)
+                self.save(run)
+                self.work(run_id, stage)
+                saved = self.load(run_id)
+                if saved.get("status") in {"partial", "error"}:
+                    attempts = (saved.get("generation_attempts", []) if stage == "generate" else
+                                [a for grade in saved.get("grades", {}).values() for a in grade.get("attempts", [])])
+                    if attempts and attempts[-1].get("retryable"):
+                        raise RetryJob("Temporary provider failure; completed output is retained.")
+                    raise FailedJob("A model operation failed. See the saved item or generation error.")
+                if saved.get("status") == "stopped":
+                    return
+        except BlockedJob as exc:
+            run = self.load(run_id)
+            run.update(status="connection_required", error=str(exc), message="Reconnect or choose another API connection, then retry.")
+            self.save(run)
+            raise
+        finally:
+            self._stops.pop(run_id, None)
+            for name in ("provider", "settings", "stop"):
+                if hasattr(self._local, name):
+                    delattr(self._local, name)
 
     def path(self, run_id):
         if not re.fullmatch(r"[a-f0-9]{32}", run_id):
@@ -112,8 +246,12 @@ class Application:
             run["updated_at"] = now()
             path = self.path(run["id"])
             temp = path.with_suffix(".tmp")
+            safe = redact(run, self.settings.api_key)
+            if self.connections:
+                for key in self.connections.secrets():
+                    safe = redact(safe, key)
             temp.write_text(
-                json.dumps(redact(run, self.settings.api_key), ensure_ascii=False, indent=2) + "\n",
+                json.dumps(safe, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
             temp.replace(path)
@@ -127,9 +265,23 @@ class Application:
             run["review_id"] = evidence.run_packet(run)["id"]
             run["fact_coverage"] = evidence.patient_coverage(run)
         run.pop("patient_case_snapshot", None)
+        if self.reviews.reviewer:
+            own = self.reviews.latest("run_rating", run_id)
+            legacy = run.get("review", {})
+            run["review"] = own or (legacy if legacy.get("reviewer") == self.reviews.reviewer else {"items":{}})
+        job = self.queue.latest(self.queue_space, run_id)
+        if job:
+            run["queue"] = {k:job[k] for k in ("id", "state", "attempt", "max_attempts", "position", "ready_at", "last_error")}
+            if job["state"] in {"queued", "retry_wait"}:
+                run.update(status=job["state"], error=None,
+                           message=("Queued for a model worker." if job["state"] == "queued" else
+                                    "Temporary provider failure. This task will retry after the queued work."))
+            elif job["state"] in {"failed", "blocked"} and run.get("status") in {"generating", "scoring", "queued", "retry_wait"}:
+                run.update(status="error", error=job["last_error"], message="The background task needs attention; saved progress is retained.")
         return run
 
     def list_runs(self):
+        queued_states = self.queue.states(self.queue_space)
         with self.lock:
             items = [
                 json.loads(p.read_text(encoding="utf-8")) for p in self.directory.glob("*.json")
@@ -139,6 +291,7 @@ class Application:
                 {k: r.get(k) for k in ("id", "status", "created_at", "updated_at")}
                 | {
                     "title": r["input"]["title"],
+                    "status": queued_states.get(r["id"]) if queued_states.get(r["id"]) in {"queued","retry_wait"} else r.get("status"),
                     "case_code": r["input"].get("case_code", ""),
                     "graded": len(
                         [x for x in r.get("grades", {}).values() if x["status"] in RESULT_STATUSES]
@@ -163,12 +316,14 @@ class Application:
             reverse=True,
         )
 
-    def start(self, action, body, run_id=None):
+    def start(self, action, body, run_id=None, actor="local-admin", batch=None):
         if action not in {"generate", "evaluate", "retry", "interview"}:
             raise ValueError("Unknown action.")
-        if not self.job_lock.acquire(blocking=False):
-            raise BusyError("A model job is already running. Let it finish or stop it first.")
-        try:
+        with self.lock:
+            if run_id:
+                existing = self.queue.latest(self.queue_space, run_id)
+                if existing and existing["state"] in JOB_ACTIVE:
+                    raise BusyError("This saved run is already queued or running.")
             if action == "retry":
                 run = self.load(run_id)
                 if run.get("error"):
@@ -205,6 +360,7 @@ class Application:
                     # New scoring conditions require a separate run, even before any grade.
                     immutable = (
                         "case_code",
+                        "answer_model",
                         "rubric_id",
                         "comparison_id",
                         "case_number",
@@ -289,32 +445,28 @@ class Application:
                         run["patient_protocol"]["routing_sha256"] = patient.routing_hash()
                         run["patient_protocol"]["json_mode"] = "json_object"
             run["input_sha256"] = fingerprint(run["input"])
-            if not self.settings.api_key:
-                raise ValueError(
-                    "Add OPENAI_API_KEY to the repository .env file, then restart the app."
-                )
-            run.update(
-                status="interviewing"
-                if action == "interview"
-                else "generating"
-                if action == "generate"
-                else "scoring",
-                error=None,
-                message="Starting the patient interview…"
-                if action == "interview"
-                else "Generating answer…"
-                if action == "generate"
-                else "Starting item scoring…",
-                current_item=None,
-            )
-            self.stop.clear()
-            self.active_id = run["id"]
+            if batch:
+                run.setdefault("batch", batch)
+                if batch not in run.setdefault("batch_links", []):
+                    run["batch_links"].append(batch)
+            automatic = body.get("auto_evaluate") is True or run.get("automatic_evaluation") is True
+            if action == "generate" and automatic:
+                self.connection_bindings(body, run, actor, "evaluate")
+            run["automatic_evaluation"] = automatic
+            bindings = self.connection_bindings(body, run, actor, action)
+            run["submitted_by"] = actor
+            run["execution_connections"] = bindings
+            routes = {role:(self.connections.describe(actor, identifier) if identifier else
+                           {"source":"project","base_url":self._settings.base_url})
+                      | {"requested_model":run["input"][role+"_model"]}
+                      for role,identifier in bindings.items()}
+            run.setdefault("execution_history", []).append({"requested_at":now(), "actor":actor,
+                "action":action, "connections":bindings, "routes":routes})
+            run.update(status="queued", error=None, message="Queued for a model worker.", current_item=None)
             self.save(run)
-            threading.Thread(target=self.work, args=(run["id"], action), daemon=True).start()
+            queued_action = "generate_evaluate" if action == "generate" and automatic else action
+            self.queue.enqueue(self.queue_space, run["id"], queued_action, actor, {"connections":bindings})
             return self.public_run(run["id"])
-        except BaseException:
-            self.job_lock.release()
-            raise
 
     def work(self, run_id, action):
         try:
@@ -377,21 +529,28 @@ class Application:
                 message="The job stopped. Saved results are retained.",
             )
             self.save(run)
-        finally:
-            self.active_id = None
-            self.job_lock.release()
 
-    def stop_job(self, run_id):
-        if self.active_id != run_id:
+    def stop_job(self, run_id, actor="local-admin", administrator=False):
+        job = self.queue.latest(self.queue_space, run_id)
+        if not job or job["state"] not in JOB_ACTIVE:
             raise ValueError("This run has no active job.")
-        self.stop.set()
-        return {"message": "Will stop after the current model request. Completed grades are kept."}
+        if actor != job["actor"] and not administrator:
+            raise PermissionError("Only the submitting member or an administrator can stop this job.")
+        self.queue.cancel(self.queue_space, run_id)
+        event = self._stops.get(run_id)
+        if event:
+            event.set()
+        else:
+            run = self.load(run_id)
+            run.update(status="stopped", message="Queued task cancelled. Saved output is retained.")
+            self.save(run)
+        return {"message": "Stop requested for this task only. Completed grades are kept."}
 
     def save_review(self, run_id, body):
         with self.lock:
-            if self.active_id == run_id:
+            if any(row["run_id"] == run_id for row in self.queue.pending(self.queue_space)):
                 raise BusyError("Wait until scoring stops before saving the review.")
-            run = self.load(run_id)
+            run = self.public_run(run_id)
             reviewer = body.get("reviewer", "")
             if not isinstance(reviewer, str) or len(reviewer) > 150:
                 raise ValueError("Reviewer name is too long.")
@@ -416,8 +575,12 @@ class Application:
                         previous.get("machine_scores_seen") or item.get("machine_scores_seen")
                     ),
                 }
-            run["review"] = {"reviewer": reviewer.strip(), "items": clean, "saved_at": now()}
-            self.save(run)
+            value = {"reviewer": reviewer.strip(), "items": clean, "saved_at": now()}
+            if self.reviews.reviewer:
+                self.reviews.append("run_rating", run_id, value)
+            else:
+                run["review"] = value
+                self.save(run)
             return self.public_run(run_id)
 
 
@@ -456,7 +619,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def body(self):
         size = int(self.headers.get("Content-Length", "0"))
-        limit = 12000000 if urlparse(self.path).path == "/api/literature/sources" else 512000
+        limit = 12000000 if urlparse(self.path).path in {"/api/literature/sources", "/api/batches"} else 512000
         if size <= 0 or size > limit:
             raise ValueError("Request is empty or too large.")
         value = json.loads(self.rfile.read(size))
@@ -690,7 +853,13 @@ class Handler(BaseHTTPRequestHandler):
                     },
                 )
             if path == "/api/review" and not mutation:
-                return self.send(200, evidence.review_catalogue(self.app))
+                rows = evidence.review_catalogue(self.app)
+                progress = self.app.reviews.ratings_by_target()
+                for row in rows:
+                    rating = progress.get(row["id"], {})
+                    row["rated_items"] = len(rating.get("items", {}))
+                    row["completed"] = bool(row["items"]) and all(cid in rating.get("items", {}) for cid in row["items"])
+                return self.send(200, rows)
             if path == "/api/decisions" and not mutation:
                 return self.send(200, evidence.decision_catalogue(self.app))
             if path == "/api/rubrics/manage":
@@ -842,22 +1011,35 @@ class Handler(BaseHTTPRequestHandler):
                     else study_output(filename)
                 )
                 return self.send(200, raw, mime + "; charset=utf-8", filename)
+            if path == "/api/batches" and not mutation:
+                return self.send(200, self.app.batches.catalogue())
+            if path == "/api/batches" and mutation:
+                member = getattr(self, "member", None)
+                return self.send(202, self.app.batches.create(self.body(), member["id"] if member else "local-admin"))
+            cancel_batch = re.fullmatch(r"/api/batches/([a-f0-9]{32})/cancel", path)
+            if cancel_batch and mutation:
+                self.body()
+                member = getattr(self, "member", None) or {}
+                return self.send(200, self.app.batches.cancel(cancel_batch[1], member.get("id", "local-admin"), member.get("role")=="admin"))
+            batch_match = re.fullmatch(r"/api/batches/([a-f0-9]{32})", path)
+            if batch_match and not mutation:
+                return self.send(200, self.app.batches.read(batch_match[1], include_inputs=parse_qs(urlparse(self.path).query).get("include_inputs", [""])[0] == "1"))
             if path == "/api/runs":
                 if not mutation:
                     return self.send(200, self.app.list_runs())
                 body = self.body()
-                return self.send(202, self.app.start(body.get("action", "evaluate"), body))
+                return self.send(202, self.app.start(body.get("action", "evaluate"), body, actor=(getattr(self, "member", None) or {}).get("id", "local-admin")))
             match = re.fullmatch(r"/api/runs/([a-f0-9]{32})(?:/([a-z]+))?", path)
             if match:
                 run_id, action = match.groups()
                 if mutation:
                     body = self.body()
                     if action in {"evaluate", "retry"}:
-                        return self.send(202, self.app.start(action, body, run_id))
+                        return self.send(202, self.app.start(action, body, run_id, actor=(getattr(self, "member", None) or {}).get("id", "local-admin")))
                     if action == "review":
                         return self.send(200, self.app.save_review(run_id, body))
                     if action == "stop":
-                        return self.send(200, self.app.stop_job(run_id))
+                        return self.send(200, self.app.stop_job(run_id, actor=(getattr(self, "member", None) or {}).get("id", "local-admin"), administrator=(getattr(self, "member", None) or {}).get("role") == "admin"))
                 elif action in {"raw", "summary", "blind"}:
                     run = self.app.load(run_id)
                     packet = evidence.run_packet(run)

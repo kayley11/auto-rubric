@@ -33,6 +33,7 @@ const basisText = {
 };
 
 export function ArticleQuestions({
+  accountId = "",
   draft,
   source,
   request,
@@ -711,6 +712,7 @@ export function ArticleQuestions({
           {canEdit && (
             <>
               <SubmissionFields
+                accountId={accountId}
                 contributor={contributor}
                 onContributor={onContributor}
                 submission={submission}

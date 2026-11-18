@@ -419,7 +419,7 @@ export async function evaluateRow(
   };
   if (row.runId) {
     save(await api(`/api/runs/${row.runId}`));
-    if (["partial", "error", "stopped", "interrupted"].includes(result.status))
+    if (["partial", "error", "stopped", "interrupted", "connection_required"].includes(result.status))
       save(await api(`/api/runs/${row.runId}/retry`, result.input));
   } else
     save(
@@ -429,7 +429,7 @@ export async function evaluateRow(
       }),
     );
   while (true) {
-    if (["generating", "scoring", "interviewing"].includes(result.status)) {
+    if (["queued", "retry_wait", "generating", "scoring", "interviewing"].includes(result.status)) {
       await wait(1600);
       save(await api(`/api/runs/${result.id}`));
     } else if (result.status === "answer_ready") {

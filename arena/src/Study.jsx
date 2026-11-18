@@ -1,3 +1,4 @@
+import { ClinicalText } from "./ClinicalText";
 import { backendName } from "./modelIdentity.mjs";
 import { useEffect, useState } from "react";
 import { displayData, displayText } from "./presentation.mjs";
@@ -596,9 +597,9 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                 <ChevronDown size={14} />
               </summary>
               <h3>Initial context</h3>
-              <pre>{record.common_information}</pre>
+              <ClinicalText text={record.common_information} />
               <h3>Task</h3>
-              <pre>{record.final_task}</pre>
+              <ClinicalText text={record.final_task} />
             </details>
           </section>
           <nav className="study-tabs" aria-label="Interview sections">
@@ -802,7 +803,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                   Closing assessment note
                   <ChevronDown size={14} />
                 </summary>
-                <pre>{text(record.closing_assessment)}</pre>
+                <ClinicalText text={text(record.closing_assessment)} />
               </details>
               <button
                 className="primary"
@@ -882,18 +883,14 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                               Revised judge explanation
                               <ChevronDown size={13} />
                             </summary>
-                            <p className="saved-text">
-                              {record.scores[item].new_reason}
-                            </p>
+                            <ClinicalText as="p" className="saved-text" text={record.scores[item].new_reason} />
                           </details>
                           <details className="judge-explanation">
                             <summary>
                               Original judge explanation
                               <ChevronDown size={13} />
                             </summary>
-                            <p className="saved-text">
-                              {record.scores[item].old_reason}
-                            </p>
+                            <ClinicalText as="p" className="saved-text" text={record.scores[item].old_reason} />
                           </details>
                         </>
                       ) : (
@@ -996,7 +993,7 @@ function HistoricalStudy({ onUseInterview, onUseData }) {
                   Draft full-case reference · reviewer only
                   <ChevronDown size={14} />
                 </summary>
-                <pre>{text(record.draft_reference)}</pre>
+                <ClinicalText text={text(record.draft_reference)} />
                 <p>
                   This full-case reference was not supplied to the revised D3a
                   judge.

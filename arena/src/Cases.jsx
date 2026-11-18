@@ -345,7 +345,7 @@ export function Cases({ onUseCase, canLoad, access }) {
                               <summary>
                                 <strong>{s.score}</strong> {s.name} ({s.item})
                               </summary>
-                              <p>{s.reason}</p>
+                              <ClinicalText as="p" text={s.reason} />
                               <details>
                                 <summary>Anchors used</summary>
                                 {Object.entries(s.anchors).map(([n, v]) => (

@@ -1,3 +1,4 @@
+import { ClinicalText } from "./ClinicalText";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { RuleView, TurnView, exposure, request } from "./StudyTools";
@@ -18,6 +19,7 @@ export function Review({ access }) {
     [id, setId] = useState(selectedId);
   const [loadingQueue, setLoadingQueue] = useState(true),
     [search, setSearch] = useState("");
+  const [progress, setProgress] = useState("pending");
   const [chosen, setChosen] = useState([]),
     [reviewQueue, setReviewQueue] = useState([]);
   const [completedAnswers, setCompletedAnswers] = useState([]),
@@ -32,6 +34,9 @@ export function Review({ access }) {
   const [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [complete, setComplete] = useState(false);
+  useEffect(() => {
+    if (access?.member_id && access.member_id !== "workspace") setReviewer(access.member_id);
+  }, [access?.member_id]);
   async function reloadQueue() {
     setLoadingQueue(true);
     setError("");
@@ -77,7 +82,7 @@ export function Review({ access }) {
       `/api/review/${identifier}${criterion ? "/" + criterion : ""}`,
     );
     setPacket(value);
-    setReviewer((previous) => value.review?.reviewer || previous);
+    setReviewer((previous) => access?.member_id && access.member_id !== "workspace" ? access.member_id : value.review?.reviewer || previous);
     const previous = value.review?.items?.[value.criterion];
     setScore(previous?.score || "");
     setNote(previous?.note || "");
@@ -180,6 +185,7 @@ export function Review({ access }) {
     if (!key) reloadQueue();
   };
   const matching = catalogue.filter((r) =>
+    (progress === "all" || (progress === "complete" ? r.completed : !r.completed)) &&
     `${r.case_id} ${r.name} ${r.batch} ${r.summary || ""}`
       .toLowerCase()
       .includes(search.trim().toLowerCase()),
@@ -218,7 +224,7 @@ export function Review({ access }) {
       )}
       <div className="page-heading study-heading">
         <span className="eyebrow">REVIEW FIRST</span>
-        <h1>{packet?.name || "Review model answers."}</h1>
+        <h1>{packet?.name || (access?.authenticated ? "My reviews." : "Review model answers.")}</h1>
         <p>
           Rate the selected rubric items for each saved answer. Then compare
           with AutoRubric for the same answer and scoring version. Scores and
@@ -232,6 +238,7 @@ export function Review({ access }) {
       )}
       {!id ? (
         <>
+          <div className="review-progress-filters"><label className="field">My progress<select value={progress} onChange={e => setProgress(e.target.value)}><option value="pending">To review</option><option value="complete">Completed by me</option><option value="all">All saved answers</option></select></label><span>{catalogue.filter(r => r.completed).length} of {catalogue.length} answers completed by this account. No API key required.</span></div>
           <section className="review-scope">
             <div>
               <b>
@@ -301,7 +308,7 @@ export function Review({ access }) {
           {!loadingQueue && !error && !catalogue.length && (
             <p className="notice">
               No eligible review answers are available in this workspace yet.
-              Open a saved case or complete an evaluation containing D3a or D5c.
+              Open a saved answer or ask an evaluator to add a completed evaluation.
             </p>
           )}
           {!loadingQueue && catalogue.length > 0 && !matching.length && (
@@ -346,7 +353,7 @@ export function Review({ access }) {
                         </b>
                         {r.summary && <small>{r.summary}</small>}
                         <span>
-                          {r.response} · {r.items.length} selected items
+                          {r.response} · {r.items.length} rubric items · {r.completed ? "Completed by me" : `${r.rated_items || 0} rated by me`}
                         </span>
                       </button>
                     </div>
@@ -438,18 +445,18 @@ export function Review({ access }) {
           )}
           <section className="study-opening">
             <h2>Case and task</h2>
-            <pre>{packet.facts}</pre>
-            <pre>{packet.task}</pre>
+            <ClinicalText text={packet.facts} />
+            <ClinicalText text={packet.task} />
             {packet.history && (
               <details>
                 <summary>Earlier conversation</summary>
-                <pre>{packet.history}</pre>
+                <ClinicalText text={packet.history} />
               </details>
             )}
           </section>
           <section className="study-answer">
             <h2>Answer being assessed</h2>
-            <pre>{packet.answer}</pre>
+            <ClinicalText text={packet.answer} />
           </section>
           <RuleView cid={packet.criterion} rule={packet.rule} />
           {!!packet.turns.length && (
@@ -464,7 +471,7 @@ export function Review({ access }) {
           {packet.reference && (
             <details className="study-disclosure">
               <summary>Scoring reference · awaiting confirmation</summary>
-              <pre>{packet.reference}</pre>
+              <ClinicalText text={packet.reference} />
             </details>
           )}
           {packet.criterion === "D5c" && (
@@ -500,18 +507,18 @@ export function Review({ access }) {
                     {f.text}
                   </p>
                 ))}
-                <pre>{packet.availability}</pre>
+                <ClinicalText text={packet.availability} />
               </details>
               {packet.closing_notes && (
                 <details className="study-disclosure">
                   <summary>Eligible closing assessment note</summary>
-                  <pre>{packet.closing_notes}</pre>
+                  <ClinicalText text={packet.closing_notes} />
                 </details>
               )}
               {packet.final_questions && (
                 <details className="study-disclosure">
                   <summary>Final questions · no collected replies</summary>
-                  <pre>{packet.final_questions}</pre>
+                  <ClinicalText text={packet.final_questions} />
                 </details>
               )}
             </section>
@@ -526,6 +533,7 @@ export function Review({ access }) {
                 <input
                   required
                   placeholder="e.g. CLINICIAN_A or R03"
+                  readOnly={!!access?.member_id && access.member_id !== "workspace"}
                   value={reviewer}
                   onChange={(e) => setReviewer(e.target.value)}
                 />
@@ -714,10 +722,7 @@ export function Review({ access }) {
                                 : ""}
                               :
                             </b>{" "}
-                            {g.explanation ||
-                              g.reason ||
-                              g.error ||
-                              "No explanation saved."}
+                            <ClinicalText as="span" text={g.explanation || g.reason || g.error || "No explanation saved."} />
                           </p>
                         ))}
                       </section>

@@ -1,0 +1,135 @@
+
+> arena@0.0.0 build
+> vite build && node scripts/prepare-sites-build.mjs
+
+vite v6.4.5 building for production...
+transforming...
+✓ 2019 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/client/index.html                              0.42 kB │ gzip:   0.29 kB
+dist/client/assets/ArticleQuestions-DWtPQDZm.css    3.58 kB │ gzip:   1.17 kB
+dist/client/assets/index-BcSfvJQ6.css             102.15 kB │ gzip:  20.16 kB
+dist/client/assets/ArticleQuestions-DTtSLolF.js    15.99 kB │ gzip:   5.22 kB
+dist/client/assets/index-DH9CGxak.js              534.64 kB │ gzip: 163.35 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.09s
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json
+
+> arena@0.0.0 test:sites
+> node --test tests/sites-worker.test.mjs
+
+✔ serves existing static assets without a fallback (19.765375ms)
+✔ falls back to index.html for an unknown app route (0.489708ms)
+✔ does not turn missing API or write requests into the app shell (0.197667ms)
+✔ emits the files required by Sites packaging (2.133084ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.262
+✔ layout repairs and source restorations are never labelled verbatim model quotes (0.660167ms)
+✔ overlapping source highlights preserve text and UTF-16 positions (0.180542ms)
+✔ case preview excludes hidden outcomes, unresolved facts and source metadata (0.627375ms)
+✔ question preview contains only that question's visible case and task (0.750042ms)
+✔ selection and confirmation count tasks under one parent case (0.749333ms)
+✔ editing evidence or reference clears review checks; selecting a task does not (0.108167ms)
+✔ save payload preserves question IDs without accepting source snapshots from the client (0.107083ms)
+✔ reopening a batch preserves each model and accepts a replacement connection without relabelling answers (0.920166ms)
+✔ batch polling retains earlier completed results while later cells queue or fail (0.087167ms)
+✔ Explicit duplicate case codes are rejected instead of silently merging inputs (1.019791ms)
+✔ Saved comparisons reopen the actual case–model records with their original rules (6.736667ms)
+✔ Comparison groups retain source records and distinct cases without losing model labels (0.126291ms)
+✔ Timeouts move to the queue tail while untouched cases finish first (0.237875ms)
+✔ Queue retries are bounded and permanent errors do not block the next case (0.151333ms)
+✔ CSV preserves quoted commas, line breaks and escaped quotes (3.937208ms)
+✔ Malformed CSV and non-text fields are rejected before a run (0.159875ms)
+✔ JSON, wrapped JSON and JSONL use the same fields (0.153666ms)
+✔ Preview checks required text, common task, server limits and revised D5c evidence (4.434042ms)
+✔ An imported case never inherits another case's reference or interview (0.195166ms)
+✔ A generated answer is scored only after generation finishes (0.585042ms)
+✔ Pasted answers go directly to scoring (0.080208ms)
+✔ Resuming a partial saved run retries it without creating a duplicate (0.101167ms)
+✔ A failed case retains its run ID for a later retry (0.174167ms)
+✔ A batch compares each generated case across selected models but scores a supplied answer once (0.170583ms)
+✔ Legacy single-model batches keep their saved run IDs when opened as a comparison (0.084125ms)
+✔ Matrix findings quote an assessed item rather than inventing a total score (0.061958ms)
+✔ Comparison CSV preserves case numbers, item grades, model columns and quoted explanations (0.201292ms)
+✔ Unnamed cases receive distinct codes which survive model expansion and resume (0.142625ms)
+✔ Written-case defaults leave actual acquisition optional without changing saved presets (0.06225ms)
+✔ Current study defaults apply to empty forms while populated or explicitly configured drafts keep their version (0.091417ms)
+✔ The full case context preserves returned records and source details without adding hidden evidence to blind review (0.195833ms)
+✔ Deployment checks stay accessible separately without changing clinical records or scores (0.240417ms)
+✔ contributor and batch filters match the same submission, not unrelated events (1.26ms)
+✔ source search, legacy records and filter options remain available (8.668958ms)
+✔ contributor IDs accept stable short identifiers and reject empty or invalid values (0.110417ms)
+✔ reading view formats headings, list labels and malformed summary labels (1.880084ms)
+✔ page controls, rules and excess blank lines become ordinary paragraph breaks (0.145917ms)
+✔ selection across formatting and an emoji maps back to the exact unchanged raw answer (1.02575ms)
+✔ old raw annotations remain locatable, including a whole bold span (0.12875ms)
+✔ format-only links are explicit and keep raw offsets; paraphrases remain unlinked (6.272542ms)
+✔ formatting preserves clinical numbers, negation, standalone symbols and raw fingerprints (7.181791ms)
+✔ possessive apostrophes inside a quotation do not create truncated quote links (0.550916ms)
+✔ scientific notation is readable and still maps to unchanged UTF-16 source spans (0.496042ms)
+✔ notation parsing preserves prices and flags unknown formula syntax rather than guessing (0.106291ms)
+✔ only the source-verified legacy rubric formula restores its missing multiplication signs (0.192917ms)
+✔ clipped quote formatting is hidden without dropping clinical wording or numeric operators (0.891291ms)
+✔ links only a literal span and preserves exact answer wording (1.256458ms)
+✔ does not silently link changed negation, numbers, ellipses or paraphrases (2.796792ms)
+✔ repeated excerpts are ambiguous and receive no automatic annotation (1.151458ms)
+✔ unquoted omission does not invent a supporting quotation (0.936959ms)
+✔ a short saved excerpt is distinguished from text absent from the answer (1.011375ms)
+✔ context fingerprints change with answer, reason and rubric version (7.3075ms)
+✔ selecting text prepares a prompt, with exact raw evidence and no annotation or save action (3.615875ms)
+✔ empty, external and whitespace-only selections do not offer a highlight (0.507833ms)
+✔ public study snapshots work without a backend or login (28.48725ms)
+✔ zero-shot comparison never uses public snapshots and requires a workspace session (1.2345ms)
+✔ five-model comparison is public and falls back to saved case results (0.950625ms)
+✔ case-series results are public offline and unknown task IDs are rejected (0.397584ms)
+✔ cross-origin writes fail before contacting the backend (0.3795ms)
+✔ offline writes fail clearly, private runs never fall back to public snapshots (0.428ms)
+✔ a retained login cookie does not block public study browsing during an outage (0.472916ms)
+✔ proxy sets its own bridge header and forwards only the application session (0.204209ms)
+✔ logout clears the application cookie even when the computer is offline (0.164416ms)
+✔ recovery rejects unsigned, altered and expired updates (4.563125ms)
+✔ a verified new address replaces the connection without republishing (1.280834ms)
+✔ expired connections never fall back to an old static tunnel (0.245708ms)
+✔ recovery rejects stale updates and disallowed addresses before probing (0.640875ms)
+✔ an unverified backend cannot change the registered address (0.490209ms)
+✔ public recovery status exposes no connection address or secret (0.15375ms)
+✔ oversized recovery bodies are rejected without a database update (0.293292ms)
+(node:82111) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a saved batch renders while the configuration request is still pending (58.510833ms)
+✔ reading text renders escaped content and bold headings without Markdown delimiters (4.785709ms)
+✔ case source review starts collapsed and keeps full article text behind workspace access (6.361959ms)
+✔ filtered case history renders the current index, legacy counts and missing counts without crashing (11.744875ms)
+✔ personal account attribution is read-only while legacy shared attribution stays editable (3.052125ms)
+✔ an unfinished saved batch can replace its API connections without reopening clinical settings (11.562583ms)
+✔ pending labels use generic confirmation wording (0.979125ms)
+✔ display copies retain clinical facts, scores, IDs and the untouched source (0.20175ms)
+✔ reviewer IDs remain usable without displaying personal names (0.243875ms)
+✔ source notes retain their DOI, date and licence (0.048917ms)
+✔ displayed JSON and plain-text previews remove the old named version label (0.18975ms)
+✔ a saved applicability decision is not displayed as an unfinished scoring job (2.012541ms)
+✔ missing assessment, unavailable answer, scope and numeric grades remain distinct (0.0935ms)
+✔ filtered case history renders the current index, legacy counts and missing counts without crashing (25.171125ms)
+✔ serves existing static assets without a fallback (22.541917ms)
+✔ falls back to index.html for an unknown app route (0.565917ms)
+✔ does not turn missing API or write requests into the app shell (0.213209ms)
+✔ emits the files required by Sites packaging (2.411667ms)
+ℹ tests 88
+ℹ suites 0
+ℹ pass 88
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 202.689667

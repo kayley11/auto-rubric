@@ -4,7 +4,10 @@ import {
   rememberedContributor,
 } from "./caseSubmission.mjs";
 
-export function useContributor() {
+export const individualAccount = access => access?.authenticated && access.member_id !== "workspace" ? access.member_id || "" : "";
+
+export function useContributor(access) {
+  const account = individualAccount(access);
   const [value, setValue] = useState(rememberedContributor);
   useEffect(() => {
     const update = () => setValue(rememberedContributor());
@@ -16,6 +19,7 @@ export function useContributor() {
     };
   }, []);
   function change(next) {
+    if (account) return;
     setValue(next);
     try {
       localStorage.setItem(CONTRIBUTOR_STORAGE, next);
@@ -24,10 +28,10 @@ export function useContributor() {
     }
     window.dispatchEvent(new Event("arena-contributor-changed"));
   }
-  return [value, change];
+  return [account || value, change];
 }
 
-export function ContributorField({ value, onChange, disabled = false }) {
+export function ContributorField({ value, onChange, disabled = false, accountId = "" }) {
   return (
     <label className="field">
       Contributor ID
@@ -37,12 +41,12 @@ export function ContributorField({ value, onChange, disabled = false }) {
         onChange={(e) => onChange(e.target.value)}
         maxLength={80}
         disabled={disabled}
+        readOnly={!!accountId && accountId !== "workspace"}
         placeholder="e.g. R01"
         autoComplete="off"
       />
       <small className="field-help">
-        Use the same ID each time. Remembered on this browser; no registration
-        required.
+        {accountId && accountId !== "workspace" ? "Recorded automatically from your signed-in account." : "Use the same contributor ID with this shared login. Remembered on this browser."}
       </small>
     </label>
   );
@@ -54,6 +58,7 @@ export function SubmissionFields({
   submission,
   onChange,
   disabled = false,
+  accountId = "",
 }) {
   return (
     <section
@@ -65,6 +70,7 @@ export function SubmissionFields({
           value={contributor}
           onChange={onContributor}
           disabled={disabled}
+          accountId={accountId}
         />
         <label className="field">
           Batch name <span className="optional">optional</span>
@@ -84,8 +90,7 @@ export function SubmissionFields({
         </label>
       </div>
       <p className="field-help">
-        Contributor IDs are self-declared under the shared login. Cases remain
-        visible to all workspace members.
+        {accountId && accountId !== "workspace" ? "New submissions are attributed to your account. Cases remain visible to all workspace members." : "Contributor IDs are self-declared under the shared login. Cases remain visible to all workspace members."}
       </p>
     </section>
   );

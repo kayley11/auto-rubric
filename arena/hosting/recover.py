@@ -164,6 +164,10 @@ class Supervisor:
         self.tunnel_log = directory / "tunnel-recovery.log"
         self.log_offset = 0
         self.next_registration = 0
+        self.backend_failures = 0
+        self.tunnel_started = 0
+        self.registration_failures = 0
+        self.last_tunnel_restart = 0
         self.client = httpx.Client(timeout=12, follow_redirects=False, trust_env=False)
 
     def state(self, phase, message, **extra):
@@ -179,6 +183,26 @@ class Supervisor:
             },
         )
 
+    @staticmethod
+    def stop_child(process):
+        """Only stop an owned child, with a bounded wait for a stalled server."""
+        if process is None or process.poll() is not None:
+            return
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+
+    def restart_tunnel(self):
+        self.stop_child(self.tunnel)
+        self.tunnel = None
+        self.address = None
+        self.next_registration = 0
+        self.registration_failures = 0
+        self.last_tunnel_restart = time.monotonic()
+
     def ensure_backend(self):
         url = f"http://127.0.0.1:{self.port}"
         headers = {
@@ -186,16 +210,24 @@ class Supervisor:
             "X-Arena-Bridge": self.config["ARENA_BRIDGE_SECRET"],
         }
         try:
-            response = self.client.get(url + "/api/config", headers=headers, timeout=2)
-            if response.status_code == 200 and response.json().get("access", {}).get("hosted"):
-                return
-            raise RecoveryError(
-                "The backend port belongs to another configuration; it was not stopped."
-            )
-        except (httpx.ConnectError, httpx.ConnectTimeout):
+            response = self.client.get(url + "/api/config", headers=headers, timeout=3)
+            if response.status_code == 200:
+                if response.json().get("access", {}).get("hosted"):
+                    self.backend_failures = 0
+                    return
+                raise RecoveryError(
+                    "The backend port belongs to another configuration; it was not stopped."
+                )
+        except (httpx.HTTPError, ValueError):
             pass
+        self.backend_failures += 1
         if self.backend and self.backend.poll() is None:
-            raise RecoveryError("The backend is starting.")
+            if self.backend_failures < 3:
+                raise RecoveryError("The local backend is not responding; checking again before restart.")
+            self.stop_child(self.backend)
+            self.backend = None
+            self.backend_failures = 0
+            self.state("recovering", "Restarting the unresponsive local backend; saved data is retained.")
         with socket.socket() as sock:
             if sock.connect_ex(("127.0.0.1", self.port)) == 0:
                 raise RecoveryError("The backend port is occupied; no other process was stopped.")
@@ -212,6 +244,7 @@ class Supervisor:
                 stderr=subprocess.STDOUT,
                 start_new_session=True,
             )
+        self.backend_failures = 0
         write_json(self.directory / "backend-process.json", {"pid": self.backend.pid})
         raise RecoveryError(
             "Starting the existing protected backend; accounts and results are unchanged."
@@ -225,6 +258,7 @@ class Supervisor:
                     "The local cloudflared client is missing; no configuration was replaced."
                 )
             self.address = None
+            self.tunnel_started = time.monotonic()
             self.log_offset = self.tunnel_log.stat().st_size if self.tunnel_log.exists() else 0
             with self.tunnel_log.open("ab") as log:
                 self.tunnel = subprocess.Popen(
@@ -247,12 +281,21 @@ class Supervisor:
                     start_new_session=True,
                 )
             write_json(self.directory / "tunnel-process.json", {"pid": self.tunnel.pid})
+        # Keep reading after the URL is known: Quick Tunnels can expire while
+        # cloudflared remains alive and repeatedly says "Tunnel not found".
+        with self.tunnel_log.open("rb") as log:
+            log.seek(self.log_offset)
+            text = log.read(200000).decode("utf-8", errors="replace")
+            self.log_offset = log.tell()
+        if "Tunnel not found" in text:
+            self.restart_tunnel()
+            raise RecoveryError("The temporary tunnel expired; requesting a fresh connection.")
         if not self.address:
-            with self.tunnel_log.open("rb") as log:
-                log.seek(self.log_offset)
-                text = log.read(100000).decode("utf-8", errors="replace")
             urls = re.findall(r"https://[a-z0-9-]+\.trycloudflare\.com", text)
             if not urls:
+                if time.monotonic() - self.tunnel_started > 60:
+                    self.restart_tunnel()
+                    raise RecoveryError("The tunnel did not obtain an address; restarting its connection.")
                 raise RecoveryError("Connecting the tunnel; waiting for its new address.")
             self.address = urls[-1]
             self.next_registration = 0
@@ -269,8 +312,16 @@ class Supervisor:
                         self.ensure_backend()
                         self.ensure_tunnel()
                         if time.monotonic() >= self.next_registration:
-                            expires = register(self.client, self.config, self.address)
-                            count = website_check(self.client, self.site)
+                            try:
+                                expires = register(self.client, self.config, self.address)
+                                count = website_check(self.client, self.site)
+                            except RecoveryError:
+                                self.registration_failures += 1
+                                if self.registration_failures >= 3 and time.monotonic() - self.last_tunnel_restart > 60:
+                                    self.restart_tunnel()
+                                    raise RecoveryError("The public connection could not be verified; renewing the temporary tunnel.")
+                                raise
+                            self.registration_failures = 0
                             self.state(
                                 "online",
                                 "Website and protected evaluations are online.",
@@ -283,17 +334,12 @@ class Supervisor:
                         message = (
                             str(exc)
                             if isinstance(exc, RecoveryError)
-                            else "Connection interrupted; retrying safely."
+                            else "The connection check failed (" + type(exc).__name__ + "); retrying safely."
                         )
                         self.state("recovering", message)
                         time.sleep(5)
             finally:
-                if self.tunnel and self.tunnel.poll() is None:
-                    self.tunnel.terminate()
-                    try:
-                        self.tunnel.wait(timeout=10)
-                    except subprocess.TimeoutExpired:
-                        self.tunnel.kill()
+                self.stop_child(self.tunnel)
                 self.client.close()
                 self.state(
                     "stopped", "Recovery stopped. Existing accounts and results are retained."

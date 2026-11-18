@@ -14,7 +14,7 @@ import {
 } from "./caseSubmission.mjs";
 
 export function SubmittedCases({ access }) {
-  const [contributorId, setContributorId] = useContributor();
+  const [contributorId, setContributorId] = useContributor(access);
   const [contributor, setContributor] = useState("");
   const [batch, setBatch] = useState("");
   const [mine, setMine] = useState(false);
@@ -106,6 +106,7 @@ export function SubmittedCases({ access }) {
         <>
           <div className="workspace-case-filters">
             <ContributorField
+              accountId={access?.member_id}
               value={contributorId}
               onChange={setContributorId}
             />
@@ -167,7 +168,7 @@ export function SubmittedCases({ access }) {
               </button>
             </div>
             <p className="field-help workspace-sharing-note">
-              Contributor IDs are self-declared under the shared login. Earlier
+              New submissions use your account ID; shared-login records keep their declared contributor. Earlier
               cases keep their original records; missing attribution is shown as
               Not recorded.
             </p>

@@ -1,0 +1,382 @@
+
+> arena@0.0.0 build
+> vite build && node scripts/prepare-sites-build.mjs
+
+vite v6.4.5 building for production...
+transforming...
+✓ 2019 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/client/index.html                              0.42 kB │ gzip:   0.29 kB
+dist/client/assets/ArticleQuestions-DWtPQDZm.css    3.58 kB │ gzip:   1.17 kB
+dist/client/assets/index-BcSfvJQ6.css             102.15 kB │ gzip:  20.16 kB
+dist/client/assets/ArticleQuestions-DTtSLolF.js    15.99 kB │ gzip:   5.22 kB
+dist/client/assets/index-DH9CGxak.js              534.64 kB │ gzip: 163.35 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.44s
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json
+
+> arena@0.0.0 test:sites
+> node --test tests/sites-worker.test.mjs
+
+✔ serves existing static assets without a fallback (22.030625ms)
+✔ falls back to index.html for an unknown app route (0.678167ms)
+✔ does not turn missing API or write requests into the app shell (0.243208ms)
+✔ emits the files required by Sites packaging (1.985666ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 86.250833
+✔ layout repairs and source restorations are never labelled verbatim model quotes (0.647542ms)
+✔ overlapping source highlights preserve text and UTF-16 positions (0.181666ms)
+✔ case preview excludes hidden outcomes, unresolved facts and source metadata (0.63225ms)
+✔ question preview contains only that question's visible case and task (0.721625ms)
+✔ selection and confirmation count tasks under one parent case (0.633125ms)
+✔ editing evidence or reference clears review checks; selecting a task does not (0.092458ms)
+✔ save payload preserves question IDs without accepting source snapshots from the client (0.093292ms)
+✔ reopening a batch preserves each model and accepts a replacement connection without relabelling answers (0.925375ms)
+✔ batch polling retains earlier completed results while later cells queue or fail (0.090583ms)
+✔ Explicit duplicate case codes are rejected instead of silently merging inputs (1.023041ms)
+✔ Saved comparisons reopen the actual case–model records with their original rules (6.661542ms)
+✔ Comparison groups retain source records and distinct cases without losing model labels (0.143667ms)
+✔ Timeouts move to the queue tail while untouched cases finish first (0.316208ms)
+✔ Queue retries are bounded and permanent errors do not block the next case (0.162083ms)
+✔ CSV preserves quoted commas, line breaks and escaped quotes (4.582292ms)
+✔ Malformed CSV and non-text fields are rejected before a run (0.158875ms)
+✔ JSON, wrapped JSON and JSONL use the same fields (0.152625ms)
+✔ Preview checks required text, common task, server limits and revised D5c evidence (4.3445ms)
+✔ An imported case never inherits another case's reference or interview (0.190666ms)
+✔ A generated answer is scored only after generation finishes (0.238375ms)
+✔ Pasted answers go directly to scoring (0.06725ms)
+✔ Resuming a partial saved run retries it without creating a duplicate (0.073375ms)
+✔ A failed case retains its run ID for a later retry (0.123792ms)
+✔ A batch compares each generated case across selected models but scores a supplied answer once (0.152083ms)
+✔ Legacy single-model batches keep their saved run IDs when opened as a comparison (0.085042ms)
+✔ Matrix findings quote an assessed item rather than inventing a total score (0.056708ms)
+✔ Comparison CSV preserves case numbers, item grades, model columns and quoted explanations (0.179334ms)
+✔ Unnamed cases receive distinct codes which survive model expansion and resume (0.139334ms)
+✔ Written-case defaults leave actual acquisition optional without changing saved presets (0.061208ms)
+✔ Current study defaults apply to empty forms while populated or explicitly configured drafts keep their version (0.091541ms)
+✔ The full case context preserves returned records and source details without adding hidden evidence to blind review (0.212417ms)
+✔ Deployment checks stay accessible separately without changing clinical records or scores (0.269208ms)
+✔ contributor and batch filters match the same submission, not unrelated events (1.267041ms)
+✔ source search, legacy records and filter options remain available (6.125375ms)
+✔ contributor IDs accept stable short identifiers and reject empty or invalid values (0.10875ms)
+✔ reading view formats headings, list labels and malformed summary labels (1.987083ms)
+✔ page controls, rules and excess blank lines become ordinary paragraph breaks (0.142583ms)
+✔ selection across formatting and an emoji maps back to the exact unchanged raw answer (1.030083ms)
+✔ old raw annotations remain locatable, including a whole bold span (0.129583ms)
+✔ format-only links are explicit and keep raw offsets; paraphrases remain unlinked (5.409917ms)
+✔ formatting preserves clinical numbers, negation, standalone symbols and raw fingerprints (8.186042ms)
+✔ possessive apostrophes inside a quotation do not create truncated quote links (0.552833ms)
+✔ scientific notation is readable and still maps to unchanged UTF-16 source spans (0.458583ms)
+✔ notation parsing preserves prices and flags unknown formula syntax rather than guessing (0.101ms)
+✔ only the source-verified legacy rubric formula restores its missing multiplication signs (0.200667ms)
+✔ clipped quote formatting is hidden without dropping clinical wording or numeric operators (0.0935ms)
+✔ links only a literal span and preserves exact answer wording (0.845583ms)
+✔ does not silently link changed negation, numbers, ellipses or paraphrases (1.365125ms)
+✔ repeated excerpts are ambiguous and receive no automatic annotation (1.089542ms)
+✔ unquoted omission does not invent a supporting quotation (1.298375ms)
+✔ a short saved excerpt is distinguished from text absent from the answer (2.264458ms)
+✔ context fingerprints change with answer, reason and rubric version (14.678042ms)
+✔ selecting text prepares a prompt, with exact raw evidence and no annotation or save action (2.044792ms)
+✔ empty, external and whitespace-only selections do not offer a highlight (0.3915ms)
+✖ public study snapshots work without a backend or login (26.5465ms)
+✖ zero-shot comparison never uses public snapshots and requires a workspace session (0.609542ms)
+✖ five-model comparison is public and falls back to saved case results (0.179208ms)
+✖ case-series results are public offline and unknown task IDs are rejected (0.160542ms)
+✖ cross-origin writes fail before contacting the backend (0.341ms)
+✖ offline writes fail clearly, private runs never fall back to public snapshots (0.158208ms)
+✖ a retained login cookie does not block public study browsing during an outage (0.663208ms)
+✖ proxy sets its own bridge header and forwards only the application session (0.181958ms)
+✖ logout clears the application cookie even when the computer is offline (0.149709ms)
+✖ recovery rejects unsigned, altered and expired updates (0.22775ms)
+✖ a verified new address replaces the connection without republishing (5.59775ms)
+✖ expired connections never fall back to an old static tunnel (0.225375ms)
+✖ recovery rejects stale updates and disallowed addresses before probing (0.591625ms)
+✖ an unverified backend cannot change the registered address (0.37125ms)
+✖ public recovery status exposes no connection address or secret (0.122833ms)
+✖ oversized recovery bodies are rejected without a database update (0.088583ms)
+(node:82001) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a saved batch renders while the configuration request is still pending (59.486458ms)
+✔ reading text renders escaped content and bold headings without Markdown delimiters (5.168083ms)
+✔ case source review starts collapsed and keeps full article text behind workspace access (5.816125ms)
+✔ filtered case history renders the current index, legacy counts and missing counts without crashing (11.584833ms)
+✔ personal account attribution is read-only while legacy shared attribution stays editable (2.886458ms)
+✔ an unfinished saved batch can replace its API connections without reopening clinical settings (12.262833ms)
+✔ pending labels use generic confirmation wording (0.996125ms)
+✔ display copies retain clinical facts, scores, IDs and the untouched source (0.203167ms)
+✔ reviewer IDs remain usable without displaying personal names (0.254959ms)
+✔ source notes retain their DOI, date and licence (0.047625ms)
+✔ displayed JSON and plain-text previews remove the old named version label (0.188125ms)
+✔ a saved applicability decision is not displayed as an unfinished scoring job (3.063458ms)
+✔ missing assessment, unavailable answer, scope and numeric grades remain distinct (0.087041ms)
+✔ filtered case history renders the current index, legacy counts and missing counts without crashing (25.922292ms)
+✔ serves existing static assets without a fallback (22.744292ms)
+✔ falls back to index.html for an unknown app route (0.499542ms)
+✔ does not turn missing API or write requests into the app shell (0.193708ms)
+✔ emits the files required by Sites packaging (1.985083ms)
+ℹ tests 88
+ℹ suites 0
+ℹ pass 72
+ℹ fail 16
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 219.750959
+
+✖ failing tests:
+
+test at tests/hosting-worker.test.mjs:50:1
+✖ public study snapshots work without a backend or login (26.5465ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:55:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:61:1
+✖ zero-shot comparison never uses public snapshots and requires a workspace session (0.609542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 401
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:63:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:82:1
+✖ five-model comparison is public and falls back to saved case results (0.179208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:87:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:118:1
+✖ case-series results are public offline and unknown task IDs are rejected (0.160542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:122:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:132:1
+✖ cross-origin writes fail before contacting the backend (0.341ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 403
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:141:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:144:1
+✖ offline writes fail clearly, private runs never fall back to public snapshots (0.158208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:153:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:168:1
+✖ a retained login cookie does not block public study browsing during an outage (0.663208ms)
+  SyntaxError: Unexpected token 'o', "not found" is not valid JSON
+      at JSON.parse (<anonymous>)
+      at parseJSONFromBytes (node:internal/deps/undici/undici:6433:19)
+      at successSteps (node:internal/deps/undici/undici:6414:27)
+      at readAllBytes (node:internal/deps/undici/undici:5380:13)
+
+test at tests/hosting-worker.test.mjs:194:1
+✖ proxy sets its own bridge header and forwards only the application session (0.181958ms)
+  SyntaxError: Unexpected token 'o', "not found" is not valid JSON
+      at JSON.parse (<anonymous>)
+      at parseJSONFromBytes (node:internal/deps/undici/undici:6433:19)
+      at successSteps (node:internal/deps/undici/undici:6414:27)
+      at readAllBytes (node:internal/deps/undici/undici:5380:13)
+
+test at tests/hosting-worker.test.mjs:234:1
+✖ logout clears the application cookie even when the computer is offline (0.149709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:243:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:305:1
+✖ recovery rejects unsigned, altered and expired updates (0.22775ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 403
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:318:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:336:1
+✖ a verified new address replaces the connection without republishing (5.59775ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:368:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:380:1
+✖ expired connections never fall back to an old static tunnel (0.225375ms)
+  SyntaxError: Unexpected token 'o', "not found" is not valid JSON
+      at JSON.parse (<anonymous>)
+      at parseJSONFromBytes (node:internal/deps/undici/undici:6433:19)
+      at successSteps (node:internal/deps/undici/undici:6414:27)
+      at readAllBytes (node:internal/deps/undici/undici:5380:13)
+
+test at tests/hosting-worker.test.mjs:410:1
+✖ recovery rejects stale updates and disallowed addresses before probing (0.591625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 409
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:423:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 409,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:434:1
+✖ an unverified backend cannot change the registered address (0.37125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:446:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:453:1
+✖ public recovery status exposes no connection address or secret (0.122833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:463:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/hosting-worker.test.mjs:469:1
+✖ oversized recovery bodies are rejected without a database update (0.088583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 413
+  
+      at TestContext.<anonymous> (file:///Users/lzt/Downloads/%E6%AF%95%E8%AE%BE/Autorubric/github-sync-recovery-format-highlight-20261117/arena/tests/hosting-worker.test.mjs:478:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 413,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -13,7 +13,7 @@ Registered Sites source: the sibling checkout `auto-rubric-public`, project `app
 The existing React interface is hosted on Sites. The original Python AutoRubric engine runs on the host computer, connected through an outbound Cloudflare tunnel. No paid hosting service was opened.
 
 - Anyone can browse the saved study and download public display copies.
-- Authorised accounts can generate answers, run original or proposed scoring rules and save reviews. New evaluations and reviews are stored locally per account.
+- Authorised accounts can generate answers, run original or proposed scoring rules and save reviews. New evaluations are stored in the protected shared workspace; independent ratings remain tied to the signed-in account.
 - Clinical references and candidate information requirements remain **awaiting confirmation**.
 - Public display labels use generic wording. Historical study files and original raw outputs are retained unchanged.
 
@@ -21,7 +21,7 @@ The computer must remain awake and online for live evaluations and saving. After
 
 Connection changes no longer require a Site deployment. A signed, timestamped registration verifies the backend with a nonce proof before updating one managed D1 row. The row contains only the tunnel address and lease metadata; it contains no accounts, API keys, passwords or clinical records. The host renews the three-minute lease every minute. An expired lease is treated as offline rather than falling back to an old address. The existing bridge secret is reused; it is never written to source or browser assets.
 
-When the computer is offline, the public study remains available and writes fail with an offline message. Recovery does not restart interrupted model jobs or change saved scores. Use Retry on the existing evaluation after reconnecting.
+When the computer is offline, the public study remains available and writes fail with an offline message. The durable queue retains unfinished jobs and completed steps. After restart, expired job leases allow interrupted work to resume; a provider call whose response was not saved may be repeated. Saved clinical grades and historical outputs are not rewritten.
 
 ## Local files
 
@@ -44,3 +44,11 @@ The original local entry point remains `arena/server.py`. The restricted entry p
 See [deployment checks](../validation/20261026-public/README.md) and [recovery checks](../validation/20261027-recovery/README.md) for observed test results.
 
 The GitHub copy includes the complete non-secret deployment-check outputs and their SHA-256 manifest. Private account configuration, passwords and ordinary member evaluations remain excluded. Existing research archives are preserved.
+
+## Recovery and reading fixes (17 November 2026)
+
+See the [repair and verification record](../validation/connection-format-highlight-20261117/README.md). Local database operations now close connections explicitly and serialize short transactions, HTTP request threads are bounded, and the recovery supervisor renews expired tunnels and restarts an owned backend after repeated failed health checks. Existing case records, scores, review history, credentials and API connections are retained. The independent account and persistent queue modules already used by the deployed application are included so the repaired backend is reproducible from this repository.
+
+Reading views render common scientific notation and clipped Markdown without changing raw answers or annotation offsets. Selecting text offers Highlight / Cancel; only an explicit confirmation creates a green draft. Saving an evidence note is separate from submitting a clinical rating. Automatic evidence links remain awaiting review; clinical references and candidate information requirements remain **awaiting confirmation**.
+
+The website still uses Sites plus the existing protected local backend. This update does not provision an always-on server or a paid service. Keep local `.env`, private `arena/.data/` configuration, password files and API keys outside Git.

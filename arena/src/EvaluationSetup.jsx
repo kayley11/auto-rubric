@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BookOpen, ChevronDown } from "lucide-react";
 import { backendName, modelOption } from "./modelIdentity.mjs";
 import {
@@ -33,12 +34,23 @@ export function EvaluationSetup({
   change,
   multiple = false,
   disabled = false,
+  connectionLocked = disabled,
   pasted = false,
   onCriteria,
   onViewCriteria,
   scored = false,
   onResults,
 }) {
+  const [connections, setConnections] = useState([]);
+  const [answerModelText,setAnswerModelText] = useState((form.answer_models || [form.answer_model]).filter(Boolean).join(", "));
+  useEffect(() => {setAnswerModelText((form.answer_models || [form.answer_model]).filter(Boolean).join(", "));}, [form.answer_connection_id]);
+  useEffect(() => {
+    if (!config?.access?.authenticated || !config.access.personal_connections) return;
+    let alive = true;
+    const refresh = () => fetch("/api/connections", {cache:"no-store"}).then(r => r.ok ? r.json() : null).then(data => {if(alive && data)setConnections(data.connections || []);}).catch(() => {});
+    refresh(); window.addEventListener("arena-connections-updated",refresh);
+    return () => {alive=false;window.removeEventListener("arena-connections-updated",refresh);};
+  }, [config?.access?.member_id, config?.access?.authenticated]);
   const catalogue = rubricCatalogue(config);
   const selected =
     catalogue.find((r) => r.id === (form.rubric_id || clinicalRubricId)) ||
@@ -68,6 +80,16 @@ export function EvaluationSetup({
           <BookOpen size={15} /> View definitions
         </button>
       </div>
+      {config?.access?.personal_connections && <div className="connection-selectors">
+        {["answer","judge"].map(role => <label className="field" key={role}>{role === "answer" ? "Generation connection" : "Scoring connection"}<select aria-label={role === "answer" ? "Generation connection" : "Scoring connection"} value={form[role+"_connection_id"] || ""} disabled={connectionLocked || (role === "answer" && pasted)} onChange={e => {
+          change(role+"_connection_id",e.target.value);
+          if (!disabled) {
+            if (e.target.value) change(role === "answer" ? "answer_models" : "judge_model", role === "answer" ? [] : "");
+            else change(role === "answer" ? "answer_models" : "judge_model", role === "answer" ? [config.settings.answer_model] : config.settings.judge_model);
+          }
+        }}><option value="">Project connection</option>{connections.map(c => <option key={c.id} value={c.id}>{c.label} · {c.provider}</option>)}</select></label>)}
+        <p className="field-help connection-help">Personal connections use your provider quota. <a href="/#account">Manage API connections</a>. Each run keeps its selected answering and scoring connections.</p>
+      </div>}
       <div className="setup-fields">
         <label className="field">
           Rubric
@@ -86,7 +108,7 @@ export function EvaluationSetup({
         </label>
         <label className="field">
           Scoring model
-          <select
+          {form.judge_connection_id ? <input aria-label="Scoring model ID" value={form.judge_model} disabled={disabled || !config} onChange={e => change("judge_model",e.target.value)} placeholder="Exact provider model ID"/> : <select
             aria-label="Scoring model"
             value={form.judge_model}
             disabled={disabled || !config}
@@ -97,7 +119,7 @@ export function EvaluationSetup({
                 {modelOption(id)}
               </option>
             ))}
-          </select>
+          </select>}
         </label>
       </div>
       <p className="scoring-version-summary">
@@ -130,7 +152,7 @@ export function EvaluationSetup({
           <ChevronDown size={15} />
         </button>
       </div>
-      {multiple ? (
+      {form.answer_connection_id && !pasted ? <label className="field">{multiple ? "Answer model IDs" : "Answer model ID"}<input aria-label="Answer model IDs" value={answerModelText} disabled={disabled || !config} onChange={e => setAnswerModelText(e.target.value)} onBlur={() => change("answer_models",answerModelText.split(",").map(v => v.trim()).filter(Boolean))} placeholder={multiple ? "First model ID, second model ID" : "Exact provider model ID"}/><small className="field-help">Use IDs from your provider. {multiple ? "Separate multiple models with commas. " : ""}Test the connection in Account & API to view available IDs.</small></label> : multiple ? (
         <fieldset
           className="answer-model-choices"
           disabled={disabled || pasted || !config}

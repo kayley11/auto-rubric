@@ -111,7 +111,7 @@ export function LiteratureExtractor({ access, onBusy, initialDraftId = "" }) {
   const [questionFacts, setQuestionFacts] = useState(null);
   const [questionSourceFocus, setQuestionSourceFocus] = useState(null);
   const [factsExpanded, setFactsExpanded] = useState(false);
-  const [contributor, setContributor] = useContributor();
+  const [contributor, setContributor] = useContributor(access);
   const [submission, setSubmission] = useState(() =>
     newSubmission("Article extraction"),
   );
@@ -731,6 +731,7 @@ export function LiteratureExtractor({ access, onBusy, initialDraftId = "" }) {
                       }
                     >
                       <ArticleQuestions
+                  accountId={access?.member_id}
                         key={draft.id}
                         draft={draft}
                         source={source}
@@ -1042,6 +1043,7 @@ export function LiteratureExtractor({ access, onBusy, initialDraftId = "" }) {
                         {editable && (
                           <>
                             <SubmissionFields
+                accountId={access?.member_id}
                               contributor={contributor}
                               onContributor={setContributor}
                               submission={submission}

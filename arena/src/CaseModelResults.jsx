@@ -4,6 +4,7 @@ import { RefreshCw, ChevronDown } from "lucide-react";
 import { ExportMenu, exposure } from "./StudyTools";
 import { EvidenceDialog } from "./EvidenceDialog";
 import { CaseContext } from "./CaseContext";
+import { ClinicalText } from "./ClinicalText";
 import { ScoringEvidence } from "./ScoringEvidence.jsx";
 import { displayData } from "./presentation.mjs";
 import { scoringVersionLabel } from "./caseIdentity.mjs";
@@ -276,19 +277,15 @@ function ModelEvidence({ data, model, initialItem, onClose, caseInfo }) {
               onItemChange={setItem}
             />
             {!!score?.review_flags?.length && <div className="notice" role="note"><strong>Output needs review · original score retained</strong><ul>{score.review_flags.map((flag,n) => <li key={n}>{flag.type === "quote_not_literal" ? "The judge's excerpt could not be matched word for word. Check it against the saved evidence; this does not by itself establish a clinical error." : flag.detail}</li>)}</ul></div>}
-            {score?.requirement_checks?.length > 0 && <details className="study-disclosure"><summary>Information requirements: request-by-request checks</summary>{score.requirement_checks.map((check,n) => <section key={n}><h4>{check.id} · {check.status.replaceAll("_", " ")}</h4>{check.request_quote && <blockquote>{check.request_quote}</blockquote>}<p>{check.reason}</p></section>)}</details>}
+            {score?.requirement_checks?.length > 0 && <details className="study-disclosure"><summary>Information requirements: request-by-request checks</summary>{score.requirement_checks.map((check,n) => <section key={n}><h4>{check.id} · {check.status.replaceAll("_", " ")}</h4>{check.request_quote && <ClinicalText as="blockquote" text={check.request_quote} />}<ClinicalText as="p" text={check.reason} /></section>)}</details>}
           </>
         )}
         {tab === "answer" && (
           <>
             <h3>Case information supplied at the start</h3>
-            <div className="case-prewrap">
-              {data.initial_facts}
-              <br />
-              {!data.initial_facts?.includes(data.opening) ? data.opening : ""}
-            </div>
+            <ClinicalText text={[data.initial_facts, !data.initial_facts?.includes(data.opening) ? data.opening : ""].filter(Boolean).join("\n\n")} />
             <h3>Task</h3>
-            <div className="case-prewrap">{data.task}</div>
+            <ClinicalText text={data.task} />
             <h3>Saved final answer</h3>
             {model.word_count && (
               <p className="field-help">
@@ -298,10 +295,7 @@ function ModelEvidence({ data, model, initialItem, onClose, caseInfo }) {
                   : ""}
               </p>
             )}
-            <div className="case-prewrap evidence-answer">
-              {model.answer ||
-                `No final answer saved. ${statusNames[model.answer_status] || "Pending"}.`}
-            </div>
+            <ClinicalText className="evidence-answer" text={model.answer || `No final answer saved. ${statusNames[model.answer_status] || "Pending"}.`} />
           </>
         )}
         {tab === "interview" && (

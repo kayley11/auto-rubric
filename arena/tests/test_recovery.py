@@ -177,3 +177,53 @@ def test_tunnel_restart_reads_only_its_new_address(tmp_path, config, monkeypatch
     assert manager.address == "https://second.trycloudflare.com"
     assert len(processes) == 2
     manager.client.close()
+
+
+def test_unresponsive_owned_backend_is_restarted_after_three_checks(tmp_path, config, monkeypatch):
+    manager = recover.Supervisor(root=tmp_path, directory=tmp_path)
+    manager.client.close()
+    def stalled(request):
+        raise httpx.ReadTimeout("fixture timeout", request=request)
+    manager.client = httpx.Client(transport=httpx.MockTransport(stalled))
+    class Process:
+        pid = 12345
+        code = None
+        def poll(self): return self.code
+        def terminate(self): self.code = 0
+        def wait(self, **kw): return self.code
+    old = Process()
+    manager.backend = old
+    monkeypatch.setattr(recover.subprocess, "Popen", lambda *a, **kw: Process())
+    class ClosedPort:
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def connect_ex(self, *args): return 61
+    monkeypatch.setattr(recover.socket, "socket", ClosedPort)
+    # The test owns no listener and never touches a real process.
+    for _ in range(2):
+        with pytest.raises(recover.RecoveryError, match="checking again"):
+            manager.ensure_backend()
+        assert old.code is None
+    with pytest.raises(recover.RecoveryError, match="Starting the existing"):
+        manager.ensure_backend()
+    assert old.code == 0 and manager.backend is not old
+    assert (tmp_path / "config.json").exists()
+    manager.client.close()
+
+
+def test_live_tunnel_with_expired_registration_is_restarted(tmp_path, config):
+    manager = recover.Supervisor(root=tmp_path, directory=tmp_path)
+    class Process:
+        code = None
+        def poll(self): return self.code
+        def terminate(self): self.code = 0
+        def wait(self, **kw): return self.code
+    old = Process()
+    manager.tunnel = old
+    manager.address = "https://old.trycloudflare.com"
+    manager.tunnel_log.write_text('Unauthorized: Tunnel not found\n')
+    with pytest.raises(recover.RecoveryError, match="expired"):
+        manager.ensure_tunnel()
+    assert old.code == 0
+    assert manager.tunnel is None and manager.address is None
+    manager.client.close()

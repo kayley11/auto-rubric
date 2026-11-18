@@ -1,3 +1,4 @@
+import { ClinicalText } from "./ClinicalText";
 import { backendName } from "./modelIdentity.mjs";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -280,9 +281,9 @@ export function Followup({ onUseData }) {
           <details className="study-disclosure case-context">
             <summary>Case information & task</summary>
             <h3>Information at the start</h3>
-            <pre>{record.data.facts}</pre>
+            <ClinicalText text={record.data.facts} />
             <h3>Original task</h3>
-            <pre>{record.data.task}</pre>
+            <ClinicalText text={record.data.task} />
           </details>
           <nav className="study-tabs" aria-label="Follow-up sections">
             {[
@@ -370,7 +371,7 @@ export function Followup({ onUseData }) {
                 <summary>
                   Selected inventory and factual availability · examiner only
                 </summary>
-                <pre>{record.data.interview.availability_context}</pre>
+                <ClinicalText text={record.data.interview.availability_context} />
               </details>
             </section>
           )}
@@ -391,7 +392,7 @@ export function Followup({ onUseData }) {
             <section className="study-section">
               <h2>Answer and repeated judgements</h2>
               <div className="study-answer">
-                <pre>{record.data.answer}</pre>
+                <ClinicalText text={record.data.answer} />
               </div>
               {Object.entries(record.scores).map(([cid, grades]) => (
                 <section key={cid}>

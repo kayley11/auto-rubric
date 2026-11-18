@@ -2,6 +2,8 @@
 
 import json
 import re
+
+from sqlite_store import connect as connect_store
 import threading
 import uuid
 from copy import deepcopy
@@ -21,36 +23,84 @@ class Reviews:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self._append_lock = threading.RLock()
+        self.reviewer = None
+        self.database = self.root / "_reviews.sqlite3"
+        with self.connect() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("CREATE TABLE IF NOT EXISTS records (id TEXT PRIMARY KEY,kind TEXT,"
+                       "target TEXT,reviewer TEXT,sequence INTEGER,saved_at TEXT,payload TEXT)")
+            db.execute("CREATE INDEX IF NOT EXISTS review_lookup ON records(kind,target,reviewer)")
+            for path in self.root.glob("*.json"):
+                value = json.loads(path.read_text(encoding="utf-8"))
+                db.execute("INSERT OR IGNORE INTO records VALUES(?,?,?,?,?,?,?)",
+                           (value["id"], value["kind"], value["target"], value.get("account_id", "legacy:"+value.get("reviewer", "")),
+                            value.get("sequence", 0), value["saved_at"], json.dumps(value)))
+
+    def connect(self):
+        return connect_store(self.database, timeout=10)
+
+    def scoped(self, reviewer):
+        view = object.__new__(Reviews)
+        view.__dict__ = {**self.__dict__, "reviewer": reviewer}
+        return view
 
     def latest(self, kind, target):
         records = self.history(kind, target)
         return records[-1] if records else None
 
     def history(self, kind, target):
-        records = [json.loads(p.read_text(encoding="utf-8")) for p in self.root.glob("*.json")]
-        matching = [r for r in records if r["kind"] == kind and r["target"] == target]
-        return sorted(matching, key=lambda r: (r.get("sequence", 0), r["saved_at"]))
+        query = "SELECT payload FROM records WHERE kind=? AND target=?"
+        args = [kind, target]
+        if kind in {"rating", "run_rating"} and self.reviewer:
+            query += " AND reviewer=?"
+            args.append(self.reviewer)
+        query += " ORDER BY sequence,saved_at,id"
+        with self.connect() as db:
+            return [json.loads(row[0]) for row in db.execute(query, args)]
+
+    def ratings_by_target(self):
+        query = "SELECT target,payload FROM records WHERE kind='rating'"
+        args = []
+        if self.reviewer:
+            query += " AND reviewer=?"
+            args.append(self.reviewer)
+        query += " ORDER BY sequence DESC,saved_at DESC"
+        result = {}
+        with self.connect() as db:
+            for target, payload in db.execute(query, args):
+                result.setdefault(target, json.loads(payload))
+        return result
 
     def append(self, kind, target, value):
-        with self._append_lock:
-            previous = self.history(kind, target)
-            sequence = max((r.get("sequence", 0) for r in previous), default=0) + 1
-            record = {
-                **value,
-                "id": uuid.uuid4().hex,
-                "kind": kind,
-                "target": target,
-                # A coarse clock can give multiple saves the same timestamp.
-                # Order new records explicitly; do not alter old files or times.
-                "sequence": sequence,
-                "saved_at": datetime.now(UTC).isoformat(),
-            }
-            path = self.root / (record["id"] + ".json")
+        if kind in {"rating", "run_rating"} and self.reviewer:
+            display = value.get("reviewer", "")
+            if display != self.reviewer and not (self.reviewer == "workspace" and display.startswith("workspace/")):
+                raise PermissionError("A rating can only be saved for the signed-in reviewer.")
+            value = {**value, "account_id":self.reviewer}
+        with self._append_lock, self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if "_expected_previous" in value:
+                query = "SELECT id FROM records WHERE kind=? AND target=?"
+                args = [kind, target]
+                if self.reviewer:
+                    query += " AND reviewer=?"
+                    args.append(self.reviewer)
+                current = db.execute(query+" ORDER BY sequence DESC,saved_at DESC LIMIT 1", args).fetchone()
+                expected = value.get("_expected_previous")
+                if (current[0] if current else None) != expected:
+                    raise ValueError("Another tab updated this rating. Reload before saving again.")
+                value = {k:v for k,v in value.items() if k != "_expected_previous"}
+            sequence = db.execute("SELECT COALESCE(MAX(sequence),0)+1 FROM records WHERE kind=? AND target=?",
+                                  (kind, target)).fetchone()[0]
+            record = {**value, "id":uuid.uuid4().hex, "kind":kind, "target":target,
+                      "sequence":sequence, "saved_at":datetime.now(UTC).isoformat()}
+            path = self.root / (record["id"]+".json")
             temporary = path.with_suffix(".tmp")
-            temporary.write_text(
-                json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-            )
+            encoded = json.dumps(record, ensure_ascii=False, indent=2)+"\n"
+            temporary.write_text(encoded, encoding="utf-8")
             temporary.replace(path)
+            db.execute("INSERT INTO records VALUES(?,?,?,?,?,?,?)", (record["id"],kind,target,
+                       record.get("account_id", record.get("reviewer", "")),sequence,record["saved_at"],encoded))
             return record
 
     def profile_key(self, packet):
@@ -181,6 +231,7 @@ class Reviews:
             packet["id"],
             dict(
                 reviewer=reviewer,
+                _expected_previous=previous.get("id"),
                 items=items,
                 source_fingerprint=scoring.fingerprint(packet["data"]),
                 machine_scores_seen=bool(

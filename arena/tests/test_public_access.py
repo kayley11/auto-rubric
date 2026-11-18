@@ -62,6 +62,43 @@ def login(client, identifier="R01"):
     return response
 
 
+def test_request_thread_limit_returns_retryable_overload_and_recovers(hosted):
+    server, client = hosted
+    for _ in range(server.max_request_threads):
+        assert server.request_slots.acquire(blocking=False)
+    try:
+        response = client.get("/healthz")
+        assert response.status_code == 503
+        assert response.headers["Retry-After"] == "5"
+    finally:
+        for _ in range(server.max_request_threads):
+            server.request_slots.release()
+    assert client.get("/healthz").json() == {"ok": True}
+
+
+def test_source_review_is_member_only_read_only_and_keeps_source_text_exact(hosted, monkeypatch):
+    import source_evidence
+    server, client = hosted
+    calls = []
+
+    def source(app, case_id, draft_id=""):
+        calls.append((app, case_id, draft_id))
+        return {"case": {"case_id": case_id}, "source": {"text": "Josh's original source wording remains exact."},
+                "status": "available", "clinical_reference_status": "awaiting confirmation"}
+
+    monkeypatch.setattr(source_evidence, "case_source_evidence", source)
+    route = "/api/literature/cases/B03/source-evidence"
+    assert client.get(route).status_code == 403
+    assert not calls
+    login(client, "R02")
+    response = client.get(route + "?draft_id=" + "a" * 24)
+    assert response.status_code == 200
+    assert response.json()["source"]["text"] == "Josh's original source wording remains exact."
+    assert calls == [(server.apps["R02"], "B03", "a" * 24)]
+    assert not server.apps["R02"].list_runs()
+    assert client.post(route, json={}).status_code in {400, 403, 404}
+
+
 def test_evidence_notes_are_private_and_do_not_change_grades(hosted):
     from evidence_annotations import digest
 
@@ -137,6 +174,10 @@ def test_public_browsing_has_no_private_runs_and_cannot_write(hosted):
         "can_review": False,
         "can_manage_rubric": False,
         "online": True,
+        "member_id": "",
+        "role": "",
+        "personal_connections": False,
+        "durable_queue": True,
     }
     assert "api_key" not in config["settings"]
     assert config["active_run"] is None

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import "./app.css";
 import { AccessControl, requestSignIn } from "./AccessControl";
+import { WorkspaceAccount, JoinWorkspace } from "./WorkspaceAccount";
 import { displayData, displayText } from "./presentation.mjs";
 import { HigherDecisions } from "./HigherDecisions";
 import { Review } from "./Review";
@@ -61,9 +62,9 @@ import {
 } from "./EvaluationEvidence";
 
 const running = (r) =>
-  r && ["generating", "scoring", "interviewing"].includes(r.status);
+  r && ["queued", "retry_wait", "generating", "scoring", "interviewing"].includes(r.status);
 const currentView = () =>
-  ["cases", "decisions", "review"].find((v) =>
+  ["cases", "decisions", "review", "account", "join"].find((v) =>
     window.location.hash.startsWith(`#${v}`),
   ) || "evaluation";
 function answerWordCount(answer, task) {
@@ -89,6 +90,8 @@ const empty = {
   criteria: [],
   answer_model: "arc:lite",
   judge_model: "arc:apex",
+  answer_connection_id: "",
+  judge_connection_id: "",
   reference_status: "draft",
   rules_version: "original",
   rubric_id: clinicalRubricId,
@@ -106,6 +109,9 @@ const sample = {
     "Provisional points: explain the relevance of heat-related worsening without treating it as diagnostic. Consider alternative explanations for imbalance. Distinguish known facts from missing neurological history and examination. Request information that would help discriminate the possibilities. Do not assume unreported history is normal.",
 };
 const labels = {
+  queued: "Queued",
+  retry_wait: "Waiting to retry",
+  connection_required: "Connection needed",
   interviewing: "Interviewing",
   generating: "Generating",
   answer_ready: "Answer ready",
@@ -184,12 +190,12 @@ function Anchors({ item }) {
 
 export function App() {
   const [linkedItem, setLinkedItem] = useState(null);
-  const [contributor, setContributor] = useContributor();
   const [submission, setSubmission] = useState(() => newSubmission());
   const [view, setView] = useState(currentView);
   const [config, setConfig] = useState(null),
     [form, setForm] = useState(empty),
     [run, setRun] = useState(null);
+  const [contributor, setContributor] = useContributor(config?.access);
   const [history, setHistory] = useState([]),
     [mode, setMode] = useState("generate");
   const [preset, setPreset] = useState("Clinical reasoning"),
@@ -275,14 +281,18 @@ export function App() {
       ) {
         window.location.hash = "cases";
         setView("cases");
-      } else setView(currentView());
+      } else {
+        const batch = window.location.hash.match(/^#evaluate\/batch\/([a-f0-9]{32})$/);
+        if (batch) {setRun(null);setEntryMode("batch");setPasteComparison(false);setReadingComparison(false);setBatchRevision(n => n+1);}
+        setView(currentView());
+      }
     };
     update();
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
   function navigate(next) {
-    if (batchRunning && next !== "evaluation") return;
+    if (batchRunning && next !== "evaluation" && !config?.access?.durable_queue) return;
     setView(next);
     setSidebar(false);
     window.location.hash = next === "evaluation" ? "evaluate" : next;
@@ -328,7 +338,7 @@ export function App() {
         } catch {
           /* No saved batch. */
         }
-        if (!batch?.rows?.length) {
+        if (!batch?.rows?.length && !/^#evaluate\/batch\/[a-f0-9]{32}$/.test(window.location.hash)) {
           setEntryMode("paste");
           // Saved runs are opened explicitly from Recent evaluations. The root opens the evaluation form.
         }
@@ -346,7 +356,7 @@ export function App() {
         const next = await api(`/api/runs/${run.id}`);
         setRun(next);
         if (!running(next)) {
-          setForm(next.input);
+          setForm(runInput(next));
           setHistory(await api("/api/runs"));
         }
       } catch (e) {
@@ -422,6 +432,11 @@ export function App() {
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
   }, []);
+  function runInput(next) {
+    const own = !config?.access?.hosted || next.submitted_by === config?.access?.member_id;
+    return {...next.input, answer_connection_id: own ? next.execution_connections?.answer || "" : "",
+            judge_connection_id: own ? next.execution_connections?.judge || "" : ""};
+  }
   function change(key, value) {
     setForm((f) => ({
       ...f,
@@ -440,8 +455,8 @@ export function App() {
           }
         : {}),
       ...(key === "answer_model" ? { answer_models: [value] } : {}),
-      ...(key === "answer_models" && value.length
-        ? { answer_model: value[0] }
+      ...(key === "answer_models"
+        ? { answer_model: value[0] || "" }
         : {}),
       ...(key === "history" && value !== f.history
         ? { reused_initial_run_id: "" }
@@ -635,7 +650,7 @@ export function App() {
         },
       });
       setRun(next);
-      setForm(next.input);
+      setForm(runInput(next));
       setHistory(await api("/api/runs"));
       localStorage.removeItem("autorubric-draft");
       if (action !== "generate")
@@ -750,7 +765,7 @@ export function App() {
           <Plus size={17} /> New evaluation
         </button>
         <button
-          disabled={batchRunning}
+          disabled={batchRunning && !config?.access?.durable_queue}
           className={`study-nav ${view === "cases" ? "active" : ""}`}
           aria-current={view === "cases" ? "page" : undefined}
           onClick={() => navigate("cases")}
@@ -762,7 +777,7 @@ export function App() {
           </span>
         </button>
         <button
-          disabled={batchRunning}
+          disabled={batchRunning && !config?.access?.durable_queue}
           className={`study-nav ${view === "review" ? "active" : ""}`}
           aria-current={view === "review" ? "page" : undefined}
           onClick={() => navigate("review")}
@@ -851,7 +866,7 @@ export function App() {
             </span>
           </div>
           <div>
-            <AccessControl access={config?.access} />
+            <AccessControl access={config?.access} onRefresh={async () => { const value = await api("/api/config"); setConfig(value); return value; }} />
             <button
               className="subtle-button"
               onClick={() => setDialog("about")}
@@ -860,7 +875,7 @@ export function App() {
             </button>
           </div>
         </header>
-        {view === "cases" ? (
+        {view === "account" ? <WorkspaceAccount access={config?.access}/> : view === "join" ? <JoinWorkspace/> : view === "cases" ? (
           <Cases
             access={config?.access}
             canLoad={!!config && !busy}
@@ -884,6 +899,7 @@ export function App() {
               <h1>
                 {run
                   ? caseCode(form)
+                  : window.location.hash.startsWith("#evaluate/batch/") ? "Saved background batch."
                   : readingComparison
                     ? "Saved model comparison."
                     : "Evaluate a clinical case."}
@@ -1003,7 +1019,7 @@ export function App() {
                 {pasteComparison && (
                   <button
                     className="back-link"
-                    disabled={batchRunning}
+                    disabled={batchRunning && !config?.access?.durable_queue}
                     onClick={() => {
                       setPasteComparison(false);
                       sessionStorage.removeItem(BATCH_STORAGE);
@@ -1014,6 +1030,7 @@ export function App() {
                 )}
                 <BatchImport
                   key={batchRevision}
+                  initialBatchId={window.location.hash.match(/^#evaluate\/batch\/([a-f0-9]{32})$/)?.[1] || ""}
                   config={config}
                   defaults={form}
                   change={change}
@@ -1089,6 +1106,7 @@ export function App() {
                     </div>
                     {!run && (
                       <SubmissionFields
+                        accountId={config?.access?.member_id}
                         contributor={contributor}
                         onContributor={setContributor}
                         submission={submission}
@@ -1254,9 +1272,11 @@ export function App() {
                   )}
                 </div>
                 <section className="action-panel">
+                  {run && ["queued", "retry_wait"].includes(run.status) && <p className="queue-status" role="status">{run.message} {run.queue?.position ? `Queue position estimate: ${run.queue.position}. ` : ""}Attempt {run.queue?.attempt || 0} of {run.queue?.max_attempts || 3}. You can leave this page and reopen the saved evaluation; the backend keeps the task.</p>}
                   {run && (
                     <EvaluationSetup
                       config={config}
+                      connectionLocked={busy}
                       form={form}
                       change={change}
                       disabled={hasGrades || busy}
@@ -1277,14 +1297,14 @@ export function App() {
                       {busy ? (
                         <button className="primary" disabled>
                           <LoaderCircle className="spin" size={16} />
-                          {run?.status === "scoring"
+                          {run?.status === "queued" ? `Queued · ${run.queue?.position || 1}` : run?.status === "retry_wait" ? "Waiting to retry…" : run?.status === "scoring"
                             ? "Evaluating…"
                             : run?.status === "generating"
                               ? "Generating…"
                               : "Working…"}
                         </button>
                       ) : run &&
-                        ["partial", "error", "stopped", "interrupted"].includes(
+                        ["partial", "error", "stopped", "interrupted", "connection_required"].includes(
                           run.status,
                         ) ? (
                         <button
@@ -1369,7 +1389,7 @@ export function App() {
                       <span className="progress-count">
                         {run?.status === "scoring"
                           ? `${scored} / ${form.criteria.length} items`
-                          : "One request at a time"}
+                          : config?.access?.durable_queue ? "Background task" : "One request at a time"}
                       </span>
                       <button
                         className="text-button"
@@ -1787,7 +1807,7 @@ export function App() {
                   <dd>Temperature 0.7 · top-p 0.8 · fixed ascending options</dd>
                   <dt>Requests</dt>
                   <dd>
-                    Sequential · {config?.settings.timeout_seconds}s timeout ·{" "}
+                    {config?.access?.durable_queue ? "Queued; grading transport serialised" : "Sequential"} · {config?.settings.timeout_seconds}s timeout ·{" "}
                     {config?.settings.max_tokens.toLocaleString()} max output
                     tokens
                   </dd>

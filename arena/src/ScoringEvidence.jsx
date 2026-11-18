@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { createTextAnnotator } from "@recogito/text-annotator";
 import "@recogito/text-annotator/text-annotator.css";
 import {
@@ -11,6 +12,9 @@ import {
 import { evidenceContext, suggestedEvidence } from "./evidenceLinks.mjs";
 import { useContributor } from "./ContributorFields";
 import { itemResultText } from "./resultStatus.mjs";
+import { ClinicalText } from "./ClinicalText";
+import { prepareClinicalText, rawSelectorsToDisplay, displaySelectorsToRaw } from "./clinicalTextProjection.mjs";
+import { pendingHighlight } from "./highlightSelection.mjs";
 import "./scoring-evidence.css";
 
 export function ScoringEvidence({
@@ -34,6 +38,7 @@ export function ScoringEvidence({
     grade.error ||
     "No saved explanation for this item.";
   const criterionText = JSON.stringify(criterion);
+  const readingAnswer = useMemo(() => prepareClinicalText(answer || "No saved answer is available."), [answer]);
   const label = itemResultText(grade);
   const hasNumericGrade = label !== "" && Number.isFinite(Number(label));
   const suggestions = useMemo(
@@ -47,6 +52,8 @@ export function ScoringEvidence({
     [records, setRecords] = useState([]);
   const [selected, setSelected] = useState(null),
     [tab, setTab] = useState("evidence");
+  const [pending, setPending] = useState(null),
+    [manualDrafts, setManualDrafts] = useState([]);
   const [note, setNote] = useState(""),
     [status, setStatus] = useState("awaiting_review");
   const [contributor, setContributor] = useContributor();
@@ -54,6 +61,12 @@ export function ScoringEvidence({
     [message, setMessage] = useState(""),
     [saving, setSaving] = useState(false);
   const located = suggestions.filter((s) => s.status === "located");
+  const manualIds = new Set(records.filter(r => r.origin === "manual").map(r => r.annotation_id));
+  manualDrafts.forEach(annotation => manualIds.add(annotation.id));
+  const automaticIds = new Set(located.map(s => s.id));
+  records.filter(r => r.origin === "automatic" && rawSelectorsToDisplay(readingAnswer, r.selectors).length).forEach(r => automaticIds.add(r.annotation_id));
+  const blueCount = automaticIds.size;
+  const firstAutomatic = located[0] || (blueCount ? {id: [...automaticIds][0]} : null);
   const anchors = criterion?.anchors || {};
   const selectedAnchor = anchors[String(label)];
   const rules = [
@@ -70,6 +83,8 @@ export function ScoringEvidence({
     setSnapshot(null);
     setRecords([]);
     setSelected(null);
+    setPending(null);
+    setManualDrafts([]);
     setNote("");
     setStatus("awaiting_review");
     setMessage("");
@@ -106,7 +121,7 @@ export function ScoringEvidence({
     const record = records.find((r) => r.annotation_id === annotation.id);
     setSelected({
       id: annotation.id,
-      selectors: annotation.target.selector,
+      selectors: record?.selectors || displaySelectorsToRaw(readingAnswer, annotation.target.selector),
       origin:
         record?.origin ||
         (String(annotation.id).startsWith("auto-") ? "automatic" : "manual"),
@@ -122,7 +137,8 @@ export function ScoringEvidence({
   useEffect(() => {
     if (!textRef.current || !answer) return;
     const anno = createTextAnnotator(textRef.current, {
-      annotatingEnabled: true,
+      // Ordinary copy/selection must never silently create a reviewer mark.
+      annotatingEnabled: false,
       style: (annotation) => {
         const type = annotation.bodies?.[0]?.value ||
           (String(annotation.id).startsWith("auto-") ? "automatic" : "manual");
@@ -135,9 +151,6 @@ export function ScoringEvidence({
       },
     });
     annoRef.current = anno;
-    anno.on("createAnnotation", (annotation) =>
-      selectedHandler.current(annotation),
-    );
     anno.on("selectionChanged", (annotations) => {
       if (!selectingRef.current && annotations.length)
         selectedHandler.current(annotations[0]);
@@ -157,7 +170,7 @@ export function ScoringEvidence({
         {
           id: s.id,
           bodies: [{ purpose: "tagging", value: "automatic" }],
-          target: { selector: s.selectors },
+          target: { selector: rawSelectorsToDisplay(readingAnswer, s.selectors) },
         },
       ]),
     );
@@ -165,12 +178,52 @@ export function ScoringEvidence({
       annotations.set(record.annotation_id, {
         id: record.annotation_id,
         bodies: [{ purpose: "tagging", value: record.origin }],
-        target: { selector: record.selectors },
+        target: { selector: rawSelectorsToDisplay(readingAnswer, record.selectors) },
       });
+    for (const annotation of manualDrafts)
+      if (!annotations.has(annotation.id)) annotations.set(annotation.id, annotation);
     selectingRef.current = true;
     anno.setAnnotations([...annotations.values()]);
     selectingRef.current = false;
-  }, [suggestions, records, answer]);
+  }, [suggestions, records, answer, manualDrafts]);
+
+  useEffect(() => {
+    if (!pending) return;
+    const dismiss = (event) => {
+      if (event.type === "keydown" && event.key !== "Escape") return;
+      if (event.type === "pointerdown" && event.target.closest?.(".trace-highlight-prompt")) return;
+      setPending(null);
+    };
+    window.addEventListener("keydown", dismiss);
+    window.addEventListener("pointerdown", dismiss);
+    window.addEventListener("scroll", dismiss, true);
+    return () => {
+      window.removeEventListener("keydown", dismiss);
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("scroll", dismiss, true);
+    };
+  }, [pending]);
+
+  function offerHighlight() {
+    setPending(pendingHighlight(textRef.current, window.getSelection(), readingAnswer));
+  }
+
+  function confirmHighlight() {
+    if (!pending) return;
+    const annotation = {
+      id: `manual-${crypto.randomUUID()}`,
+      bodies: [{purpose: "tagging", value: "manual"}],
+      target: {selector: pending.displaySelectors},
+    };
+    setManualDrafts(old => [...old, annotation]);
+    setSelected({id: annotation.id, selectors: pending.selectors, origin: "manual"});
+    setNote("");
+    setStatus("awaiting_review");
+    setTab("evidence");
+    setMessage("Highlight added in this view. Save an evidence note to keep it in the workspace. No rating has been submitted.");
+    setPending(null);
+    window.getSelection()?.removeAllRanges();
+  }
 
   function focusQuote(suggestion) {
     const anno = annoRef.current;
@@ -261,28 +314,28 @@ export function ScoringEvidence({
           type="button"
           onClick={() => {
             setTab("evidence");
-            if (located.length) focusQuote(located[0]);
+            if (firstAutomatic) focusQuote(firstAutomatic);
           }}
         >
           <span className="trace-label">
             <MessageSquare size={15} /> Saved scoring reason{" "}
             <span>View evidence →</span>
           </span>
-          <span className="case-prewrap">{reason}</span>
+          <ClinicalText as="span" text={reason} />
         </button>
         <div className="trace-legend">
-          <span>
-            <span className="trace-dot auto" /> Blue · matched quotation
+          <span className={blueCount ? "" : "is-empty"}>
+            <span className="trace-dot auto" /> Blue · {blueCount} matched quotation{blueCount === 1 ? "" : "s"}
           </span>
-          <span>
-            <span className="trace-dot manual" /> Green · reviewer selection
+          <span className={manualIds.size ? "" : "is-empty"}>
+            <span className="trace-dot manual" /> Green · {manualIds.size} reviewer highlight{manualIds.size === 1 ? "" : "s"}{!access && <small> · saved notes require sign-in</small>}
           </span>
         </div>
         <div className="trace-link-summary" role="note">
-          {located.length ? (
+          {firstAutomatic ? (
             <>
-              <p>{new Set(located.map(s => s.id)).size} quotation link{new Set(located.map(s => s.id)).size === 1 ? "" : "s"} found for this item. The highlighted text may be further down the answer.</p>
-              <button type="button" className="text-button" onClick={() => focusQuote(located[0])}>Go to first highlight</button>
+              <p>{blueCount} quotation link{blueCount === 1 ? "" : "s"} found for this item. The highlighted text may be further down the answer.</p>
+              <button type="button" className="text-button" onClick={() => focusQuote(firstAutomatic)}>Go to first highlight</button>
               {suggestions.some(s => s.status !== "located") && <p>Other excerpts could not be linked automatically. See Quoted passages in the evidence panel.</p>}
             </>
           ) : (
@@ -290,20 +343,31 @@ export function ScoringEvidence({
               ? "No automatic highlight: the saved excerpts could not be linked to a unique passage. The evidence panel explains why."
               : "No automatic highlight: no answer quotation was saved for this item. You can still read the reason and the complete answer."}</p>
           )}
-          <p className="field-help">Green highlights appear when a reviewer selects text or saved selections are loaded. The colours show link types, not whether the answer is correct.</p>
+          <p className="field-help">Links apply to the selected assessment item. Green marks a confirmed highlight, not a submitted rating. Saved notes require workspace access. Colours do not indicate clinical correctness.</p>
         </div>
         <h3>Answer being evaluated</h3>
         <p className="field-help">
-          <Highlighter size={14} /> Select a passage to add a note. Blue
-          highlights locate quoted text; automatic links are awaiting review.
+          <Highlighter size={14} /> Select text, then choose Highlight to mark it. Selecting or copying alone saves nothing. Blue links are awaiting review.
         </p>
         <div
           ref={textRef}
           className="trace-answer"
           aria-label="Annotatable saved answer"
+          onMouseUp={offerHighlight}
+          onKeyUp={(event) => { if (event.key !== "Escape") offerHighlight(); }}
         >
-          {answer || "No saved answer is available."}
+          <ClinicalText document={readingAnswer} text={answer || "No saved answer is available."} />
         </div>
+        {pending && createPortal(
+          <section className="trace-highlight-prompt" role="dialog" aria-label="Confirm passage highlight"
+            style={{left: Math.max(12, Math.min(pending.rect.left, window.innerWidth - 382)), top: Math.max(12, Math.min(pending.rect.bottom + 8, window.innerHeight - 190))}}
+            onMouseDown={(event) => event.preventDefault()}>
+            <strong>Highlight this passage?</strong>
+            <p>{pending.displaySelectors.map(s => s.quote).join(" … ")}</p>
+            <small>This adds a highlight only. It does not submit a review.</small>
+            <div><button type="button" className="secondary" onClick={() => setPending(null)}>Cancel</button><button type="button" className="primary" onClick={confirmHighlight}>Highlight</button></div>
+          </section>, document.body
+        )}
       </div>
       <aside
         className="trace-basis"
@@ -352,7 +416,7 @@ export function ScoringEvidence({
               {selectedAnchor && (
                 <details className="trace-anchor-summary">
                   <summary>Saved grade {label} · rubric anchor</summary>
-                  <p>{selectedAnchor}</p>
+                  <ClinicalText as="p" text={selectedAnchor} />
                   <button
                     type="button"
                     className="text-button"
@@ -372,11 +436,11 @@ export function ScoringEvidence({
               )}
               {suggestions.map((s) => (
                 <div className="trace-quote" key={s.id}>
-                  <blockquote>{s.original_quote}</blockquote>
+                  <ClinicalText as="blockquote" text={s.original_quote} />
                   {s.status === "located" ? (
-                    <button type="button" onClick={() => focusQuote(s)}>
+                    <div><button type="button" onClick={() => focusQuote(s)}>
                       Locate in answer · awaiting review
-                    </button>
+                    </button>{s.selectors.some(p => p.match_method === "formatting_only") && <p className="field-help">Same words after hiding formatting markers. No paraphrase matching was used.</p>}</div>
                   ) : (
                     <p className="trace-warning">
                       {s.status === "too_short"
@@ -408,7 +472,7 @@ export function ScoringEvidence({
                     <Quote size={14} /> Selected answer passage
                   </span>
                   <blockquote>
-                    {selected.selectors.map((s) => s.quote).join(" … ")}
+                    <ClinicalText as="span" text={selected.selectors.map((s) => s.quote).join(" … ")} />
                   </blockquote>
                   <label className="field">
                     Reviewer ID
@@ -467,8 +531,7 @@ export function ScoringEvidence({
                 </div>
               ) : (
                 <p>
-                  Select a highlighted or new passage in the answer to add a
-                  note.
+                  Select an existing highlight, or select new text and confirm Highlight to add a note.
                 </p>
               )}
               {message && (
@@ -491,7 +554,7 @@ export function ScoringEvidence({
                         ? "Link rejected"
                         : "Awaiting review"}
                   </strong>
-                  <span>{record.note}</span>
+                  <ClinicalText as="span" text={record.note} />
                   <small>
                     {record.revision_count} saved revision
                     {record.revision_count === 1 ? "" : "s"}
@@ -510,10 +573,7 @@ export function ScoringEvidence({
               <h4>
                 {criterion.id} · {criterion.name}
               </h4>
-              <p>
-                {criterion.definition ||
-                  "No definition is saved for this item."}
-              </p>
+              <ClinicalText as="p" text={criterion.definition || "No definition is saved for this item."} />
               <dl className="trace-levels">
                 {Object.entries(anchors).map(([level, text]) => (
                   <div
@@ -524,7 +584,7 @@ export function ScoringEvidence({
                       {level}
                       {String(label) === level && <small>Saved grade</small>}
                     </dt>
-                    <dd>{text}</dd>
+                    <ClinicalText as="dd" text={text} />
                   </div>
                 ))}
               </dl>
@@ -534,14 +594,12 @@ export function ScoringEvidence({
                 </p>
               )}
               {rules.map((rule, i) => (
-                <p key={i} className="rule-definition">
-                  {typeof rule === "string" ? rule : JSON.stringify(rule)}
-                </p>
+                <ClinicalText as="p" key={i} className="rule-definition" text={typeof rule === "string" ? rule : JSON.stringify(rule)} />
               ))}
               {criterion.context && (
                 <details>
                   <summary>Additional scoring guidance</summary>
-                  <p className="case-prewrap">{criterion.context}</p>
+                  <ClinicalText as="p" text={criterion.context} />
                 </details>
               )}
             </>
@@ -549,13 +607,10 @@ export function ScoringEvidence({
           {tab === "case" && (
             <>
               <h4>Information supplied to the answering model</h4>
-              <p className="case-prewrap">
-                {facts ||
-                  "See the saved case record for the complete supplied information."}
-              </p>
+              <ClinicalText as="p" text={facts || "See the saved case record for the complete supplied information."} />
               <h4>Original task</h4>
-              <p className="case-prewrap">{task || "Not recorded."}</p>
-              {turns.length > 0 && <details><summary>Saved questions and information received</summary>{turns.map((turn, i) => <section key={i}><h4>Question {turn.number || i + 1}</h4><p className="case-prewrap">{turn.question}</p>{turn.reply && <p className="case-prewrap">{turn.reply}</p>}{typeof turn.records === "string" && <p className="case-prewrap">{turn.records}</p>}{(turn.returned || []).map((fact,n) => <p className="case-prewrap" key={n}>{fact.patient_text || fact.text}{fact.context ? ` [${fact.context}]` : ""}</p>)}{turn.feedback && <p className="case-prewrap">{turn.feedback}</p>}</section>)}</details>}
+              <ClinicalText as="p" text={task || "Not recorded."} />
+              {turns.length > 0 && <details><summary>Saved questions and information received</summary>{turns.map((turn, i) => <section key={i}><h4>Question {turn.number || i + 1}</h4><ClinicalText as="p" text={turn.question} />{turn.reply && <ClinicalText as="p" text={turn.reply} />}{typeof turn.records === "string" && <ClinicalText as="p" text={turn.records} />}{(turn.returned || []).map((fact,n) => <ClinicalText as="p" key={n} text={`${fact.patient_text || fact.text}${fact.context ? ` [${fact.context}]` : ""}`} />)}{turn.feedback && <ClinicalText as="p" text={turn.feedback} />}</section>)}</details>}
               {(reference || requirements?.length > 0) && (
                 <details>
                   <summary>Scoring references · awaiting confirmation</summary>
@@ -563,7 +618,7 @@ export function ScoringEvidence({
                     Judge-only material. Do not treat it as information received
                     by the answering model.
                   </p>
-                  <p className="case-prewrap">{reference}</p>
+                  <ClinicalText as="p" text={reference} />
                   {requirements?.length > 0 && (
                     <pre>{JSON.stringify(requirements, null, 2)}</pre>
                   )}

@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { ChevronDown, FileText, Pencil } from "lucide-react";
 import { caseCode } from "./caseIdentity.mjs";
 import { caseContextData } from "./caseContextData.mjs";
+import { ClinicalText } from "./ClinicalText";
 
 export function CaseContext({ data, children, onEdit, blind = false }) {
   const [open, setOpen] = useState(
@@ -68,7 +69,7 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                   {content.description && (
                     <section>
                       <h4>Description</h4>
-                      <p className="case-prewrap">{content.description}</p>
+                      <ClinicalText as="p" text={content.description} />
                     </section>
                   )}
                   {(content.audience || content.task_type) && (
@@ -89,12 +90,12 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                   )}
                   <section>
                     <h4>Case facts supplied</h4>
-                    <p className="case-prewrap">{content.facts}</p>
+                    <ClinicalText as="p" text={content.facts} />
                   </section>
                   {content.history && (
                     <section>
                       <h4>Earlier conversation supplied</h4>
-                      <p className="case-prewrap">{content.history}</p>
+                      <ClinicalText as="p" text={content.history} />
                     </section>
                   )}
                   {content.turns.length > 0 && (
@@ -103,23 +104,23 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                       {content.turns.map((turn, i) => (
                         <details className="case-context-record" key={i}>
                           <summary>Question {i + 1}</summary>
-                          <p className="case-prewrap">{turn.question}</p>
+                          <ClinicalText as="p" text={turn.question} />
                           {turn.reply && (
                             <>
                               <h5>Reply</h5>
-                              <p className="case-prewrap">{turn.reply}</p>
+                              <ClinicalText as="p" text={turn.reply} />
                             </>
                           )}
                           {turn.records && (
                             <>
                               <h5>Records returned</h5>
-                              <p className="case-prewrap">{turn.records}</p>
+                              <ClinicalText as="p" text={turn.records} />
                             </>
                           )}
                           {turn.feedback && (
                             <>
                               <h5>Environment feedback</h5>
-                              <p className="case-prewrap">{turn.feedback}</p>
+                              <ClinicalText as="p" text={turn.feedback} />
                             </>
                           )}
                         </details>
@@ -139,9 +140,7 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                         ]
                           .filter(Boolean)
                           .map((text, i) => (
-                            <p className="case-prewrap" key={i}>
-                              {text}
-                            </p>
+                            <ClinicalText as="p" key={i} text={text} />
                           ))}
                       </section>
                     )}
@@ -149,11 +148,11 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
               )}
               {tab === "task" && (
                 <>
-                  <p className="case-prewrap">{content.task}</p>
+                  <ClinicalText as="p" text={content.task} />
                   {content.decision_point && (
                     <section>
                       <h4>Decision point</h4>
-                      <p className="case-prewrap">{content.decision_point}</p>
+                      <ClinicalText as="p" text={content.decision_point} />
                     </section>
                   )}
                   {!blind &&
@@ -167,7 +166,7 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                           answering model.
                         </p>
                         {content.reference && (
-                          <p className="case-prewrap">{content.reference}</p>
+                          <ClinicalText as="p" text={content.reference} />
                         )}
                         {content.requirements.map((r, i) => (
                           <section key={r.id || i}>
@@ -182,9 +181,7 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                             ]
                               .filter(Boolean)
                               .map((text, n) => (
-                                <p className="case-prewrap" key={n}>
-                                  {text}
-                                </p>
+                                <ClinicalText as="p" key={n} text={text} />
                               ))}
                           </section>
                         ))}
@@ -193,7 +190,7 @@ export function CaseContext({ data, children, onEdit, blind = false }) {
                 </>
               )}
               {tab === "answer" && (
-                <p className="case-prewrap">{content.answer}</p>
+                <ClinicalText as="p" text={content.answer} />
               )}
             </div>
             {onEdit ? (
